@@ -1,0 +1,132 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataHandler interface</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Fact Table Data Handler</h1>
+        <div class="row">
+            <div class="col">
+            <button type="button" class="btn btn-primary" id="deployContract">Deploy contract</button>
+            </div>
+            <br>
+            <p id="status"></p>
+        </div>
+        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid">
+            <div class="row" style="margin-top: 1em">
+        <label for="productId" class="col-lg-2 control-label">Product ID</label>
+        <input id="productId" type="text">
+            </div>
+            <br>
+            <div class="row">
+        <label for="customerId" class="col-lg-2 control-label">Customer ID</label>
+        <input id="customerId" type="text">
+            </div>
+            <br>
+            <div class="row">
+        <label for="quantity" class="col-lg-2 control-label">Quantity</label>
+        <input id="quantity" type="text">
+            </div>
+    <button id="buttonAdd">Add fact</button>
+            <br>
+            <br>
+            <div>
+                <p id="getResponseAdd"></p>
+            </div>
+        </div>
+
+        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid">
+            <div class="row" style="margin-top: 1em">
+                <label for="factId" class="col-lg-2 control-label">Fact ID</label>
+                <input id="factId" type="text">
+            </div>
+            <button id="buttonGet">Get fact</button>
+            <button id="buttonGetAll">Get all</button>
+            <br>
+            <div>
+                <p id="getResponse"></p>
+            </div>
+
+            <br>
+            <br>
+        </div>
+    </div>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+<script>
+    $( "#deployContract" ).click(function() {
+        deployContract()
+    });
+
+    $( "#buttonGet" ).click(function() {
+        getFactById($("#factId").val());
+    });
+
+    $( "#buttonGetAll" ).click(function() {
+        getAllFacts();
+    });
+
+    $( "#buttonAdd" ).click(function() {
+        addFact($("#productId").val(), $("#quantity").val(), $("#customerId").val());
+    });
+
+    function getFactById(id) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                $("#getResponse").html(this.responseText);
+            }
+        };
+        xhttp.open("GET", "/getFactById/" + id, true);
+        xhttp.send();
+    }
+
+    function getAllFacts() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                $("#getResponse").html(this.responseText);
+            }
+        };
+        xhttp.open("GET", "/getallfacts", true);
+        xhttp.send();
+    }
+
+    function addFact(prodId, quantity, customerId) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/addFact", true);
+        xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                $("#getResponseAdd").html(this.responseText);
+            }
+        };
+        xhttp.send(JSON.stringify({productId: prodId, quantity: quantity, customerId: customerId}));
+    }
+
+    function deployContract() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if(this.readyState <= 3){
+                $('#status').html("Deploying...");
+            }
+            if (this.readyState === 4 && this.status === 200) {
+                var respObj = JSON.parse( this.responseText)
+               $('#status').html("Contract address: " + respObj.options.address);
+                $('#status').css({"color": 'green'});
+            } else if(this.status === 400) {
+                $('#status').html("Error while deploying contract");
+                $('#status').css({"color": 'red'});
+            }
+        };
+        xhttp.open("GET", "/deployContract", true);
+        xhttp.send();
+    }
+</script>
+</body>
