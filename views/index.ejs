@@ -6,7 +6,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="./node_modules/web3/dist/web3.min.js"></script>
 </head>
-<body>
+<body onload="pageLoad()">
     <div class="container">
         <h1>Fact Table Data Handler</h1>
         <div class="row">
@@ -31,12 +31,15 @@
         <label for="quantity" class="col-lg-2 control-label">Quantity</label>
         <input id="quantity" type="text">
             </div>
-    <button id="buttonAdd">Add fact</button>
+    <button type="button" class="btn btn-primary" id="buttonAdd">Add fact</button>
             <br>
             <br>
             <div>
-                <p id="getResponseAdd"></p>
+                <label for="getResponseAdd" class="col-lg-2 control-label">Transaction receipt</label>
+                <textarea class="form-control" rows="5" id="getResponseAdd" readonly></textarea>
             </div>
+            <br>
+            <br>
         </div>
 
         <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid">
@@ -48,10 +51,11 @@
             <button id="buttonGetAll">Get all</button>
             <br>
             <div>
-                <p id="getResponse"></p>
+                <br>
+                <label for="getResponse" class="col-lg-2 control-label">Fact</label>
+                <textarea class="form-control" rows="5" id="getResponse" readonly></textarea>
+                <br>
             </div>
-
-            <br>
             <br>
         </div>
     </div>
@@ -76,11 +80,16 @@
         addFact($("#productId").val(), $("#quantity").val(), $("#customerId").val());
     });
 
+    function pageLoad() {
+        $("#getResponseAdd").val("");
+        $("#getResponse").val("");
+    }
+
     function getFactById(id) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
-                $("#getResponse").html(this.responseText);
+                $("#getResponse").val(this.responseText);
             }
         };
         xhttp.open("GET", "/getFactById/" + id, true);
@@ -104,7 +113,7 @@
         xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
-                $("#getResponseAdd").html(this.responseText);
+                $("#getResponseAdd").val(this.responseText);
             }
         };
         xhttp.send(JSON.stringify({productId: prodId, quantity: quantity, customerId: customerId}));

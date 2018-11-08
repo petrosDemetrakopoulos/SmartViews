@@ -29,6 +29,4 @@ contract DataHandler {
 		return(facts[id].productId, facts[id].quantity, facts[id].customerId);
 	}
 
-
-
 }
