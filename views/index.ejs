@@ -47,8 +47,8 @@
                 <label for="factId" class="col-lg-2 control-label">Fact ID</label>
                 <input id="factId" type="text">
             </div>
-            <button id="buttonGet">Get fact</button>
-            <button id="buttonGetAll">Get all</button>
+            <button type="button" class="btn btn-primary" id="buttonGet">Get fact</button>
+            <button type="button" class="btn btn-primary" id="buttonGetAll">Get all</button>
             <br>
             <div>
                 <br>
@@ -100,10 +100,11 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
-                $("#getResponse").html(this.responseText);
+                console.log(this.responseText);
+                $("#getResponse").val(this.responseText);
             }
         };
-        xhttp.open("GET", "/getallfacts", true);
+        xhttp.open("GET", "/getallfacts/", true);
         xhttp.send();
     }
 

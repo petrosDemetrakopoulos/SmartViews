@@ -19,9 +19,8 @@ let contractInstance = null;
 
 web3.eth.defaultAccount = web3.eth.accounts[0];
 let contract = null;
-var DataHandler = null;
+let DataHandler = null;
 let acc = null;
-
 app.get('/', function (req,res) {
     res.render("index");
 });
@@ -95,20 +94,36 @@ app.get('/getFactById/:id', function (req,res) {
     }
 });
 
+async function getAllFacts(factsLength){
+    let allFacts = [];
+    for (let i = 0; i < factsLength; i++){
+        await contract.methods.facts(i).call(function (err, result2) {
+            if(!err){
+                console.log(result2);
+               allFacts.push(result2)
+            } else {
+                console.log(err);
+                console.log("ERRRRRR");
+            }
+        })
+    }
+    return allFacts;
+}
+
 app.get('/getallfacts', function (req,res) {
     if(contract) {
         contract.methods.dataId().call(function (err, result) {
+            console.log("********");
+            console.log(result);
+            console.log("*****");
             if(!err) {
               //async loop waiting to get all the facts separately
-                contract.methods.facts(0).call(function (errr, result2) {
-                    if(!errr){
-                        res.send(result2);
-                    } else {
-                        console.log(errr);
-                        console.log("ERRRRRR");
-                        res.send(errr);
-                    }
-                })
+                getAllFacts(result).then(retval => {
+                    console.log(retval);
+                    res.send(retval);
+                }).catch(error => {
+                    console.log(error);
+                });
             } else {
                 console.log(err);
                 console.log("ERRRRRR");
