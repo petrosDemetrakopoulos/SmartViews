@@ -49,6 +49,7 @@
             </div>
             <button type="button" class="btn btn-primary" id="buttonGet">Get fact</button>
             <button type="button" class="btn btn-primary" id="buttonGetAll">Get all</button>
+            <button type="button" class="btn btn-primary" id="buttonGroupByProduct">Group By Product</button>
             <br>
             <div>
                 <br>
@@ -76,6 +77,10 @@
         getAllFacts();
     });
 
+    $( "#buttonGroupByProduct" ).click(function() {
+        groupBy('product');
+    });
+
     $( "#buttonAdd" ).click(function() {
         addFact($("#productId").val(), $("#quantity").val(), $("#customerId").val());
     });
@@ -93,6 +98,17 @@
             }
         };
         xhttp.open("GET", "/getFactById/" + id, true);
+        xhttp.send();
+    }
+
+    function groupBy(field) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                $("#getResponse").val(this.responseText);
+            }
+        };
+        xhttp.open("GET", "/groupby/" + field, true);
         xhttp.send();
     }
 

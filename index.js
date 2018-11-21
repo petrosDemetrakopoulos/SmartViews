@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const solc = require('solc');
 const fs = require('fs');
 const delay = require('delay');
+const groupBy = require('group-by');
 abiDecoder = require('abi-decoder');
 const app = express();
 var jsonParser = bodyParser.json();
@@ -125,6 +126,37 @@ app.get('/getallfacts', function (req,res) {
                 getAllFacts(result).then(retval => {
                     console.log(retval);
                     res.send(retval);
+                }).catch(error => {
+                    console.log(error);
+                });
+            } else {
+                console.log(err);
+                console.log("ERRRRRR");
+                res.send(err);
+            }
+        })
+    } else {
+        res.status(400);
+        res.send({status: "ERROR",options: "Contract not deployed" });
+    }
+});
+
+app.get('/groupby/:field', function (req,res) {
+    if(contract) {
+        contract.methods.dataId().call(function (err, result) {
+            if(!err) {
+                //async loop waiting to get all the facts separately
+                getAllFacts(result).then(retval => {
+                    console.log(retval);
+                    let groupByResult = {};
+                    if(req.params.field === 'product'){
+                        groupByResult = groupBy(retval,'productId');
+                    } else if(req.params.field === 'customer'){
+                        groupByResult = groupBy(retval,'customer');
+                    } else {
+                        groupByResult = 'error';
+                    }
+                    res.send(groupByResult);
                 }).catch(error => {
                     console.log(error);
                 });
