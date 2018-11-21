@@ -99,6 +99,10 @@ async function getAllFacts(factsLength){
     for (let i = 0; i < factsLength; i++){
         await contract.methods.facts(i).call(function (err, result2) {
             if(!err){
+                delete result2["0"];
+                delete result2["1"];
+                delete result2["2"];
+                delete result2["3"];
                 console.log(result2);
                allFacts.push(result2)
             } else {
