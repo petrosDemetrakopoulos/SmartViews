@@ -156,6 +156,7 @@ app.get('/groupby/:field', function (req,res) {
                     } else {
                         groupByResult = 'error';
                     }
+                    //call contract function to store groupBy
                     res.send(groupByResult);
                 }).catch(error => {
                     console.log(error);
