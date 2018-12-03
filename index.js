@@ -141,6 +141,23 @@ app.get('/getallfacts', function (req,res) {
     }
 });
 
+app.get('/groupbyId/:id', function (req,res) {
+    if(contract) {
+        contract.methods.getGroupBy(parseInt(req.params.id,10)).call(function (err, result) {
+            if(!err) {
+                res.send(result)
+            } else {
+                console.log(err);
+                console.log("ERRRRRR");
+                res.send(err);
+            }
+        })
+    } else {
+        res.status(400);
+        res.send({status: "ERROR",options: "Contract not deployed" });
+    }
+});
+
 app.get('/groupby/:field', function (req,res) {
     if(contract) {
         contract.methods.dataId().call(function (err, result) {
@@ -156,8 +173,29 @@ app.get('/groupby/:field', function (req,res) {
                     } else {
                         groupByResult = 'error';
                     }
+                    groupByResult = JSON.stringify(groupByResult);
                     //call contract function to store groupBy
-                    res.send(groupByResult);
+                        const transactionObject = {
+                            from: acc,
+                            gas: 1500000,
+                            gasPrice: '30000000000000'
+                        };
+
+                        contract.methods.addGroupBy(groupByResult).send(transactionObject,  (err, txHash) => {
+                            console.log('send:', err, txHash);
+                        }).on('error', (err) => {
+                            console.log('error:', err);
+                            res.send(err);
+                        })
+                            .on('transactionHash', (err) => {
+                                console.log('transactionHash:', err);
+                            })
+                            .on('receipt', (receipt) => {
+                                console.log('receipt:', receipt);
+                                res.send(receipt);
+                            });
+
+                   // res.send(groupByResult);
                 }).catch(error => {
                     console.log(error);
                 });

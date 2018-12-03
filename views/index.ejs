@@ -47,9 +47,14 @@
                 <label for="factId" class="col-lg-2 control-label">Fact ID</label>
                 <input id="factId" type="text">
             </div>
+            <div class="row" style="margin-top: 1em">
+                <label for="groupByID" class="col-lg-2 control-label">GroupBy ID</label>
+                <input id="groupByID" type="text">
+            </div>
             <button type="button" class="btn btn-primary" id="buttonGet">Get fact</button>
             <button type="button" class="btn btn-primary" id="buttonGetAll">Get all</button>
-            <button type="button" class="btn btn-primary" id="buttonGroupByProduct">Group By Product</button>
+            <button type="button" class="btn btn-primary" id="buttonGroupByProduct">GroupBy Product</button>
+            <button type="button" class="btn btn-primary" id="buttonGetGroupById">Get GroupBy by ID</button>
             <br>
             <div>
                 <br>
@@ -81,6 +86,10 @@
         groupBy('product');
     });
 
+    $( "#buttonGetGroupById" ).click(function() {
+        getGroupById($("#groupByID").val());
+    });
+
     $( "#buttonAdd" ).click(function() {
         addFact($("#productId").val(), $("#quantity").val(), $("#customerId").val());
     });
@@ -109,6 +118,17 @@
             }
         };
         xhttp.open("GET", "/groupby/" + field, true);
+        xhttp.send();
+    }
+
+    function getGroupById(id) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                $("#getResponse").val(this.responseText);
+            }
+        };
+        xhttp.open("GET", "/groupbyId/" + id, true);
         xhttp.send();
     }
 

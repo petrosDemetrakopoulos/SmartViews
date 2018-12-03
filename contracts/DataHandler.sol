@@ -33,9 +33,9 @@ contract DataHandler {
 		return (facts[dataId-1].productId,facts[dataId-1].quantity, facts[dataId-1].customerId, dataId -1);
 	}
 
-	function addGroupBy(string group, uint ID){
+	function addGroupBy(string group) public returns(string groupAdded, uint groupID){
     		groupBys[groupId].groups = group;
-    		groupBys[groupId].timestamp = now
+    		groupBys[groupId].timestamp = now;
     		groupId += 1;
     		return (groupBys[groupId-1].groups, groupId-1);
     	}
