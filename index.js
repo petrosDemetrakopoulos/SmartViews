@@ -13,6 +13,7 @@ app.use(jsonParser);
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
+app.use(express.static('public'));
 
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -25,10 +26,6 @@ let DataHandler = null;
 let acc = null;
 app.get('/', function (req,res) {
     fs.readdir('./templates', function(err, items) {
-        console.log(items);
-        for (var i=0; i<items.length; i++) {
-            console.log(items[i]);
-        }
         res.render("index",{"templates":items});
     });
 });
@@ -36,14 +33,10 @@ app.get('/', function (req,res) {
 app.listen(3000, () => console.log(`Example app listening on http://localhost:3000`));
 
 async function deploy(account, contractPath){
-            console.log(contractPath);
             const input = fs.readFileSync(contractPath);
-            console.log(input);
             const output = solc.compile(input.toString(), 1);
-            console.log(output);
             const bytecode = output.contracts[Object.keys(output.contracts)[0]].bytecode;
             const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
-            console.log(abi);
 
             contract = new web3.eth.Contract(abi);
             let contractInstance =  await contract.deploy({data: '0x' + bytecode})
@@ -68,7 +61,6 @@ async function deploy(account, contractPath){
 }
 
 app.get('/deployContract/:fn', function (req, res) {
-
     web3.eth.getAccounts(function (err,accounts) {
         if (!err) {
         acc = accounts[1];
@@ -159,7 +151,7 @@ app.get('/new_contract/:fn', function (req, res) {
             return console.log(err);
         }
         console.log("The file was saved!");
-        res.send({msg:"OK","filename":fact_tbl.name + ".sol"});
+        res.send({msg:"OK","filename":fact_tbl.name + ".sol", "template":fact_tbl});
     });
 
 });

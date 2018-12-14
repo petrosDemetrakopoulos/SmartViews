@@ -1,5 +1,8 @@
 {
   "name": "FactTable",
   "struct_Name": "Fact",
-  "properties":[{"key": "key_1", "data_type": "uint"}, {"key": "key_2", "data_type": "string"}]
+  "properties":[
+                {"key": "key_1", "data_type": "uint"},
+                {"key": "key_2", "data_type": "string"}
+  ]
 }
