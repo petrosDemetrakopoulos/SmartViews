@@ -10,8 +10,18 @@
     <div class="container">
         <h1>Fact Table Data Handler</h1>
         <div class="row">
-            <div class="col">
-            <button type="button" class="btn btn-primary" id="deployContract">Deploy contract</button>
+        <div class="col-3">
+            <div class="form-group">
+                <label for="sel1">Select template:</label>
+                <select class="form-control" id="template">
+                    <%for(var i = 0; i < templates.length; i++){%>
+                    <option><%=templates[i]%></option>
+                    <%}%>
+                </select>
+            </div>
+        </div>
+            <div class="col-3">
+            <button type="button" class="btn btn-primary" id="deployContract" style="margin-top: 2em;">Create and deploy contract</button>
             </div>
             <br>
             <p id="status"></p>
@@ -159,18 +169,36 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if(this.readyState <= 3){
-                $('#status').html("Deploying...");
+                $('#status').html("Creating contract...");
             }
             if (this.readyState === 4 && this.status === 200) {
                 var respObj = JSON.parse( this.responseText)
-               $('#status').html("Contract address: " + respObj.options.address);
-                $('#status').css({"color": 'green'});
+
+                var xhttpDep =  new XMLHttpRequest();
+                xhttpDep.onreadystatechange = function() {
+                    if (this.readyState <= 3) {
+                        $('#status').html("Deploying contract...");
+                    }
+                    if (this.readyState === 4 && this.status === 200) {
+                        var respObject = JSON.parse( this.responseText)
+                        $('#status').html("Contract address: " + respObject.options.address);
+                        $('#status').css({"color": 'green'});
+                    }
+                    else if(this.status === 400) {
+                        $('#status').html("Error while deploying contract");
+                        $('#status').css({"color": 'red'});
+                    }
+                };
+
+                xhttpDep.open("GET", "/deployContract/" + respObj.filename, true);
+                xhttpDep.send();
             } else if(this.status === 400) {
-                $('#status').html("Error while deploying contract");
+                $('#status').html("Error while creating contract");
                 $('#status').css({"color": 'red'});
             }
         };
-        xhttp.open("GET", "/deployContract", true);
+        var selectedText = $('#template').find("option:selected").text();
+        xhttp.open("GET", "/new_contract/" + selectedText, true);
         xhttp.send();
     }
 </script>

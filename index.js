@@ -4,6 +4,7 @@ const solc = require('solc');
 const fs = require('fs');
 const delay = require('delay');
 const groupBy = require('group-by');
+let fact_tbl = require('./templates/fact_tbl');
 abiDecoder = require('abi-decoder');
 const app = express();
 var jsonParser = bodyParser.json();
@@ -23,18 +24,26 @@ let contract = null;
 let DataHandler = null;
 let acc = null;
 app.get('/', function (req,res) {
-    res.render("index");
+    fs.readdir('./templates', function(err, items) {
+        console.log(items);
+        for (var i=0; i<items.length; i++) {
+            console.log(items[i]);
+        }
+        res.render("index",{"templates":items});
+    });
 });
 
 app.listen(3000, () => console.log(`Example app listening on http://localhost:3000`));
 
-async function deploy(account){
-            const input = fs.readFileSync('./contracts/DataHandler.sol');
+async function deploy(account, contractPath){
+            console.log(contractPath);
+            const input = fs.readFileSync(contractPath);
+            console.log(input);
             const output = solc.compile(input.toString(), 1);
             console.log(output);
             const bytecode = output.contracts[Object.keys(output.contracts)[0]].bytecode;
             const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
-
+            console.log(abi);
 
             contract = new web3.eth.Contract(abi);
             let contractInstance =  await contract.deploy({data: '0x' + bytecode})
@@ -58,12 +67,12 @@ async function deploy(account){
             return contractInstance.options;
 }
 
-app.get('/deployContract', function (req, res) {
+app.get('/deployContract/:fn', function (req, res) {
 
     web3.eth.getAccounts(function (err,accounts) {
         if (!err) {
         acc = accounts[1];
-            deploy(accounts[0])
+            deploy(accounts[0], './contracts/' + req.params.fn)
                 .then(options => {
                     console.log('Success');
                     res.send({status:"OK", options: options});
@@ -74,6 +83,83 @@ app.get('/deployContract', function (req, res) {
                     res.send({status:"ERROR", options: "Deployment failed"});
                 });
         }
+    });
+});
+
+app.get('/new_contract/:fn', function (req, res) {
+    let fact_tbl = require('./templates/' + req.params.fn);
+    let contrPayload = "";
+    let firstLine = "pragma solidity ^0.4.0;\n\n";
+    let secondLine = "contract " + fact_tbl.name + " { \n";
+    let thirdLine = "\tuint public dataId;\n\n";
+    let constr = "\tconstructor() {\n" +
+        "\t\tdataId = 0;\n" +
+        "\t}\n\n";
+    var properties = "";
+    var struct = "\tstruct " + fact_tbl.struct_Name + "{ \n";
+    for(var i =0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        properties += "\t\t" + crnProp.data_type + " " + crnProp.key + ";\n";
+    }
+    properties += "\t\tuint timestamp;\n";
+    let closeStruct = "\t}\n";
+    let mapping = "\tmapping(uint =>" + fact_tbl.struct_Name +") public facts;\n\n";
+    let addParams = "";
+    let addFact = "\tfunction addFact(";
+    for(var i = 0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        if (i === (fact_tbl.properties.length-1)) {
+            addParams += crnProp.data_type + " " + crnProp.key + ") ";
+        } else {
+            addParams += crnProp.data_type + " " + crnProp.key + ",";
+        }
+    }
+    let retParams = "public returns (";
+    for(var i = 0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        if (i === (fact_tbl.properties.length-1)) {
+            retParams += crnProp.data_type + " " + ", uint ID){\n";
+        } else {
+            retParams += crnProp.data_type + " " + ",";
+        }
+    }
+    addFact = addFact + addParams + retParams;
+    var setters = "";
+    for(var i =0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        setters += "\t\tfacts[dataId]." + crnProp.key  + "= " +  crnProp.key + ";\n";
+    }
+    setters += "\t\tfacts[dataId].timestamp = now;\n \t\tdataId += 1;\n";
+    var retStmt = "\t\treturn (";
+    for(var i =0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        retStmt += "facts[dataId-1]." + crnProp.key  + ",";
+    }
+    retStmt += "dataId -1);\n\t}\n\n";
+
+    let getParams = "";
+    var getFact = "\tfunction getFact(uint id) public constant returns (";
+    var retVals = "";
+    for(var i =0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        if (i === (fact_tbl.properties.length-1)) {
+            getParams += crnProp.data_type + " " + crnProp.key + "){\n";
+            retVals += "facts[id]." + crnProp.key + ");\n\t}"
+        } else {
+            getParams += crnProp.data_type + " " + crnProp.key + ",";
+            retVals += "facts[id]." + crnProp.key + ","
+        }
+    }
+    var retFact = "\t\treturn (" + retVals;
+
+    contrPayload = firstLine + secondLine + thirdLine + constr + struct + properties + closeStruct + mapping + addFact + setters + retStmt + getFact + getParams + retFact +  "\n}";
+    fs.writeFile("contracts/" + fact_tbl.name + ".sol", contrPayload, function(err) {
+        if(err) {
+            res.send({msg:"error"});
+            return console.log(err);
+        }
+        console.log("The file was saved!");
+        res.send({msg:"OK","filename":fact_tbl.name + ".sol"});
     });
 
 });
@@ -152,6 +238,28 @@ app.get('/groupbyId/:id', function (req,res) {
                 res.send(err);
             }
         })
+    } else {
+        res.status(400);
+        res.send({status: "ERROR",options: "Contract not deployed" });
+    }
+});
+
+app.post('/addFacts', function (req,res) {
+    if(contract) {
+        if(req.body.products.length === req.body.quantities.length === req.body.customers.length) {
+            contract.methods.addFacts(req.body.products, req.body.quantities, req.body.customers).call(function (err, result) {
+                if (!err) {
+                    res.send(result)
+                } else {
+                    console.log(err);
+                    console.log("ERRRRRR");
+                    res.send(err);
+                }
+            })
+        } else {
+            res.status(400);
+            res.send({status: "ERROR",options: "Arrays must have the same dimension" });
+        }
     } else {
         res.status(400);
         res.send({status: "ERROR",options: "Contract not deployed" });

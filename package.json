@@ -12,6 +12,7 @@
     "abi-decoder": "^1.2.0",
     "body-parser": "^1.18.3",
     "delay": "^4.1.0",
+    "dot": "^1.1.2",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "group-by": "0.0.1",

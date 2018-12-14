@@ -6,7 +6,6 @@ contract DataHandler {
 
 	 constructor() {
 		dataId = 0;
-
 	}
 
 	struct Fact{
@@ -31,6 +30,17 @@ contract DataHandler {
 		facts[dataId].timestamp = now;
 		dataId += 1;
 		return (facts[dataId-1].productId,facts[dataId-1].quantity, facts[dataId-1].customerId, dataId -1);
+	}
+
+	function addFacts(uint[] prodId, uint[] quant, uint[] customer) public returns  (bool){
+        for (uint i=0; i<prodId.length; i++) {
+          facts[dataId].productId = prodId[i];
+          facts[dataId].quantity = quant[i];
+          facts[dataId].customerId = customer[i];
+          facts[dataId].timestamp = now;
+          dataId += 1;
+        }
+        return true;
 	}
 
 	function addGroupBy(string group) public returns(string groupAdded, uint groupID){
