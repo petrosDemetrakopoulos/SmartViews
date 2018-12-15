@@ -28,31 +28,15 @@
         <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid" id="add_data">
             <h3>Data input form</h3>
             <p id="prompt">Create and deploy a contract to add data.</p>
-
         </div>
 
-        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid">
-            <div class="row" style="margin-top: 1em">
-                <label for="factId" class="col-lg-2 control-label">Fact ID</label>
-                <input id="factId" type="text">
-            </div>
-            <div class="row" style="margin-top: 1em">
-                <label for="groupByID" class="col-lg-2 control-label">GroupBy ID</label>
-                <input id="groupByID" type="text">
-            </div>
-            <button type="button" class="btn btn-primary" id="buttonGet">Get fact</button>
-            <button type="button" class="btn btn-primary" id="buttonGetAll">Get all</button>
-            <button type="button" class="btn btn-primary" id="buttonGroupByProduct">GroupBy Product</button>
-            <button type="button" class="btn btn-primary" id="buttonGetGroupById">Get GroupBy by ID</button>
-            <br>
-            <div>
-                <br>
-                <label for="getResponse" class="col-lg-2 control-label">Fact</label>
-                <textarea class="form-control" rows="5" id="getResponse" readonly></textarea>
-                <br>
-            </div>
+        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid" id ="groupBys">
+            <h3>Data get form</h3>
+            <p id="prompt">Create and deploy a contract to add data.</p>
             <br>
         </div>
+        <br>
+        <br>
     </div>
     <script src="js/jquery-3.3.1.min.js"></script>
 <script>
@@ -185,13 +169,38 @@
                             "<br>" +
                             "<br>");
 
+                        $('#groupBys').append("<div class='row' id='groupByRow'><div class='col-3'> <label for='fieldSelect'>Select field for GroupBy:</label></div>"+
+                        "<div class='col-3'><select class='form-control' id='fieldSelect'>");
+                        for(var i = 0; i < respObj.template.properties.length; i++) {
+                            var crnProp = respObj.template.properties[i];
+                            $('#fieldSelect').append("<option>" + crnProp.key + "</option>");
+                        }
+                        $('#groupByRow').append("<div class='col-3' style='text-align:center'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGroupBy\">Group By</button></div>")
+                        $('#groupBys').append("</div></div>");
+                        $('#groupBys').append("<div class=\"row\" style=\"margin-top: 1em\">" +
+                            "<label for=\"factId\" class=\"col-lg-3 control-label\">Fact ID</label>" +
+                            "<input id=\"factId\" type=\"text\">" +
+                            "</div>" +
+                            "<div class=\"row\" style=\"margin-top: 1em\">" +
+                            "<label for=\"groupByID\" class=\"col-lg-3 control-label\">GroupBy ID</label>" +
+                            "<input id=\"groupByID\" type=\"text\">" +
+                            "</div><br><br>" +
+                            "<button type=\"button\" class=\"btn btn-primary\" id=\"buttonGet\">Get fact</button>" +
+                            "<button type=\"button\" class=\"btn btn-primary\" id=\"buttonGetAll\">Get all</button>" +
+                            "<button type=\"button\" class=\"btn btn-primary\" id=\"buttonGetGroupById\">Get GroupBy by ID</button>" +
+                            "<br>");
+                        $('#groupBys').append("<div>" +
+                            "<br>" +
+                            "<label for=\"getResponse\" class=\"col-lg-2 control-label\">Output</label>" +
+                            "<textarea class=\"form-control\" rows=\"5\" id=\"getResponse\" readonly></textarea>" +
+                            "<br>" +
+                            "</div><br><br>")
                     }
                     else if(this.status === 400) {
                         $('#status').html("Error while deploying contract");
                         $('#status').css({"color": 'red'});
                     }
                 };
-
                 xhttpDep.open("GET", "/deployContract/" + respObj.filename, true);
                 xhttpDep.send();
             } else if(this.status === 400) {
