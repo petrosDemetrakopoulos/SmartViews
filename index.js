@@ -178,10 +178,6 @@ async function getAllFacts(factsLength){
     for (let i = 0; i < factsLength; i++){
         await contract.methods.facts(i).call(function (err, result2) {
             if(!err){
-                delete result2["0"];
-                delete result2["1"];
-                delete result2["2"];
-                delete result2["3"];
                 console.log(result2);
                allFacts.push(result2)
             } else {
@@ -265,16 +261,10 @@ app.get('/groupby/:field', function (req,res) {
                 //async loop waiting to get all the facts separately
                 getAllFacts(result).then(retval => {
                     console.log(retval);
-                    let groupByResult = {};
-                    if(req.params.field === 'product'){
-                        groupByResult = groupBy(retval,'productId');
-                    } else if(req.params.field === 'customer'){
-                        groupByResult = groupBy(retval,'customer');
-                    } else {
-                        groupByResult = 'error';
-                    }
+                    let groupByResult = groupBy(retval,req.params.field);
                     groupByResult = JSON.stringify(groupByResult);
                     //call contract function to store groupBy
+                    //STORE ON REDIS WITH HASH KEY, THEN STORE KEY IN BLOCKCHAIN
                         const transactionObject = {
                             from: acc,
                             gas: 1500000,
