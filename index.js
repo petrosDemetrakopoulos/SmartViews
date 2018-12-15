@@ -330,16 +330,44 @@ app.get('/getcount', function (req,res) {
 
 app.post('/addFact', function (req,res) {
     if(contract) {
-        let productId = parseInt(req.body.productId,10);
-        let quantity = parseInt(req.body.quantity,10);
-        let customerId = parseInt(req.body.customerId,10);
+       // let productId = parseInt(req.body.productId,10);
+      //  let quantity = parseInt(req.body.quantity,10);
+      //  let customerId = parseInt(req.body.customerId,10);
         const transactionObject = {
             from: acc,
             gas: 1500000,
             gasPrice: '30000000000000'
         };
-
-        contract.methods.addFact(productId, quantity, customerId).send(transactionObject,  (err, txHash) => {
+        console.log(req.body);
+        let vals = req.body.values;
+        let valsLength = vals.length;
+        let addFactPromise;
+        if(valsLength === 1){
+            addFactPromise = contract.methods.addFact(vals[0].value);
+        } else if (valsLength === 2){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value);
+        } else if (valsLength === 3){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value);
+        } else if (valsLength === 4){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value);
+        } else if (valsLength === 5){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value);
+        } else if (valsLength === 6){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value);
+        } else if (valsLength === 7){
+        addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value);
+        } else if (valsLength === 8){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value);
+        } else if (valsLength === 9){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value);
+        } else if (valsLength === 10){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value, vals[9].value);
+        }
+        else {
+            res.status(400);
+            res.send({status: "ERROR",options: "Contract not supporting more than 10 fields" });
+        }
+        addFactPromise.send(transactionObject,  (err, txHash) => {
             console.log('send:', err, txHash);
         }).on('error', (err) => {
             console.log('error:', err);

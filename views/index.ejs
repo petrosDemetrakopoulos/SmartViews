@@ -25,30 +25,10 @@
             <br>
             <p id="status"></p>
         </div>
-        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid">
-            <div class="row" style="margin-top: 1em">
-        <label for="productId" class="col-lg-2 control-label">Product ID</label>
-        <input id="productId" type="text">
-            </div>
-            <br>
-            <div class="row">
-        <label for="customerId" class="col-lg-2 control-label">Customer ID</label>
-        <input id="customerId" type="text">
-            </div>
-            <br>
-            <div class="row">
-        <label for="quantity" class="col-lg-2 control-label">Quantity</label>
-        <input id="quantity" type="text">
-            </div>
-    <button type="button" class="btn btn-primary" id="buttonAdd">Add fact</button>
-            <br>
-            <br>
-            <div>
-                <label for="getResponseAdd" class="col-lg-2 control-label">Transaction receipt</label>
-                <textarea class="form-control" rows="5" id="getResponseAdd" readonly></textarea>
-            </div>
-            <br>
-            <br>
+        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid" id="add_data">
+            <h3>Data input form</h3>
+            <p id="prompt">Create and deploy a contract to add data.</p>
+
         </div>
 
         <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid">
@@ -76,6 +56,7 @@
     </div>
     <script src="js/jquery-3.3.1.min.js"></script>
 <script>
+    let crnContractDeployed;
     $( "#deployContract" ).click(function() {
         deployContract()
     });
@@ -96,8 +77,16 @@
         getGroupById($("#groupByID").val());
     });
 
-    $( "#buttonAdd" ).click(function() {
-        addFact($("#productId").val(), $("#quantity").val(), $("#customerId").val());
+    $(document).on('click', '#buttonAdd', function(){
+        let fields = [];
+        let values = [];
+        for(var i = 0; i < crnContractDeployed.properties.length; i++){
+            let crnKey = crnContractDeployed.properties[i];
+            fields.push(crnKey);
+            values.push({key:crnKey.key, value: $("#" + crnKey.key).val()});
+        }
+        console.log(values);
+        addFact(values);
     });
 
     function pageLoad() {
@@ -149,7 +138,7 @@
         xhttp.send();
     }
 
-    function addFact(prodId, quantity, customerId) {
+    function addFact(values) {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/addFact", true);
         xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -158,7 +147,7 @@
                 $("#getResponseAdd").val(this.responseText);
             }
         };
-        xhttp.send(JSON.stringify({productId: prodId, quantity: quantity, customerId: customerId}));
+        xhttp.send(JSON.stringify({values: values}));
     }
 
     function deployContract() {
@@ -177,8 +166,25 @@
                     }
                     if (this.readyState === 4 && this.status === 200) {
                         var respObject = JSON.parse( this.responseText)
+
                         $('#status').html("Contract address: " + respObject.options.address);
                         $('#status').css({"color": 'green'});
+                        $("#prompt").remove();
+                        crnContractDeployed = respObj.template;
+                        for(var i = 0; i < respObj.template.properties.length; i++){
+                            var crnProp = respObj.template.properties[i];
+                            $('#add_data').append("<div class='row' style='margin-top:1em'>" +
+                                "<label for='" + crnProp.key + "' class='col-lg-2" +" " + "control-label'"+ ">" + crnProp.key + "</label>" +
+                                "<input id='" + crnProp.key +  "' type='text'>" + "</div>" + "<br>");
+                        }
+                        $('#add_data').append("<button type=\"button\" class=\"btn btn-primary\" id=\"buttonAdd\">Add fact</button>" +
+                            "<br> <br> <div>" +
+                            "<label for=\"getResponseAdd\" class=\"col-lg-2 control-label\">Transaction receipt</label>" +
+                            "<textarea class=\"form-control\" rows=\"5\" id=\"getResponseAdd\" readonly></textarea>" +
+                            "</div>" +
+                            "<br>" +
+                            "<br>");
+
                     }
                     else if(this.status === 400) {
                         $('#status').html("Error while deploying contract");
