@@ -25,15 +25,20 @@
             <br>
             <p id="status"></p>
         </div>
-        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid" id="add_data">
+        <div class="col-4">
+            <br><br>
             <h3>Data input form</h3>
             <p id="prompt">Create and deploy a contract to add data.</p>
         </div>
-
-        <div class="col-12" style="margin-top: 2em; border-color: black; border-width: 2px; border-style: solid" id ="groupBys">
+        <div class="row" style="margin-top: 2em;" id="add_data">
+        </div>
+        <div class="col-4">
             <h3>Data get form</h3>
+            <br>
             <p id="prompt">Create and deploy a contract to add data.</p>
             <br>
+        </div>
+        <div class="col-12" style="margin-top: 2em;" id ="groupBys">
         </div>
         <br>
         <br>
@@ -153,22 +158,24 @@
                         var respObject = JSON.parse( this.responseText)
 
                         $('#status').html("Contract address: " + respObject.options.address);
-                        $('#status').css({"color": 'green'});
+                        $('#status').css({"color": 'green', "font-weight":"bold"});
                         $("#prompt").remove();
                         crnContractDeployed = respObj.template;
+                        $('#add_data').append("<div class='col-6' id='add_data_col'>");
                         for(var i = 0; i < respObj.template.properties.length; i++){
                             var crnProp = respObj.template.properties[i];
-                            $('#add_data').append("<div class='row' style='margin-top:1em'>" +
-                                "<label for='" + crnProp.key + "' class='col-lg-2" +" " + "control-label'"+ ">" + crnProp.key + "</label>" +
+                            $('#add_data_col').append("<div class='row' style='margin-top:1em'>" +
+                                "<label for='" + crnProp.key + "' class='col-lg-6" +" " + "control-label'"+ ">" + crnProp.key + "</label>" +
                                 "<input id='" + crnProp.key +  "' type='text'>" + "</div>" + "<br>");
                         }
-                        $('#add_data').append("<button type=\"button\" class=\"btn btn-primary\" id=\"buttonAdd\">Add fact</button>" +
-                            "<br> <br> <div>" +
-                            "<label for=\"getResponseAdd\" class=\"col-lg-2 control-label\">Transaction receipt</label>" +
-                            "<textarea class=\"form-control\" rows=\"5\" id=\"getResponseAdd\" readonly></textarea>" +
-                            "</div>" +
+                        $('#add_data_col').append("<button type=\"button\" class=\"btn btn-primary\" id=\"buttonAdd\">Add fact</button>" +
                             "<br>" +
                             "<br>");
+                        $('#add_data').append("<div class='col-6'>" +
+                            "<label for=\"getResponseAdd\" class=\"col-lg-6 control-label\">Transaction receipt</label>" +
+                            "<textarea class=\"form-control\" rows=\"5\" id=\"getResponseAdd\" readonly></textarea>" +
+                            "</div>");
+
 
                         $('#groupBys').append("<div class='row' id='groupByRow'><div class='col-3'> <label for='fieldSelect'>Select field for GroupBy:</label></div>"+
                         "<div class='col-3'><select class='form-control' id='fieldSelect'>");
