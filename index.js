@@ -5,6 +5,8 @@ const fs = require('fs');
 const delay = require('delay');
 const groupBy = require('group-by');
 let fact_tbl = require('./templates/fact_tbl');
+var crypto = require('crypto');
+var md5sum = crypto.createHash('md5');
 abiDecoder = require('abi-decoder');
 const app = express();
 var jsonParser = bodyParser.json();
@@ -17,6 +19,15 @@ app.use(express.static('public'));
 
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+var redis = require('redis');
+var client = redis.createClient(6379,"127.0.0.1");
+client.on('connect', function(){
+    console.log('Redis client connected');
+});
+
+client.on('error', function (err) {
+    console.log('Something went wrong ' + err);
+});
 let contractInstance = null;
 
 
@@ -35,6 +46,7 @@ app.listen(3000, () => console.log(`Example app listening on http://localhost:30
 async function deploy(account, contractPath){
             const input = fs.readFileSync(contractPath);
             const output = solc.compile(input.toString(), 1);
+            console.log(output);
             const bytecode = output.contracts[Object.keys(output.contracts)[0]].bytecode;
             const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
 
@@ -83,7 +95,8 @@ app.get('/new_contract/:fn', function (req, res) {
     let contrPayload = "";
     let firstLine = "pragma solidity ^0.4.0;\n\n";
     let secondLine = "contract " + fact_tbl.name + " { \n";
-    let thirdLine = "\tuint public dataId;\n\n";
+    let thirdLine = "\tuint public dataId;\n";
+    let fourthLine = "\tuint public groupId;\n\n";
     let constr = "\tconstructor() {\n" +
         "\t\tdataId = 0;\n" +
         "\t}\n\n";
@@ -93,6 +106,9 @@ app.get('/new_contract/:fn', function (req, res) {
         let crnProp = fact_tbl.properties[i];
         properties += "\t\t" + crnProp.data_type + " " + crnProp.key + ";\n";
     }
+    var groupStruct = "\tstruct groupBy{ \n  \t\tstring hash;\n" +
+        "        uint timestamp;\n\t}\n";
+    let groupMapping =  "\tmapping(uint => groupBy) public groupBys;\n\n";
     properties += "\t\tuint timestamp;\n";
     let closeStruct = "\t}\n";
     let mapping = "\tmapping(uint =>" + fact_tbl.struct_Name +") public facts;\n\n";
@@ -136,15 +152,26 @@ app.get('/new_contract/:fn', function (req, res) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
             getParams += crnProp.data_type + " " + crnProp.key + "){\n";
-            retVals += "facts[id]." + crnProp.key + ");\n\t}"
+            retVals += "facts[id]." + crnProp.key + ");\n\t}\n\n";
         } else {
             getParams += crnProp.data_type + " " + crnProp.key + ",";
-            retVals += "facts[id]." + crnProp.key + ","
+            retVals += "facts[id]." + crnProp.key + ",";
         }
     }
-    var retFact = "\t\treturn (" + retVals;
+    var retFact = "\t\treturn (" + retVals ;
 
-    contrPayload = firstLine + secondLine + thirdLine + constr + struct + properties + closeStruct + mapping + addFact + setters + retStmt + getFact + getParams + retFact +  "\n}";
+    var addGroupBy = "\tfunction addGroupBy(string hash) public returns(string groupAdded, uint groupID){\n" +
+        "    \t\tgroupBys[groupId].hash = hash;\n" +
+        "    \t\tgroupBys[groupId].timestamp = now;\n" +
+        "    \t\tgroupId += 1;\n" +
+        "    \t\treturn (groupBys[groupId-1].hash, groupId-1);\n" +
+        "    \t}\n\n";
+
+    var getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp){\n" +
+        "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp);\n" +
+        "    \t}\n";
+
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy +   "\n}";
     fs.writeFile("contracts/" + fact_tbl.name + ".sol", contrPayload, function(err) {
         if(err) {
             res.send({msg:"error"});
@@ -265,13 +292,19 @@ app.get('/groupby/:field', function (req,res) {
                     groupByResult = JSON.stringify(groupByResult);
                     //call contract function to store groupBy
                     //STORE ON REDIS WITH HASH KEY, THEN STORE KEY IN BLOCKCHAIN
+
+                    md5sum.update(groupByResult);
+                    var hash = md5sum.digest('hex');
+                    console.log(hash);
+                    client.set(hash, groupByResult, redis.print);
+
                         const transactionObject = {
                             from: acc,
                             gas: 1500000,
                             gasPrice: '30000000000000'
                         };
 
-                        contract.methods.addGroupBy(groupByResult).send(transactionObject,  (err, txHash) => {
+                        contract.methods.addGroupBy(hash).send(transactionObject,  (err, txHash) => {
                             console.log('send:', err, txHash);
                         }).on('error', (err) => {
                             console.log('error:', err);

@@ -45,20 +45,20 @@
         deployContract()
     });
 
-    $( "#buttonGet" ).click(function() {
+    $(document).on('click', '#buttonGet', function(){
         getFactById($("#factId").val());
     });
 
-    $( "#buttonGetAll" ).click(function() {
+    $(document).on('click', '#buttonGetAll', function(){
         getAllFacts();
     });
 
-    $( "#buttonGroupBy" ).click(function() {
+    $(document).on('click', '#buttonGroupBy', function(){
         var selectedKey = $('#fieldSelect').find("option:selected").text();
         groupBy(selectedKey);
     });
 
-    $( "#buttonGetGroupById" ).click(function() {
+    $(document).on('click', '#buttonGetGroupById', function(){
         getGroupById($("#groupByID").val());
     });
 

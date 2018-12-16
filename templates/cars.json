@@ -1,0 +1,11 @@
+{
+  "name": "Cars",
+  "struct_Name": "Car",
+  "properties":[
+    {"key": "brand", "data_type": "string"},
+    {"key": "model", "data_type": "string"},
+    {"key": "year", "data_type": "string"},
+    {"key": "category", "data_type": "string"},
+    {"key": "cylinders", "data_type": "uint"}
+  ]
+}
