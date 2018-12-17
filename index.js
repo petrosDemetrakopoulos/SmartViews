@@ -151,8 +151,8 @@ app.get('/new_contract/:fn', function (req, res) {
     for(var i =0; i < fact_tbl.properties.length; i++){
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
-            getParams += crnProp.data_type + " " + crnProp.key + "){\n";
-            retVals += "facts[id]." + crnProp.key + ");\n\t}\n\n";
+            getParams += crnProp.data_type + " " + crnProp.key +", uint timestamp" + "){\n";
+            retVals += "facts[id]." + crnProp.key + "facts[id].timestamp" +  ");\n\t}\n\n";
         } else {
             getParams += crnProp.data_type + " " + crnProp.key + ",";
             retVals += "facts[id]." + crnProp.key + ",";
@@ -171,23 +171,54 @@ app.get('/new_contract/:fn', function (req, res) {
         "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp);\n" +
         "    \t}\n\n";
 
-    var getLatestGroupByTs = "\tfunction getLatestGroupByTimestamp() public returns(uint ts){\n" +
+    var getLatestGroupBy = "\tfunction getLatestGroupBy() public constant returns(string latestGroupBy, uint ts){\n" +
         "\t\tif(groupId > 0){\n" +
-        "\t\t\treturn groupBys[groupId-1].timestamp;\n" +
+        "\t\t\treturn (groupBys[groupId-1].hash, groupBys[groupId-1].timestamp);\n" +
         "\t\t} else {\n" +
-        "\t\t\treturn 0;\n" +
+        "\t\t\treturn (\"\",0);\n" +
         "\t\t}\n" +
         "\t}\n\n";
 
-    var getLatestFactTs = "\tfunction getLatestFactTimestamp() public returns(uint ts){\n" +
-        "\t\tif(dataId > 0){\n" +
-        "\t\t\treturn facts[dataId-1].timestamp;\n" +
-        "\t\t} else {\n" +
-        "\t\t\treturn 0;\n" +
-        "\t\t}\n" +
+    var retValsLatest = "";
+    let getParamsLatest = "";
+    for(var i =0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        if (i === (fact_tbl.properties.length-1)) {
+            getParamsLatest += crnProp.data_type + " " + crnProp.key + "){\n";
+            retValsLatest += "facts[dataId-1]." + crnProp.key + ");\n\t";
+        } else {
+            getParamsLatest += crnProp.data_type + " " + crnProp.key + ",";
+            retValsLatest += "facts[dataId-1]." + crnProp.key + ",";
+        }
+    }
+    var retFactLatest = "\t\t\treturn (" + retValsLatest ;
+    var emptyRetFactLatest = "";
+
+    for(var i =0; i < fact_tbl.properties.length; i++){
+        let crnProp = fact_tbl.properties[i];
+        if (i === (fact_tbl.properties.length-1)) {
+            if(crnProp.data_type === "string") {
+                emptyRetFactLatest += "\"\"" + ");\n\t";
+            } else {
+                emptyRetFactLatest += "0" + ");\n\t";
+            }
+        } else {
+            if(crnProp.data_type === "string") {
+                emptyRetFactLatest += "\"\"" + ", ";
+            } else {
+                emptyRetFactLatest += "0, ";
+            }
+        }
+    }
+
+    var getLatestFact = "\tfunction getLatestFact() public constant returns (" + getParamsLatest +
+        "\t\tif(dataId > 0){\n" + retFactLatest +
+        "\t} else {\n" +
+        "\t\t\treturn (" + emptyRetFactLatest +
+        "\t}\n" +
         "\t}\n\n";
 
-    contrPayload = firstLine + secondLine + thirdLine + fourthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupByTs + getLatestFactTs +   "\n}";
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy +   "\n}";
     fs.writeFile("contracts/" + fact_tbl.name + ".sol", contrPayload, function(err) {
         if(err) {
             res.send({msg:"error"});
@@ -298,7 +329,80 @@ app.post('/addFacts', function (req,res) {
 });
 
 app.get('/groupby/:field', function (req,res) {
+    //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
+    //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
     if(contract) {
+        contract.methods.dataId().call(function (err, latestId) {
+            if(!err) {
+                contract.methods.getLatestGroupBy().call(function (err, latestGroupBy) {
+                    if(latestGroupBy.ts > 0) {
+                        contract.methods.getFact(latestId).call(function (err, latestFact) {
+                            if (latestGroupBy.ts >= latestFact.timestamp) {
+                                console.log("getting it from redis");
+                                client.get(latestGroupBy.hash, function (error, cachedGroupBy) {
+                                    if (error) {
+                                        console.log(error);
+                                        res.send(error);
+                                    } else {
+                                        console.log('GET result ->' + cachedGroupBy);
+                                        res.send(cachedGroupBy);
+                                    }
+                                });
+                            } else {
+                                //CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
+                            }
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    } else {
+                        //NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
+                        getAllFacts(latestId).then(retval => {
+                            console.log(retval);
+                            let groupByResult = groupBy(retval,req.params.field);
+                            groupByResult = JSON.stringify(groupByResult);
+
+
+                            md5sum.update(groupByResult);
+                            var hash = md5sum.digest('hex');
+                            console.log(hash);
+                            client.set(hash, groupByResult, redis.print);
+
+                            const transactionObject = {
+                                from: acc,
+                                gas: 1500000,
+                                gasPrice: '30000000000000'
+                            };
+
+                            contract.methods.addGroupBy(hash).send(transactionObject,  (err, txHash) => {
+                                console.log('send:', err, txHash);
+                            }).on('error', (err) => {
+                                console.log('error:', err);
+                                res.send(err);
+                            })
+                                .on('transactionHash', (err) => {
+                                    console.log('transactionHash:', err);
+                                })
+                                .on('receipt', (receipt) => {
+                                    console.log('receipt:', receipt);
+                                    res.send(receipt);
+                                });
+
+                            // res.send(groupByResult);
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    }
+                }).catch(error => {
+                    console.log(error);
+                });
+            }else {
+                console.log(err);
+                console.log("ERRRRRR");
+                res.send(err);
+            }
+        });
+
+
         contract.methods.dataId().call(function (err, result) {
             if(!err) {
                 //async loop waiting to get all the facts separately
@@ -306,8 +410,7 @@ app.get('/groupby/:field', function (req,res) {
                     console.log(retval);
                     let groupByResult = groupBy(retval,req.params.field);
                     groupByResult = JSON.stringify(groupByResult);
-                    //call contract function to store groupBy
-                    //STORE ON REDIS WITH HASH KEY, THEN STORE KEY IN BLOCKCHAIN
+
 
                     md5sum.update(groupByResult);
                     var hash = md5sum.digest('hex');

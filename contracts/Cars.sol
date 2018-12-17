@@ -51,19 +51,11 @@ contract Cars {
     		return(groupBys[idGroup].hash, groupBys[idGroup].timestamp);
     	}
 
-	function getLatestGroupByTimestamp() public returns(uint ts){
+	function getLatestGroupBy() public constant returns(string latestGroupBy, uint ts){
 		if(groupId > 0){
-			return groupBys[groupId-1].timestamp;
+			return (groupBys[groupId-1].hash, groupBys[groupId-1].timestamp);
 		} else {
-			return 0;
-		}
-	}
-
-	function getLatestFactTimestamp() public returns(uint ts){
-		if(dataId > 0){
-			return facts[dataId-1].timestamp;
-		} else {
-			return 0;
+			return ("",0);
 		}
 	}
 
