@@ -98,7 +98,7 @@ app.get('/new_contract/:fn', function (req, res) {
     let thirdLine = "\tuint public dataId;\n";
     let fourthLine = "\tuint public groupId;\n\n";
     let constr = "\tconstructor() {\n" +
-        "\t\tdataId = 0;\n" +
+        "\t\tdataId = 0;\n" + "\t\tgroupId = 0;\n" +
         "\t}\n\n";
     var properties = "";
     var struct = "\tstruct " + fact_tbl.struct_Name + "{ \n";
@@ -169,9 +169,25 @@ app.get('/new_contract/:fn', function (req, res) {
 
     var getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp){\n" +
         "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp);\n" +
-        "    \t}\n";
+        "    \t}\n\n";
 
-    contrPayload = firstLine + secondLine + thirdLine + fourthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy +   "\n}";
+    var getLatestGroupByTs = "\tfunction getLatestGroupByTimestamp() public returns(uint ts){\n" +
+        "\t\tif(groupId > 0){\n" +
+        "\t\t\treturn groupBys[groupId-1].timestamp;\n" +
+        "\t\t} else {\n" +
+        "\t\t\treturn 0;\n" +
+        "\t\t}\n" +
+        "\t}\n\n";
+
+    var getLatestFactTs = "\tfunction getLatestFactTimestamp() public returns(uint ts){\n" +
+        "\t\tif(dataId > 0){\n" +
+        "\t\t\treturn facts[dataId-1].timestamp;\n" +
+        "\t\t} else {\n" +
+        "\t\t\treturn 0;\n" +
+        "\t\t}\n" +
+        "\t}\n\n";
+
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupByTs + getLatestFactTs +   "\n}";
     fs.writeFile("contracts/" + fact_tbl.name + ".sol", contrPayload, function(err) {
         if(err) {
             res.send({msg:"error"});

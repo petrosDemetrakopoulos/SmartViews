@@ -6,6 +6,7 @@ contract Cars {
 
 	constructor() {
 		dataId = 0;
+		groupId = 0;
 	}
 
 	struct Car{ 
@@ -49,5 +50,22 @@ contract Cars {
 	function getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp){
     		return(groupBys[idGroup].hash, groupBys[idGroup].timestamp);
     	}
+
+	function getLatestGroupByTimestamp() public returns(uint ts){
+		if(groupId > 0){
+			return groupBys[groupId-1].timestamp;
+		} else {
+			return 0;
+		}
+	}
+
+	function getLatestFactTimestamp() public returns(uint ts){
+		if(dataId > 0){
+			return facts[dataId-1].timestamp;
+		} else {
+			return 0;
+		}
+	}
+
 
 }
