@@ -350,6 +350,11 @@ app.get('/groupby/:field', function (req,res) {
                                 });
                             } else {
                                 //CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
+                                getAllFacts(latestId).then(retval => {
+                                    // get (fact.timestamp > latestGroupBy timestamp)
+                                }).catch(error => {
+                                    console.log(error);
+                                });
                             }
                         }).catch(error => {
                             console.log(error);
