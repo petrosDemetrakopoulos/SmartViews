@@ -152,7 +152,7 @@ app.get('/new_contract/:fn', function (req, res) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
             getParams += crnProp.data_type + " " + crnProp.key +", uint timestamp" + "){\n";
-            retVals += "facts[id]." + crnProp.key + "facts[id].timestamp" +  ");\n\t}\n\n";
+            retVals += "facts[id]." + crnProp.key + ", facts[id].timestamp" +  ");\n\t}\n\n";
         } else {
             getParams += crnProp.data_type + " " + crnProp.key + ",";
             retVals += "facts[id]." + crnProp.key + ",";

@@ -1,0 +1,11 @@
+{
+  "name": "int5",
+  "struct_Name": "int_5",
+  "properties":[
+    {"key": "key_1", "data_type": "uint"},
+    {"key": "key_2", "data_type": "uint"},
+    {"key": "key_3", "data_type": "uint"},
+    {"key": "key_4", "data_type": "uint"},
+    {"key": "key_5", "data_type": "uint"}
+  ]
+}
