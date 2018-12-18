@@ -332,14 +332,23 @@ app.get('/groupby/:field', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
     if(contract) {
-        contract.methods.dataId().call(function (err, latestId) {
-            if(!err) {
+        contract.methods.dataId().call(function (err,latestId) {
+            console.log("AAAAAAA");
+            console.log(latestId);
+            console.log("AAAAAA");
+
                 contract.methods.getLatestGroupBy().call(function (err, latestGroupBy) {
                     if(latestGroupBy.ts > 0) {
-                        contract.methods.getFact(latestId).call(function (err, latestFact) {
+                        contract.methods.getFact(latestId-1).call(function (err, latestFact) {
+                            console.log("QQQQQQQ");
+                            console.log(latestFact);
+                            console.log("QQQQQQQ");
                             if (latestGroupBy.ts >= latestFact.timestamp) {
                                 console.log("getting it from redis");
-                                client.get(latestGroupBy.hash, function (error, cachedGroupBy) {
+                                console.log("*****");
+                                console.log(latestGroupBy);
+                                console.log("$$$$$$$");
+                                client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                     if (error) {
                                         console.log(error);
                                         res.send(error);
@@ -352,6 +361,35 @@ app.get('/groupby/:field', function (req,res) {
                                 //CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
                                 getAllFacts(latestId).then(retval => {
                                     // get (fact.timestamp > latestGroupBy timestamp)
+                                    let deltas = [];
+                                    for (var i = 0; i < retval.length; i++){
+                                        let crnFact = retval[i];
+                                        if(crnFact.timestamp > latestGroupBy.ts) {
+                                            deltas.push(crnFact);
+                                        }
+                                    }
+                                    console.log("DELTAS---->");
+                                    console.log(deltas);
+                                    console.log("DELTAS---->");
+
+                                    let deltaGroupBy = groupBy(deltas,req.params.field);
+                                    console.log("DELTAS GB---->");
+                                    console.log(deltaGroupBy);
+                                    console.log("DELTAS GB---->");
+                                    console.log("******");
+                                    console.log(latestGroupBy);
+                                    console.log("******");
+                                    client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
+                                        if (error) {
+                                            console.log(error);
+                                            res.send(error);
+                                        } else {
+                                            console.log('GET result ->' + cachedGroupBy);
+                                            client.set(latestGroupBy.latestGroupBy, JSON.stringify(deltaGroupBy) + cachedGroupBy, redis.print);
+                                            res.send(JSON.stringify(deltaGroupBy) + cachedGroupBy);
+                                        }
+                                    });
+
                                 }).catch(error => {
                                     console.log(error);
                                 });
@@ -365,8 +403,7 @@ app.get('/groupby/:field', function (req,res) {
                             console.log(retval);
                             let groupByResult = groupBy(retval,req.params.field);
                             groupByResult = JSON.stringify(groupByResult);
-
-
+                            md5sum = crypto.createHash('md5');
                             md5sum.update(groupByResult);
                             var hash = md5sum.digest('hex');
                             console.log(hash);
@@ -391,7 +428,6 @@ app.get('/groupby/:field', function (req,res) {
                                     console.log('receipt:', receipt);
                                     res.send(receipt);
                                 });
-
                             // res.send(groupByResult);
                         }).catch(error => {
                             console.log(error);
@@ -400,12 +436,6 @@ app.get('/groupby/:field', function (req,res) {
                 }).catch(error => {
                     console.log(error);
                 });
-            }else {
-                console.log(err);
-                console.log("ERRRRRR");
-                res.send(err);
-            }
-        });
 
 
         contract.methods.dataId().call(function (err, result) {
@@ -416,7 +446,7 @@ app.get('/groupby/:field', function (req,res) {
                     let groupByResult = groupBy(retval,req.params.field);
                     groupByResult = JSON.stringify(groupByResult);
 
-
+                    md5sum = crypto.createHash('md5');
                     md5sum.update(groupByResult);
                     var hash = md5sum.digest('hex');
                     console.log(hash);
@@ -452,6 +482,7 @@ app.get('/groupby/:field', function (req,res) {
                 res.send(err);
             }
         })
+        });
     } else {
         res.status(400);
         res.send({status: "ERROR",options: "Contract not deployed" });
@@ -487,6 +518,12 @@ app.post('/addFact', function (req,res) {
         };
         console.log(req.body);
         let vals = req.body.values;
+        for(var i = 0; i < req.body.values.length; i++){
+            let crnVal = req.body.values[i];
+            if(crnVal.type === "bytes32"){
+                req.body.values[i].value = web3.utils.fromAscii(req.body.values[i].value);
+            }
+        }
         let valsLength = vals.length;
         let addFactPromise;
         if(valsLength === 1){

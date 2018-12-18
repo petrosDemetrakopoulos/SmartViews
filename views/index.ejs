@@ -73,7 +73,7 @@
         for(var i = 0; i < crnContractDeployed.properties.length; i++){
             let crnKey = crnContractDeployed.properties[i];
             fields.push(crnKey);
-            values.push({key:crnKey.key, value: $("#" + crnKey.key).val()});
+            values.push({key:crnKey.key, value: $("#" + crnKey.key).val(), type: crnKey.data_type});
         }
         console.log(values);
         addFact(values);

@@ -36,8 +36,8 @@ contract Cars {
 		return (facts[dataId-1].brand,facts[dataId-1].model,facts[dataId-1].year,facts[dataId-1].category,facts[dataId-1].cylinders,dataId -1);
 	}
 
-	function getFact(uint id) public constant returns (string brand,string model,string year,string category,uint cylinders){
-		return (facts[id].brand,facts[id].model,facts[id].year,facts[id].category,facts[id].cylinders);
+	function getFact(uint id) public constant returns (string brand,string model,string year,string category,uint cylinders, uint timestamp){
+		return (facts[id].brand,facts[id].model,facts[id].year,facts[id].category,facts[id].cylinders, facts[id].timestamp);
 	}
 
 	function addGroupBy(string hash) public returns(string groupAdded, uint groupID){
