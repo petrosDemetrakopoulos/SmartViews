@@ -426,7 +426,7 @@ app.get('/groupby/:field', function (req,res) {
                                 })
                                 .on('receipt', (receipt) => {
                                     console.log('receipt:', receipt);
-                                    res.send(receipt);
+                                    res.send(receipt + "\n" + groupByResult);
                                 });
                             // res.send(groupByResult);
                         }).catch(error => {
