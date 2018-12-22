@@ -381,6 +381,145 @@ app.post('/addFacts', function (req,res) {
     }
 });
 
+function transformGB(groupByResult, operation, aggregateField){
+    if(operation === "COUNT"){
+        console.log("OPERATION = COUNT");
+        for (let key in groupByResult) {
+            let crnGoup = groupByResult[key];
+            let cnt = 0;
+            for (let row in crnGoup){
+                cnt++;
+            }
+            groupByResult[key] = cnt;
+        }
+        groupByResult["operation"] = "COUNT"
+    } else if(operation === "SUM"){
+        for (let key in groupByResult) {
+            let crnGoup = groupByResult[key];
+            let cnt = 0;
+            for (let row in crnGoup){
+                cnt += Number(crnGoup[row][req.params.aggregateField]);
+            }
+            groupByResult[key] = cnt;
+        }
+        groupByResult["operation"] = "SUM";
+        groupByResult["field"] = req.params.aggregateField;
+
+    } else if(operation === "MIN"){
+        for (let key in groupByResult) {
+            let crnGoup = groupByResult[key];
+            let min = Number(crnGoup[row][req.params.aggregateField]);
+            for (let row in crnGoup){
+                if(Number(crnGoup[row][req.params.aggregateField]) < min){
+                    min = Number(crnGoup[row][req.params.aggregateField])
+                }
+            }
+            groupByResult[key] = min;
+        }
+        groupByResult["operation"] = "MIN";
+        groupByResult["field"] = aggregateField;
+
+    } else if(operation === "MAX"){
+        for (let key in groupByResult) {
+            let crnGoup = groupByResult[key];
+            let max = Number(crnGoup[row][req.params.aggregateField]);
+            for (let row in crnGoup){
+                if(Number(crnGoup[row][req.params.aggregateField]) > max){
+                    max = Number(crnGoup[row][req.params.aggregateField])
+                }
+            }
+            groupByResult[key] = max;
+        }
+        groupByResult["operation"] = "MAX";
+        groupByResult["field"] = aggregateField;
+    } else { //AVERAGE
+        for (let key in groupByResult) {
+            let crnGoup = groupByResult[key];
+            let cnt = 0;
+            let sum = 0;
+            for (let row in crnGoup){
+                sum += Number(crnGoup[row][aggregateField]);
+                cnt += 1;
+            }
+            groupByResult[key] = {"average":sum / cnt, "count": cnt, "sum": sum};
+        }
+        groupByResult["operation"] = "AVERAGE";
+        groupByResult["field"] = aggregateField;
+    }
+    return groupByResult;
+}
+
+function sumObjects(ob1, ob2) {
+    let sum = {};
+
+    Object.keys(ob1).forEach(key => {
+        if(key !== "operation" && key !== "field") {
+            if (ob2.hasOwnProperty(key)) {
+                sum[key] = ob1[key] + ob2[key]
+            }
+        }
+    });
+    sum["operation"] = ob1["operation"];
+    sum["field"] = ob1["field"];
+    return sum;
+}
+
+function maxObjects(ob1, ob2) {
+    let max = {};
+
+    Object.keys(ob1).forEach(key => {
+        if(key !== "operation" && key !== "field") {
+            if (ob2.hasOwnProperty(key)) {
+                if(ob1[key] >= ob2[key]) {
+                    max[key] = ob1[key];
+                } else {
+                    max[key] = ob2[key];
+                }
+            }
+        }
+    });
+    max["operation"] = ob1["operation"];
+    max["field"] = ob1["field"];
+    return max;
+}
+
+function minObjects(ob1, ob2) {
+    let min = {};
+
+    Object.keys(ob1).forEach(key => {
+        if(key !== "operation" && key !== "field") {
+            if (ob2.hasOwnProperty(key)) {
+                if(ob1[key] <= ob2[key]) {
+                    min[key] = ob1[key];
+                } else {
+                    min[key] = ob2[key];
+                }
+            }
+        }
+    });
+    min["operation"] = ob1["operation"];
+    min["field"] = ob1["field"];
+    return max;
+}
+
+function averageObjects(ob1, ob2) {
+    let avg = {};
+
+    Object.keys(ob1).forEach(key => {
+        if(key !== "operation" && key !== "field") {
+            if (ob2.hasOwnProperty(key)) {
+                let sum_new = ob1[key]["sum"] + ob2[key]["sum"];
+                let count_new = ob1[key]["count"] + ob2[key]["count"];
+                let avg_new = sum_new / count_new;
+                avg[key] = {"average": avg_new, "count": count_new, "sum": sum_new};
+            }
+        }
+    });
+    avg["operation"] = ob1["operation"];
+    avg["field"] = ob1["field"];
+    return avg;
+}
+
 app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
@@ -418,11 +557,13 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     console.log(deltas);
                                     console.log("DELTAS---->");
 
-                                    let deltaGroupBy = groupBy(deltas,req.params.field);
+                                    let deltaGroupBy = groupBy(deltas, req.params.field);
+                                    deltaGroupBy = transformGB(deltaGroupBy, req.params.operation, req.params.aggregateField);
                                     console.log("DELTAS GB---->");
                                     console.log(deltaGroupBy);
                                     console.log("DELTAS GB---->");
                                     console.log(latestGroupBy);
+
 
                                     client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                         if (error) {
@@ -430,8 +571,27 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                             res.send(error);
                                         } else {
                                             console.log('GET result ->' + cachedGroupBy);
-                                            client.set(latestGroupBy.latestGroupBy, JSON.stringify(deltaGroupBy) + cachedGroupBy, redis.print);
-                                            res.send(JSON.stringify(deltaGroupBy) + cachedGroupBy);
+
+                                            //IF COUNT / SUM -> ADD
+                                            //ELIF MIN -> NEW_MIN = MIN OF MINS
+
+                                            let ObCachedGB = JSON.parse(cachedGroupBy);
+                                            let updatedGB = {};
+                                            if(ObCachedGB["operation"] === "SUM"){
+                                                updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
+                                            } else if(ObCachedGB["operation"] === "COUNT"){
+                                                updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
+                                            } else if(ObCachedGB["operation"] === "MAX"){
+                                                updatedGB = maxObjects(ObCachedGB,deltaGroupBy)
+                                            } else if(ObCachedGB["operation"] === "MIN"){
+                                                updatedGB = minObjects(ObCachedGB,deltaGroupBy)
+                                            } else { //AVERAGE
+                                                updatedGB = averageObjects(ObCachedGB,deltaGroupBy)
+                                            }
+
+
+                                            client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
+                                            res.send(JSON.stringify(updatedGB));
                                         }
                                     });
 
@@ -448,70 +608,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                             console.log(retval);
                             let groupByResult = groupBy(retval,req.params.field);
                             console.log(groupByResult);
-                            if(req.params.operation === "COUNT"){
-                                console.log("OPERATION = COUNT");
-                                for (let key in groupByResult) {
-                                    let crnGoup = groupByResult[key];
-                                    let cnt = 0;
-                                    for (let row in crnGoup){
-                                        cnt++;
-                                    }
-                                    groupByResult[key] = cnt;
-                                }
-                                groupByResult["operation"] = "COUNT"
-                            } else if(req.params.operation === "SUM"){
-                                for (let key in groupByResult) {
-                                    let crnGoup = groupByResult[key];
-                                    let cnt = 0;
-                                    for (let row in crnGoup){
-                                        cnt += Number(crnGoup[row][req.params.aggregateField]);
-                                    }
-                                    groupByResult[key] = cnt;
-                                }
-                                groupByResult["operation"] = "SUM";
-                                groupByResult["field"] = req.params.aggregateField;
-
-                            } else if(req.params.operation === "MIN"){
-                                for (let key in groupByResult) {
-                                    let crnGoup = groupByResult[key];
-                                    let min = Number(crnGoup[row][req.params.aggregateField]);
-                                    for (let row in crnGoup){
-                                        if(Number(crnGoup[row][req.params.aggregateField]) < min){
-                                            min = Number(crnGoup[row][req.params.aggregateField])
-                                        }
-                                    }
-                                    groupByResult[key] = min;
-                                }
-                                groupByResult["operation"] = "MIN";
-                                groupByResult["field"] = req.params.aggregateField;
-
-                            } else if(req.params.operation === "MAX"){
-                                for (let key in groupByResult) {
-                                    let crnGoup = groupByResult[key];
-                                    let max = Number(crnGoup[row][req.params.aggregateField]);
-                                    for (let row in crnGoup){
-                                        if(Number(crnGoup[row][req.params.aggregateField]) > max){
-                                            max = Number(crnGoup[row][req.params.aggregateField])
-                                        }
-                                    }
-                                    groupByResult[key] = max;
-                                }
-                                groupByResult["operation"] = "MAX";
-                                groupByResult["field"] = req.params.aggregateField;
-                            } else { //AVERAGE
-                                for (let key in groupByResult) {
-                                    let crnGoup = groupByResult[key];
-                                    let cnt = 0;
-                                    let sum = 0;
-                                    for (let row in crnGoup){
-                                        sum += Number(crnGoup[row][req.params.aggregateField]);
-                                        cnt += 1;
-                                    }
-                                    groupByResult[key] = {"average":sum / cnt, "count": cnt};
-                                }
-                                groupByResult["operation"] = "AVERAGE";
-                                groupByResult["field"] = req.params.aggregateField;
-                            }
+                            groupByResult = transformGB(groupByResult, req.params.operation, req.params.aggregateField);
                             groupByResult = JSON.stringify(groupByResult);
                             md5sum = crypto.createHash('md5');
                             md5sum.update(groupByResult);
