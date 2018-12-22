@@ -398,7 +398,7 @@ function transformGB(groupByResult, operation, aggregateField){
             let crnGoup = groupByResult[key];
             let cnt = 0;
             for (let row in crnGoup){
-                cnt += Number(crnGoup[row][req.params.aggregateField]);
+                cnt += Number(crnGoup[row][aggregateField]);
             }
             groupByResult[key] = cnt;
         }
@@ -408,10 +408,10 @@ function transformGB(groupByResult, operation, aggregateField){
     } else if(operation === "MIN"){
         for (let key in groupByResult) {
             let crnGoup = groupByResult[key];
-            let min = Number(crnGoup[row][req.params.aggregateField]);
+            let min = Number(crnGoup[row][aggregateField]);
             for (let row in crnGoup){
-                if(Number(crnGoup[row][req.params.aggregateField]) < min){
-                    min = Number(crnGoup[row][req.params.aggregateField])
+                if(Number(crnGoup[row][aggregateField]) < min){
+                    min = Number(crnGoup[row][aggregateField])
                 }
             }
             groupByResult[key] = min;
@@ -526,7 +526,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     if(contract) {
         contract.methods.dataId().call(function (err,latestId) {
 
-                contract.methods.getLatestGroupBy(req.params.operation).call(function (err, latestGroupBy) {
+                contract.methods.getLatestGroupBy(Web3.utils.fromAscii(req.params.operation)).call(function (err, latestGroupBy) {
                     if(latestGroupBy.ts > 0) {
                         contract.methods.getFact(latestId-1).call(function (err, latestFact) {
                             console.log("LATEST FACT IS");
@@ -622,7 +622,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                 gasPrice: '30000000000000'
                             };
 
-                            contract.methods.addGroupBy(hash, web3.fromAscii(req.params.operation)).send(transactionObject,  (err, txHash) => {
+                            contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation)).send(transactionObject,  (err, txHash) => {
                                 console.log('send:', err, txHash);
                             }).on('error', (err) => {
                                 console.log('error:', err);
