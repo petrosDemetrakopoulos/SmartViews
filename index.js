@@ -54,7 +54,7 @@ async function deploy(account, contractPath){
             let contractInstance =  await contract.deploy({data: '0x' + bytecode})
                 .send({
                     from: account,
-                    gas: 1500000,
+                    gas: 150000000,
                     gasPrice: '30000000000000'
                 }, (err, txHash) => {
                     console.log('send:', err, txHash);
@@ -97,9 +97,25 @@ app.get('/new_contract/:fn', function (req, res) {
     let secondLine = "contract " + fact_tbl.name + " { \n";
     let thirdLine = "\tuint public dataId;\n";
     let fourthLine = "\tuint public groupId;\n\n";
+    let fifthLine = "\tuint public lastCount;\n" +
+        "\tuint public lastSUM;\n" +
+        "\tuint public lastMin;\n" +
+        "\tuint public lastMax;\n" +
+        "\tuint public lastAverage;\n" +
+        "\tbytes constant MIN_LITERAL = \"MIN\";\n" +
+        "\tbytes constant MAX_LITERAL = \"MAX\";\n" +
+        "\tbytes constant AVERAGE_LITERAL = \"AVERAGE\";\n" +
+        "\tbytes constant COUNT_LITERAL = \"COUNT\";\n" +
+        "\tbytes constant SUM_LITERAL = \"SUM\";\n";
     let constr = "\tconstructor() {\n" +
-        "\t\tdataId = 0;\n" + "\t\tgroupId = 0;\n" +
-        "\t}\n\n";
+        "\t\tdataId = 0;\n" +
+        "\t\tgroupId = 0;\n" +
+        "\t\tlastCount = 0;\n" +
+        "\t\tlastSUM = 0;\n" +
+        "\t\tlastMin = 0;\n" +
+        "\t\tlastMax = 0;\n" +
+        "\t\tlastAverage = 0;\n" +
+        "\t}\n";
     var properties = "";
     var struct = "\tstruct " + fact_tbl.struct_Name + "{ \n";
     for(var i =0; i < fact_tbl.properties.length; i++){
@@ -160,24 +176,54 @@ app.get('/new_contract/:fn', function (req, res) {
     }
     var retFact = "\t\treturn (" + retVals ;
 
-    var addGroupBy = "\tfunction addGroupBy(string hash) public returns(string groupAdded, uint groupID){\n" +
+    var addGroupBy = "\tfunction addGroupBy(string hash, bytes category) public returns(string groupAdded, uint groupID){\n" +
         "    \t\tgroupBys[groupId].hash = hash;\n" +
         "    \t\tgroupBys[groupId].timestamp = now;\n" +
+        "\t\t\tif(keccak256(category) == keccak256(COUNT_LITERAL)){\n" +
+        "\t\t\t\tlastCount  = groupID;\n" +
+        "\t\t\t} else if(keccak256(category) == keccak256(SUM_LITERAL)){\n" +
+        "\t\t\t\tlastSUM = groupID;\n" +
+        "\t\t\t} else if(keccak256(category) == keccak256(MIN_LITERAL)){\n" +
+        "\t\t\t\tlastMin = groupID;\n" +
+        "\t\t\t} else if(keccak256(category) == keccak256(MAX_LITERAL)){\n" +
+        "\t\t\t\tlastMax = groupID;\n" +
+        "\t\t\t} else if(keccak256(category) == keccak256(AVERAGE_LITERAL)){\n" +
+        "\t\t\t\tlastAverage = groupID;\n" +
+        "\t\t\t}\n" +
         "    \t\tgroupId += 1;\n" +
         "    \t\treturn (groupBys[groupId-1].hash, groupId-1);\n" +
-        "    \t}\n\n";
+        "    \t}";
 
     var getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp){\n" +
         "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp);\n" +
         "    \t}\n\n";
 
-    var getLatestGroupBy = "\tfunction getLatestGroupBy() public constant returns(string latestGroupBy, uint ts){\n" +
+    var getLatestGroupBy = "function getLatestGroupBy(bytes operation) public constant returns(string latestGroupBy, uint ts){\n" +
         "\t\tif(groupId > 0){\n" +
-        "\t\t\treturn (groupBys[groupId-1].hash, groupBys[groupId-1].timestamp);\n" +
-        "\t\t} else {\n" +
-        "\t\t\treturn (\"\",0);\n" +
+        "\t\t\tif(keccak256(operation) == keccak256(COUNT_LITERAL)){\n" +
+        "\t\t\t\tif(lastCount > 0){\n" +
+        "\t\t\t\t\treturn (groupBys[lastCount].hash, groupBys[lastCount].timestamp);\n" +
+        "\t\t\t\t}\n" +
+        "\t\t\t} else if (keccak256(operation) == keccak256(SUM_LITERAL)){\n" +
+        "\t\t\t\tif(lastSUM > 0){\n" +
+        "\t\t\t\t\treturn (groupBys[lastSUM].hash, groupBys[lastSUM].timestamp);\n" +
+        "\t\t\t\t}\n" +
+        "\t\t\t} else if (keccak256(operation) == keccak256(MIN_LITERAL)){\n" +
+        "\t\t\t\tif(lastMin > 0){\n" +
+        "\t\t\t\t\treturn (groupBys[lastMin].hash, groupBys[lastMin].timestamp);\n" +
+        "\t\t\t\t}\n" +
+        "\t\t\t} else if (keccak256(operation) == keccak256(MAX_LITERAL)){\n" +
+        "\t\t\t\tif(lastMax > 0){\n" +
+        "\t\t\t\t\treturn (groupBys[lastMax].hash, groupBys[lastMax].timestamp);\n" +
+        "\t\t\t\t}\n" +
+        "\t\t\t} else if (keccak256(operation) == keccak256(AVERAGE_LITERAL)){\n" +
+        "\t\t\t\tif(lastAverage > 0){\n" +
+        "\t\t\t\t\treturn (groupBys[lastAverage].hash, groupBys[lastAverage].timestamp);\n" +
+        "\t\t\t\t}\n" +
+        "\t\t\t}\n" +
         "\t\t}\n" +
-        "\t}\n\n";
+        "\t\t\treturn (\"\",0);\n" +
+        "\t}";
 
     var retValsLatest = "";
     let getParamsLatest = "";
@@ -218,7 +264,7 @@ app.get('/new_contract/:fn', function (req, res) {
         "\t}\n" +
         "\t}\n\n";
 
-    contrPayload = firstLine + secondLine + thirdLine + fourthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy +   "\n}";
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine + fifthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy +   "\n}";
     fs.writeFile("contracts/" + fact_tbl.name + ".sol", contrPayload, function(err) {
         if(err) {
             res.send({msg:"error"});
@@ -234,6 +280,10 @@ app.get('/getFactById/:id', function (req,res) {
     if(contract) {
         contract.methods.getFact(parseInt(req.params.id,10)).call(function (err, result) {
             if(!err) {
+                let len  = Object.keys(result).length;
+                for(let  j = 0; j < len /2; j ++){
+                    delete result[j];
+                }
                 res.send(result);
             } else {
                 console.log(err);
@@ -252,8 +302,11 @@ async function getAllFacts(factsLength){
     for (let i = 0; i < factsLength; i++){
         await contract.methods.facts(i).call(function (err, result2) {
             if(!err){
-                console.log(result2);
-               allFacts.push(result2)
+                let len  = Object.keys(result2).length;
+                for(let  j = 0; j < len /2; j ++){
+                    delete result2[j];
+                }
+                allFacts.push(result2);
             } else {
                 console.log(err);
                 console.log("ERRRRRR");
@@ -328,26 +381,19 @@ app.post('/addFacts', function (req,res) {
     }
 });
 
-app.get('/groupby/:field', function (req,res) {
+app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
     if(contract) {
         contract.methods.dataId().call(function (err,latestId) {
-            console.log("AAAAAAA");
-            console.log(latestId);
-            console.log("AAAAAA");
 
-                contract.methods.getLatestGroupBy().call(function (err, latestGroupBy) {
+                contract.methods.getLatestGroupBy(req.params.operation).call(function (err, latestGroupBy) {
                     if(latestGroupBy.ts > 0) {
                         contract.methods.getFact(latestId-1).call(function (err, latestFact) {
-                            console.log("QQQQQQQ");
+                            console.log("LATEST FACT IS");
                             console.log(latestFact);
-                            console.log("QQQQQQQ");
                             if (latestGroupBy.ts >= latestFact.timestamp) {
                                 console.log("getting it from redis");
-                                console.log("*****");
-                                console.log(latestGroupBy);
-                                console.log("$$$$$$$");
                                 client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                     if (error) {
                                         console.log(error);
@@ -376,9 +422,8 @@ app.get('/groupby/:field', function (req,res) {
                                     console.log("DELTAS GB---->");
                                     console.log(deltaGroupBy);
                                     console.log("DELTAS GB---->");
-                                    console.log("******");
                                     console.log(latestGroupBy);
-                                    console.log("******");
+
                                     client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                         if (error) {
                                             console.log(error);
@@ -402,6 +447,71 @@ app.get('/groupby/:field', function (req,res) {
                         getAllFacts(latestId).then(retval => {
                             console.log(retval);
                             let groupByResult = groupBy(retval,req.params.field);
+                            console.log(groupByResult);
+                            if(req.params.operation === "COUNT"){
+                                console.log("OPERATION = COUNT");
+                                for (let key in groupByResult) {
+                                    let crnGoup = groupByResult[key];
+                                    let cnt = 0;
+                                    for (let row in crnGoup){
+                                        cnt++;
+                                    }
+                                    groupByResult[key] = cnt;
+                                }
+                                groupByResult["operation"] = "COUNT"
+                            } else if(req.params.operation === "SUM"){
+                                for (let key in groupByResult) {
+                                    let crnGoup = groupByResult[key];
+                                    let cnt = 0;
+                                    for (let row in crnGoup){
+                                        cnt += Number(crnGoup[row][req.params.aggregateField]);
+                                    }
+                                    groupByResult[key] = cnt;
+                                }
+                                groupByResult["operation"] = "SUM";
+                                groupByResult["field"] = req.params.aggregateField;
+
+                            } else if(req.params.operation === "MIN"){
+                                for (let key in groupByResult) {
+                                    let crnGoup = groupByResult[key];
+                                    let min = Number(crnGoup[row][req.params.aggregateField]);
+                                    for (let row in crnGoup){
+                                        if(Number(crnGoup[row][req.params.aggregateField]) < min){
+                                            min = Number(crnGoup[row][req.params.aggregateField])
+                                        }
+                                    }
+                                    groupByResult[key] = min;
+                                }
+                                groupByResult["operation"] = "MIN";
+                                groupByResult["field"] = req.params.aggregateField;
+
+                            } else if(req.params.operation === "MAX"){
+                                for (let key in groupByResult) {
+                                    let crnGoup = groupByResult[key];
+                                    let max = Number(crnGoup[row][req.params.aggregateField]);
+                                    for (let row in crnGoup){
+                                        if(Number(crnGoup[row][req.params.aggregateField]) > max){
+                                            max = Number(crnGoup[row][req.params.aggregateField])
+                                        }
+                                    }
+                                    groupByResult[key] = max;
+                                }
+                                groupByResult["operation"] = "MAX";
+                                groupByResult["field"] = req.params.aggregateField;
+                            } else { //AVERAGE
+                                for (let key in groupByResult) {
+                                    let crnGoup = groupByResult[key];
+                                    let cnt = 0;
+                                    let sum = 0;
+                                    for (let row in crnGoup){
+                                        sum += Number(crnGoup[row][req.params.aggregateField]);
+                                        cnt += 1;
+                                    }
+                                    groupByResult[key] = {"average":sum / cnt, "count": cnt};
+                                }
+                                groupByResult["operation"] = "AVERAGE";
+                                groupByResult["field"] = req.params.aggregateField;
+                            }
                             groupByResult = JSON.stringify(groupByResult);
                             md5sum = crypto.createHash('md5');
                             md5sum.update(groupByResult);
@@ -411,11 +521,11 @@ app.get('/groupby/:field', function (req,res) {
 
                             const transactionObject = {
                                 from: acc,
-                                gas: 1500000,
+                                gas: 15000000,
                                 gasPrice: '30000000000000'
                             };
 
-                            contract.methods.addGroupBy(hash).send(transactionObject,  (err, txHash) => {
+                            contract.methods.addGroupBy(hash, web3.fromAscii(req.params.operation)).send(transactionObject,  (err, txHash) => {
                                 console.log('send:', err, txHash);
                             }).on('error', (err) => {
                                 console.log('error:', err);
@@ -426,7 +536,7 @@ app.get('/groupby/:field', function (req,res) {
                                 })
                                 .on('receipt', (receipt) => {
                                     console.log('receipt:', receipt);
-                                    res.send(receipt + "\n" + groupByResult);
+                                    res.send(JSON.stringify(receipt) + "\n" + groupByResult);
                                 });
                             // res.send(groupByResult);
                         }).catch(error => {
@@ -438,50 +548,50 @@ app.get('/groupby/:field', function (req,res) {
                 });
 
 
-        contract.methods.dataId().call(function (err, result) {
-            if(!err) {
-                //async loop waiting to get all the facts separately
-                getAllFacts(result).then(retval => {
-                    console.log(retval);
-                    let groupByResult = groupBy(retval,req.params.field);
-                    groupByResult = JSON.stringify(groupByResult);
-
-                    md5sum = crypto.createHash('md5');
-                    md5sum.update(groupByResult);
-                    var hash = md5sum.digest('hex');
-                    console.log(hash);
-                    client.set(hash, groupByResult, redis.print);
-
-                        const transactionObject = {
-                            from: acc,
-                            gas: 1500000,
-                            gasPrice: '30000000000000'
-                        };
-
-                        contract.methods.addGroupBy(hash).send(transactionObject,  (err, txHash) => {
-                            console.log('send:', err, txHash);
-                        }).on('error', (err) => {
-                            console.log('error:', err);
-                            res.send(err);
-                        })
-                            .on('transactionHash', (err) => {
-                                console.log('transactionHash:', err);
-                            })
-                            .on('receipt', (receipt) => {
-                                console.log('receipt:', receipt);
-                                res.send(receipt);
-                            });
-
-                   // res.send(groupByResult);
-                }).catch(error => {
-                    console.log(error);
-                });
-            } else {
-                console.log(err);
-                console.log("ERRRRRR");
-                res.send(err);
-            }
-        })
+        // contract.methods.dataId().call(function (err, result) {
+        //     if(!err) {
+        //         //async loop waiting to get all the facts separately
+        //         getAllFacts(result).then(retval => {
+        //             console.log(retval);
+        //             let groupByResult = groupBy(retval,req.params.field);
+        //             groupByResult = JSON.stringify(groupByResult);
+        //
+        //             md5sum = crypto.createHash('md5');
+        //             md5sum.update(groupByResult);
+        //             var hash = md5sum.digest('hex');
+        //             console.log(hash);
+        //             client.set(hash, groupByResult, redis.print);
+        //
+        //                 const transactionObject = {
+        //                     from: acc,
+        //                     gas: 1500000,
+        //                     gasPrice: '30000000000000'
+        //                 };
+        //
+        //                 contract.methods.addGroupBy(hash).send(transactionObject,  (err, txHash) => {
+        //                     console.log('send:', err, txHash);
+        //                 }).on('error', (err) => {
+        //                     console.log('error:', err);
+        //                     res.send(err);
+        //                 })
+        //                     .on('transactionHash', (err) => {
+        //                         console.log('transactionHash:', err);
+        //                     })
+        //                     .on('receipt', (receipt) => {
+        //                         console.log('receipt:', receipt);
+        //                         res.send(receipt);
+        //                     });
+        //
+        //            // res.send(groupByResult);
+        //         }).catch(error => {
+        //             console.log(error);
+        //         });
+        //     } else {
+        //         console.log(err);
+        //         console.log("ERRRRRR");
+        //         res.send(err);
+        //     }
+        // })
         });
     } else {
         res.status(400);
@@ -508,9 +618,6 @@ app.get('/getcount', function (req,res) {
 
 app.post('/addFact', function (req,res) {
     if(contract) {
-       // let productId = parseInt(req.body.productId,10);
-      //  let quantity = parseInt(req.body.quantity,10);
-      //  let customerId = parseInt(req.body.customerId,10);
         const transactionObject = {
             from: acc,
             gas: 1500000,

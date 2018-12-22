@@ -60,7 +60,9 @@
 
     $(document).on('click', '#buttonGroupBy', function(){
         var selectedKey = $('#fieldSelect').find("option:selected").text();
-        groupBy(selectedKey);
+        var selectedOp = $('#typeSelect').find("option:selected").text();
+        var aggregateSelected = $('#aggregateFieldSelect').find("option:selected").text();
+        groupBy(selectedKey,selectedOp,aggregateSelected);
     });
 
     $(document).on('click', '#buttonGetGroupById', function(){
@@ -95,14 +97,14 @@
         xhttp.send();
     }
 
-    function groupBy(field) {
+    function groupBy(field, operatiob, aggregateField) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 $("#getResponse").val(this.responseText);
             }
         };
-        xhttp.open("GET", "/groupby/" + field, true);
+        xhttp.open("GET", "/groupby/" + field + "/" + operatiob + "/" + aggregateField, true);
         xhttp.send();
     }
 
@@ -178,13 +180,19 @@
 
 
                         $('#groupBys').append("<div class='row' id='groupByRow'><div class='col-3'> <label for='fieldSelect'>Select field for GroupBy:</label></div>"+
-                        "<div class='col-3'><select class='form-control' id='fieldSelect'>");
+                        "<div class='col-2'><select class='form-control' id='fieldSelect'>");
                         for(var i = 0; i < respObj.template.properties.length; i++) {
                             var crnProp = respObj.template.properties[i];
                             $('#fieldSelect').append("<option>" + crnProp.key + "</option>");
                         }
-                        $('#groupByRow').append("<div class='col-3' style='text-align:center'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGroupBy\" style='width: 65%'>Group By</button></div>")
-                        $('#groupBys').append("</div></div>");
+                        $('#groupByRow').append("<div class='col-2' style='text-align:center'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGroupBy\" style='width: 65%'>Group By</button></div>")
+                        $('#groupByRow').append("<div class='col-2'><select class='form-control' id='typeSelect'>");
+                        $('#typeSelect').append("<option>COUNT</option><option>SUM</option><option>MIN</option><option>MAX</option><option>AVERAGE</option>");
+                        $('#groupByRow').append("<div class='col-2'><select class='form-control' id='aggregateFieldSelect'>");
+                        for(var i = 0; i < respObj.template.properties.length; i++) {
+                            var crnProp = respObj.template.properties[i];
+                            $('#aggregateFieldSelect').append("<option>" + crnProp.key + "</option>");
+                        }
                         $('#groupBys').append("<div class=\"row\" style=\"margin-top: 1em\" id='getFactRow'>" +
                             "<label for=\"factId\" class=\"col-lg-3 control-label\">Fact ID</label>" +
                             "<div class='col-3'><input id=\"factId\" type=\"text\"></div> " + "<div class='col-3' style='text-align: center'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGet\" style='width: 65%'>Get fact</button>"+
