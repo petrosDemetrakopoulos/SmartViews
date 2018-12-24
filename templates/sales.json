@@ -1,0 +1,11 @@
+{
+  "name": "Sales",
+  "struct_Name": "Sale",
+  "properties":[
+    {"key": "OnlineSalesKey", "data_type": "bytes32"},
+    {"key": "SalesQuantity", "data_type": "uint"},
+    {"key": "SalesAmount", "data_type": "bytes32"},
+    {"key": "TotalCost", "data_type": "string"},
+    {"key": "UnitCost", "data_type": "string"},
+    {"key": "UnitPrice", "data_type": "string"}]
+}

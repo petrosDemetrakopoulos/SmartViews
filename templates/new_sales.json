@@ -1,0 +1,169 @@
+{
+  "name": "Sales",
+  "struct_Name": "Sale",
+  "properties":[
+    {"key": "payload", "data_type": "string"}],
+  "template": {
+    "properties": [
+      {
+        "key": "OnlineSalesKey"
+      },
+      {
+        "key": "SalesQuantity"
+      },
+      {
+        "key": "SalesAmount"
+      },
+      {
+        "key": "TotalCost"
+      },
+      {
+        "key": "UnitCost"
+      },
+      {
+        "key": "CustomerLabel"
+      },
+      {
+        "key": "Title"
+      },
+      {
+        "key": "FirstName"
+      },
+      {
+        "key": "MiddleName"
+      },
+      {
+        "key": "LastName"
+      },
+      {
+        "key": "BirthDate"
+      },
+      {
+        "key": "MaritalStatus"
+      },
+      {
+        "key": "Gender"
+      },
+      {
+        "key": "EmailAddress"
+      },
+      {
+        "key": "YearlyIncome"
+      },
+      {
+        "key": "TotalChildren"
+      },
+      {
+        "key": "NumberChildrenAtHome"
+      },
+      {
+        "key": "Education"
+      },
+      {
+        "key": "Occupation"
+      },
+      {
+        "key": "HouseOwnerFlag"
+      },
+      {
+        "key": "NumberCarsOwned"
+      },
+      {
+        "key": "Phone"
+      },
+      {
+        "key": "CurrencyLabel"
+      },
+      {
+        "key": "CurrencyName"
+      },
+      {
+        "key": "CurrencyDescription"
+      },
+      {
+        "key": "IsWorkDay"
+      },
+      {
+        "key": "IsHoliday"
+      },
+      {
+        "key": "HolidayName"
+      },
+      {
+        "key": "EuropeSeason"
+      },
+      {
+        "key": "NorthAmericaSeason"
+      },
+      {
+        "key": "AsiaSeason"
+      },
+      {
+        "key": "ProductLabel"
+      },
+      {
+        "key": "ProductName"
+      },
+      {
+        "key": "ProductDescription"
+      },
+      {
+        "key": "Manufacturer"
+      },
+      {
+        "key": "BrandName"
+      },
+      {
+        "key": "ColorName"
+      },
+      {
+        "key": "Size"
+      },
+      {
+        "key": "Weight"
+      },
+      {
+        "key": "ProductCategoryLabel"
+      },
+      {
+        "key": "ProductCategoryName"
+      },
+      {
+        "key": "ProductCategoryDescription"
+      },
+      {
+        "key": "StoreManager"
+      },
+      {
+        "key": "StoreType"
+      },
+      {
+        "key": "StoreName"
+      },
+      {
+        "key": "StoreDescription"
+      },
+      {
+        "key": "Status"
+      },
+      {
+        "key": "OpenDate"
+      },
+      {
+        "key": "CloseDate"
+      },
+      {
+        "key": "StorePhone"
+      },
+      {
+        "key": "StoreFax"
+      },
+      {
+        "key": "Customer_address"
+      },
+      {
+        "key": "store_address"
+      }
+    ]
+  }
+}

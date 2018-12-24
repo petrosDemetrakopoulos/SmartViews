@@ -4,14 +4,16 @@ const solc = require('solc');
 const fs = require('fs');
 const delay = require('delay');
 const groupBy = require('group-by');
+const dataset = require('./dataset');
 let fact_tbl = require('./templates/fact_tbl');
 var crypto = require('crypto');
 var md5sum = crypto.createHash('md5');
+var csv = require("fast-csv");
 abiDecoder = require('abi-decoder');
 const app = express();
 var jsonParser = bodyParser.json();
 app.use(jsonParser);
-
+let running = false;
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
@@ -72,10 +74,23 @@ async function deploy(account, contractPath){
             return contractInstance.options;
 }
 
+app.get('/readFromFile', function (req,res) {
+    csv
+        .fromPath("dataset.txt",{delimiter: "|"})
+        .on("data", function(data){
+            console.log(data);
+        })
+        .on("end", function(){
+            console.log("done");
+            res.send("done");
+        });
+});
+
 app.get('/deployContract/:fn', function (req, res) {
     web3.eth.getAccounts(function (err,accounts) {
         if (!err) {
         acc = accounts[1];
+        console.log(req.params.fn);
             deploy(accounts[0], './contracts/' + req.params.fn)
                 .then(options => {
                     console.log('Success');
@@ -90,10 +105,58 @@ app.get('/deployContract/:fn', function (req, res) {
     });
 });
 
+async function addManyFacts(facts){
+    console.log("length = " + facts.length);
+    const transactionObject = {
+        from: acc,
+        gas: 1500000,
+        gasPrice: '30000000000000'
+    };
+    let proms = [];
+    let i = 0;
+    for (const fact of facts){
+            let strFact = JSON.stringify(fact);
+            let transPromise = await contract.methods.addFact(strFact).send(transactionObject, (err, txHash) => {
+                //console.log('send:', err, txHash);
+            }).on('error', (err) => {
+                console.log('error:', err);
+            })
+                .on('transactionHash', (err) => {
+                    //console.log('transactionHash:', err);
+                })
+                .on('receipt', (receipt) => {
+                    // console.log('receipt:', receipt);
+                    console.log(i);
+                });
+        i++;
+    }
+   // console.log("LOOP ENDED EXECUTING BATCH");
+   // batch.execute();
+    return Promise.resolve(true);
+}
+
+app.get('/load_dataset', function (req,res) {
+    if(contract) {
+        if(!running) {
+            running = true;
+            addManyFacts(dataset).then(retval => {
+                console.log(retval);
+                console.log("DONE");
+                res.send("DONE");
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+    } else {
+        res.status(400);
+        res.send({status: "ERROR",options: "Contract not deployed" });
+    }
+});
+
 app.get('/new_contract/:fn', function (req, res) {
     let fact_tbl = require('./templates/' + req.params.fn);
     let contrPayload = "";
-    let firstLine = "pragma solidity ^0.4.0;\n\n";
+    let firstLine = "pragma solidity ^0.4.24;\n\n";
     let secondLine = "contract " + fact_tbl.name + " { \n";
     let thirdLine = "\tuint public dataId;\n";
     let fourthLine = "\tuint public groupId;\n\n";
@@ -130,6 +193,38 @@ app.get('/new_contract/:fn', function (req, res) {
     let mapping = "\tmapping(uint =>" + fact_tbl.struct_Name +") public facts;\n\n";
     let addParams = "";
     let addFact = "\tfunction addFact(";
+
+    // let funcDivs = 0;
+    // if(fact_tbl.properties.length > 6){
+    //     funcDivs = fact_tbl.properties.length / 6;
+    //     if (fact_tbl.properties.length % 6 > 0){
+    //         funcDivs = funcDivs + 1;
+    //     }
+    // }
+    // let addParamsPerFN = [];
+    // let addFuncNames = [];
+    // for(let i =0; i < funcDivs; i++){
+    //     let crnFNparams = [];
+    //     addFuncNames.push("\tfunction addFact" + i + "(");
+    //     for (let j = i*6; j < (i+1)*6; j++){
+    //         crnFNparams.push(fact_tbl.properties[j]);
+    //     }
+    //     addParamsPerFN.push(crnFNparams);
+    // }
+    //
+    // let AddParamsArray = [];
+    // for(let i =0; i< funcDivs; i++){
+    //     for (let j =0; j< addParamsPerFN[i].length; j++){
+    //         let crnProp = addParamsPerFN[i][j];
+    //         if(j === (addParamsPerFN[i].length -1 )){
+    //             AddParamsArray[i] +=  crnProp.data_type + " " + crnProp.key + ") ";
+    //         } else {
+    //             AddParamsArray[i] += crnProp.data_type + " " + crnProp.key + ",";
+    //         }
+    //     }
+    // }
+
+
     for(var i = 0; i < fact_tbl.properties.length; i++){
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
@@ -271,7 +366,13 @@ app.get('/new_contract/:fn', function (req, res) {
             return console.log(err);
         }
         console.log("The file was saved!");
-        res.send({msg:"OK","filename":fact_tbl.name + ".sol", "template":fact_tbl});
+        let templ = {};
+        if('template' in fact_tbl){
+            templ = fact_tbl['template'];
+        } else {
+            templ = fact_tbl;
+        }
+        res.send({msg:"OK","filename":fact_tbl.name + ".sol", "template":templ});
     });
 
 });
@@ -305,6 +406,9 @@ async function getAllFacts(factsLength){
                 let len  = Object.keys(result2).length;
                 for(let  j = 0; j < len /2; j ++){
                     delete result2[j];
+                }
+                if('payload' in result2){
+                    result2 = JSON.parse(result2['payload']);
                 }
                 allFacts.push(result2);
             } else {
@@ -750,6 +854,13 @@ app.post('/addFact', function (req,res) {
             addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value);
         } else if (valsLength === 10){
             addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value, vals[9].value);
+        } else if (valsLength === 52){
+            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value, vals[9].value,
+                vals[10].value, vals[11].value, vals[12].value, vals[13].value, vals[14].value, vals[15].value, vals[16].value, vals[17].value, vals[18].value, vals[19].value,
+                vals[20].value, vals[21].value, vals[22].value, vals[23].value, vals[24].value, vals[25].value, vals[26].value, vals[27].value, vals[28].value, vals[29].value,
+                vals[30].value, vals[31].value, vals[32].value, vals[33].value, vals[34].value, vals[35].value, vals[36].value, vals[37].value, vals[38].value, vals[39].value,
+                vals[40].value, vals[41].value, vals[42].value, vals[43].value, vals[44].value, vals[45].value, vals[46].value, vals[47].value, vals[48].value, vals[49].value,
+                vals[50].value, vals[51].value);
         }
         else {
             res.status(400);

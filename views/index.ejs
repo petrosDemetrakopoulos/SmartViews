@@ -20,7 +20,14 @@
             </div>
         </div>
             <div class="col-3">
-            <button type="button" class="btn btn-primary" id="deployContract" style="margin-top: 2em;">Create and deploy contract</button>
+                <button type="button" class="btn btn-primary" id="deployContract" style="margin-top: 2em;">Create and deploy contract</button>
+            </div>
+            <div class="col-3">
+                <button type="button" class="btn btn-primary" id="deployContractSales" style="margin-top: 2em;">Deploy Sales Contract</button>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-primary" id="importSalesDataset" style="margin-top: 2em;">Import sales dataset</button>
             </div>
             <br>
             <p id="status"></p>
@@ -49,6 +56,17 @@
     $( "#deployContract" ).click(function() {
         deployContract()
     });
+
+
+    $( "#importSalesDataset" ).click(function() {
+        importSalesDataset();
+    });
+
+
+    $( "#deployContractSales" ).click(function() {
+        deployContractSales();
+    });
+
 
     $(document).on('click', '#buttonGet', function(){
         getFactById($("#factId").val());
@@ -141,6 +159,48 @@
         };
         xhttp.send(JSON.stringify({values: values}));
     }
+
+    function deployContractSales() {
+        var xhttpDep = new XMLHttpRequest();
+        xhttpDep.onreadystatechange = function () {
+            if (this.readyState <= 3) {
+                $('#status').html("Deploying contract...");
+            }
+            if (this.readyState === 4 && this.status === 200) {
+                var respObject = JSON.parse(this.responseText)
+                console.log(respObject);
+                $('#status').html("Contract address: " + respObject.options.address);
+                $('#status').css({"color": 'green', "font-weight": "bold"});
+                $("#prompt").remove();
+            } else if (this.status === 400) {
+                $('#status').html("Error while deploying contract");
+                $('#status').css({"color": 'red'});
+            }
+        };
+        xhttpDep.open("GET", "/deployContract/sales_json.sol", true);
+        xhttpDep.send();
+    }
+
+    function importSalesDataset() {
+        var xhttpDep = new XMLHttpRequest();
+        xhttpDep.onreadystatechange = function () {
+            if (this.readyState <= 3) {
+                $('#status').html("Importing data...");
+            }
+            if (this.readyState === 4 && this.status === 200) {
+                console.log(this.responseText);
+                $('#status').html("Data imported: " + this.responseText);
+                $('#status').css({"color": 'green', "font-weight": "bold"});
+                $("#prompt").remove();
+            } else if (this.status === 400) {
+                $('#status').html("Error while importing data");
+                $('#status').css({"color": 'red'});
+            }
+        };
+        xhttpDep.open("GET", "/load_dataset", true);
+        xhttpDep.send();
+    }
+
 
     function deployContract() {
         var xhttp = new XMLHttpRequest();
