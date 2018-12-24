@@ -6,9 +6,9 @@ const delay = require('delay');
 const groupBy = require('group-by');
 const dataset = require('./dataset');
 let fact_tbl = require('./templates/fact_tbl');
-var crypto = require('crypto');
+const crypto = require('crypto');
 var md5sum = crypto.createHash('md5');
-var csv = require("fast-csv");
+const csv = require("fast-csv");
 abiDecoder = require('abi-decoder');
 const app = express();
 var jsonParser = bodyParser.json();
@@ -21,8 +21,8 @@ app.use(express.static('public'));
 
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-var redis = require('redis');
-var client = redis.createClient(6379,"127.0.0.1");
+const redis = require('redis');
+const client = redis.createClient(6379,"127.0.0.1");
 client.on('connect', function(){
     console.log('Redis client connected');
 });
@@ -31,6 +31,7 @@ client.on('error', function (err) {
     console.log('Something went wrong ' + err);
 });
 let contractInstance = null;
+let contractsDeployed = [];
 
 
 web3.eth.defaultAccount = web3.eth.accounts[0];
@@ -70,6 +71,8 @@ async function deploy(account, contractPath){
                 .on('receipt', (receipt) => {
                     console.log('receipt:', receipt);
                     contract.options.address = receipt.contractAddress;
+                    contractsDeployed.push({contractName: Object.keys(output.contracts)[0].slice(1), address: receipt.contractAddress});
+                    console.log(contractsDeployed);
                 });
             return contractInstance.options;
 }
