@@ -657,16 +657,13 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                             deltas.push(crnFact);
                                         }
                                     }
-                                    console.log("DELTAS---->");
-                                    console.log(deltas);
-                                    console.log("DELTAS---->");
 
                                     let deltaGroupBy = groupBy(deltas, req.params.field);
                                     deltaGroupBy = transformGB(deltaGroupBy, req.params.operation, req.params.aggregateField);
-                                    console.log("DELTAS GB---->");
-                                    console.log(deltaGroupBy);
-                                    console.log("DELTAS GB---->");
-                                    console.log(latestGroupBy);
+                              //      console.log("DELTAS GB---->");
+                              //      console.log(deltaGroupBy);
+                              //      console.log("DELTAS GB---->");
+                              //      console.log(latestGroupBy);
 
 
                                     client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
@@ -709,9 +706,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                     } else {
                         //NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
                         getAllFacts(latestId).then(retval => {
-                            console.log(retval);
                             let groupByResult = groupBy(retval,req.params.field);
-                            console.log(groupByResult);
                             groupByResult = transformGB(groupByResult, req.params.operation, req.params.aggregateField);
                             groupByResult = JSON.stringify(groupByResult);
                             md5sum = crypto.createHash('md5');
@@ -747,52 +742,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                 }).catch(error => {
                     console.log(error);
                 });
-
-
-        // contract.methods.dataId().call(function (err, result) {
-        //     if(!err) {
-        //         //async loop waiting to get all the facts separately
-        //         getAllFacts(result).then(retval => {
-        //             console.log(retval);
-        //             let groupByResult = groupBy(retval,req.params.field);
-        //             groupByResult = JSON.stringify(groupByResult);
-        //
-        //             md5sum = crypto.createHash('md5');
-        //             md5sum.update(groupByResult);
-        //             var hash = md5sum.digest('hex');
-        //             console.log(hash);
-        //             client.set(hash, groupByResult, redis.print);
-        //
-        //                 const transactionObject = {
-        //                     from: acc,
-        //                     gas: 1500000,
-        //                     gasPrice: '30000000000000'
-        //                 };
-        //
-        //                 contract.methods.addGroupBy(hash).send(transactionObject,  (err, txHash) => {
-        //                     console.log('send:', err, txHash);
-        //                 }).on('error', (err) => {
-        //                     console.log('error:', err);
-        //                     res.send(err);
-        //                 })
-        //                     .on('transactionHash', (err) => {
-        //                         console.log('transactionHash:', err);
-        //                     })
-        //                     .on('receipt', (receipt) => {
-        //                         console.log('receipt:', receipt);
-        //                         res.send(receipt);
-        //                     });
-        //
-        //            // res.send(groupByResult);
-        //         }).catch(error => {
-        //             console.log(error);
-        //         });
-        //     } else {
-        //         console.log(err);
-        //         console.log("ERRRRRR");
-        //         res.send(err);
-        //     }
-        // })
         });
     } else {
         res.status(400);
