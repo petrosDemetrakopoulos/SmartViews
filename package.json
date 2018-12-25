@@ -17,7 +17,10 @@
     "express": "^4.16.4",
     "fast-csv": "^2.4.1",
     "group-by": "0.0.1",
+    "http": "0.0.0",
+    "microtime": "^2.1.8",
     "redis": "^2.8.0",
+    "socket.io": "^2.2.0",
     "solc": "^0.4.25",
     "web3": "1.0.0-beta.37"
   }

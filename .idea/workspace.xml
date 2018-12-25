@@ -1,9 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="keep all deployed contracts">
+      <change afterPath="$PROJECT_DIR$/public/css/main.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/bootstrap-notify.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/sb-admin-2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/sb-admin-2.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/dashboard.ejs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/int1.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/int1.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/string1.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/string1.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/@types/node/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/@types/node/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/@types/node/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/@types/node/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/@types/node/inspector.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/@types/node/inspector.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/@types/node/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/@types/node/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/dist/ajv.bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/dist/ajv.bundle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/dist/ajv.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/dist/ajv.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/dist/ajv.min.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/dist/ajv.min.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/dist/nodent.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/dist/regenerator.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/$data.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/ajv.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/ajv.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/ajv.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/ajv.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/compile/_rules.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/compile/formats.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/compile/formats.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/compile/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/compile/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/compile/resolve.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/compile/resolve.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/compile/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/compile/rules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/_limit.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/_limit.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/custom.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/custom.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/errors.def" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/errors.def" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/format.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/format.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/oneOf.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/oneOf.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/properties.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/properties.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/propertyNames.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/propertyNames.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/ref.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/ref.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/uniqueItems.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/uniqueItems.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dot/validate.jst" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dot/validate.jst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/_limit.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/_limit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/_limitItems.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/_limitItems.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/_limitProperties.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/_limitProperties.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/const.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/const.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/custom.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/custom.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/format.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/format.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/oneOf.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/oneOf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/properties.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/properties.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/propertyNames.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/propertyNames.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/ref.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/ref.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/uniqueItems.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/uniqueItems.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/validate.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/dotjs/validate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/keyword.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/keyword.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/patternGroups.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/refs/$data.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/refs/json-schema-draft-04.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/lib/refs/json-schema-draft-04.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/lib/refs/json-schema-v5.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/ajv/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/ajv/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.core.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.core.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.core.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.core.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/bluebird/js/browser/bluebird.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/bluebird/js/release/promise.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/bluebird/js/release/promise.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/bluebird/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/bluebird/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/browserify-sha3/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/browserify-sha3/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/browserify-sha3/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/browserify-sha3/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/browserify-sha3/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/browserify-sha3/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/browserify-sha3/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/browserify-sha3/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/co/History.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/co/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/co/Readme.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/co/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/co/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/.eslintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/.npmignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cors/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cors/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cors/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/lib/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cors/lib/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/cors/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/basic-auth.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/body-events.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/cors.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/error-response.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/example-app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/issue-2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/issue-31.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/mocha.opts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/cors/test/support/env.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/fast-deep-equal/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/fast-deep-equal/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/fast-deep-equal/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/fast-deep-equal/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/fast-deep-equal/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/fast-deep-equal/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/har-validator/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/har-validator/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/har-validator/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/har-validator/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/har-validator/lib/async.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/har-validator/lib/async.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/har-validator/lib/promise.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/har-validator/lib/promise.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/har-validator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/har-validator/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hash.js/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/hash.js/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hash.js/lib/hash/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/hash.js/lib/hash/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hash.js/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/hash.js/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hash.js/test/hash-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/hash.js/test/hash-test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/.covignore" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/.covignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/.npmignore" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/.npmignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/LICENSE.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/bower.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/bower.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/js-sha3/src/sha3.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/js-sha3/src/sha3.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/json-schema-traverse/.npmignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/json-schema-traverse/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/json-schema-traverse/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/json-schema-traverse/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/json-schema-traverse/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/json-schema-traverse/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/json-schema-traverse/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/json-schema-traverse/spec/index.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/json-schema-traverse/spec/index.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/keccakjs/.npmignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/keccakjs/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/keccakjs/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/keccakjs/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/keccakjs/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/psl/data/rules.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/psl/data/rules.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/psl/dist/psl.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/psl/dist/psl.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/psl/dist/psl.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/psl/dist/psl.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/psl/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/psl/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/psl/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/psl/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/punycode/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/punycode/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/punycode/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/punycode/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/punycode/punycode.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/punycode/punycode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/bin/sshpk-conv" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/bin/sshpk-conv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/fingerprint.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/fingerprint.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/auto.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/auto.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/pem.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/pem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/pkcs8.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/pkcs8.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/x509-pem.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/formats/x509-pem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/key.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/key.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/private-key.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/private-key.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/lib/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/lib/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/sshpk/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/sshpk/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-bzz/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-bzz/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-core-helpers/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-core-helpers/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-core-method/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-core-method/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-core-promievent/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-core-promievent/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-core-requestmanager/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-core-requestmanager/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-core-requestmanager/src/givenProvider.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-core-requestmanager/src/givenProvider.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-core-subscriptions/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-core-subscriptions/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-core/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-core/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth-abi/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth-abi/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth-abi/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth-abi/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth-accounts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth-accounts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth-contract/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth-contract/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth-ens/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth-ens/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth-iban/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth-iban/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth-personal/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth-personal/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-eth/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-eth/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-net/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-net/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-providers-http/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-providers-http/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-providers-http/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-providers-http/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-providers-ipc/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-providers-ipc/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-providers-ws/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-providers-ws/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-shh/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-shh/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-shh/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-shh/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-utils/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-utils/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3-utils/src/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3-utils/src/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/web3/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/web3/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/helper.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -19,94 +183,59 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="413" column="60" selection-start-line="413" selection-start-column="60" selection-end-line="413" selection-end-column="60" />
+            <state relative-caret-position="461">
+              <caret line="326" column="34" selection-start-line="326" selection-start-column="34" selection-end-line="326" selection-end-column="34" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/web3/src/index.js">
+        <entry file="file://$PROJECT_DIR$/contracts/int2.sol">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-262">
+            <state relative-caret-position="283">
+              <caret line="73" column="30" selection-start-line="73" selection-start-column="30" selection-end-line="73" selection-end-column="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/new_sales.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2505">
+              <caret line="167" column="3" selection-start-line="167" selection-start-column="3" selection-end-line="167" selection-end-column="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/views/form.ejs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="344" column="13" lean-forward="true" selection-start-line="344" selection-start-column="13" selection-end-line="344" selection-end-column="13" />
               <folding>
-                <element signature="n#!!doc" expanded="true" />
+                <element signature="n#style#0;n#li#0;n#ul#0;n#li#0;n#ul#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#a#0;n#li#0;n#ul#0;n#li#1;n#ul#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#p#1;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/web3-utils/src/index.js">
+        <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="131">
-              <caret line="351" column="9" selection-start-line="351" selection-start-column="4" selection-end-line="351" selection-end-column="9" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+            <state relative-caret-position="297">
+              <caret line="146" column="41" lean-forward="true" selection-start-line="146" selection-start-column="41" selection-end-line="146" selection-end-column="41" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/contracts/DataHandler.sol">
+        <entry file="file://$PROJECT_DIR$/views/index.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
-              <caret line="45" column="23" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/2int.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="31" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/cars.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/contracts/Cars.sol">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="76" column="98" lean-forward="true" selection-start-line="76" selection-start-column="98" selection-end-line="76" selection-end-column="98" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/3bytes.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/4bytes.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/5bytes.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
+            <state relative-caret-position="135">
+              <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -115,36 +244,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>fact_tbl</find>
-      <find>filename</find>
-      <find>web</find>
-      <find>/addFa</find>
-      <find>addFa</find>
-      <find>addfa</find>
-      <find>col-lg</find>
-      <find>getAllFacts</find>
-      <find>groupby</find>
-      <find>grou</find>
-      <find>create</find>
+      <find>load_dataset</find>
+      <find>tem</find>
+      <find>template</find>
+      <find>jq</find>
+      <find>searc</find>
+      <find>new_c</find>
+      <find>New C</find>
+      <find>textare</find>
+      <find>operat</find>
+      <find>index</find>
+      <find>SUM</find>
       <find>deplo</find>
-      <find>getF</find>
-      <find>gree</find>
-      <find>group</find>
-      <find>values</find>
-      <find>md5</find>
-      <find>getting</find>
-      <find>latestGroupBy.</find>
-      <find>aggre</find>
-      <find>getFa</find>
-      <find>cou</find>
+      <find>addMan</find>
+      <find>load</find>
+      <find>Ta</find>
+      <find>value</find>
+      <find>task</find>
       <find>groupBy</find>
-      <find>getA</find>
-      <find>getAll</find>
+      <find>conso</find>
+      <find>group</find>
+      <find>notify</find>
       <find>groupB</find>
-      <find>addG</find>
-      <find>fromAs</find>
-      <find>getLa</find>
-      <find>fromA</find>
+      <find>LATEST GB</find>
+      <find>la</find>
+      <find>bytes</find>
+      <find>for</find>
+      <find>consta</find>
+      <find>opera</find>
+      <find>button</find>
+      <find>getLate</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -155,7 +284,6 @@
       <list>
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/node_modules/index.js" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/templates/template.jst" />
         <option value="$PROJECT_DIR$/contracts/DataHandler.sol" />
@@ -181,17 +309,27 @@
         <option value="$PROJECT_DIR$/templates/4bytes.json" />
         <option value="$PROJECT_DIR$/templates/5bytes.json" />
         <option value="$PROJECT_DIR$/templates/3bytes.json" />
-        <option value="$PROJECT_DIR$/views/index.ejs" />
+        <option value="$PROJECT_DIR$/contracts/Sales.sol" />
         <option value="$PROJECT_DIR$/contracts/Cars.sol" />
+        <option value="$PROJECT_DIR$/contracts/sales_new.sol" />
+        <option value="$PROJECT_DIR$/templates/sales.json" />
+        <option value="$PROJECT_DIR$/contracts/sales_json.sol" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/views/index.ejs" />
+        <option value="$PROJECT_DIR$/templates/new_sales.json" />
+        <option value="$PROJECT_DIR$/helper.js" />
+        <option value="$PROJECT_DIR$/views/dashboard.ejs" />
+        <option value="$PROJECT_DIR$/public/js/bootstrap-notify.js" />
+        <option value="$PROJECT_DIR$/views/form.ejs" />
+        <option value="$PROJECT_DIR$/contracts/int2.sol" />
         <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1440" />
     <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="1003" />
+    <option name="width" value="1440" />
+    <option name="height" value="823" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -199,7 +337,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -210,45 +347,12 @@
             <path>
               <item name="interface" type="b2602c69:ProjectViewProjectNode" />
               <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
+              <item name="contracts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="interface" type="b2602c69:ProjectViewProjectNode" />
               <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
-              <item name="web3" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
-              <item name="web3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
-              <item name="web3-utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
-              <item name="web3-utils" type="462c0819:PsiDirectoryNode" />
-              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
-              <item name="web3-utils" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="interface" type="b2602c69:ProjectViewProjectNode" />
@@ -259,6 +363,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -269,13 +374,15 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/templates" />
-      <recent name="$PROJECT_DIR$/public/js" />
+      <recent name="$PROJECT_DIR$/public" />
+      <recent name="$PROJECT_DIR$/public/css" />
       <recent name="$PROJECT_DIR$/views" />
-      <recent name="$PROJECT_DIR$/contracts" />
+      <recent name="$PROJECT_DIR$/public/js" />
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -351,7 +458,15 @@
       <workItem from="1545329273248" duration="34000" />
       <workItem from="1545329330606" duration="603000" />
       <workItem from="1545397358534" duration="9827000" />
-      <workItem from="1545477071361" duration="16823000" />
+      <workItem from="1545477071361" duration="16931000" />
+      <workItem from="1545565717534" duration="16365000" />
+      <workItem from="1545586011054" duration="5608000" />
+      <workItem from="1545598820622" duration="1642000" />
+      <workItem from="1545602955680" duration="6607000" />
+      <workItem from="1545646991601" duration="1633000" />
+      <workItem from="1545674798633" duration="1384000" />
+      <workItem from="1545693544108" duration="645000" />
+      <workItem from="1545744050913" duration="21435000" />
     </task>
     <task id="LOCAL-00001" summary="ui fixes">
       <created>1541683666597</created>
@@ -493,23 +608,51 @@
       <option name="project" value="LOCAL" />
       <updated>1545513125817</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="bug fixes">
+      <created>1545514007405</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1545514007405</updated>
+    </task>
+    <task id="LOCAL-00022" summary="major changes">
+      <created>1545611302365</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1545611302365</updated>
+    </task>
+    <task id="LOCAL-00023" summary="code cleanup">
+      <created>1545611393173</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1545611393173</updated>
+    </task>
+    <task id="LOCAL-00024" summary="keep all deployed contracts">
+      <created>1545647957308</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1545647957308</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="134809000" />
+    <option name="totallyTimeSpent" value="190236000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="23" width="1920" height="1003" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="823" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6539235" visible="true" weight="0.17571884" />
-      <window_info id="Structure" order="1" sideWeight="0.34607646" side_tool="true" visible="true" weight="0.17571884" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6357143" visible="true" weight="0.27825466" />
+      <window_info id="Structure" order="1" sideWeight="0.3642857" side_tool="true" visible="true" weight="0.27825466" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.9030884" visible="true" weight="0.45444566" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.89413446" visible="true" weight="0.4254446" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -518,8 +661,9 @@
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.20793433" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.09691161" side_tool="true" visible="true" weight="0.45444566" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49642345" weight="0.37209302" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.10586552" side_tool="true" visible="true" weight="0.4254446" />
+      <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -567,242 +711,41 @@
     <MESSAGE value="new templates" />
     <MESSAGE value="fixes in group by" />
     <MESSAGE value="functionality to store latestGroup bys per operation (COUNT, SUM, AVG, etc)" />
-    <option name="LAST_COMMIT_MESSAGE" value="functionality to store latestGroup bys per operation (COUNT, SUM, AVG, etc)" />
+    <MESSAGE value="bug fixes" />
+    <MESSAGE value="major changes" />
+    <MESSAGE value="code cleanup" />
+    <MESSAGE value="keep all deployed contracts" />
+    <option name="LAST_COMMIT_MESSAGE" value="keep all deployed contracts" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/node_modules/web3/example/balance.html" />
-    <entry file="file://$PROJECT_DIR$/node_modules/web3/example/contract.html" />
-    <entry file="file://$PROJECT_DIR$/node_modules/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.html" />
-    <entry file="file://$PROJECT_DIR$/node_modules/web3/dist/web3.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/web3/lib/web3/methods/eth.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/web3/lib/web3/contract.js" />
-    <entry file="file://$PROJECT_DIR$/views/main.css">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/web3-core-requestmanager/src/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="139" column="35" selection-start-line="139" selection-start-column="35" selection-end-line="139" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/web3-providers-http/src/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="90" column="12" selection-start-line="90" selection-start-column="12" selection-end-line="90" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="33" column="21" selection-start-line="33" selection-start-column="21" selection-end-line="33" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/xhr2-cookies/dist/xml-http-request.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="207" column="13" selection-start-line="207" selection-start-column="13" selection-end-line="207" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/template.jst" />
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="12" selection-start-column="12" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/jquery-3.3.1.min.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/FactTable.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="86" selection-start-line="16" selection-start-column="86" selection-end-line="16" selection-end-column="86" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/1string.sol" />
-    <entry file="file://$PROJECT_DIR$/templates/fact_tbl.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/1string.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="6" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/4strings.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="26" selection-start-line="2" selection-start-column="26" selection-end-line="2" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/5strings.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/string1.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="795">
-          <caret line="53" selection-start-line="53" selection-end-line="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/2strings.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="26" selection-start-line="2" selection-start-column="26" selection-end-line="2" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/3strings.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="26" selection-start-line="2" selection-start-column="26" selection-end-line="2" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/3int.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="8" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/4int.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="9" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/1bytes.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/1int.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="6" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/_bytes1.sol">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/bytes1.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="16" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/int2.sol">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="20" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1680">
-          <caret line="112" column="37" selection-start-line="112" selection-start-column="37" selection-end-line="112" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/5int.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/2bytes.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/2int.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="31" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/3bytes.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/5bytes.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/4bytes.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/DataHandler.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="45" column="23" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/cars.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/Cars.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="76" column="98" lean-forward="true" selection-start-line="76" selection-start-column="98" selection-end-line="76" selection-end-column="98" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/web3/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-262">
+        <state relative-caret-position="15">
+          <caret line="1" column="28" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/web3-core/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="83" column="5" lean-forward="true" selection-start-line="83" selection-start-column="5" selection-end-line="83" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/web3-core-helpers/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="28" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/web3-eth/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -811,18 +754,208 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/web3-utils/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="131">
-          <caret line="351" column="9" selection-start-line="351" selection-start-column="4" selection-end-line="351" selection-end-column="9" />
+        <state relative-caret-position="116">
+          <caret line="33" column="48" selection-start-line="33" selection-start-column="46" selection-end-line="33" selection-end-column="48" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/dataset.csv" />
+    <entry file="file://$PROJECT_DIR$/dataset.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="24" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/fact_tbl.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contracts/Sales.sol">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1410">
+          <caret line="94" column="1" selection-end-line="94" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contracts/sales_new.sol">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="42" column="20" selection-start-line="42" selection-start-column="20" selection-end-line="42" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helper.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="56" column="35" selection-start-line="56" selection-start-column="35" selection-end-line="56" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/excanvas.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.flot.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/excanvas.min.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.flot.pie.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.flot.time.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.flot.image.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.flot.stack.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.flot.canvas.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/flot/jquery.flot.resize.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.min.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/sb-admin-2.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/sb-admin-2.min.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/buttons.html" />
+    <entry file="file://$PROJECT_DIR$/views/flot.html" />
+    <entry file="file://$PROJECT_DIR$/views/forms.html" />
+    <entry file="file://$PROJECT_DIR$/views/grid.html" />
+    <entry file="file://$PROJECT_DIR$/views/icons.html" />
+    <entry file="file://$PROJECT_DIR$/views/login.html" />
+    <entry file="file://$PROJECT_DIR$/views/morris.html" />
+    <entry file="file://$PROJECT_DIR$/views/notifications.html" />
+    <entry file="file://$PROJECT_DIR$/views/blank.html" />
+    <entry file="file://$PROJECT_DIR$/public/dist/js/sb-admin-2.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/dist/js/sb-admin-2.min.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/dist/css/sb-admin-2.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/dist/css/sb-admin-2.min.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/tables.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="391" column="2" selection-start-line="391" selection-start-column="2" selection-end-line="803" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/buttons.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="391" column="94" lean-forward="true" selection-start-line="391" selection-start-column="31" selection-end-line="391" selection-end-column="94" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/css/main.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/1string.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="18" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/forms.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="429">
+          <caret line="591" lean-forward="true" selection-end-line="591" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/index.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/bootstrap-notify.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6165">
+          <caret line="411" column="6" selection-start-line="411" selection-start-column="6" selection-end-line="411" selection-end-column="6" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#162#169#1" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/new_sales.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2505">
+          <caret line="167" column="3" selection-start-line="167" selection-start-column="3" selection-end-line="167" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="146" column="41" lean-forward="true" selection-start-line="146" selection-start-column="41" selection-end-line="146" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/form.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="344" column="13" lean-forward="true" selection-start-line="344" selection-start-column="13" selection-end-line="344" selection-end-column="13" />
+          <folding>
+            <element signature="n#style#0;n#li#0;n#ul#0;n#li#0;n#ul#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#a#0;n#li#0;n#ul#0;n#li#1;n#ul#0;n#nav#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#p#1;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contracts/int2.sol">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="73" column="30" selection-start-line="73" selection-start-column="30" selection-end-line="73" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="413" column="60" selection-start-line="413" selection-start-column="60" selection-end-line="413" selection-end-column="60" />
+        <state relative-caret-position="461">
+          <caret line="326" column="34" selection-start-line="326" selection-start-column="34" selection-end-line="326" selection-end-column="34" />
         </state>
       </provider>
     </entry>

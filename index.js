@@ -18,6 +18,9 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 app.use(express.static('public'));
+var microtime = require('microtime')
+let http = require('http').Server(app);
+let io = require('socket.io')(http);
 
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -44,7 +47,40 @@ app.get('/', function (req,res) {
     });
 });
 
-app.listen(3000, () => console.log(`Example app listening on http://localhost:3000`));
+io.on('connection', function(socket){
+    console.log('a user connected');
+});
+
+app.get('/dashboard', function (req,res) {
+
+    fs.readdir('./templates', function(err, items) {
+        web3.eth.getBlockNumber().then(blockNum => {
+            res.render("dashboard",{"templates":items, "blockNum": blockNum});
+        });
+
+
+    });
+});
+
+app.get('/form/:contract', function (req,res) {
+    let fact_tbl = require('./templates/' + req.params.contract);
+    let templ = {};
+    if('template' in fact_tbl){
+        templ = fact_tbl['template'];
+    } else {
+        templ = fact_tbl;
+    }
+    let address = "0";
+    for(let i = 0; i < contractsDeployed.length; i++){
+        if(contractsDeployed[i].contractName === fact_tbl.name){
+            address = contractsDeployed[i].address;
+            break;
+        }
+    }
+    res.render("form",{"template":templ, "name": fact_tbl.name, "address": address});
+});
+
+http.listen(3000, () => console.log(`Example app listening on http://localhost:3000`));
 
 async function deploy(account, contractPath){
             const input = fs.readFileSync(contractPath);
@@ -129,6 +165,7 @@ async function addManyFacts(facts){
                 })
                 .on('receipt', (receipt) => {
                     // console.log('receipt:', receipt);
+                    io.emit('progress', i/facts.length);
                     console.log(i);
                 });
         i++;
@@ -138,11 +175,13 @@ async function addManyFacts(facts){
     return Promise.resolve(true);
 }
 
-app.get('/load_dataset', function (req,res) {
+app.get('/load_dataset/:dt', function (req,res) {
+
+    let dt = require("./" + req.params.dt);
     if(contract) {
         if(!running) {
             running = true;
-            addManyFacts(dataset).then(retval => {
+            addManyFacts(dt).then(retval => {
                 console.log(retval);
                 console.log("DONE");
                 res.send("DONE");
@@ -168,11 +207,11 @@ app.get('/new_contract/:fn', function (req, res) {
         "\tuint public lastMin;\n" +
         "\tuint public lastMax;\n" +
         "\tuint public lastAverage;\n" +
-        "\tbytes constant MIN_LITERAL = \"MIN\";\n" +
-        "\tbytes constant MAX_LITERAL = \"MAX\";\n" +
-        "\tbytes constant AVERAGE_LITERAL = \"AVERAGE\";\n" +
-        "\tbytes constant COUNT_LITERAL = \"COUNT\";\n" +
-        "\tbytes constant SUM_LITERAL = \"SUM\";\n";
+        "\tbytes32 MIN_LITERAL = \"MIN\";\n" +
+        "\tbytes32 MAX_LITERAL = \"MAX\";\n" +
+        "\tbytes32 AVERAGE_LITERAL = \"AVERAGE\";\n" +
+        "\tbytes32 COUNT_LITERAL = \"COUNT\";\n" +
+        "\tbytes32 SUM_LITERAL = \"SUM\";\n";
     let constr = "\tconstructor() {\n" +
         "\t\tdataId = 0;\n" +
         "\t\tgroupId = 0;\n" +
@@ -196,36 +235,6 @@ app.get('/new_contract/:fn', function (req, res) {
     let mapping = "\tmapping(uint =>" + fact_tbl.struct_Name +") public facts;\n\n";
     let addParams = "";
     let addFact = "\tfunction addFact(";
-
-    // let funcDivs = 0;
-    // if(fact_tbl.properties.length > 6){
-    //     funcDivs = fact_tbl.properties.length / 6;
-    //     if (fact_tbl.properties.length % 6 > 0){
-    //         funcDivs = funcDivs + 1;
-    //     }
-    // }
-    // let addParamsPerFN = [];
-    // let addFuncNames = [];
-    // for(let i =0; i < funcDivs; i++){
-    //     let crnFNparams = [];
-    //     addFuncNames.push("\tfunction addFact" + i + "(");
-    //     for (let j = i*6; j < (i+1)*6; j++){
-    //         crnFNparams.push(fact_tbl.properties[j]);
-    //     }
-    //     addParamsPerFN.push(crnFNparams);
-    // }
-    //
-    // let AddParamsArray = [];
-    // for(let i =0; i< funcDivs; i++){
-    //     for (let j =0; j< addParamsPerFN[i].length; j++){
-    //         let crnProp = addParamsPerFN[i][j];
-    //         if(j === (addParamsPerFN[i].length -1 )){
-    //             AddParamsArray[i] +=  crnProp.data_type + " " + crnProp.key + ") ";
-    //         } else {
-    //             AddParamsArray[i] += crnProp.data_type + " " + crnProp.key + ",";
-    //         }
-    //     }
-    // }
 
 
     for(var i = 0; i < fact_tbl.properties.length; i++){
@@ -274,18 +283,18 @@ app.get('/new_contract/:fn', function (req, res) {
     }
     var retFact = "\t\treturn (" + retVals ;
 
-    var addGroupBy = "\tfunction addGroupBy(string hash, bytes category) public returns(string groupAdded, uint groupID){\n" +
+    var addGroupBy = "\tfunction addGroupBy(string hash, bytes32 category) public returns(string groupAdded, uint groupID){\n" +
         "    \t\tgroupBys[groupId].hash = hash;\n" +
         "    \t\tgroupBys[groupId].timestamp = now;\n" +
-        "\t\t\tif(keccak256(category) == keccak256(COUNT_LITERAL)){\n" +
+        "\t\t\tif(category == COUNT_LITERAL){\n" +
         "\t\t\t\tlastCount  = groupID;\n" +
-        "\t\t\t} else if(keccak256(category) == keccak256(SUM_LITERAL)){\n" +
+        "\t\t\t} else if(category == SUM_LITERAL){\n" +
         "\t\t\t\tlastSUM = groupID;\n" +
-        "\t\t\t} else if(keccak256(category) == keccak256(MIN_LITERAL)){\n" +
+        "\t\t\t} else if(category == MIN_LITERAL){\n" +
         "\t\t\t\tlastMin = groupID;\n" +
-        "\t\t\t} else if(keccak256(category) == keccak256(MAX_LITERAL)){\n" +
+        "\t\t\t} else if(category == MAX_LITERAL){\n" +
         "\t\t\t\tlastMax = groupID;\n" +
-        "\t\t\t} else if(keccak256(category) == keccak256(AVERAGE_LITERAL)){\n" +
+        "\t\t\t} else if(category == AVERAGE_LITERAL){\n" +
         "\t\t\t\tlastAverage = groupID;\n" +
         "\t\t\t}\n" +
         "    \t\tgroupId += 1;\n" +
@@ -296,26 +305,26 @@ app.get('/new_contract/:fn', function (req, res) {
         "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp);\n" +
         "    \t}\n\n";
 
-    var getLatestGroupBy = "function getLatestGroupBy(bytes operation) public constant returns(string latestGroupBy, uint ts){\n" +
+    var getLatestGroupBy = "function getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts){\n" +
         "\t\tif(groupId > 0){\n" +
-        "\t\t\tif(keccak256(operation) == keccak256(COUNT_LITERAL)){\n" +
-        "\t\t\t\tif(lastCount > 0){\n" +
+        "\t\t\tif(operation == COUNT_LITERAL){\n" +
+        "\t\t\t\tif(lastCount >= 0){\n" +
         "\t\t\t\t\treturn (groupBys[lastCount].hash, groupBys[lastCount].timestamp);\n" +
         "\t\t\t\t}\n" +
-        "\t\t\t} else if (keccak256(operation) == keccak256(SUM_LITERAL)){\n" +
-        "\t\t\t\tif(lastSUM > 0){\n" +
+        "\t\t\t} else if (operation == SUM_LITERAL){\n" +
+        "\t\t\t\tif(lastSUM >= 0){\n" +
         "\t\t\t\t\treturn (groupBys[lastSUM].hash, groupBys[lastSUM].timestamp);\n" +
         "\t\t\t\t}\n" +
-        "\t\t\t} else if (keccak256(operation) == keccak256(MIN_LITERAL)){\n" +
-        "\t\t\t\tif(lastMin > 0){\n" +
+        "\t\t\t} else if (operation == MIN_LITERAL){\n" +
+        "\t\t\t\tif(lastMin >= 0){\n" +
         "\t\t\t\t\treturn (groupBys[lastMin].hash, groupBys[lastMin].timestamp);\n" +
         "\t\t\t\t}\n" +
-        "\t\t\t} else if (keccak256(operation) == keccak256(MAX_LITERAL)){\n" +
-        "\t\t\t\tif(lastMax > 0){\n" +
+        "\t\t\t} else if (operation == MAX_LITERAL){\n" +
+        "\t\t\t\tif(lastMax >= 0){\n" +
         "\t\t\t\t\treturn (groupBys[lastMax].hash, groupBys[lastMax].timestamp);\n" +
         "\t\t\t\t}\n" +
-        "\t\t\t} else if (keccak256(operation) == keccak256(AVERAGE_LITERAL)){\n" +
-        "\t\t\t\tif(lastAverage > 0){\n" +
+        "\t\t\t} else if (operation == AVERAGE_LITERAL){\n" +
+        "\t\t\t\tif(lastAverage >= 0){\n" +
         "\t\t\t\t\treturn (groupBys[lastAverage].hash, groupBys[lastAverage].timestamp);\n" +
         "\t\t\t\t}\n" +
         "\t\t\t}\n" +
@@ -631,9 +640,13 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
     if(contract) {
+        let timeStart = microtime.nowDouble();
         contract.methods.dataId().call(function (err,latestId) {
-
+            console.log("COUNT BYTES32 = ");
+            console.log(Web3.utils.fromAscii(req.params.operation));
                 contract.methods.getLatestGroupBy(Web3.utils.fromAscii(req.params.operation)).call(function (err, latestGroupBy) {
+                    console.log("LATEST GB IS: ");
+                    console.log(latestGroupBy);
                     if(latestGroupBy.ts > 0) {
                         contract.methods.getFact(latestId-1).call(function (err, latestFact) {
                             console.log("LATEST FACT IS");
@@ -646,7 +659,10 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                         res.send(error);
                                     } else {
                                         console.log('GET result ->' + cachedGroupBy);
-                                        res.send(cachedGroupBy);
+                                        let timeFinish = microtime.nowDouble();
+                                        cachedGroupBy = JSON.parse(cachedGroupBy);
+                                        cachedGroupBy.executionTime = timeFinish - timeStart;
+                                        res.send(JSON.stringify(cachedGroupBy));
                                     }
                                 });
                             } else {
@@ -667,7 +683,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                               //      console.log(deltaGroupBy);
                               //      console.log("DELTAS GB---->");
                               //      console.log(latestGroupBy);
-
 
                                     client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                         if (error) {
@@ -692,9 +707,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                             } else { //AVERAGE
                                                 updatedGB = averageObjects(ObCachedGB,deltaGroupBy)
                                             }
-
-
                                             client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
+                                            let timeFinish = microtime.nowDouble();
+                                            updatedGB.executionTime = timeFinish - timeStart;
                                             res.send(JSON.stringify(updatedGB));
                                         }
                                     });
@@ -735,7 +750,12 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                 })
                                 .on('receipt', (receipt) => {
                                     console.log('receipt:', receipt);
-                                    res.send(JSON.stringify(receipt) + "\n" + groupByResult);
+                                    let timeFinish = microtime.nowDouble();
+                                    let execT = timeFinish - timeStart;
+                                    groupByResult = JSON.parse(groupByResult);
+                                    groupByResult.executionTime = execT;
+                                    groupByResult.receipt = receipt;
+                                    res.send(JSON.stringify(groupByResult));
                                 });
                             // res.send(groupByResult);
                         }).catch(error => {
