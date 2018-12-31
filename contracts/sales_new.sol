@@ -56,6 +56,7 @@ contract Sales {
         return (facts[id].OnlineSalesKey,facts[id].SalesQuantity,facts[id].SalesAmount,facts[id].TotalCost,facts[id].UnitCost,facts[id].UnitPrice);
     }
 
+
     function addGroupBy(string hash, bytes category) public returns(string groupAdded, uint groupID){
         groupBys[groupId].hash = hash;
         groupBys[groupId].timestamp = now;

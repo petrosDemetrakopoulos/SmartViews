@@ -42,6 +42,17 @@ contract Sales {
         return (facts[dataId-1].payload,dataId -1);
     }
 
+    function getAllFacts(uint id) public returns (string[], uint[]){
+        string[] memory payloads = new string[](id);
+        uint[] memory ids = new uint[](id);
+        for(uint i =0; i < id; i++){
+            Sale storage sale = facts[i];
+            payloads[i] = sale.payload;
+            ids[i] = i;
+        }
+        return (payloads, ids);
+    }
+
     function getFact(uint id) public constant returns (string payload, uint timestamp){
         return (facts[id].payload, facts[id].timestamp);
     }

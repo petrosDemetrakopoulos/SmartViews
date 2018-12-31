@@ -52,7 +52,7 @@ function minObjects(ob1, ob2) {
 }
 
 module.exports = {
-    sumObjects: sumObjects(ob1,ob2),
-    maxObjects: maxObjects(ob1,ob2),
-    minObjects: minObjects(ob1,ob2)
+    sumObjects: sumObjects,
+    maxObjects: maxObjects,
+    minObjects: minObjects
 };

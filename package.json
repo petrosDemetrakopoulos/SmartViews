@@ -11,6 +11,7 @@
   "dependencies": {
     "abi-decoder": "^1.2.0",
     "body-parser": "^1.18.3",
+    "csvtojson": "^2.0.8",
     "delay": "^4.1.0",
     "dot": "^1.1.2",
     "ejs": "^2.6.1",
@@ -18,6 +19,7 @@
     "fast-csv": "^2.4.1",
     "group-by": "0.0.1",
     "http": "0.0.0",
+    "lodash": "^4.17.11",
     "microtime": "^2.1.8",
     "redis": "^2.8.0",
     "socket.io": "^2.2.0",
