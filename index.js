@@ -572,7 +572,7 @@ app.get('/getallfacts', function (req,res) {
                 let timeStart = microtime.nowDouble();
                 getAllFactsHeavy(result).then(retval => {
                     console.log("####");
-                    console.log("Get all facts time: " + microtime.nowDouble() - timeStart + "s");
+                    console.log("Get all facts time: " + (microtime.nowDouble() - timeStart) + "s");
                     console.log("####");
                     //retval.timeDone = microtime.nowDouble() - timeStart;
                     res.send(retval);
@@ -798,7 +798,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                 });
                             } else {
                                 //CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
-                                getAllFacts(latestId).then(retval => {
+                                getAllFactsHeavy(latestId).then(retval => {
                                     // get (fact.timestamp > latestGroupBy timestamp)
                                     let deltas = [];
                                     for (var i = 0; i < retval.length; i++){
@@ -899,7 +899,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                         });
                     } else {
                         //NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
-                        getAllFacts(latestId).then(retval => {
+                        getAllFactsHeavy(latestId).then(retval => {
                             timeStart = microtime.nowDouble();
                             let groupByResult;
                             let timeFinish = 0;
