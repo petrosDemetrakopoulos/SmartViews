@@ -772,7 +772,7 @@ function averageObjects(ob1, ob2) {
 app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
-    let python = true;
+    let python = false;
     if(contract) {
         let timeStart = 0;
         contract.methods.dataId().call(function (err,latestId) {
@@ -798,7 +798,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                 });
                             } else {
                                 //CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
-                                getAllFactsHeavy(latestId).then(retval => {
+                                getAllFacts(latestId).then(retval => {
                                     // get (fact.timestamp > latestGroupBy timestamp)
                                     let deltas = [];
                                     for (var i = 0; i < retval.length; i++){
@@ -899,7 +899,8 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                         });
                     } else {
                         //NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
-                        getAllFactsHeavy(latestId).then(retval => {
+                        getAllFacts(latestId).then(retval => {
+                            console.log(retval);
                             timeStart = microtime.nowDouble();
                             let groupByResult;
                             let timeFinish = 0;
@@ -908,9 +909,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                 gas: 15000000,
                                 gasPrice: '30000000000000'
                             };
-                            let dt = require("./dataset_1k.json");
+                           // let dt = require("./dataset_1k.json");
                             if(python) {
-                                calculateGBPython("./dataset_1k.json", req.params.field, req.params.aggregateField, req.params.operation, function (results, err) {
+                                calculateGBPython(retval, req.params.field, req.params.aggregateField, req.params.operation, function (results, err) {
                                     if(err){
                                         console.log(err);
                                     }
@@ -945,8 +946,11 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                         });
                                 });
                             } else {
-                                let groupByResult = groupBy(dt, req.params.field);
+                                let groupByResult = groupBy(retval, req.params.field);
                                 groupByResult = transformGB(groupByResult, req.params.operation, req.params.aggregateField);
+                                console.log("*****");
+                                console.log(groupByResult);
+                                console.log("*****");
                                 timeFinish = microtime.nowDouble();
                                 groupByResult = JSON.stringify(groupByResult);
                                 md5sum = crypto.createHash('md5');
