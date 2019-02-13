@@ -1,0 +1,13 @@
+{
+    "extends": "standard",
+    "rules": {
+        "max-len": [2, 120,
+            {
+                "ignoreUrls": true
+            }
+        ],
+        "camelcase": ["error", {"properties": "never"}]
+    }
+}
+
+
