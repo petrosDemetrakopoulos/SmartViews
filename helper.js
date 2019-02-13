@@ -48,7 +48,7 @@ function minObjects(ob1, ob2) {
     });
     min["operation"] = ob1["operation"];
     min["field"] = ob1["field"];
-    return max;
+    return min;
 }
 
 module.exports = {
