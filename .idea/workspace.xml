@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="" />
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -25,8 +27,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="13" selection-start-column="13" selection-end-column="13" />
+            <state relative-caret-position="30">
+              <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -301,7 +303,7 @@
       <workItem from="1547739035738" duration="2868000" />
       <workItem from="1547748030309" duration="6926000" />
       <workItem from="1550061156030" duration="9010000" />
-      <workItem from="1550073500119" duration="1353000" />
+      <workItem from="1550073500119" duration="1586000" />
     </task>
     <task id="LOCAL-00001" summary="ui fixes">
       <created>1541683666597</created>
@@ -520,18 +522,25 @@
       <option name="project" value="LOCAL" />
       <updated>1550074828183</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="removed node_modules">
+      <created>1550074979604</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1550074979604</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="244150000" />
+    <option name="totallyTimeSpent" value="244383000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="825" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.786385" visible="true" weight="0.19027181" />
-      <window_info id="Structure" order="1" sideWeight="0.21361503" side_tool="true" visible="true" weight="0.19027181" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7851711" visible="true" weight="0.19027181" />
+      <window_info id="Structure" order="1" sideWeight="0.2148289" side_tool="true" visible="true" weight="0.19027181" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -545,7 +554,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3287858" />
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49427754" visible="true" weight="0.41882673" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49427754" visible="true" weight="0.28240108" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12017167" side_tool="true" weight="0.36834925" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -829,8 +838,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="13" selection-start-column="13" selection-end-column="13" />
+        <state relative-caret-position="30">
+          <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
         </state>
       </provider>
     </entry>
