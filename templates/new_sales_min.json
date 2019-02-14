@@ -20,5 +20,30 @@
     ],
     "create_table": "CREATE TEMPORARY TABLE SalesTemp(\n\tOnlineSalesKey int not null\n\t\tprimary key,\n\tBrandName varchar(50) charset utf8 null,\n\tProductCategoryName varchar(30) charset utf8 null,\n\tUnitPrice float null\n);\n\n",
     "table_name": "SalesTemp"
+  },
+  "groupBys": {
+    "TOP": {
+      "fields": "BrandName | ProductCategoryName | UnitPrice",
+      "children": [
+        {"fields": "BrandName | ProductCategoryName",
+          "children": [
+            {"fields": "BrandName"},
+            {"fields": "ProductCategoryName"}
+          ]
+        },
+        {"fields": "ProductCategoryName | UnitPrice",
+          "children": [
+            {"fields": "ProductCategoryName"},
+            {"fields": "UnitPrice"}
+          ]
+        },
+        {"fields": "BrandName | UnitPrice",
+          "children": [
+            {"fields": "BrandName"},
+            {"fields": "UnitPrice"}
+          ]
+        }
+      ]
+    }
   }
 }

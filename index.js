@@ -135,7 +135,27 @@ app.get('/python', function (req,res) {
 
 });
 
+function flatten(items) {
+    const flat = [];
 
+    items.forEach(item => {
+        flat.push(item);
+        if (Array.isArray(item.children) && item.children.length > 0) {
+            flat.push(...flatten(item.children));
+            delete item.children
+        }
+        delete item.children
+    });
+
+    return flat;
+}
+
+function removeDuplicates(arr) {
+    let unique_array = arr.filter(function(elem, index, self) {
+        return index === self.indexOf(elem);
+    });
+    return unique_array
+}
 
 app.get('/form/:contract', function(req, res) {
     let fact_tbl = require('./templates/' + req.params.contract);
@@ -152,7 +172,16 @@ app.get('/form/:contract', function(req, res) {
             break;
         }
     }
-    res.render("form",{"template":templ, "name": fact_tbl.name, "address": address});
+    let fbsField = fact_tbl.groupBys.TOP.children;
+
+    let groupBys = flatten(fbsField);
+    groupBys = groupBys.map(function (obj) {
+        return obj.fields;
+    });
+    groupBys = removeDuplicates(groupBys);
+    groupBys.push(fact_tbl.groupBys.TOP.fields);
+    console.log(groupBys);
+    res.render("form",{"template":templ, "name": fact_tbl.name, "address": address, "groupBys":groupBys});
 });
 
 http.listen(3000, () => console.log(`Example app listening on http://localhost:3000`));
@@ -648,44 +677,69 @@ app.post('/addFacts', function (req,res) {
 });
 
 function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
+    console.log(groupByResult);
+    console.log(gbField);
     let transformed = {};
     if (operation === 'COUNT') {
         console.log("OPERATION = COUNT");
         for (let i = 0; i < groupByResult.length; i++) {
-            transformed[groupByResult[i][gbField]] = groupByResult[i]['COUNT(' + aggregateField + ')'];
+            console.log("////");
+            let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
+            delete groupByResult[i]['COUNT(' + aggregateField + ')'];
+            let filtered = groupByResult[i];
+            transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'COUNT';
     } else if (operation === "SUM") {
         console.log("OPERATION = SUM");
-        for(let i = 0; i < groupByResult.length; i++) {
-            transformed[groupByResult[i][gbField]] = groupByResult[i]['SUM(' + aggregateField + ')'];
+        for (let i = 0; i < groupByResult.length; i++) {
+            console.log("////");
+            let crnCount = groupByResult[i]['SUM(' + aggregateField + ')'];
+            delete groupByResult[i]['SUM(' + aggregateField + ')'];
+            let filtered = groupByResult[i];
+            transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'SUM';
         transformed["field"] = aggregateField;
     }  else if (operation === "MIN"){
         console.log("OPERATION = MIN");
-        for(let i = 0; i < groupByResult.length; i++) {
-            transformed[groupByResult[i][gbField]] = groupByResult[i]['MIN(' + aggregateField + ')'];
+        for (let i = 0; i < groupByResult.length; i++) {
+            console.log("////");
+            let crnCount = groupByResult[i]['MIN(' + aggregateField + ')'];
+            delete groupByResult[i]['MIN(' + aggregateField + ')'];
+            let filtered = groupByResult[i];
+            transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'MIN';
         transformed["field"] = aggregateField;
     } else if (operation === "MAX") {
         console.log("OPERATION = MAX");
-        for(let i = 0; i < groupByResult.length; i++){
-            transformed[groupByResult[i][gbField]] = groupByResult[i]['MAX(' + aggregateField + ')'];
+        for (let i = 0; i < groupByResult.length; i++) {
+            console.log("////");
+            let crnCount = groupByResult[i]['MAX(' + aggregateField + ')'];
+            delete groupByResult[i]['MAX(' + aggregateField + ')'];
+            let filtered = groupByResult[i];
+            transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'MAX';
         transformed['field'] = aggregateField;
-    } else { //AVERAGE
+    } else { // AVERAGE
         console.log("OPERATION = AVERAGE");
-        for(let i = 0; i < groupByResult.length; i++){
-            transformed[groupByResult[i][gbField]] = groupByResult[i]['SUM(' + aggregateField + ')'] / groupByResult[i]['COUNT(' + aggregateField + ')'];
+
+        for (let i = 0; i < groupByResult.length; i++) {
+            console.log("////");
+            let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
+            let crnSum = groupByResult[i]['SUM(' + aggregateField + ')'];
+            delete groupByResult[i]['COUNT(' + aggregateField + ')'];
+            delete groupByResult[i]['SUM(' + aggregateField + ')'];
+            let filtered = groupByResult[i];
+            transformed[JSON.stringify(filtered)] = crnSum / crnCount;
         }
+
         transformed['operation'] = 'AVERAGE';
         transformed['field'] = aggregateField;
     }
     return transformed;
-
 }
 
 function transformGB(groupByResult, operation, aggregateField){
@@ -830,7 +884,13 @@ function averageObjects(ob1, ob2) {
 app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
-
+    let gbFields = [];
+    if(req.params.field.indexOf('|') > -1){
+        // more than 1 group by fields
+        gbFields = req.params.field.split('|');
+    } else {
+        gbFields.push(req.params.field);
+    }
     let python = false;
     if(contract) {
         let timeStart = 0;
@@ -934,8 +994,8 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                 gbQuery = jsonSql.build({
                                                     type: 'select',
                                                     table: tableName,
-                                                    group: req.params.field,
-                                                    fields: [ {field: {name: req.params.field, table: tableName}},
+                                                    group: gbFields,
+                                                    fields: [ gbFields,
                                                         {func: {
                                                                 name: 'SUM',
                                                                 args: [
@@ -955,8 +1015,8 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                 gbQuery = jsonSql.build({
                                                     type: 'select',
                                                     table: tableName,
-                                                    group: req.params.field,
-                                                    fields: [{field: {name: req.params.field, table: tableName}},
+                                                    group: gbFields,
+                                                    fields: [gbFields,
                                                         {
                                                             func: {
                                                                 name: req.params.operation,
@@ -971,7 +1031,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                             connection.query(editedGB, function (error, results3, fields) {
                                                 connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
                                                     if(!err){
-                                                        let deltaGroupBy = transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, req.params.field);
+                                                        let deltaGroupBy = transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, gbFields);
                                                         client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                                             if (error) {
                                                                 console.log(error);
@@ -1122,8 +1182,8 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                         gbQuery = jsonSql.build({
                                             type: 'select',
                                             table: tableName,
-                                            group: req.params.field,
-                                            fields: [ {field: {name: req.params.field, table: tableName}},
+                                            group: gbFields,
+                                            fields: [ gbFields,
                                                 {func: {
                                                         name: 'SUM',
                                                         args: [
@@ -1143,8 +1203,8 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                         gbQuery = jsonSql.build({
                                             type: 'select',
                                             table: tableName,
-                                            group: req.params.field,
-                                            fields: [{field: {name: req.params.field, table: tableName}},
+                                            group: gbFields,
+                                            fields: [gbFields,
                                                 {
                                                     func: {
                                                         name: req.params.operation,
@@ -1159,7 +1219,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     connection.query(editedGB, function (error, results3, fields) {
                                         connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
                                             if(!err){
-                                                let groupBySqlResult = transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, req.params.field);
+                                                let groupBySqlResult = transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, gbFields);
                                                 let timeFinish = microtime.nowDouble();
                                                 md5sum = crypto.createHash('md5');
                                                 md5sum.update(JSON.stringify(groupBySqlResult));

@@ -189,8 +189,8 @@
                                 <div class="form-group">
                                     <label>Field for group by</label>
                                     <select class="form-control" id="fieldSelect">
-                                        <% for(let i = 0; i < template.properties.length; i++) {%>
-                                        <option><%=template.properties[i].key%></option>
+                                        <% for(let i = 0; i < groupBys.length; i++) {%>
+                                        <option><%=groupBys[i]%></option>
                                         <%}%>
                                     </select>
                                     <label>Operation</label>
@@ -214,29 +214,21 @@
                                     <button class="btn btn-primary disabled" id="buttonGroupBy">Group by</button>
                                 <%}%>
                             </div>
-                            <!-- /.col-lg-6 (nested) -->
                             <div class="col-lg-6">
                                 <label>Output</label>
                                 <textarea readonly id="outputGB" class="form-control" rows="7"></textarea>
                                 <label>Execution Time: </label> <p id="executionTime"></p>
                             </div>
-                            <!-- /.col-lg-6 (nested) -->
                         </div>
-                        <!-- /.row (nested) -->
                     </div>
-                    <!-- /.panel-body -->
                 </div>
-                <!-- /.panel -->
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
+
     </div>
     <!-- /#page-wrapper -->
-
 </div>
 <!-- /#wrapper -->
-
 <!-- jQuery -->
 <script src="../vendor/jquery/jquery.min.js"></script>
 
@@ -337,14 +329,15 @@
         xhttpDep.send();
     }
 
-    function groupBy(field, operatiob, aggregateField) {
+    function groupBy(field, operation, aggregateField) {
         var xhttp = new XMLHttpRequest();
+        field = field.replace(" ","");
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 $("#outputGB").val(this.responseText);
             }
         };
-        xhttp.open("GET", "/groupby/" + field + "/" + operatiob + "/" + aggregateField, true);
+        xhttp.open("GET", "/groupby/" + field + "/" + operation + "/" + aggregateField, true);
         xhttp.send();
     }
 
