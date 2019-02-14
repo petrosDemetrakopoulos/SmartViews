@@ -258,6 +258,7 @@ app.get('/load_dataset/:dt', function(req, res) {
             addManyFacts(dt).then(retval => {
                 console.log(retval);
                 console.log("DONE");
+                running = false;
                 res.send("DONE");
             }).catch(error => {
                 console.log(error);
@@ -910,37 +911,134 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                         });
                                     });
                                 } else {
-                                    let deltaGroupBy = groupBy(deltas, req.params.field);
-                                    deltaGroupBy = transformGB(deltaGroupBy, req.params.operation, req.params.aggregateField);
-                                    client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
-                                        if (error) {
-                                            console.log(error);
-                                            res.send(error);
-                                        } else {
-                                            console.log('GET result ->' + cachedGroupBy);
 
-                                            //IF COUNT / SUM -> ADD
-                                            //ELIF MIN -> NEW_MIN = MIN OF MINS
-
-                                            let ObCachedGB = JSON.parse(cachedGroupBy);
-                                            let updatedGB = {};
-                                            if(ObCachedGB["operation"] === "SUM"){
-                                                updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
-                                            } else if(ObCachedGB["operation"] === "COUNT"){
-                                                updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
-                                            } else if(ObCachedGB["operation"] === "MAX"){
-                                                updatedGB = maxObjects(ObCachedGB,deltaGroupBy)
-                                            } else if(ObCachedGB["operation"] === "MIN"){
-                                                updatedGB = minObjects(ObCachedGB,deltaGroupBy)
-                                            } else { //AVERAGE
-                                                updatedGB = averageObjects(ObCachedGB,deltaGroupBy)
-                                            }
-                                            let timeFinish = microtime.nowDouble();
-                                            client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
-                                            updatedGB.executionTime = timeFinish - timeStart;
-                                            res.send(JSON.stringify(updatedGB));
+                                    // calculate groupby for deltas in SQL
+                                    connection.query(createTable, function (error, results, fields) {
+                                        if (error) throw error;
+                                        for(let i = 0; i < deltas.length; i++){
+                                            delete deltas[i].timestamp;
                                         }
+
+                                        let sql = jsonSql.build({
+                                            type: 'insert',
+                                            table: tableName,
+                                            values: deltas
+                                        });
+
+                                        let editedQuery = sql.query.replace(/"/g, "");
+                                        editedQuery = editedQuery.replace(/''/g, "null");
+                                        console.log(editedQuery);
+                                        connection.query(editedQuery, function (error, results2, fields) {
+                                            let gbQuery = null;
+                                            if(req.params.operation === 'AVERAGE'){
+                                                gbQuery = jsonSql.build({
+                                                    type: 'select',
+                                                    table: tableName,
+                                                    group: req.params.field,
+                                                    fields: [ {field: {name: req.params.field, table: tableName}},
+                                                        {func: {
+                                                                name: 'SUM',
+                                                                args: [
+                                                                    {field: req.params.aggregateField}
+                                                                ]
+                                                            }
+                                                        },
+                                                        {func: {
+                                                                name: 'COUNT',
+                                                                args: [
+                                                                    {field: req.params.aggregateField}
+                                                                ]
+                                                            }
+                                                        }]
+                                                });
+                                            } else {
+                                                gbQuery = jsonSql.build({
+                                                    type: 'select',
+                                                    table: tableName,
+                                                    group: req.params.field,
+                                                    fields: [{field: {name: req.params.field, table: tableName}},
+                                                        {
+                                                            func: {
+                                                                name: req.params.operation,
+                                                                args: [
+                                                                    {field: req.params.aggregateField}
+                                                                ]
+                                                            }
+                                                        }]
+                                                });
+                                            }
+                                            let editedGB = gbQuery.query.replace(/"/g, "");
+                                            connection.query(editedGB, function (error, results3, fields) {
+                                                connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                                                    if(!err){
+                                                        let deltaGroupBy = transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, req.params.field);
+                                                        client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
+                                                            if (error) {
+                                                                console.log(error);
+                                                                res.send(error);
+                                                            } else {
+                                                                console.log('GET result ->' + cachedGroupBy);
+                                                                //IF COUNT / SUM -> ADD
+                                                                //ELIF MIN -> NEW_MIN = MIN OF MINS
+
+                                                                let ObCachedGB = JSON.parse(cachedGroupBy);
+                                                                let updatedGB = {};
+                                                                if(ObCachedGB["operation"] === "SUM"){
+                                                                    updatedGB = sumObjects(ObCachedGB, deltaGroupBy);
+                                                                } else if(ObCachedGB["operation"] === "COUNT"){
+                                                                    updatedGB = sumObjects(ObCachedGB, deltaGroupBy);
+                                                                } else if(ObCachedGB["operation"] === "MAX"){
+                                                                    updatedGB = maxObjects(ObCachedGB, deltaGroupBy)
+                                                                } else if(ObCachedGB["operation"] === "MIN"){
+                                                                    updatedGB = minObjects(ObCachedGB, deltaGroupBy)
+                                                                } else { //AVERAGE
+                                                                    updatedGB = averageObjects(ObCachedGB, deltaGroupBy)
+                                                                }
+                                                                let timeFinish = microtime.nowDouble();
+                                                                client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
+                                                                updatedGB.executionTime = timeFinish - timeStart;
+                                                                res.send(JSON.stringify(updatedGB));
+                                                            }
+                                                        });
+                                                    } else {
+                                                        res.send("error");
+                                                    }
+                                                });
+                                            });
+                                        });
                                     });
+
+                                    // let deltaGroupBy = groupBy(deltas, req.params.field);
+                                    // deltaGroupBy = transformGB(deltaGroupBy, req.params.operation, req.params.aggregateField);
+                                    // client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
+                                    //     if (error) {
+                                    //         console.log(error);
+                                    //         res.send(error);
+                                    //     } else {
+                                    //         console.log('GET result ->' + cachedGroupBy);
+                                    //
+                                    //         //IF COUNT / SUM -> ADD
+                                    //         //ELIF MIN -> NEW_MIN = MIN OF MINS
+                                    //
+                                    //         let ObCachedGB = JSON.parse(cachedGroupBy);
+                                    //         let updatedGB = {};
+                                    //         if(ObCachedGB["operation"] === "SUM"){
+                                    //             updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
+                                    //         } else if(ObCachedGB["operation"] === "COUNT"){
+                                    //             updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
+                                    //         } else if(ObCachedGB["operation"] === "MAX"){
+                                    //             updatedGB = maxObjects(ObCachedGB,deltaGroupBy)
+                                    //         } else if(ObCachedGB["operation"] === "MIN"){
+                                    //             updatedGB = minObjects(ObCachedGB,deltaGroupBy)
+                                    //         } else { //AVERAGE
+                                    //             updatedGB = averageObjects(ObCachedGB,deltaGroupBy)
+                                    //         }
+                                    //         let timeFinish = microtime.nowDouble();
+                                    //         client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
+                                    //         updatedGB.executionTime = timeFinish - timeStart;
+                                    //         res.send(JSON.stringify(updatedGB));
+                                    //     }
+                                    // });
                                 }
 
                                 //      console.log("DELTAS GB---->");
@@ -1005,7 +1103,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                             // console.log(retval);
                             connection.query(createTable, function (error, results, fields) {
                                 if (error) throw error;
-                                console.log('The solution is: ', results);
                                 for(let i =0; i < retval.length; i++){
                                     delete retval[i].timestamp;
                                 }

@@ -324,7 +324,7 @@
             if (this.readyState <= 3) {
                 $('#status').html("Importing data...");
             }
-            if (this.readyState === 4 && this.status === 200) {;
+            if (this.readyState === 4 && this.status === 200) {
                 $('#status').html("Data imported: " + this.responseText);
                 $('#status').css({"color": 'green', "font-weight": "bold"});
                 $("#prompt").remove();
