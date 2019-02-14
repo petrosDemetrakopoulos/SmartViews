@@ -12,16 +12,13 @@
         "key": "BrandName"
       },
       {
-        "key": "ColorName"
-      },
-      {
         "key": "ProductCategoryName"
       },
       {
         "key": "UnitPrice"
       }
     ],
-    "create_table": "CREATE TEMPORARY TABLE SalesTemp(\n\tOnlineSalesKey int not null\n\t\tprimary key,\n\tBrandName varchar(50) charset utf8 null,\n\tColorName varchar(20) charset utf8 null,\n\tProductCategoryName varchar(30) charset utf8 null,\n\tUnitPrice float null\n);\n\n",
+    "create_table": "CREATE TEMPORARY TABLE SalesTemp(\n\tOnlineSalesKey int not null\n\t\tprimary key,\n\tBrandName varchar(50) charset utf8 null,\n\tProductCategoryName varchar(30) charset utf8 null,\n\tUnitPrice float null\n);\n\n",
     "table_name": "SalesTemp"
   }
 }
