@@ -12,6 +12,7 @@ const csv = require("fast-csv");
 abiDecoder = require('abi-decoder');
 const app = express();
 const jsonParser = bodyParser.json();
+const helper = require('./helper');
 app.use(jsonParser);
 let running = false;
 app.engine('html', require('ejs').renderFile);
@@ -135,28 +136,6 @@ app.get('/python', function (req,res) {
 
 });
 
-function flatten(items) {
-    const flat = [];
-
-    items.forEach(item => {
-        flat.push(item);
-        if (Array.isArray(item.children) && item.children.length > 0) {
-            flat.push(...flatten(item.children));
-            delete item.children
-        }
-        delete item.children
-    });
-
-    return flat;
-}
-
-function removeDuplicates(arr) {
-    let unique_array = arr.filter(function(elem, index, self) {
-        return index === self.indexOf(elem);
-    });
-    return unique_array
-}
-
 app.get('/form/:contract', function(req, res) {
     let fact_tbl = require('./templates/' + req.params.contract);
     let templ = {};
@@ -174,11 +153,11 @@ app.get('/form/:contract', function(req, res) {
     }
     let fbsField = fact_tbl.groupBys.TOP.children;
 
-    let groupBys = flatten(fbsField);
+    let groupBys = helper.flatten(fbsField);
     groupBys = groupBys.map(function (obj) {
         return obj.fields;
     });
-    groupBys = removeDuplicates(groupBys);
+    groupBys = helper.removeDuplicates(groupBys);
     groupBys.push(fact_tbl.groupBys.TOP.fields);
     console.log(groupBys);
     res.render("form",{"template":templ, "name": fact_tbl.name, "address": address, "groupBys":groupBys});
@@ -803,77 +782,6 @@ function transformGB(groupByResult, operation, aggregateField){
     return groupByResult;
 }
 
-function sumObjects(ob1, ob2) {
-    let sum = {};
-
-    Object.keys(ob1).forEach(key => {
-        if (key !== "operation" && key !== "field") {
-            if (ob2.hasOwnProperty(key)) {
-                sum[key] = ob1[key] + ob2[key]
-            }
-        }
-    });
-    sum["operation"] = ob1["operation"];
-    sum["field"] = ob1["field"];
-    return sum;
-}
-
-function maxObjects(ob1, ob2) {
-    let max = {};
-
-    Object.keys(ob1).forEach(key => {
-        if (key !== "operation" && key !== "field") {
-            if (ob2.hasOwnProperty(key)) {
-                if(ob1[key] >= ob2[key]) {
-                    max[key] = ob1[key];
-                } else {
-                    max[key] = ob2[key];
-                }
-            }
-        }
-    });
-    max["operation"] = ob1["operation"];
-    max["field"] = ob1["field"];
-    return max;
-}
-
-function minObjects(ob1, ob2) {
-    let min = {};
-
-    Object.keys(ob1).forEach(key => {
-        if(key !== "operation" && key !== "field") {
-            if (ob2.hasOwnProperty(key)) {
-                if(ob1[key] <= ob2[key]) {
-                    min[key] = ob1[key];
-                } else {
-                    min[key] = ob2[key];
-                }
-            }
-        }
-    });
-    min["operation"] = ob1["operation"];
-    min["field"] = ob1["field"];
-    return min;
-}
-
-function averageObjects(ob1, ob2) {
-    let avg = {};
-
-    Object.keys(ob1).forEach(key => {
-        if(key !== "operation" && key !== "field") {
-            if (ob2.hasOwnProperty(key)) {
-                let sum_new = ob1[key]["sum"] + ob2[key]["sum"];
-                let count_new = ob1[key]["count"] + ob2[key]["count"];
-                let avg_new = sum_new / count_new;
-                avg[key] = {"average": avg_new, "count": count_new, "sum": sum_new};
-            }
-        }
-    });
-    avg["operation"] = ob1["operation"];
-    avg["field"] = ob1["field"];
-    return avg;
-}
-
 app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
@@ -911,15 +819,14 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     console.log(cachedGroupBy);
                                     console.log("**");
                                     let containsAllFields = true;
-                                    for(let i = 0; i < gbFields.length; i++){
-                                        if(!cachedGroupBy.groupByFields.includes(gbFields[i])){
+                                    for (let i = 0; i < gbFields.length; i++) {
+                                        if (!cachedGroupBy.groupByFields.includes(gbFields[i])) {
                                             containsAllFields = false
                                         }
                                     }
                                     if(containsAllFields && cachedGroupBy.groupByFields.length !== gbFields.length) { //it is a different groupby thna the stored
-                                        console.log("containsAllFields = true");
-                                        if(cachedGroupBy.field === req.params.aggregateField &&
-                                            req.params.operation === cachedGroupBy.operation){
+                                        if (cachedGroupBy.field === req.params.aggregateField &&
+                                            req.params.operation === cachedGroupBy.operation) {
                                             let transformedArray = [];
                                             let originalArray = [];
                                             let i = 0;
@@ -946,8 +853,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                 }
                                                 console.log("transformed array = " + transformedArray);
                                                 console.log("original array = " + originalArray);
-                                                // key: the name of the object key
-                                                // index: the ordinal position of the key within the object
                                             });
                                             let uniqueKeys = new Set(transformedArray);
                                             let uniqueKeysArray = Array.from(uniqueKeys);
@@ -968,7 +873,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                             console.log(uniqueKeysArray);
                                             console.log(sumPerKey);
                                             res.send(JSON.stringify(respObj));
-                                            //res.send('logic to incrementally calculate the new gb');
                                         }
                                     } else {
                                         console.log("getting it from redis");
@@ -1027,15 +931,15 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                 let ObCachedGB = JSON.parse(cachedGroupBy);
                                                 let updatedGB = {};
                                                 if(ObCachedGB["operation"] === "SUM"){
-                                                    updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
+                                                    updatedGB = helper.sumObjects(ObCachedGB,deltaGroupBy);
                                                 } else if(ObCachedGB["operation"] === "COUNT"){
-                                                    updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
+                                                    updatedGB = helper.sumObjects(ObCachedGB,deltaGroupBy);
                                                 } else if(ObCachedGB["operation"] === "MAX"){
-                                                    updatedGB = maxObjects(ObCachedGB,deltaGroupBy)
+                                                    updatedGB = helper.maxObjects(ObCachedGB,deltaGroupBy)
                                                 } else if(ObCachedGB["operation"] === "MIN"){
-                                                    updatedGB = minObjects(ObCachedGB,deltaGroupBy)
+                                                    updatedGB = helper.minObjects(ObCachedGB,deltaGroupBy)
                                                 } else { //AVERAGE
-                                                    updatedGB = averageObjects(ObCachedGB,deltaGroupBy)
+                                                    updatedGB = helper.averageObjects(ObCachedGB,deltaGroupBy)
                                                 }
                                                 let timeFinish = microtime.nowDouble();
                                                 client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
@@ -1118,15 +1022,15 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                                 let ObCachedGB = JSON.parse(cachedGroupBy);
                                                                 let updatedGB = {};
                                                                 if(ObCachedGB["operation"] === "SUM"){
-                                                                    updatedGB = sumObjects(ObCachedGB, deltaGroupBy);
+                                                                    updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
                                                                 } else if(ObCachedGB["operation"] === "COUNT"){
-                                                                    updatedGB = sumObjects(ObCachedGB, deltaGroupBy);
+                                                                    updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
                                                                 } else if(ObCachedGB["operation"] === "MAX"){
-                                                                    updatedGB = maxObjects(ObCachedGB, deltaGroupBy)
+                                                                    updatedGB = helper.maxObjects(ObCachedGB, deltaGroupBy)
                                                                 } else if(ObCachedGB["operation"] === "MIN"){
-                                                                    updatedGB = minObjects(ObCachedGB, deltaGroupBy)
-                                                                } else { //AVERAGE
-                                                                    updatedGB = averageObjects(ObCachedGB, deltaGroupBy)
+                                                                    updatedGB = helper.minObjects(ObCachedGB, deltaGroupBy)
+                                                                } else { // AVERAGE
+                                                                    updatedGB = helper.averageObjects(ObCachedGB, deltaGroupBy)
                                                                 }
                                                                 let timeFinish = microtime.nowDouble();
                                                                 client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
