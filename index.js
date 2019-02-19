@@ -8,7 +8,7 @@ const dataset = require('./dataset_1k');
 let fact_tbl = require('./templates/fact_tbl');
 const crypto = require('crypto');
 let md5sum = crypto.createHash('md5');
-const csv = require("fast-csv");
+const csv = require('fast-csv');
 abiDecoder = require('abi-decoder');
 const app = express();
 const jsonParser = bodyParser.json();
@@ -22,14 +22,14 @@ app.use(express.static('public'));
 const microtime = require('microtime');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
-const csvtojson = require("csvtojson");
+const csvtojson = require('csvtojson');
 const jsonSql = require('json-sql')({separatedValues: false});
 
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 const redis = require('redis');
-const client = redis.createClient(6379,"127.0.0.1");
-client.on('connect', function(){
+const client = redis.createClient(6379,'127.0.0.1');
+client.on('connect', function () {
     console.log('Redis client connected');
 });
 
@@ -42,7 +42,7 @@ let connection = mysql.createConnection({
 });
 let createTable = '';
 let tableName = '';
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) {
         console.error('error connecting to mySQL: ' + err.stack);
         return;
@@ -62,69 +62,69 @@ let contract = null;
 let DataHandler = null;
 let acc = null;
 app.get('/', function (req,res) {
-    fs.readdir('./templates', function(err, items) {
-        res.render("index",{"templates":items});
+    fs.readdir('./templates', function (err, items) {
+        res.render('index',{'templates':items});
     });
 });
 
-io.on('connection', function(socket){
+io.on('connection', function (socket) {
     console.log('a user connected');
 });
 
-app.get('/dashboard', function(req, res) {
-    fs.readdir('./templates', function(err, items) {
+app.get('/dashboard', function (req, res) {
+    fs.readdir('./templates', function (err, items) {
         web3.eth.getBlockNumber().then(blockNum => {
-            res.render("dashboard",{"templates":items, "blockNum": blockNum});
+            res.render('dashboard',{'templates':items, 'blockNum': blockNum});
         });
     });
 });
 
-app.get('/benchmark', function(req,res) {
-    // var stream = fs.createReadStream("../dataset.csv");
-    csvtojson({delimiter:"|"})
-        .fromFile("../dataset.csv")
+app.get('/benchmark', function (req, res) {
+    // var stream = fs.createReadStream('../dataset.csv');
+    csvtojson({delimiter:'|'})
+        .fromFile('../dataset.csv')
         .then((jsonObj)=>{
             console.log(jsonObj);
             let timeStart = microtime.nowDouble();
-            let gbResult = groupBy(jsonObj,"Occupation");
-            console.log(microtime.nowDouble() - timeStart + " seconds");
+            let gbResult = groupBy(jsonObj,'Occupation');
+            console.log(microtime.nowDouble() - timeStart + ' seconds');
             res.send(gbResult);
             /**
              * [
-             * 	{a:"1", b:"2", c:"3"},
-             * 	{a:"4", b:"5". c:"6"}
+             * 	{a:'1', b:'2', c:'3'},
+             * 	{a:'4', b:'5'. c:'6'}
              * ]
              */
         });
 });
 
-function calculateGBPython(data, gbField, aggregateField, operation, cb){
-    let spawn = require("child_process").spawn;
-    let process = spawn('python', ["./gb.py", data, gbField, aggregateField, operation]);
+function calculateGBPython(data, gbField, aggregateField, operation, cb) {
+    let spawn = require('child_process').spawn;
+    let process = spawn('python', ['./gb.py', data, gbField, aggregateField, operation]);
     let result = '';
     try {
-        process.stdout.on('data', function(data) {
+        process.stdout.on('data', function (data) {
             console.log(data.toString());
             result += data.toString();
         });
-        process.on('exit', function() {
+        process.on('exit', function () {
             return cb(result)
         });
-    } catch(e){
-        process.stdout.on('error', function(err) {
+    } catch(e) {
+        process.stdout.on('error', function (err) {
             return cb(null,err);
         });
     }
 }
 
 app.get('/python', function (req,res) {
-    let spawn = require("child_process").spawn;
-    let process = spawn('python', ["./gb.py", jsonData]);
+    let spawn = require('child_process').spawn;
+    let process = spawn('python', ['./gb.py', jsonData]);
 
-    process.stdout.on('data', function(data) {
+    process.stdout.on('data', function (data) {
         res.send(data.toString());
     });
-    process.stdout.on('error', function(error) {
+    process.stdout.on('error', function (error) {
         console.log(error);
         res.send(error.toString());
     });
@@ -136,15 +136,15 @@ app.get('/python', function (req,res) {
 
 });
 
-app.get('/form/:contract', function(req, res) {
+app.get('/form/:contract', function (req, res) {
     let fact_tbl = require('./templates/' + req.params.contract);
     let templ = {};
-    if('template' in fact_tbl){
+    if ('template' in fact_tbl) {
         templ = fact_tbl['template'];
     } else {
         templ = fact_tbl;
     }
-    let address = "0";
+    let address = '0';
     for (let i = 0; i < contractsDeployed.length; i++) {
         if (contractsDeployed[i].contractName === fact_tbl.name) {
             address = contractsDeployed[i].address;
@@ -160,12 +160,12 @@ app.get('/form/:contract', function(req, res) {
     groupBys = helper.removeDuplicates(groupBys);
     groupBys.push(fact_tbl.groupBys.TOP.fields);
     console.log(groupBys);
-    res.render("form",{"template":templ, "name": fact_tbl.name, "address": address, "groupBys":groupBys});
+    res.render('form',{'template':templ, 'name': fact_tbl.name, 'address': address, 'groupBys':groupBys});
 });
 
 http.listen(3000, () => console.log(`Example app listening on http://localhost:3000`));
 
-async function deploy(account, contractPath){
+async function deploy(account, contractPath) {
     const input = fs.readFileSync(contractPath);
     const output = solc.compile(input.toString(), 1);
     console.log(output);
@@ -196,39 +196,39 @@ async function deploy(account, contractPath){
     return contractInstance.options;
 }
 
-app.get('/readFromFile', function(req, res) {
+app.get('/readFromFile', function (req, res) {
     csv
-        .fromPath("dataset.txt",{delimiter: "|"})
-        .on("data", function(data){
+        .fromPath('dataset.txt',{delimiter: '|'})
+        .on('data', function (data) {
             console.log(data);
         })
-        .on("end", function(){
-            console.log("done");
-            res.send("done");
-        });
+        .on('end', function () {
+            console.log('done');
+            res.send('done');
+        })
 });
 
-app.get('/deployContract/:fn', function(req, res) {
-    web3.eth.getAccounts(function(err,accounts) {
+app.get('/deployContract/:fn', function (req, res) {
+    web3.eth.getAccounts(function (err, accounts) {
         if (!err) {
             acc = accounts[1];
             console.log(req.params.fn);
             deploy(accounts[0], './contracts/' + req.params.fn)
                 .then(options => {
                     console.log('Success');
-                    res.send({status:"OK", options: options});
+                    res.send({status:'OK', options: options});
                 })
                 .catch(err => {
                     console.log('error on deploy ' + err);
                     res.status(400);
-                    res.send({status:"ERROR", options: "Deployment failed"});
-                });
+                    res.send({status:'ERROR', options: 'Deployment failed'});
+                })
         }
     });
 });
 
-async function addManyFacts(facts){
-    console.log("length = " + facts.length);
+async function addManyFacts(facts) {
+    console.log('length = ' + facts.length);
     const transactionObject = {
         from: acc,
         gas: 1500000,
@@ -236,7 +236,7 @@ async function addManyFacts(facts){
     };
     let proms = [];
     let i = 0;
-    for (const fact of facts){
+    for (const fact of facts) {
         let strFact = JSON.stringify(fact);
         let transPromise = await contract.methods.addFact(strFact).send(transactionObject, (err, txHash) => {
             //console.log('send:', err, txHash);
@@ -250,47 +250,47 @@ async function addManyFacts(facts){
                 // console.log('receipt:', receipt);
                 io.emit('progress', i/facts.length);
                 console.log(i);
-            });
+            })
         i++;
     }
-    // console.log("LOOP ENDED EXECUTING BATCH");
+    // console.log('LOOP ENDED EXECUTING BATCH');
     // batch.execute();
     return Promise.resolve(true);
 }
 
-app.get('/load_dataset/:dt', function(req, res) {
-    let dt = require("./" + req.params.dt);
-    if(contract) {
-        if(!running) {
+app.get('/load_dataset/:dt', function (req, res) {
+    let dt = require('./' + req.params.dt);
+    if (contract) {
+        if (!running) {
             running = true;
             addManyFacts(dt).then(retval => {
                 console.log(retval);
-                console.log("DONE");
+                console.log('DONE');
                 running = false;
-                res.send("DONE");
+                res.send('DONE');
             }).catch(error => {
                 console.log(error);
-            });
+            })
         }
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({status: 'ERROR',options: 'Contract not deployed' });
     }
 });
 
-app.get('/new_contract/:fn', function(req, res) {
+app.get('/new_contract/:fn', function (req, res) {
     let fact_tbl = require('./templates/' + req.params.fn);
     createTable = fact_tbl.template.create_table;
     tableName = fact_tbl.template.table_name;
-    let contrPayload = "";
-    let firstLine = "pragma solidity ^0.4.24;\npragma experimental ABIEncoderV2;\n";
-    let secondLine = "contract " + fact_tbl.name + " { \n";
-    let thirdLine = "\tuint public dataId;\n";
-    let fourthLine = "\tuint public groupId;\n\n";
-    let fifthLine = "\tuint public lastCount;\n" +
-        "\tuint public lastSUM;\n" +
-        "\tuint public lastMin;\n" +
-        "\tuint public lastMax;\n" +
+    let contrPayload = '';
+    let firstLine = 'pragma solidity ^0.4.24;\npragma experimental ABIEncoderV2;\n';
+    let secondLine = 'contract ' + fact_tbl.name + ' { \n';
+    let thirdLine = '\tuint public dataId;\n';
+    let fourthLine = '\tuint public groupId;\n\n';
+    let fifthLine = '\tuint public lastCount;\n' +
+        '\tuint public lastSUM;\n' +
+        '\tuint public lastMin;\n' +
+        '\tuint public lastMax;\n' +
         "\tuint public lastAverage;\n" +
         "\tbytes32 MIN_LITERAL = \"MIN\";\n" +
         "\tbytes32 MAX_LITERAL = \"MAX\";\n" +
@@ -308,7 +308,7 @@ app.get('/new_contract/:fn', function(req, res) {
         "\t}\n";
     let properties = "";
     let struct = "\tstruct " + fact_tbl.struct_Name + "{ \n";
-    for(let i =0; i < fact_tbl.properties.length; i++){
+    for(let i =0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         properties += "\t\t" + crnProp.data_type + " " + crnProp.key + ";\n";
     }
@@ -330,7 +330,7 @@ app.get('/new_contract/:fn', function(req, res) {
             addParams += crnProp.data_type + " " + crnProp.key + ",";
         }
     }
-    let retParams = "public returns (";
+    let retParams = 'public returns (';
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
@@ -340,7 +340,7 @@ app.get('/new_contract/:fn', function(req, res) {
         }
     }
     addFact = addFact + addParams + retParams;
-    let setters = "";
+    let setters = '';
     for (let i =0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         setters += "\t\tfacts[dataId]." + crnProp.key  + "= " +  crnProp.key + ";\n";
@@ -353,9 +353,9 @@ app.get('/new_contract/:fn', function(req, res) {
     }
     retStmt += "dataId -1);\n\t}\n\n";
 
-    let getParams = "";
+    let getParams = '';
     let getFact = "\tfunction getFact(uint id) public constant returns (";
-    let retVals = "";
+    let retVals = '';
     for (let i =0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
@@ -417,8 +417,8 @@ app.get('/new_contract/:fn', function(req, res) {
         "\t\t\treturn (\"\",0);\n" +
         "\t}\n\n";
 
-    let retValsLatest = "";
-    let getParamsLatest = "";
+    let retValsLatest = '';
+    let getParamsLatest = '';
     for (let i =0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
@@ -430,18 +430,18 @@ app.get('/new_contract/:fn', function(req, res) {
         }
     }
     let retFactLatest = "\t\t\treturn (" + retValsLatest ;
-    let emptyRetFactLatest = "";
+    let emptyRetFactLatest = '';
 
     for (let i =0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
-            if(crnProp.data_type === "string") {
+            if (crnProp.data_type === "string") {
                 emptyRetFactLatest += "\"\"" + ");\n\t";
             } else {
                 emptyRetFactLatest += "0" + ");\n\t";
             }
         } else {
-            if(crnProp.data_type === "string") {
+            if (crnProp.data_type === "string") {
                 emptyRetFactLatest += "\"\"" + ", ";
             } else {
                 emptyRetFactLatest += "0, ";
@@ -462,94 +462,91 @@ app.get('/new_contract/:fn', function(req, res) {
     let retValsAll = "";
     let assignements = "";
     let retStmtAll = "";
-    for(let i =0; i < fact_tbl.properties.length; i++){
+    for(let i =0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
             getParamsAll += crnProp.data_type + "[] " + crnProp.key +"s, uint[] timestamps" + "){\n";
             retValsAll += "\t\t" + crnProp.data_type + "[] memory " + crnProp.key + "ss = new " + crnProp.data_type + "[](id);\n";
             retValsAll += "\t\tuint[] memory timestampss = new uint[](id);\n";
-            assignements += "\t\t\t" +  crnProp.key + "ss[i] = fact." + crnProp.key+";\n";
-            assignements += "\t\t\t" +  "timestampss[i] = fact.timestamp;\n";
-            assignements += "\t\t}\n";
-            retStmtAll += crnProp.key + "ss,";
-            retStmtAll += "timestampss);\n"
+            assignements += "\t\t\t" +  crnProp.key + "ss[i] = fact." + crnProp.key+';\n';
+            assignements += '\t\t\t' +  'timestampss[i] = fact.timestamp;\n';
+            assignements += '\t\t}\n';
+            retStmtAll += crnProp.key + 'ss,';
+            retStmtAll += 'timestampss);\n'
         } else {
-            getParamsAll += crnProp.data_type + "[] " + crnProp.key + "s,";
-            retValsAll += "\t\t" + crnProp.data_type + "[] memory " + crnProp.key + "ss = new " + crnProp.data_type + "[](id);\n";
-            assignements += "\t\t\t" +  crnProp.key + "ss[i] = fact." + crnProp.key+";\n";
-            retStmtAll += crnProp.key + "ss,";
+            getParamsAll += crnProp.data_type + '[] ' + crnProp.key + 's,';
+            retValsAll += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](id);\n';
+            assignements += '\t\t\t' +  crnProp.key + 'ss[i] = fact.' + crnProp.key+';\n';
+            retStmtAll += crnProp.key + 'ss,';
         }
     }
-    let loopLine = "\t\tfor(uint i =0; i < id; i++){\n";
-    let firstLoopLine = "\t\t\t" + fact_tbl.struct_Name + " storage fact = facts[i];\n";
+    let loopLine = '\t\tfor(uint i =0; i < id; i++){\n';
+    let firstLoopLine = '\t\t\t' + fact_tbl.struct_Name + ' storage fact = facts[i];\n';
 
 
-    let getAllRet = "\t\treturn (";
+    let getAllRet = '\t\treturn (';
     getAllRet += retStmtAll;
-    loopLine += firstLoopLine + assignements + getAllRet + "\t}\n";
-
+    loopLine += firstLoopLine + assignements + getAllRet + '\t}\n';
 
     getAllFacts = getAllFacts + getParamsAll + retValsAll + loopLine;
 
-
-
-    contrPayload = firstLine + secondLine + thirdLine + fourthLine + fifthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy + getAllFacts +  "\n}";
-    fs.writeFile("contracts/" + fact_tbl.name + ".sol", contrPayload, function(err) {
-        if(err) {
-            res.send({msg:"error"});
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine + fifthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy + getAllFacts +  '\n}';
+    fs.writeFile('contracts/' + fact_tbl.name + '.sol', contrPayload, function (err) {
+        if (err) {
+            res.send({msg:'error'});
             return console.log(err);
         }
-        console.log("The file was saved!");
+        console.log('The file was saved!');
         let templ = {};
-        if('template' in fact_tbl){
+        if ('template' in fact_tbl) {
             templ = fact_tbl['template'];
         } else {
             templ = fact_tbl;
         }
-        res.send({msg:"OK","filename":fact_tbl.name + ".sol", "template":templ});
+        res.send({msg:'OK','filename':fact_tbl.name + '.sol', 'template':templ});
     });
 
 });
 
-app.get('/getFactById/:id', function (req,res) {
+app.get('/getFactById/:id', function (req, res) {
     if (contract) {
         contract.methods.getFact(parseInt(req.params.id,10)).call(function (err, result) {
             if (!err) {
                 let len  = Object.keys(result).length;
-                for(let  j = 0; j < len /2; j ++){
+                for(let  j = 0; j < len /2; j ++) {
                     delete result[j];
                 }
                 res.send(result);
             } else {
                 console.log(err);
-                console.log("ERRRRRR");
+                console.log('ERRRRRR');
                 res.send(err);
             }
         })
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({status: 'ERROR',options: 'Contract not deployed' });
     }
 });
 
-app.get('/allFacts', function (req,res) {
+app.get('/allFacts', function (req, res) {
     getAllFactsHeavy(50).then(retval => {
         res.send(retval);
     }).catch(error => {
         console.log(error);
-    });
+    })
 });
 
-async function getAllFactsHeavy(factsLength){
+async function getAllFactsHeavy(factsLength) {
     let allFacts = [];
-    await contract.methods.getAllFacts(factsLength).call(function(err, result) {
-        if(!err){
+    await contract.methods.getAllFacts(factsLength).call(function (err, result) {
+        if (!err) {
             let len  = Object.keys(result).length;
-            for(let  j = 0; j < len /2; j ++){
+            for(let  j = 0; j < len /2; j ++) {
                 delete result[j];
             }
-            if('payloads' in result){
-                for(let i = 0; i < result['payloads'].length; i++){
+            if ('payloads' in result) {
+                for(let i = 0; i < result['payloads'].length; i++) {
                     let crnLn = JSON.parse(result['payloads'][i]);
                     crnLn.timestamp =  result['timestamps'][i];
                     allFacts.push(crnLn);
@@ -557,48 +554,48 @@ async function getAllFactsHeavy(factsLength){
             }
         } else {
             console.log(err);
-            console.log("ERRRRRR");
+            console.log('ERRRRRR');
         }
     });
     return allFacts;
 }
 
-async function getAllFacts(factsLength){
+async function getAllFacts(factsLength) {
     let allFacts = [];
     for (let i = 0; i < factsLength; i++) {
-        await contract.methods.facts(i).call(function(err, result2) {
-            if(!err){
+        await contract.methods.facts(i).call(function (err, result2) {
+            if (!err) {
                 let len  = Object.keys(result2).length;
-                for(let  j = 0; j < len /2; j ++){
+                for(let  j = 0; j < len /2; j ++) {
                     delete result2[j];
                 }
-                if('payload' in result2){
+                if ('payload' in result2) {
                     let crnLn = JSON.parse(result2['payload']);
                     crnLn.timestamp = result2['timestamp'];
                     allFacts.push(crnLn);
                 }
             } else {
                 console.log(err);
-                console.log("ERRRRRR");
+                console.log('ERRRRRR');
             }
         })
     }
     return allFacts;
 }
 
-app.get('/getallfacts', function(req, res) {
-    if(contract) {
-        contract.methods.dataId().call(function(err, result) {
-            console.log("********");
+app.get('/getallfacts', function (req, res) {
+    if (contract) {
+        contract.methods.dataId().call(function (err, result) {
+            console.log('********');
             console.log(result);
-            console.log("*****");
-            if(!err) {
+            console.log('*****');
+            if (!err) {
                 //async loop waiting to get all the facts separately
                 let timeStart = microtime.nowDouble();
                 getAllFactsHeavy(result).then(retval => {
-                    console.log("####");
-                    console.log("Get all facts time: " + (microtime.nowDouble() - timeStart) + "s");
-                    console.log("####");
+                    console.log('####');
+                    console.log('Get all facts time: ' + (microtime.nowDouble() - timeStart) + 's');
+                    console.log('####');
                     //retval.timeDone = microtime.nowDouble() - timeStart;
                     res.send(retval);
                 }).catch(error => {
@@ -606,52 +603,52 @@ app.get('/getallfacts', function(req, res) {
                 });
             } else {
                 console.log(err);
-                console.log("ERRRRRR");
+                console.log('ERRRRRR');
                 res.send(err);
             }
         })
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({status: 'ERROR',options: 'Contract not deployed' });
     }
 });
 
-app.get('/groupbyId/:id', function (req,res) {
-    if(contract) {
+app.get('/groupbyId/:id', function (req, res) {
+    if (contract) {
         contract.methods.getGroupBy(parseInt(req.params.id,10)).call(function (err, result) {
-            if(!err) {
+            if (!err) {
                 res.send(result)
             } else {
                 console.log(err);
-                console.log("ERRRRRR");
+                console.log('ERRRRRR');
                 res.send(err);
             }
         })
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({status: 'ERROR',options: 'Contract not deployed' });
     }
 });
 
-app.post('/addFacts', function (req,res) {
-    if(contract) {
-        if(req.body.products.length === req.body.quantities.length === req.body.customers.length) {
+app.post('/addFacts', function (req, res) {
+    if (contract) {
+        if (req.body.products.length === req.body.quantities.length === req.body.customers.length) {
             contract.methods.addFacts(req.body.products, req.body.quantities, req.body.customers).call(function (err, result) {
                 if (!err) {
                     res.send(result)
                 } else {
                     console.log(err);
-                    console.log("ERRRRRR");
+                    console.log('ERRRRRR');
                     res.send(err);
                 }
             })
         } else {
             res.status(400);
-            res.send({status: "ERROR",options: "Arrays must have the same dimension" });
+            res.send({status: 'ERROR',options: 'Arrays must have the same dimension' });
         }
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({status: 'ERROR',options: 'Contract not deployed' });
     }
 });
 
@@ -660,7 +657,7 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
     console.log(gbField);
     let transformed = {};
     if (operation === 'COUNT') {
-        console.log("OPERATION = COUNT");
+        console.log('OPERATION = COUNT');
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
@@ -668,8 +665,8 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
             transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'COUNT';
-    } else if (operation === "SUM") {
-        console.log("OPERATION = SUM");
+    } else if (operation === 'SUM') {
+        console.log('OPERATION = SUM');
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['SUM(' + aggregateField + ')'];
             delete groupByResult[i]['SUM(' + aggregateField + ')'];
@@ -677,8 +674,8 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
             transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'SUM';
-    }  else if (operation === "MIN"){
-        console.log("OPERATION = MIN");
+    }  else if (operation === 'MIN') {
+        console.log('OPERATION = MIN');
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['MIN(' + aggregateField + ')'];
             delete groupByResult[i]['MIN(' + aggregateField + ')'];
@@ -686,8 +683,8 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
             transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'MIN';
-    } else if (operation === "MAX") {
-        console.log("OPERATION = MAX");
+    } else if (operation === 'MAX') {
+        console.log('OPERATION = MAX');
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['MAX(' + aggregateField + ')'];
             delete groupByResult[i]['MAX(' + aggregateField + ')'];
@@ -696,7 +693,7 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
         }
         transformed['operation'] = 'MAX';
     } else { // AVERAGE
-        console.log("OPERATION = AVERAGE");
+        console.log('OPERATION = AVERAGE');
 
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
@@ -710,104 +707,104 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
         transformed['operation'] = 'AVERAGE';
     }
     transformed['groupByFields'] = gbField;
-    transformed["field"] = aggregateField;
+    transformed['field'] = aggregateField;
     return transformed;
 }
 
-function transformGB(groupByResult, operation, aggregateField){
-    if (operation === "COUNT") {
-        console.log("OPERATION = COUNT");
+function transformGB(groupByResult, operation, aggregateField) {
+    if (operation === 'COUNT') {
+        console.log('OPERATION = COUNT');
         for (let key in groupByResult) {
             let crnGoup = groupByResult[key];
             let cnt = 0;
-            for (let row in crnGoup){
+            for (let row in crnGoup) {
                 cnt++;
             }
             groupByResult[key] = cnt;
         }
-        groupByResult["operation"] = "COUNT"
-    } else if(operation === "SUM") {
+        groupByResult['operation'] = 'COUNT'
+    } else if (operation === 'SUM') {
         for (let key in groupByResult) {
             let crnGoup = groupByResult[key];
             let cnt = 0;
-            for (let row in crnGoup){
+            for (let row in crnGoup) {
                 cnt += Number(crnGoup[row][aggregateField]);
             }
             groupByResult[key] = cnt;
         }
-        groupByResult["operation"] = "SUM";
-        groupByResult["field"] = aggregateField;
+        groupByResult['operation'] = 'SUM';
+        groupByResult['field'] = aggregateField;
 
-    } else if(operation === "MIN"){
+    } else if (operation === 'MIN') {
         for (let key in groupByResult) {
             let crnGoup = groupByResult[key];
             let min = Number(crnGoup[0][aggregateField]);
-            for (let row in crnGoup){
-                if(Number(crnGoup[row][aggregateField]) < min){
+            for (let row in crnGoup) {
+                if (Number(crnGoup[row][aggregateField]) < min) {
                     min = Number(crnGoup[row][aggregateField])
                 }
             }
             groupByResult[key] = min;
         }
-        groupByResult["operation"] = "MIN";
-        groupByResult["field"] = aggregateField;
+        groupByResult['operation'] = 'MIN';
+        groupByResult['field'] = aggregateField;
 
-    } else if(operation === "MAX"){
+    } else if (operation === 'MAX') {
         for (let key in groupByResult) {
             let crnGoup = groupByResult[key];
             let max = Number(crnGoup[0][aggregateField]);
-            for (let row in crnGoup){
-                if(Number(crnGoup[row][aggregateField]) > max){
+            for (let row in crnGoup) {
+                if (Number(crnGoup[row][aggregateField]) > max) {
                     max = Number(crnGoup[row][aggregateField])
                 }
             }
             groupByResult[key] = max;
         }
-        groupByResult["operation"] = "MAX";
-        groupByResult["field"] = aggregateField;
+        groupByResult['operation'] = 'MAX';
+        groupByResult['field'] = aggregateField;
     } else { //AVERAGE
         for (let key in groupByResult) {
             let crnGoup = groupByResult[key];
             let cnt = 0;
             let sum = 0;
-            for (let row in crnGoup){
+            for (let row in crnGoup) {
                 sum += Number(crnGoup[row][aggregateField]);
                 cnt += 1;
             }
-            groupByResult[key] = {"average":sum / cnt, "count": cnt, "sum": sum};
+            groupByResult[key] = { 'average':sum / cnt, 'count': cnt, 'sum': sum };
         }
-        groupByResult["operation"] = "AVERAGE";
-        groupByResult["field"] = aggregateField;
+        groupByResult['operation'] = 'AVERAGE';
+        groupByResult['field'] = aggregateField;
     }
     return groupByResult;
 }
-function calculateReducedGB(operation, aggregateField, cachedGroupBy, gbFields){
+function calculateReducedGB(operation, aggregateField, cachedGroupBy, gbFields) {
     let transformedArray = [];
     let originalArray = [];
     let i = 0;
-    //logic to incrementally calculate the new gb
-    Object.keys(cachedGroupBy).forEach(function(key,index) {
-        if(key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
+    // logic to incrementally calculate the new gb
+    Object.keys(cachedGroupBy).forEach(function (key, index) {
+        if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
             let crnUniqueVal = JSON.parse(key);
-            console.log("crnuniqueVal BEFORE");
+            console.log('crnuniqueVal BEFORE');
             console.log(crnUniqueVal);
-            console.log("***");
+            console.log('***');
             originalArray[i] = cachedGroupBy[key];
-            Object.keys(crnUniqueVal).forEach(function(key2,index2) {
-                console.log("gbFields = " + gbFields);
-                console.log("key2 = " + key2);
-                if(gbFields.indexOf(key2) <= -1){
+            Object.keys(crnUniqueVal).forEach(function (key2, index2) {
+                console.log('gbFields = ' + gbFields);
+                console.log('key2 = ' + key2);
+                if (gbFields.indexOf(key2) <= -1) {
                     delete crnUniqueVal[key2];
                 }
                 transformedArray[i] = JSON.stringify(crnUniqueVal);
             });
-            console.log("crnuniqueVal AFTER");
+            console.log('crnuniqueVal AFTER');
             console.log(crnUniqueVal);
             i++;
-            console.log("***");
+            console.log('***');
         }
-        console.log("transformed array = " + transformedArray);
-        console.log("original array = " + originalArray);
+        console.log('transformed array = ' + transformedArray);
+        console.log('original array = ' + originalArray);
     });
     let uniqueKeys = new Set(transformedArray);
     let uniqueKeysArray = Array.from(uniqueKeys);
@@ -863,7 +860,7 @@ function calculateReducedGB(operation, aggregateField, cachedGroupBy, gbFields){
     } else { // AVERAGE
         let avgPerKey = [];
         for (let j = 0; j < uniqueKeysArray.length; j++) {
-            avgPerKey[j] = JSON.stringify({count: 0, sum: 0, average: 0});
+            avgPerKey[j] = JSON.stringify({ count: 0, sum: 0, average: 0 });
         }
         for (let j = 0; j < transformedArray.length; j++) {
             let crnObj = transformedArray[j];
@@ -871,7 +868,7 @@ function calculateReducedGB(operation, aggregateField, cachedGroupBy, gbFields){
             let parsedObj = JSON.parse(avgPerKey[j]);
             let newSum = parsedObj['sum'] +  originalArray[j]['sum'];
             let newCount =  parsedObj['count'] +  originalArray[j]['count'];
-            avgPerKey[indexOfUK] = {count: newCount, sum: newSum, average: newSum/newCount};
+            avgPerKey[indexOfUK] = { count: newCount, sum: newSum, average: newSum / newCount };
         }
         for (let j = 0; j < avgPerKey.length; j++) {
             let crnKey = uniqueKeysArray[j];
@@ -882,11 +879,11 @@ function calculateReducedGB(operation, aggregateField, cachedGroupBy, gbFields){
     }
     return respObj;
 }
-app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
-    //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
+app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
+    // LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
     let gbFields = [];
-    if(req.params.field.indexOf('|') > -1){
+    if (req.params.field.indexOf('|') > -1) {
         // more than 1 group by fields
         gbFields = req.params.field.split('|');
     } else {
@@ -894,44 +891,42 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     }
     console.log(gbFields);
     let python = false;
-    if(contract) {
+    if (contract) {
         let timeStart = 0;
-        contract.methods.dataId().call(function (err,latestId) {
+        contract.methods.dataId().call(function (err, latestId) {
             contract.methods.getLatestGroupBy(Web3.utils.fromAscii(req.params.operation)).call(function (err, latestGroupBy) {
-                console.log("LATEST GB IS: ");
+                console.log('LATEST GB IS: ');
                 console.log(latestGroupBy);
-                if(latestGroupBy.ts > 0) {
+                if (latestGroupBy.ts > 0) {
                     contract.methods.getFact(latestId-1).call(function (err, latestFact) {
                         if (latestGroupBy.ts >= latestFact.timestamp) {
-
                             // check what is the latest groupBy
                             // if latest groupby contains all fields for the new groupby requested
                             // -> incrementaly calculate the groupby requested by summing the one in redis cache
                             //
-
                             client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                 if (error) {
                                     console.log(error);
                                     res.send(error);
                                 } else {
                                     cachedGroupBy = JSON.parse(cachedGroupBy);
-                                    console.log("**");
+                                    console.log('**');
                                     console.log(cachedGroupBy);
-                                    console.log("**");
+                                    console.log('**');
                                     let containsAllFields = true;
                                     for (let i = 0; i < gbFields.length; i++) {
                                         if (!cachedGroupBy.groupByFields.includes(gbFields[i])) {
                                             containsAllFields = false
                                         }
                                     }
-                                    if(containsAllFields && cachedGroupBy.groupByFields.length !== gbFields.length) { //it is a different groupby thna the stored
+                                    if (containsAllFields && cachedGroupBy.groupByFields.length !== gbFields.length) { //it is a different groupby thna the stored
                                         if (cachedGroupBy.field === req.params.aggregateField &&
                                             req.params.operation === cachedGroupBy.operation) {
                                             let respObj = calculateReducedGB(req.params.operation, req.params.aggregateField, cachedGroupBy, gbFields);
                                             res.send(JSON.stringify(respObj));
                                         }
                                     } else {
-                                        console.log("getting it from redis");
+                                        console.log('getting it from redis');
                                         timeStart = microtime.nowDouble();
                                         client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                             if (error) {
@@ -950,25 +945,25 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                             });
 
                         } else {
-                            //CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
+                            // CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
                             getAllFacts(latestId).then(retval => {
                                 // get (fact.timestamp > latestGroupBy timestamp)
                                 let deltas = [];
-                                for (let i = 0; i < retval.length; i++){
+                                for (let i = 0; i < retval.length; i++) {
                                     let crnFact = retval[i];
-                                    if(crnFact.timestamp > latestGroupBy.ts) {
+                                    if (crnFact.timestamp > latestGroupBy.ts) {
                                         deltas.push(crnFact);
                                     }
                                 }
                                 timeStart = microtime.nowDouble();
 
-                                //python
-                                if(python) {
+                                // python
+                                if (python) {
                                     calculateGBPython(deltas.toString(), req.params.field, req.params.aggregateField, req.params.operation).then(result => {
                                         result = JSON.parse(result);
-                                        console.log("$$$$$");
+                                        console.log('$$$$$');
                                         console.log(result);
-                                        console.log("$$$$$");
+                                        console.log('$$$$$');
                                         result = JSON.parse(result);
                                         result.operation = req.params.operation;
                                         result.field = req.params.aggregateField;
@@ -981,21 +976,21 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                             } else {
                                                 console.log('GET result ->' + cachedGroupBy);
 
-                                                //IF COUNT / SUM -> ADD
-                                                //ELIF MIN -> NEW_MIN = MIN OF MINS
+                                                // IF COUNT / SUM -> ADD
+                                                // ELIF MIN -> NEW_MIN = MIN OF MINS
 
                                                 let ObCachedGB = JSON.parse(cachedGroupBy);
                                                 let updatedGB = {};
-                                                if(ObCachedGB["operation"] === "SUM"){
-                                                    updatedGB = helper.sumObjects(ObCachedGB,deltaGroupBy);
-                                                } else if(ObCachedGB["operation"] === "COUNT"){
-                                                    updatedGB = helper.sumObjects(ObCachedGB,deltaGroupBy);
-                                                } else if(ObCachedGB["operation"] === "MAX"){
-                                                    updatedGB = helper.maxObjects(ObCachedGB,deltaGroupBy)
-                                                } else if(ObCachedGB["operation"] === "MIN"){
-                                                    updatedGB = helper.minObjects(ObCachedGB,deltaGroupBy)
-                                                } else { //AVERAGE
-                                                    updatedGB = helper.averageObjects(ObCachedGB,deltaGroupBy)
+                                                if (ObCachedGB['operation'] === 'SUM') {
+                                                    updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
+                                                } else if (ObCachedGB['operation'] === 'COUNT') {
+                                                    updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
+                                                } else if (ObCachedGB['operation'] === 'MAX') {
+                                                    updatedGB = helper.maxObjects(ObCachedGB, deltaGroupBy)
+                                                } else if (ObCachedGB['operation'] === 'MIN') {
+                                                    updatedGB = helper.minObjects(ObCachedGB, deltaGroupBy)
+                                                } else { // AVERAGE
+                                                    updatedGB = helper.averageObjects(ObCachedGB, deltaGroupBy)
                                                 }
                                                 let timeFinish = microtime.nowDouble();
                                                 client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
@@ -1009,7 +1004,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     // calculate groupby for deltas in SQL
                                     connection.query(createTable, function (error, results, fields) {
                                         if (error) throw error;
-                                        for(let i = 0; i < deltas.length; i++){
+                                        for(let i = 0; i < deltas.length; i++) {
                                             delete deltas[i].timestamp;
                                         }
 
@@ -1019,28 +1014,28 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                             values: deltas
                                         });
 
-                                        let editedQuery = sql.query.replace(/"/g, "");
-                                        editedQuery = editedQuery.replace(/''/g, "null");
+                                        let editedQuery = sql.query.replace(/"/g, '');
+                                        editedQuery = editedQuery.replace(/''/g, 'null');
                                         console.log(editedQuery);
                                         connection.query(editedQuery, function (error, results2, fields) {
                                             let gbQuery = null;
-                                            if(req.params.operation === 'AVERAGE'){
+                                            if (req.params.operation === 'AVERAGE') {
                                                 gbQuery = jsonSql.build({
                                                     type: 'select',
                                                     table: tableName,
                                                     group: gbFields,
                                                     fields: [ gbFields,
-                                                        {func: {
+                                                        { func: {
                                                                 name: 'SUM',
                                                                 args: [
-                                                                    {field: req.params.aggregateField}
+                                                                    { field: req.params.aggregateField}
                                                                 ]
                                                             }
                                                         },
-                                                        {func: {
+                                                        { func: {
                                                                 name: 'COUNT',
                                                                 args: [
-                                                                    {field: req.params.aggregateField}
+                                                                    { field: req.params.aggregateField}
                                                                 ]
                                                             }
                                                         }]
@@ -1055,16 +1050,16 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                             func: {
                                                                 name: req.params.operation,
                                                                 args: [
-                                                                    {field: req.params.aggregateField}
+                                                                    { field: req.params.aggregateField}
                                                                 ]
                                                             }
                                                         }]
                                                 });
                                             }
-                                            let editedGB = gbQuery.query.replace(/"/g, "");
+                                            let editedGB = gbQuery.query.replace(/"/g, '');
                                             connection.query(editedGB, function (error, results3, fields) {
                                                 connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
-                                                    if(!err){
+                                                    if (!err) {
                                                         let deltaGroupBy = transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, gbFields);
                                                         client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                                             if (error) {
@@ -1072,18 +1067,18 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                                 res.send(error);
                                                             } else {
                                                                 console.log('GET result ->' + cachedGroupBy);
-                                                                //IF COUNT / SUM -> ADD
-                                                                //ELIF MIN -> NEW_MIN = MIN OF MINS
+                                                                // IF COUNT / SUM -> ADD
+                                                                // ELIF MIN -> NEW_MIN = MIN OF MINS
 
                                                                 let ObCachedGB = JSON.parse(cachedGroupBy);
                                                                 let updatedGB = {};
-                                                                if(ObCachedGB["operation"] === "SUM"){
+                                                                if (ObCachedGB['operation'] === 'SUM') {
                                                                     updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
-                                                                } else if(ObCachedGB["operation"] === "COUNT"){
+                                                                } else if (ObCachedGB['operation'] === 'COUNT') {
                                                                     updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
-                                                                } else if(ObCachedGB["operation"] === "MAX"){
+                                                                } else if (ObCachedGB['operation'] === 'MAX') {
                                                                     updatedGB = helper.maxObjects(ObCachedGB, deltaGroupBy)
-                                                                } else if(ObCachedGB["operation"] === "MIN"){
+                                                                } else if (ObCachedGB['operation'] === 'MIN') {
                                                                     updatedGB = helper.minObjects(ObCachedGB, deltaGroupBy)
                                                                 } else { // AVERAGE
                                                                     updatedGB = helper.averageObjects(ObCachedGB, deltaGroupBy)
@@ -1095,7 +1090,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                             }
                                                         });
                                                     } else {
-                                                        res.send("error");
+                                                        res.send('error');
                                                     }
                                                 });
                                             });
@@ -1116,13 +1111,13 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     //
                                     //         let ObCachedGB = JSON.parse(cachedGroupBy);
                                     //         let updatedGB = {};
-                                    //         if(ObCachedGB["operation"] === "SUM"){
+                                    //         if (ObCachedGB['operation'] === 'SUM') {
                                     //             updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
-                                    //         } else if(ObCachedGB["operation"] === "COUNT"){
+                                    //         } else if (ObCachedGB['operation'] === 'COUNT') {
                                     //             updatedGB = sumObjects(ObCachedGB,deltaGroupBy);
-                                    //         } else if(ObCachedGB["operation"] === "MAX"){
+                                    //         } else if (ObCachedGB['operation'] === 'MAX') {
                                     //             updatedGB = maxObjects(ObCachedGB,deltaGroupBy)
-                                    //         } else if(ObCachedGB["operation"] === "MIN"){
+                                    //         } else if (ObCachedGB['operation'] === 'MIN') {
                                     //             updatedGB = minObjects(ObCachedGB,deltaGroupBy)
                                     //         } else { //AVERAGE
                                     //             updatedGB = averageObjects(ObCachedGB,deltaGroupBy)
@@ -1135,9 +1130,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     // });
                                 }
 
-                                //      console.log("DELTAS GB---->");
+                                //      console.log('DELTAS GB---->');
                                 //      console.log(deltaGroupBy);
-                                //      console.log("DELTAS GB---->");
+                                //      console.log('DELTAS GB---->');
                                 //      console.log(latestGroupBy);
 
                             }).catch(error => {
@@ -1148,7 +1143,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                         console.log(error);
                     });
                 } else {
-                    //NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
+                    // NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
                     getAllFacts(latestId).then(retval => {
                         timeStart = microtime.nowDouble();
                         let groupByResult;
@@ -1158,15 +1153,15 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                             gas: 15000000,
                             gasPrice: '30000000000000'
                         };
-                        if(python) {
+                        if (python) {
                             calculateGBPython(retval, req.params.field, req.params.aggregateField, req.params.operation, function (results, err) {
-                                if(err){
+                                if (err) {
                                     console.log(err);
                                 }
                                 timeFinish = microtime.nowDouble();
-                                console.log("$$$$$");
+                                console.log('$$$$$');
                                 console.log(results);
-                                console.log("$$$$$");
+                                console.log('$$$$$');
                                 results = JSON.parse(results);
                                 results.operation = req.params.operation;
                                 results.field = req.params.aggregateField;
@@ -1178,7 +1173,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                 let hash = md5sum.digest('hex');
                                 console.log(hash);
                                 client.set(hash, groupByResult, redis.print);
-                                contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation)).send(transactionObject,  (err, txHash) => {
+                                contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation)).send(transactionObject, (err, txHash) => {
                                     console.log('send:', err, txHash);
                                 }).on('error', (err) => {
                                     console.log('error:', err);
@@ -1190,12 +1185,12 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     groupByResult = JSON.parse(groupByResult);
                                     groupByResult.receipt = receipt;
                                     res.send(JSON.stringify(groupByResult));
-                                });
+                                })
                             });
                         } else {
                             connection.query(createTable, function (error, results, fields) {
                                 if (error) throw error;
-                                for(let i =0; i < retval.length; i++){
+                                for(let i =0; i < retval.length; i++) {
                                     delete retval[i].timestamp;
                                 }
 
@@ -1205,12 +1200,12 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     values: retval
                                 });
 
-                                let editedQuery = sql.query.replace(/"/g, "");
-                                editedQuery = editedQuery.replace(/''/g, "null");
+                                let editedQuery = sql.query.replace(/"/g, '');
+                                editedQuery = editedQuery.replace(/''/g, 'null');
                                 console.log(editedQuery);
                                 connection.query(editedQuery, function (error, results2, fields) {
                                     let gbQuery = null;
-                                    if(req.params.operation === 'AVERAGE'){
+                                    if (req.params.operation === 'AVERAGE') {
                                         gbQuery = jsonSql.build({
                                             type: 'select',
                                             table: tableName,
@@ -1247,21 +1242,21 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                 }]
                                         });
                                     }
-                                    let editedGB = gbQuery.query.replace(/"/g, "");
+                                    let editedGB = gbQuery.query.replace(/"/g, '');
                                     connection.query(editedGB, function (error, results3, fields) {
                                         connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
-                                            if(!err){
+                                            if (!err) {
                                                 let groupBySqlResult = transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, gbFields);
                                                 let timeFinish = microtime.nowDouble();
                                                 md5sum = crypto.createHash('md5');
                                                 md5sum.update(JSON.stringify(groupBySqlResult));
                                                 let hash = md5sum.digest('hex');
                                                 console.log(hash);
-                                                console.log("**");
+                                                console.log('**');
                                                 console.log(JSON.stringify(groupBySqlResult));
-                                                console.log("**");
+                                                console.log('**');
                                                 client.set(hash, JSON.stringify(groupBySqlResult), redis.print);
-                                                contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation)).send(transactionObject,  (err, txHash) => {
+                                                contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation)).send(transactionObject, (err, txHash) => {
                                                     console.log('send:', err, txHash);
                                                 }).on('error', (err) => {
                                                     console.log('error:', err);
@@ -1269,13 +1264,13 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                 }).on('transactionHash', (err) => {
                                                     console.log('transactionHash:', err);
                                                 }).on('receipt', (receipt) => {
-                                                        console.log('receipt:', receipt);
-                                                        let execT = timeFinish - timeStart;
+                                                    console.log('receipt:', receipt);
+                                                    let execT = timeFinish - timeStart;
                                                     groupBySqlResult.executionTime = execT;
                                                     res.send(JSON.stringify(groupBySqlResult));
-                                                });
+                                                })
                                             } else {
-                                                res.send("error");
+                                                res.send('error');
                                             }
                                         });
                                     });
@@ -1292,28 +1287,28 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
         });
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
 });
 
-app.get('/getcount', function(req, res) {
+app.get('/getcount', function (req, res) {
     if (contract) {
-        contract.methods.dataId().call(function(err, result) {
+        contract.methods.dataId().call(function (err, result) {
             if (!err) {
                 res.send(result);
             } else {
                 console.log(err);
-                console.log("ERRRRRR");
+                console.log('ERRRRRR');
                 res.send(err);
             }
         })
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({status: 'ERROR',options: 'Contract not deployed' });
     }
 });
 
-app.post('/addFact', function(req, res) {
+app.post('/addFact', function (req, res) {
     if (contract) {
         const transactionObject = {
             from: acc,
@@ -1324,7 +1319,7 @@ app.post('/addFact', function(req, res) {
         let vals = req.body.values;
         for (let i = 0; i < req.body.values.length; i++) {
             let crnVal = req.body.values[i];
-            if (crnVal.type === "bytes32") {
+            if (crnVal.type === 'bytes32') {
                 req.body.values[i].value = web3.utils.fromAscii(req.body.values[i].value);
             }
         }
@@ -1359,23 +1354,21 @@ app.post('/addFact', function(req, res) {
                 vals[50].value, vals[51].value);
         } else {
             res.status(400);
-            res.send({status: "ERROR",options: "Contract not supporting more than 10 fields" });
+            res.send({ status: 'ERROR', options: 'Contract not supporting more than 10 fields' });
         }
-        addFactPromise.send(transactionObject,  (err, txHash) => {
+        addFactPromise.send(transactionObject, (err, txHash) => {
             console.log('send:', err, txHash);
         }).on('error', (err) => {
             console.log('error:', err);
             res.send(err);
+        }).on('transactionHash', (err) => {
+            console.log('transactionHash:', err);
+        }).on('receipt', (receipt) => {
+            console.log('receipt:', receipt);
+            res.send(receipt);
         })
-            .on('transactionHash', (err) => {
-                console.log('transactionHash:', err);
-            })
-            .on('receipt', (receipt) => {
-                console.log('receipt:', receipt);
-                res.send(receipt);
-            });
     } else {
         res.status(400);
-        res.send({status: "ERROR",options: "Contract not deployed" });
+        res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
 });
