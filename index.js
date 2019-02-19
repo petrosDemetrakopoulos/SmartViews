@@ -683,7 +683,6 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
     if (operation === 'COUNT') {
         console.log("OPERATION = COUNT");
         for (let i = 0; i < groupByResult.length; i++) {
-            console.log("////");
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
             let filtered = groupByResult[i];
@@ -693,41 +692,34 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
     } else if (operation === "SUM") {
         console.log("OPERATION = SUM");
         for (let i = 0; i < groupByResult.length; i++) {
-            console.log("////");
             let crnCount = groupByResult[i]['SUM(' + aggregateField + ')'];
             delete groupByResult[i]['SUM(' + aggregateField + ')'];
             let filtered = groupByResult[i];
             transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'SUM';
-        transformed["field"] = aggregateField;
     }  else if (operation === "MIN"){
         console.log("OPERATION = MIN");
         for (let i = 0; i < groupByResult.length; i++) {
-            console.log("////");
             let crnCount = groupByResult[i]['MIN(' + aggregateField + ')'];
             delete groupByResult[i]['MIN(' + aggregateField + ')'];
             let filtered = groupByResult[i];
             transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'MIN';
-        transformed["field"] = aggregateField;
     } else if (operation === "MAX") {
         console.log("OPERATION = MAX");
         for (let i = 0; i < groupByResult.length; i++) {
-            console.log("////");
             let crnCount = groupByResult[i]['MAX(' + aggregateField + ')'];
             delete groupByResult[i]['MAX(' + aggregateField + ')'];
             let filtered = groupByResult[i];
             transformed[JSON.stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'MAX';
-        transformed['field'] = aggregateField;
     } else { // AVERAGE
         console.log("OPERATION = AVERAGE");
 
         for (let i = 0; i < groupByResult.length; i++) {
-            console.log("////");
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
             let crnSum = groupByResult[i]['SUM(' + aggregateField + ')'];
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
@@ -737,8 +729,9 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
         }
 
         transformed['operation'] = 'AVERAGE';
-        transformed['field'] = aggregateField;
     }
+    transformed['groupByFields'] = gbField;
+    transformed["field"] = aggregateField;
     return transformed;
 }
 
@@ -891,6 +884,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     } else {
         gbFields.push(req.params.field);
     }
+    console.log(gbFields);
     let python = false;
     if(contract) {
         let timeStart = 0;
@@ -901,20 +895,100 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                 if(latestGroupBy.ts > 0) {
                     contract.methods.getFact(latestId-1).call(function (err, latestFact) {
                         if (latestGroupBy.ts >= latestFact.timestamp) {
-                            console.log("getting it from redis");
-                            timeStart = microtime.nowDouble();
+
+                            // check what is the latest groupBy
+                            // if latest groupby contains all fields for the new groupby requested
+                            // -> incrementaly calculate the groupby requested by summing the one in redis cache
+                            //
+
                             client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                 if (error) {
                                     console.log(error);
                                     res.send(error);
                                 } else {
-                                    console.log('GET result ->' + cachedGroupBy);
-                                    let timeFinish = microtime.nowDouble();
                                     cachedGroupBy = JSON.parse(cachedGroupBy);
-                                    cachedGroupBy.executionTime = timeFinish - timeStart;
-                                    res.send(JSON.stringify(cachedGroupBy));
+                                    console.log("**");
+                                    console.log(cachedGroupBy);
+                                    console.log("**");
+                                    let containsAllFields = true;
+                                    for(let i = 0; i < gbFields.length; i++){
+                                        if(!cachedGroupBy.groupByFields.includes(gbFields[i])){
+                                            containsAllFields = false
+                                        }
+                                    }
+                                    if(containsAllFields && cachedGroupBy.groupByFields.length !== gbFields.length) { //it is a different groupby thna the stored
+                                        console.log("containsAllFields = true");
+                                        if(cachedGroupBy.field === req.params.aggregateField &&
+                                            req.params.operation === cachedGroupBy.operation){
+                                            let transformedArray = [];
+                                            let originalArray = [];
+                                            let i = 0;
+                                            //logic to incrementally calculate the new gb
+                                            Object.keys(cachedGroupBy).forEach(function(key,index) {
+                                                if(key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
+                                                    let crnUniqueVal = JSON.parse(key);
+                                                    console.log("crnuniqueVal BEFORE");
+                                                    console.log(crnUniqueVal);
+                                                    console.log("***");
+                                                    originalArray[i] = cachedGroupBy[key];
+                                                    Object.keys(crnUniqueVal).forEach(function(key2,index2) {
+                                                        console.log("gbFields = " + gbFields);
+                                                        console.log("key2 = " + key2);
+                                                        if(gbFields.indexOf(key2) <= -1){
+                                                            delete crnUniqueVal[key2];
+                                                        }
+                                                        transformedArray[i] = JSON.stringify(crnUniqueVal);
+                                                    });
+                                                    console.log("crnuniqueVal AFTER");
+                                                    console.log(crnUniqueVal);
+                                                    i++;
+                                                    console.log("***");
+                                                }
+                                                console.log("transformed array = " + transformedArray);
+                                                console.log("original array = " + originalArray);
+                                                // key: the name of the object key
+                                                // index: the ordinal position of the key within the object
+                                            });
+                                            let uniqueKeys = new Set(transformedArray);
+                                            let uniqueKeysArray = Array.from(uniqueKeys);
+                                            let sumPerKey = [];
+                                            for(let j = 0; j < uniqueKeysArray.length; j++){
+                                                sumPerKey[j] = 0;
+                                            }
+                                            for (let j = 0; j < transformedArray.length; j++){
+                                                let crnObj = transformedArray[j];
+                                                let indexOfUK = uniqueKeysArray.indexOf(crnObj);
+                                                sumPerKey[indexOfUK] += originalArray[j];
+                                            }
+                                            let respObj = {};
+                                            for (let j = 0; j < sumPerKey.length; j++){
+                                                let crnKey = uniqueKeysArray[j];
+                                                respObj[crnKey] = sumPerKey[j];
+                                            }
+                                            console.log(uniqueKeysArray);
+                                            console.log(sumPerKey);
+                                            res.send(JSON.stringify(respObj));
+                                            //res.send('logic to incrementally calculate the new gb');
+                                        }
+                                    } else {
+                                        console.log("getting it from redis");
+                                        timeStart = microtime.nowDouble();
+                                        client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
+                                            if (error) {
+                                                console.log(error);
+                                                res.send(error);
+                                            } else {
+                                                console.log('GET result ->' + cachedGroupBy);
+                                                let timeFinish = microtime.nowDouble();
+                                                cachedGroupBy = JSON.parse(cachedGroupBy);
+                                                cachedGroupBy.executionTime = timeFinish - timeStart;
+                                                res.send(JSON.stringify(cachedGroupBy));
+                                            }
+                                        });
+                                    }
                                 }
                             });
+
                         } else {
                             //CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
                             getAllFacts(latestId).then(retval => {
@@ -1124,7 +1198,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                             gas: 15000000,
                             gasPrice: '30000000000000'
                         };
-                        // let dt = require("./dataset_1k.json");
                         if(python) {
                             calculateGBPython(retval, req.params.field, req.params.aggregateField, req.params.operation, function (results, err) {
                                 if(err){
@@ -1160,7 +1233,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                 });
                             });
                         } else {
-                            // console.log(retval);
                             connection.query(createTable, function (error, results, fields) {
                                 if (error) throw error;
                                 for(let i =0; i < retval.length; i++){
@@ -1225,6 +1297,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                                 md5sum.update(JSON.stringify(groupBySqlResult));
                                                 let hash = md5sum.digest('hex');
                                                 console.log(hash);
+                                                console.log("**");
+                                                console.log(JSON.stringify(groupBySqlResult));
+                                                console.log("**");
                                                 client.set(hash, JSON.stringify(groupBySqlResult), redis.print);
                                                 contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation)).send(transactionObject,  (err, txHash) => {
                                                     console.log('send:', err, txHash);
