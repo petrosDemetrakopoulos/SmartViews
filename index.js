@@ -704,7 +704,7 @@ function transformGBFromSQL(groupByResult, operation, aggregateField, gbField) {
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
             delete groupByResult[i]['SUM(' + aggregateField + ')'];
             let filtered = groupByResult[i];
-            transformed[JSON.stringify(filtered)] = crnSum / crnCount;
+            transformed[JSON.stringify(filtered)] = {count: crnCount, sum: crnSum, average:crnSum / crnCount};
         }
 
         transformed['operation'] = 'AVERAGE';
@@ -781,7 +781,107 @@ function transformGB(groupByResult, operation, aggregateField){
     }
     return groupByResult;
 }
-
+function calculateReducedGB(operation, aggregateField, cachedGroupBy, gbFields){
+    let transformedArray = [];
+    let originalArray = [];
+    let i = 0;
+    //logic to incrementally calculate the new gb
+    Object.keys(cachedGroupBy).forEach(function(key,index) {
+        if(key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
+            let crnUniqueVal = JSON.parse(key);
+            console.log("crnuniqueVal BEFORE");
+            console.log(crnUniqueVal);
+            console.log("***");
+            originalArray[i] = cachedGroupBy[key];
+            Object.keys(crnUniqueVal).forEach(function(key2,index2) {
+                console.log("gbFields = " + gbFields);
+                console.log("key2 = " + key2);
+                if(gbFields.indexOf(key2) <= -1){
+                    delete crnUniqueVal[key2];
+                }
+                transformedArray[i] = JSON.stringify(crnUniqueVal);
+            });
+            console.log("crnuniqueVal AFTER");
+            console.log(crnUniqueVal);
+            i++;
+            console.log("***");
+        }
+        console.log("transformed array = " + transformedArray);
+        console.log("original array = " + originalArray);
+    });
+    let uniqueKeys = new Set(transformedArray);
+    let uniqueKeysArray = Array.from(uniqueKeys);
+    let respObj = {};
+    if (operation === 'SUM' || operation === 'COUNT') {
+        let sumPerKey = [];
+        for (let j = 0; j < uniqueKeysArray.length; j++) {
+            sumPerKey[j] = 0;
+        }
+        for (let j = 0; j < transformedArray.length; j++) {
+            let crnObj = transformedArray[j];
+            let indexOfUK = uniqueKeysArray.indexOf(crnObj);
+            sumPerKey[indexOfUK] += originalArray[j];
+        }
+        for (let j = 0; j < sumPerKey.length; j++) {
+            let crnKey = uniqueKeysArray[j];
+            respObj[crnKey] = sumPerKey[j];
+        }
+        console.log(uniqueKeysArray);
+        console.log(sumPerKey);
+    } else if (operation === 'MIN') {
+        let minPerKey = [];
+        for (let j = 0; j < uniqueKeysArray.length; j++) {
+            minPerKey[j] = Math.max;
+        }
+        for (let j = 0; j < transformedArray.length; j++) {
+            let crnObj = transformedArray[j];
+            let indexOfUK = uniqueKeysArray.indexOf(crnObj);
+            if (originalArray[j] < minPerKey[indexOfUK]) {
+                minPerKey[indexOfUK] = originalArray[j];
+            }
+        }
+        for (let j = 0; j < minPerKey.length; j++) {
+            let crnKey = uniqueKeysArray[j];
+            respObj[crnKey] = minPerKey[j];
+        }
+    } else if (operation === 'MAX') {
+        let maxPerKey = [];
+        for (let j = 0; j < uniqueKeysArray.length; j++) {
+            maxPerKey[j] = Math.min;
+        }
+        for (let j = 0; j < transformedArray.length; j++) {
+            let crnObj = transformedArray[j];
+            let indexOfUK = uniqueKeysArray.indexOf(crnObj);
+            if (originalArray[j] > maxPerKey[indexOfUK]) {
+                maxPerKey[indexOfUK] = originalArray[j];
+            }
+        }
+        for (let j = 0; j < maxPerKey.length; j++) {
+            let crnKey = uniqueKeysArray[j];
+            respObj[crnKey] = maxPerKey[j];
+        }
+    } else { // AVERAGE
+        let avgPerKey = [];
+        for (let j = 0; j < uniqueKeysArray.length; j++) {
+            avgPerKey[j] = JSON.stringify({count: 0, sum: 0, average: 0});
+        }
+        for (let j = 0; j < transformedArray.length; j++) {
+            let crnObj = transformedArray[j];
+            let indexOfUK = uniqueKeysArray.indexOf(crnObj);
+            let parsedObj = JSON.parse(avgPerKey[j]);
+            let newSum = parsedObj['sum'] +  originalArray[j]['sum'];
+            let newCount =  parsedObj['count'] +  originalArray[j]['count'];
+            avgPerKey[indexOfUK] = {count: newCount, sum: newSum, average: newSum/newCount};
+        }
+        for (let j = 0; j < avgPerKey.length; j++) {
+            let crnKey = uniqueKeysArray[j];
+            respObj[crnKey] = avgPerKey[j];
+        }
+        console.log(uniqueKeysArray);
+        console.log(avgPerKey);
+    }
+    return respObj;
+}
 app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
     //LOGIC: IF latestGroupByTS >= latestFactTS RETURN LATEST GROUPBY FROM REDIS
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
@@ -827,51 +927,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req,res) {
                                     if(containsAllFields && cachedGroupBy.groupByFields.length !== gbFields.length) { //it is a different groupby thna the stored
                                         if (cachedGroupBy.field === req.params.aggregateField &&
                                             req.params.operation === cachedGroupBy.operation) {
-                                            let transformedArray = [];
-                                            let originalArray = [];
-                                            let i = 0;
-                                            //logic to incrementally calculate the new gb
-                                            Object.keys(cachedGroupBy).forEach(function(key,index) {
-                                                if(key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
-                                                    let crnUniqueVal = JSON.parse(key);
-                                                    console.log("crnuniqueVal BEFORE");
-                                                    console.log(crnUniqueVal);
-                                                    console.log("***");
-                                                    originalArray[i] = cachedGroupBy[key];
-                                                    Object.keys(crnUniqueVal).forEach(function(key2,index2) {
-                                                        console.log("gbFields = " + gbFields);
-                                                        console.log("key2 = " + key2);
-                                                        if(gbFields.indexOf(key2) <= -1){
-                                                            delete crnUniqueVal[key2];
-                                                        }
-                                                        transformedArray[i] = JSON.stringify(crnUniqueVal);
-                                                    });
-                                                    console.log("crnuniqueVal AFTER");
-                                                    console.log(crnUniqueVal);
-                                                    i++;
-                                                    console.log("***");
-                                                }
-                                                console.log("transformed array = " + transformedArray);
-                                                console.log("original array = " + originalArray);
-                                            });
-                                            let uniqueKeys = new Set(transformedArray);
-                                            let uniqueKeysArray = Array.from(uniqueKeys);
-                                            let sumPerKey = [];
-                                            for(let j = 0; j < uniqueKeysArray.length; j++){
-                                                sumPerKey[j] = 0;
-                                            }
-                                            for (let j = 0; j < transformedArray.length; j++){
-                                                let crnObj = transformedArray[j];
-                                                let indexOfUK = uniqueKeysArray.indexOf(crnObj);
-                                                sumPerKey[indexOfUK] += originalArray[j];
-                                            }
-                                            let respObj = {};
-                                            for (let j = 0; j < sumPerKey.length; j++){
-                                                let crnKey = uniqueKeysArray[j];
-                                                respObj[crnKey] = sumPerKey[j];
-                                            }
-                                            console.log(uniqueKeysArray);
-                                            console.log(sumPerKey);
+                                            let respObj = calculateReducedGB(req.params.operation, req.params.aggregateField, cachedGroupBy, gbFields);
                                             res.send(JSON.stringify(respObj));
                                         }
                                     } else {
