@@ -28,17 +28,17 @@ const jsonSql = require('json-sql')({separatedValues: false});
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 const redis = require('redis');
-const client = redis.createClient(6379,'127.0.0.1');
+const client = redis.createClient(6379, '127.0.0.1');
 client.on('connect', function () {
     console.log('Redis client connected');
 });
 
-const mysql      = require('mysql');
+const mysql = require('mysql');
 let connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'Xonelgataandrou1!',
-    database : 'Ptychiaki'
+    host: 'localhost',
+    user: 'root',
+    password: 'Xonelgataandrou1!',
+    database: 'Ptychiaki'
 });
 let createTable = '';
 let tableName = '';
@@ -56,15 +56,14 @@ client.on('error', function (err) {
 let contractInstance = null;
 let contractsDeployed = [];
 
-
 web3.eth.defaultAccount = web3.eth.accounts[0];
 let contract = null;
 let DataHandler = null;
 let acc = null;
-app.get('/', function (req,res) {
+app.get('/', function (req, res) {
     fs.readdir('./templates', function (err, items) {
-        res.render('index',{'templates':items});
-    });
+        res.render('index', { 'templates': items });
+    })
 });
 
 io.on('connection', function (socket) {
@@ -74,14 +73,14 @@ io.on('connection', function (socket) {
 app.get('/dashboard', function (req, res) {
     fs.readdir('./templates', function (err, items) {
         web3.eth.getBlockNumber().then(blockNum => {
-            res.render('dashboard',{'templates':items, 'blockNum': blockNum});
+            res.render('dashboard', { 'templates': items, 'blockNum': blockNum });
         });
     });
 });
 
 app.get('/benchmark', function (req, res) {
     // var stream = fs.createReadStream('../dataset.csv');
-    csvtojson({delimiter:'|'})
+    csvtojson({ delimiter: '|' })
         .fromFile('../dataset.csv')
         .then((jsonObj)=>{
             console.log(jsonObj);
@@ -117,7 +116,7 @@ function calculateGBPython(data, gbField, aggregateField, operation, cb) {
     }
 }
 
-app.get('/python', function (req,res) {
+app.get('/python', function (req, res) {
     let spawn = require('child_process').spawn;
     let process = spawn('python', ['./gb.py', jsonData]);
 
@@ -130,10 +129,8 @@ app.get('/python', function (req,res) {
     });
 
     process.stdout.on('close', (code, signal) => {
-        console.log(
-            `child process terminated due to receipt of signal ${signal} ${code}`);
+        console.log(`child process terminated due to receipt of signal ${signal} ${code}`);
     });
-
 });
 
 app.get('/form/:contract', function (req, res) {
@@ -903,7 +900,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                             // check what is the latest groupBy
                             // if latest groupby contains all fields for the new groupby requested
                             // -> incrementaly calculate the groupby requested by summing the one in redis cache
-                            //
                             client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                 if (error) {
                                     console.log(error);
@@ -1069,8 +1065,28 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                                 console.log('GET result ->' + cachedGroupBy);
                                                                 // IF COUNT / SUM -> ADD
                                                                 // ELIF MIN -> NEW_MIN = MIN OF MINS
+                                                                cachedGroupBy = JSON.parse(cachedGroupBy);
+                                                                console.log('**');
+                                                                console.log(cachedGroupBy);
+                                                                console.log('**');
+                                                                let containsAllFields = true;
+                                                                let ObCachedGB = {};
+                                                                for (let i = 0; i < gbFields.length; i++) {
+                                                                    if (!cachedGroupBy.groupByFields.includes(gbFields[i])) {
+                                                                        containsAllFields = false
+                                                                    }
+                                                                }
+                                                                if (containsAllFields && cachedGroupBy.groupByFields.length !== gbFields.length) { //it is a different groupby thna the stored
+                                                                    if (cachedGroupBy.field === req.params.aggregateField &&
+                                                                        req.params.operation === cachedGroupBy.operation) {
+                                                                        ObCachedGB = calculateReducedGB(req.params.operation, req.params.aggregateField, cachedGroupBy, gbFields);
+                                                                        //res.send(JSON.stringify(respObj));
+                                                                    }
+                                                                } else {
+                                                                    ObCachedGB = JSON.parse(cachedGroupBy);
+                                                                }
 
-                                                                let ObCachedGB = JSON.parse(cachedGroupBy);
+
                                                                 let updatedGB = {};
                                                                 if (ObCachedGB['operation'] === 'SUM') {
                                                                     updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
