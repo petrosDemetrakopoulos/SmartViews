@@ -7,7 +7,8 @@
             }
         ],
         "camelcase": ["error", {"properties": "never"}],
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "semi": [0, "always"]
     }
 }
 

@@ -1,4 +1,4 @@
-function sumObjects(ob1, ob2) {
+function sumObjects (ob1, ob2) {
     let sum = {};
 
     Object.keys(ob1).forEach(key => {
@@ -13,7 +13,7 @@ function sumObjects(ob1, ob2) {
     return sum;
 }
 
-function maxObjects(ob1, ob2) {
+function maxObjects (ob1, ob2) {
     let max = {};
 
     Object.keys(ob1).forEach(key => {
@@ -32,7 +32,7 @@ function maxObjects(ob1, ob2) {
     return max;
 }
 
-function minObjects(ob1, ob2) {
+function minObjects (ob1, ob2) {
     let min = {};
 
     Object.keys(ob1).forEach(key => {
@@ -51,7 +51,7 @@ function minObjects(ob1, ob2) {
     return min;
 }
 
-function averageObjects(ob1, ob2) {
+function averageObjects (ob1, ob2) {
     let avg = {};
 
     Object.keys(ob1).forEach(key => {
@@ -69,7 +69,7 @@ function averageObjects(ob1, ob2) {
     return avg;
 }
 
-function flatten(items) {
+function flatten (items) {
     const flat = [];
 
     items.forEach(item => {
@@ -84,7 +84,7 @@ function flatten(items) {
     return flat;
 }
 
-function removeDuplicates(arr) {
+function removeDuplicates (arr) {
     return arr.filter(function(elem, index, self) {
         return index === self.indexOf(elem);
     });
