@@ -33,27 +33,14 @@ const client = redis.createClient(6379, '127.0.0.1');
 client.on('connect', function () {
     console.log('Redis client connected');
 });
-
-const mysql = require('mysql');
-let connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Xonelgataandrou1!',
-    database: 'Ptychiaki'
-});
-let createTable = '';
-let tableName = '';
-connection.connect(function (err) {
-    if (err) {
-        console.error('error connecting to mySQL: ' + err.stack);
-        return;
-    }
-    console.log('mySQL connected');
-});
-
 client.on('error', function (err) {
     console.log('Something went wrong ' + err);
 });
+
+const mysql = require('mysql');
+let createTable = '';
+let tableName = '';
+let connection = null;
 let contractInstance = null;
 let contractsDeployed = [];
 
@@ -161,7 +148,33 @@ app.get('/form/:contract', function (req, res) {
     res.render('form',{'template':templ, 'name': fact_tbl.name, 'address': address, 'groupBys':groupBys});
 });
 
-http.listen(3000, () => console.log(`Example app listening on http://localhost:3000`));
+http.listen(3000, () => {
+    console.log(`Example app listening on http://localhost:3000`);
+    let mysqlConfig = {};
+    if(process.env.NODE_ENV === 'development'){
+        mysqlConfig = {
+            host: 'localhost',
+            user: 'root',
+            password: 'Xonelgataandrou1!',
+            database: 'Ptychiaki'
+        };
+    } else if(process.env.NODE_ENV === 'lab'){
+        mysqlConfig = {
+            host: 'localhost',
+            user: 'root',
+            password: 'Iwanttobelive1',
+            database: 'Ptychiaki'
+        };
+    }
+    connection = mysql.createConnection(mysqlConfig);
+    connection.connect(function (err) {
+        if (err) {
+            console.error('error connecting to mySQL: ' + err.stack);
+            return;
+        }
+        console.log('mySQL connected');
+    });
+});
 
 async function deploy(account, contractPath) {
     const input = fs.readFileSync(contractPath);
