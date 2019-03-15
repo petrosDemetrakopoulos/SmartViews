@@ -764,11 +764,14 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                             // check what is the latest groupBy
                             // if latest groupby contains all fields for the new groupby requested
                             // -> incrementaly calculate the groupby requested by summing the one in redis cache
+                            let timeCacheStart = microtime.nowDouble();
                             client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                 if (error) {
                                     console.log(error);
                                     res.send(error);
                                 } else {
+                                    let timeCacheFinish = microtime.nowDouble();
+                                    let timeCache = timeCacheFinish - timeFetchStart;
                                     cachedGroupBy = JSON.parse(cachedGroupBy);
                                     console.log('**');
                                     console.log(cachedGroupBy);
@@ -796,6 +799,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                 console.log('GET result ->' + cachedGroupBy);
                                                 let timeFinish = microtime.nowDouble();
                                                 cachedGroupBy = JSON.parse(cachedGroupBy);
+                                                cachedGroupBy.cacheTime = timeCache;
                                                 cachedGroupBy.executionTime = timeFinish - timeStart;
                                                 res.send(JSON.stringify(cachedGroupBy));
                                             }
@@ -808,7 +812,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                             // CALCULATE GROUPBY FOR DELTAS (fact.timestamp > latestGroupBy timestamp)   AND THEN APPEND TO REDIS
                           //  getFactsFromTo(latestGroupBy.latFactInGb, latestId)
                           //  getAllFacts(latestId).then(retval => {
+                            let timeFetchStart = microtime.nowDouble();
                             getFactsFromTo(latestGroupBy.latFactInGb, latestId).then(retval => { // getting just the deltas from the blockchain
+                                let timeFetchEnd =  microtime.nowDouble();
                                 // get (fact.timestamp > latestGroupBy timestamp)
                                 let deltas = [];
                                 for (let i = 0; i < retval.length; i++) {
@@ -857,6 +863,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                 let timeFinish = microtime.nowDouble();
                                                 client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
                                                 updatedGB.executionTime = timeFinish - timeStart;
+                                                updatedGB.blockchainFetchTime = timeFetchEnd - timeFetchStart;
                                                 res.send(JSON.stringify(updatedGB));
                                             }
                                         });
@@ -864,6 +871,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                 } else {
 
                                     // calculate groupby for deltas in SQL
+                                    let SQLCalculationTimeStart = microtime.nowDouble();
                                     connection.query(createTable, function (error, results, fields) {
                                         if (error) throw error;
                                         for (let i = 0; i < deltas.length; i++) {
@@ -921,9 +929,12 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                             let editedGB = gbQuery.query.replace(/"/g, '');
                                             connection.query(editedGB, function (error, results3, fields) {
                                                 connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                                                    let SQLCalculationTimeEnd = microtime.nowDouble();
                                                     if (!err) {
                                                         let deltaGroupBy = transformations.transformGBFromSQL(results3, req.params.operation, req.params.aggregateField, gbFields);
+                                                        let cacheTimeStart = microtime.nowDouble();
                                                         client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
+                                                            let cacheTimeEnd = microtime.nowDouble();
                                                             if (error) {
                                                                 console.log(error);
                                                                 res.send(error);
@@ -967,6 +978,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                                 let timeFinish = microtime.nowDouble();
                                                                 client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
                                                                 updatedGB.executionTime = timeFinish - timeStart;
+                                                                updatedGB.sqlCalculationTime = SQLCalculationTimeEnd - SQLCalculationTimeStart;
+                                                                updatedGB.cacheTime = cacheTimeEnd - cacheTimeStart;
+                                                                updatedGB.blockchainFetchTime = timeFetchEnd - timeFetchStart;
                                                                 res.send(JSON.stringify(updatedGB));
                                                             }
                                                         });
@@ -1024,7 +1038,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                     });
                 } else {
                     // NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
+                    let timeFetchStart = microtime.nowDouble();
                     getAllFacts(latestId).then(retval => {
+                        let timeFetchEnd = microtime.nowDouble();
                         timeStart = microtime.nowDouble();
                         let groupByResult;
                         let timeFinish = 0;
@@ -1068,6 +1084,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                 })
                             });
                         } else {
+                            let SQLCalculationTimeStart = microtime.nowDouble();
                             connection.query(createTable, function (error, results, fields) {
                                 if (error) throw error;
                                 for (let i = 0; i < retval.length; i++) {
@@ -1115,6 +1132,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                     let editedGB = gbQuery.query.replace(/"/g, '');
                                     connection.query(editedGB, function (error, results3, fields) {
                                         connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                                            let SQLCalculationTimeEnd = microtime.nowDouble();
                                             if (!err) {
                                                 let groupBySqlResult = transformations.transformGBFromSQL(results3,req.params.operation, req.params.aggregateField, gbFields);
                                                 let timeFinish = microtime.nowDouble();
@@ -1137,6 +1155,8 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                     console.log('receipt:', receipt);
                                                     let execT = timeFinish - timeStart;
                                                     groupBySqlResult.executionTime = execT;
+                                                    groupBySqlResult.blockchainFetchTime = timeFetchEnd - timeFetchStart;
+                                                    groupBySqlResult.sqlCalculationTime = SQLCalculationTimeEnd - SQLCalculationTimeStart;
                                                     res.send(JSON.stringify(groupBySqlResult));
                                                 })
                                             } else {
