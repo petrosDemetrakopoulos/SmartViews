@@ -279,6 +279,7 @@ app.get('/load_dataset/:dt', function (req, res) {
                 console.log(retval);
                 console.log('DONE');
                 running = false;
+                io.emit("DONE","TRUE");
                 res.send('DONE');
             }).catch(error => {
                 console.log(error);

@@ -248,6 +248,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 <script>
     var socket = io();
+    var xhttpDep = new XMLHttpRequest();
     socket.on('progress', function(msg){
         $('#pbLi').css("display", "block");
         $('#pb').attr('aria-valuenow', (msg*100).toFixed(1));
@@ -277,6 +278,16 @@
                 });
                 finished = true;
             }
+        }
+    });
+
+    socket.on('DONE', function(msg){
+        if(msg === "TRUE"){
+            console.log("GOT socket MESSAGE DONE!");
+            xhttpDep.abort();
+            xhttpDep = null;
+        } else {
+            xhttpDep = new XMLHttpRequest();
         }
     });
 
@@ -313,7 +324,6 @@
 
     function addFactFromFile() {
         console.log("ADD FACT FROM FILE CALLED");
-        var xhttpDep = new XMLHttpRequest();
         xhttpDep.onreadystatechange = function () {
             if (this.readyState <= 3) {
                 $('#status').html("Importing data...");
