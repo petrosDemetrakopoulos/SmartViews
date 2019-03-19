@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -42,20 +43,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/form.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-986">
-              <caret line="251" column="40" lean-forward="true" selection-start-line="251" selection-start-column="40" selection-end-line="251" selection-end-column="40" />
+            <state relative-caret-position="331">
+              <caret line="289" column="44" selection-start-line="289" selection-start-column="44" selection-end-line="289" selection-end-column="44" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="125">
-              <caret line="255" column="10" selection-start-line="255" selection-start-column="10" selection-end-line="255" selection-end-column="10" />
+            <state relative-caret-position="328">
+              <caret line="282" column="29" lean-forward="true" selection-start-line="282" selection-start-column="29" selection-end-line="282" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -90,7 +91,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find />
       <find>/n</find>
       <find>getLa</find>
       <find>&quot;</find>
@@ -120,6 +120,7 @@
       <find>file</find>
       <find>socke</find>
       <find>.emit</find>
+      <find>addFactF</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -368,21 +369,7 @@
       <workItem from="1551790254647" duration="76000" />
       <workItem from="1551790333042" duration="941000" />
       <workItem from="1552646041938" duration="2580000" />
-      <workItem from="1552985322098" duration="3849000" />
-    </task>
-    <task id="LOCAL-00001" summary="ui fixes">
-      <created>1541683666597</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1541683666598</updated>
-    </task>
-    <task id="LOCAL-00002" summary="functionality to get all facts">
-      <created>1542807111203</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1542807111204</updated>
+      <workItem from="1552985322098" duration="5418000" />
     </task>
     <task id="LOCAL-00003" summary="clean unneeded fields on get facts">
       <created>1542808526833</created>
@@ -713,23 +700,37 @@
       <option name="project" value="LOCAL" />
       <updated>1552992223690</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="LOGS">
+      <created>1552992949606</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1552992949607</updated>
+    </task>
+    <task id="LOCAL-00051" summary="try to fix fire again issue on add data">
+      <created>1552993658561</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1552993658561</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="297427000" />
+    <option name="totallyTimeSpent" value="298996000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="824" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7387173" visible="true" weight="0.29470673" />
-      <window_info id="Structure" order="1" sideWeight="0.26128265" side_tool="true" visible="true" weight="0.29470673" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.73867595" visible="true" weight="0.29470673" />
+      <window_info id="Structure" order="1" sideWeight="0.26132405" side_tool="true" visible="true" weight="0.29470673" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.86337626" visible="true" weight="0.4248634" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.86337626" visible="true" weight="0.215847" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -739,7 +740,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.13662376" side_tool="true" visible="true" weight="0.4248634" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.13662376" side_tool="true" visible="true" weight="0.215847" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -816,8 +817,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added functions for getting latest rows" />
-    <MESSAGE value="group by functions" />
     <MESSAGE value="new templates" />
     <MESSAGE value="fixes in group by" />
     <MESSAGE value="functionality to store latestGroup bys per operation (COUNT, SUM, AVG, etc)" />
@@ -841,7 +840,9 @@
     <MESSAGE value="set environments" />
     <MESSAGE value="added times separately" />
     <MESSAGE value="fixed trigger again issue on timeout" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed trigger again issue on timeout" />
+    <MESSAGE value="LOGS" />
+    <MESSAGE value="try to fix fire again issue on add data" />
+    <option name="LAST_COMMIT_MESSAGE" value="try to fix fire again issue on add data" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/dist/js/sb-admin-2.min.js">
@@ -1048,9 +1049,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/saleMin_second_10K.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1068,17 +1066,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="255" column="10" selection-start-line="255" selection-start-column="10" selection-end-line="255" selection-end-column="10" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/views/form.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-986">
-          <caret line="251" column="40" lean-forward="true" selection-start-line="251" selection-start-column="40" selection-end-line="251" selection-end-column="40" />
+        <state relative-caret-position="331">
+          <caret line="289" column="44" selection-start-line="289" selection-start-column="44" selection-end-line="289" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="282" column="29" lean-forward="true" selection-start-line="282" selection-start-column="29" selection-end-line="282" selection-end-column="29" />
         </state>
       </provider>
     </entry>

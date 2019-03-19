@@ -272,6 +272,7 @@ async function addManyFacts(facts) {
 
 app.get('/load_dataset/:dt', function (req, res) {
     let dt = require('./' + req.params.dt);
+    console.log("ENDPOINT HIT AGAIN");
     if (contract) {
         if (!running) {
             running = true;
@@ -280,7 +281,7 @@ app.get('/load_dataset/:dt', function (req, res) {
                 console.log('DONE');
                 running = false;
                 io.emit("DONE","TRUE");
-                res.send('DONE');
+                return res.send('DONE');
             }).catch(error => {
                 console.log(error);
             })
