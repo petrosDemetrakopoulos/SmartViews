@@ -253,15 +253,16 @@ async function addManyFacts(facts) {
             //console.log('send:', err, txHash);
         }).on('error', (err) => {
             console.log('error:', err);
-        })
-            .on('transactionHash', (err) => {
+        }).on('transactionHash', (err) => {
                 //console.log('transactionHash:', err);
-            })
-            .on('receipt', (receipt) => {
-                // console.log('receipt:', receipt);
                 io.emit('progress', i/facts.length);
                 console.log(i);
-            })
+            });
+            // .on('receipt', (receipt) => {
+            //     // console.log('receipt:', receipt);
+            //     io.emit('progress', i/facts.length);
+            //     console.log(i);
+            // }).
         i++;
     }
     // console.log('LOOP ENDED EXECUTING BATCH');
