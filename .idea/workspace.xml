@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -28,17 +27,54 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/index.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
+            <state relative-caret-position="-563">
               <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="686">
+              <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/views/form.ejs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-986">
+              <caret line="251" column="40" lean-forward="true" selection-start-line="251" selection-start-column="40" selection-end-line="251" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5642">
-              <caret line="1161" column="52" lean-forward="true" selection-start-line="1161" selection-start-column="52" selection-end-line="1161" selection-end-column="52" />
+            <state relative-caret-position="125">
+              <caret line="255" column="10" selection-start-line="255" selection-start-column="10" selection-end-line="255" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/saleMin_second_10K.json">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="250">
+              <caret line="19" column="2" selection-start-line="19" selection-start-column="2" selection-end-line="19" selection-end-column="2" />
             </state>
           </provider>
         </entry>
@@ -54,12 +90,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>flatten</find>
-      <find>remo</find>
-      <find>calc</find>
-      <find>function</find>
-      <find>){</find>
-      <find>(</find>
       <find />
       <find>/n</find>
       <find>getLa</find>
@@ -84,6 +114,12 @@
       <find>calculateG</find>
       <find>.time =</find>
       <find>.executionTime</find>
+      <find>localhos</find>
+      <find>sql</find>
+      <find>fromF</find>
+      <find>file</find>
+      <find>socke</find>
+      <find>.emit</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -129,7 +165,6 @@
         <option value="$PROJECT_DIR$/templates/sales.json" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/views/index.ejs" />
-        <option value="$PROJECT_DIR$/views/dashboard.ejs" />
         <option value="$PROJECT_DIR$/public/js/bootstrap-notify.js" />
         <option value="$PROJECT_DIR$/contracts/int2.sol" />
         <option value="$PROJECT_DIR$/gb.py" />
@@ -141,20 +176,21 @@
         <option value="$PROJECT_DIR$/templates/new_sales.json" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/templates/new_sales_min.json" />
-        <option value="$PROJECT_DIR$/views/form.ejs" />
         <option value="$PROJECT_DIR$/.eslintignore" />
         <option value="$PROJECT_DIR$/.eslintrc.json" />
         <option value="$PROJECT_DIR$/helper.js" />
         <option value="$PROJECT_DIR$/transformations.js" />
         <option value="$PROJECT_DIR$/contracts/SalesMin.sol" />
+        <option value="$PROJECT_DIR$/views/dashboard.ejs" />
+        <option value="$PROJECT_DIR$/views/form.ejs" />
         <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="826" />
+    <option name="height" value="824" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -162,6 +198,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -171,13 +208,22 @@
             </path>
             <path>
               <item name="interface" type="b2602c69:ProjectViewProjectNode" />
+              <item name="interface" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
+              <item name="interface" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -321,7 +367,8 @@
       <workItem from="1551789256922" duration="943000" />
       <workItem from="1551790254647" duration="76000" />
       <workItem from="1551790333042" duration="941000" />
-      <workItem from="1552646041938" duration="2104000" />
+      <workItem from="1552646041938" duration="2580000" />
+      <workItem from="1552985322098" duration="3849000" />
     </task>
     <task id="LOCAL-00001" summary="ui fixes">
       <created>1541683666597</created>
@@ -645,22 +692,44 @@
       <option name="project" value="LOCAL" />
       <updated>1551790561244</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="added times separately">
+      <created>1552648281178</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1552648281178</updated>
+    </task>
+    <task id="LOCAL-00048" summary="added times separately">
+      <created>1552990566534</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1552990566534</updated>
+    </task>
+    <task id="LOCAL-00049" summary="fixed trigger again issue on timeout">
+      <created>1552992223690</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1552992223690</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="293102000" />
+    <option name="totallyTimeSpent" value="297427000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="24" width="1440" height="824" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="824" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.74067795" visible="true" weight="0.29041487" />
-      <window_info id="Structure" order="1" sideWeight="0.25932205" side_tool="true" visible="true" weight="0.29041487" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7387173" visible="true" weight="0.29470673" />
+      <window_info id="Structure" order="1" sideWeight="0.26128265" side_tool="true" visible="true" weight="0.29470673" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8640916" visible="true" weight="0.19398907" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.86337626" visible="true" weight="0.4248634" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -670,7 +739,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.13590844" side_tool="true" visible="true" weight="0.19398907" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.13662376" side_tool="true" visible="true" weight="0.4248634" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -747,8 +816,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added redis support" />
-    <MESSAGE value="ui fixes" />
     <MESSAGE value="added functions for getting latest rows" />
     <MESSAGE value="group by functions" />
     <MESSAGE value="new templates" />
@@ -772,13 +839,11 @@
     <MESSAGE value="organized the things a bit" />
     <MESSAGE value="many many fixes and correct fetching only for deltas" />
     <MESSAGE value="set environments" />
-    <option name="LAST_COMMIT_MESSAGE" value="set environments" />
+    <MESSAGE value="added times separately" />
+    <MESSAGE value="fixed trigger again issue on timeout" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed trigger again issue on timeout" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/views/blank.html" />
-    <entry file="file://$PROJECT_DIR$/public/dist/js/sb-admin-2.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/dist/js/sb-admin-2.min.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -871,13 +936,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2190">
-          <caret line="146" column="41" selection-start-line="146" selection-start-column="41" selection-end-line="146" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/first_5k.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -945,20 +1003,6 @@
     <entry file="file://$PROJECT_DIR$/package-lock.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/contracts/SalesMin.sol">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1080">
@@ -980,13 +1024,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="51" selection-start-line="27" selection-start-column="51" selection-end-line="27" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/contracts/sales_new.sol">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="855">
@@ -997,17 +1034,51 @@
     <entry file="file://$PROJECT_DIR$/brand_category_price_100.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/form.ejs">
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2835">
-          <caret line="189" column="69" selection-start-line="189" selection-start-column="69" selection-end-line="189" selection-end-column="69" />
+        <state relative-caret-position="270">
+          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="19" column="2" selection-start-line="19" selection-start-column="2" selection-end-line="19" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/saleMin_second_10K.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/index.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-563">
+          <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="686">
+          <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5642">
-          <caret line="1161" column="52" lean-forward="true" selection-start-line="1161" selection-start-column="52" selection-end-line="1161" selection-end-column="52" />
+        <state relative-caret-position="125">
+          <caret line="255" column="10" selection-start-line="255" selection-start-column="10" selection-end-line="255" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/form.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-986">
+          <caret line="251" column="40" lean-forward="true" selection-start-line="251" selection-start-column="40" selection-end-line="251" selection-end-column="40" />
         </state>
       </provider>
     </entry>

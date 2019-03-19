@@ -248,7 +248,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 <script>
     var socket = io();
-    var doneStatus = false;
     socket.on('progress', function(msg){
         $('#pbLi').css("display", "block");
         $('#pb').attr('aria-valuenow', (msg*100).toFixed(1));
@@ -293,6 +292,7 @@
     }, false)
 
     $(document).on('click', '#addFactFromFile', function(){
+        console.log("ADD FACT BUTTON PRESSED");
         addFactFromFile();
     });
 
@@ -312,6 +312,7 @@
     });
 
     function addFactFromFile() {
+        console.log("ADD FACT FROM FILE CALLED");
         var xhttpDep = new XMLHttpRequest();
         xhttpDep.onreadystatechange = function () {
             if (this.readyState <= 3) {
