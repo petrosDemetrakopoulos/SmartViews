@@ -238,6 +238,66 @@ app.get('/deployContract/:fn', function (req, res) {
     });
 });
 
+async function addManyFactsNew(facts, sliceSize) {
+    console.log('length = ' + facts.length);
+    const transactionObject = {
+        from: acc,
+        gas: 1500000000000,
+        gasPrice: '30000000000000'
+    };
+    let proms = [];
+    let slices = [];
+    let slicesNum = Math.ceil(facts.length / sliceSize);
+    console.log("*will add " + slicesNum + " slices*");
+
+    for(let j = 0; j < slicesNum; j++){
+        if(j === 0) {
+            slices[j] = facts.filter((fct, idx) => idx < sliceSize);
+        } else {
+            slices[j] = facts.filter((fct, idx) => idx > j*sliceSize && idx < (j+1)*sliceSize);
+        }
+    }
+    let allSlicesReady = [];
+    for(const slc of slices){
+        let crnProms = [];
+        for(const fct of slc){
+            let strFact = JSON.stringify(fct);
+            crnProms.push(strFact);
+        }
+        allSlicesReady.push(crnProms);
+    }
+
+    let i = 0;
+    for(const slc of allSlicesReady){
+        let transPromise = await contract.methods.addFacts(slc).send(transactionObject, (err, txHash) => {
+        }).on('error', (err) => {
+            console.log('error:', err);
+        }).on('transactionHash', (hash) => {
+            io.emit('progress', i/allSlicesReady.length);
+        });
+        i++;
+    }
+
+    // for (const fact of facts) {
+    //     let strFact = JSON.stringify(fact);
+    //     proms.push(strFact);
+    //     console.log(strFact);
+    // }
+    // console.log("done loop");
+    // console.log(proms.length);
+    // let transPromise = await contract.methods.addFacts(proms).send(transactionObject, (err, txHash) => {
+    // console.log(err);
+    //     console.log(txHash);
+    // }).on('error', (err) => {
+    //     console.log('error:', err);
+    // }).on('transactionHash', (hash) => {
+    //     console.log("***");
+    //     console.log(hash);
+    //     console.log("***");
+    // });
+    return Promise.resolve(true);
+}
+
 async function addManyFacts(facts) {
     console.log('length = ' + facts.length);
     const transactionObject = {
@@ -276,11 +336,15 @@ app.get('/load_dataset/:dt', function (req, res) {
     if (contract) {
         if (!running) {
             running = true;
-            addManyFacts(dt).then(retval => {
+            let startTime = microtime.nowDouble();
+            addManyFactsNew(dt,1000).then(retval => {
+                let endTime = microtime.nowDouble();
+                let timeDiff = endTime - startTime;
                 console.log(retval);
                 console.log('DONE');
                 running = false;
                 io.emit("DONE","TRUE");
+                console.log("Added " + dt.length + " records in " + timeDiff + " seconds");
                 return res.send('DONE');
             }).catch(error => {
                 console.log(error);
@@ -544,8 +608,15 @@ app.get('/new_contract/:fn', function (req, res) {
     loopLineFromTo += firstLoopLineFromTo + assignementsFromTo + getRetFromTo + '\t}\n';
 
     getFactFromTo = getFactFromTo + getParamsFromTo + retValsFromTo + arrCounter + loopLineFromTo;
-
-    contrPayload = firstLine + secondLine + thirdLine + fourthLine + fifthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy + getAllFacts + getFactFromTo +  '\n}';
+    let addManyFacts = "function addFacts(string[] payloadsss) public returns (string, uint IDMany){\n" +
+        "\t\tfor(uint i =0; i < payloadsss.length; i++){\n" +
+        "\t\t\tfacts[dataId].payload= payloadsss[i];\n" +
+        "\t\t\tfacts[dataId].timestamp = now;\n" +
+        "\t\t\tdataId += 1;\n" +
+        "\t\t}\n" +
+        "\t\treturn (facts[dataId-1].payload,dataId -1);\n" +
+        "\t}";
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine + fifthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy + getAllFacts + getFactFromTo + addManyFacts +  '\n}';
     fs.writeFile('contracts/' + fact_tbl.name + '.sol', contrPayload, function (err) {
         if (err) {
             res.send({ msg: 'error' });
