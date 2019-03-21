@@ -290,6 +290,10 @@
         }
     });
 
+    socket.on('gb_results', function(msg){
+        $("#outputGB").val(msg);
+    });
+
     let fl = "";
     const $fileInput = document.getElementById('dataset')
     $fileInput.addEventListener('change', function (event) {
