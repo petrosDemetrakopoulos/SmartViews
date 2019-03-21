@@ -847,6 +847,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                     if (error) {
                                         console.log(error);
                                         gbRunning = false;
+                                        io.emit('gb_results', error);
                                         res.send(error);
                                     } else {
                                         let timeCacheFinish = microtime.nowDouble();
@@ -865,6 +866,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                             if (cachedGroupBy.field === req.params.aggregateField &&
                                                 req.params.operation === cachedGroupBy.operation) {
                                                 let respObj = transformations.calculateReducedGB(req.params.operation, req.params.aggregateField, cachedGroupBy, gbFields);
+                                                io.emit('gb_results', JSON.stringify(respObj));
                                                 res.send(JSON.stringify(respObj));
                                             }
                                         } else {
@@ -873,6 +875,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                             client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
                                                 if (error) {
                                                     console.log(error);
+                                                    io.emit('gb_results', error);
                                                     res.send(error);
                                                 } else {
                                                     console.log('GET result ->' + cachedGroupBy);
@@ -881,6 +884,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                     cachedGroupBy.cacheTime = timeCache;
                                                     cachedGroupBy.executionTime = timeFinish - timeStart;
                                                     gbRunning = false;
+                                                    io.emit('gb_results', JSON.stringify(cachedGroupBy));
                                                     res.send(JSON.stringify(cachedGroupBy));
                                                 }
                                             });
@@ -946,6 +950,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                     updatedGB.executionTime = timeFinish - timeStart;
                                                     updatedGB.blockchainFetchTime = timeFetchEnd - timeFetchStart;
                                                     gbRunning = false;
+                                                    io.emit('gb_results', JSON.stringify(updatedGB));
                                                     res.send(JSON.stringify(updatedGB));
                                                 }
                                             });
@@ -1021,6 +1026,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                                 let cacheTimeEnd = microtime.nowDouble();
                                                                 if (error) {
                                                                     console.log(error);
+                                                                    io.emit('gb_results', error);
                                                                     res.send(error);
                                                                 } else {
                                                                     console.log('GET result ->' + cachedGroupBy);
@@ -1066,10 +1072,12 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                                     updatedGB.cacheTime = cacheTimeEnd - cacheTimeStart;
                                                                     updatedGB.blockchainFetchTime = timeFetchEnd - timeFetchStart;
                                                                     gbRunning = false;
+                                                                    io.emit('gb_results', JSON.stringify(updatedGB));
                                                                     res.send(JSON.stringify(updatedGB));
                                                                 }
                                                             });
                                                         } else {
+                                                            io.emit('gb_results', 'error');
                                                             res.send('error');
                                                         }
                                                     });
@@ -1158,6 +1166,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                         console.log('send:', err, txHash);
                                     }).on('error', (err) => {
                                         console.log('error:', err);
+                                        io.emit('gb_results', err);
                                         res.send(err);
                                     }).on('transactionHash', (err) => {
                                         console.log('transactionHash:', err);
@@ -1165,6 +1174,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                         console.log('receipt:', receipt);
                                         groupByResult = JSON.parse(groupByResult);
                                         groupByResult.receipt = receipt;
+                                        io.emit('gb_results', JSON.stringify(groupByResult));
                                         res.send(JSON.stringify(groupByResult));
                                     })
                                 });
@@ -1247,10 +1257,12 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                         groupBySqlResult.blockchainFetchTime = timeFetchEnd - timeFetchStart;
                                                         groupBySqlResult.sqlCalculationTime = SQLCalculationTimeEnd - SQLCalculationTimeStart;
                                                         gbRunning = false;
+                                                        io.emit('gb_results', JSON.stringify(groupBySqlResult));
                                                         res.send(JSON.stringify(groupBySqlResult));
                                                     })
                                                 } else {
                                                     gbRunning = false;
+                                                    io.emit('gb_results', 'error');
                                                     res.send('error');
                                                 }
                                             });
@@ -1269,6 +1281,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
         } else {
             gbRunning = false;
             res.status(400);
+            io.emit('gb_results', JSON.stringify({status: 'ERROR', options: 'Contract not deployed'}));
             res.send({status: 'ERROR', options: 'Contract not deployed'});
         }
     }
