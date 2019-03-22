@@ -338,7 +338,7 @@ app.get('/load_dataset/:dt', function (req, res) {
         if (!running) {
             running = true;
             let startTime = microtime.nowDouble();
-            addManyFactsNew(dt,100).then(retval => {
+            addManyFactsNew(dt,10).then(retval => {
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
                 console.log(retval);
