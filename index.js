@@ -271,7 +271,7 @@ async function addManyFactsNew(facts, sliceSize) {
         }
     } else {
         for(const crnDat of facts){
-            allSlicesReady.push([crnDat]);
+            allSlicesReady.push([JSON.stringify(crnDat)]);
         }
     }
 
