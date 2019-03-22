@@ -261,13 +261,18 @@ async function addManyFactsNew(facts, sliceSize) {
             }
         }
 
-        for (const slc of slices) {
-            let crnProms = [];
-            crnProms = slc.map(fct => {
+        allSlicesReady = slices.map(slc => {
+            return slc.map(fct => {
                 return JSON.stringify(fct);
             });
-            allSlicesReady.push(crnProms);
-        }
+        });
+        // for (const slc of slices) {
+        //     let crnProms = [];
+        //     crnProms = slc.map(fct => {
+        //         return JSON.stringify(fct);
+        //     });
+        //     allSlicesReady.push(crnProms);
+        // }
     } else {
         allSlicesReady = facts.map(fact => {
             return [JSON.stringify(fact)];
@@ -344,7 +349,7 @@ app.get('/load_dataset/:dt', function (req, res) {
         if (!running) {
             running = true;
             let startTime = microtime.nowDouble();
-            addManyFactsNew(dt,1).then(retval => {
+            addManyFactsNew(dt,20).then(retval => {
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
                 console.log(retval);
