@@ -247,25 +247,32 @@ async function addManyFactsNew(facts, sliceSize) {
         gasPrice: '30000000000000'
     };
     let proms = [];
-    let slices = [];
-    let slicesNum = Math.ceil(facts.length / sliceSize);
-    console.log("*will add " + slicesNum + " slices*");
-
-    for(let j = 0; j < slicesNum; j++){
-        if(j === 0) {
-            slices[j] = facts.filter((fct, idx) => idx < sliceSize);
-        } else {
-            slices[j] = facts.filter((fct, idx) => idx > j*sliceSize && idx < (j+1)*sliceSize);
-        }
-    }
     let allSlicesReady = [];
-    for(const slc of slices){
-        let crnProms = [];
-        for(const fct of slc){
-            let strFact = JSON.stringify(fct);
-            crnProms.push(strFact);
+    if(sliceSize > 1) {
+        let slices = [];
+        let slicesNum = Math.ceil(facts.length / sliceSize);
+        console.log("*will add " + slicesNum + " slices*");
+
+        for (let j = 0; j < slicesNum; j++) {
+            if (j === 0) {
+                slices[j] = facts.filter((fct, idx) => idx < sliceSize);
+            } else {
+                slices[j] = facts.filter((fct, idx) => idx > j * sliceSize && idx < (j + 1) * sliceSize);
+            }
         }
-        allSlicesReady.push(crnProms);
+
+        for (const slc of slices) {
+            let crnProms = [];
+            for (const fct of slc) {
+                let strFact = JSON.stringify(fct);
+                crnProms.push(strFact);
+            }
+            allSlicesReady.push(crnProms);
+        }
+    } else {
+        for(const crnDat of facts){
+            allSlicesReady.push([crnDat]);
+        }
     }
 
     let i = 0;
