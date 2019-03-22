@@ -263,10 +263,9 @@ async function addManyFactsNew(facts, sliceSize) {
 
         for (const slc of slices) {
             let crnProms = [];
-            for (const fct of slc) {
-                let strFact = JSON.stringify(fct);
-                crnProms.push(strFact);
-            }
+            crnProms = slc.map(fct => {
+                return JSON.stringify(fct);
+            });
             allSlicesReady.push(crnProms);
         }
     } else {
