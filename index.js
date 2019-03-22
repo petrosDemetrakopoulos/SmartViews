@@ -270,9 +270,9 @@ async function addManyFactsNew(facts, sliceSize) {
             allSlicesReady.push(crnProms);
         }
     } else {
-        for(const crnDat of facts){
-            allSlicesReady.push([JSON.stringify(crnDat)]);
-        }
+        allSlicesReady = facts.map(fact => {
+            return [JSON.stringify(fact)];
+        });
     }
 
     let i = 0;
