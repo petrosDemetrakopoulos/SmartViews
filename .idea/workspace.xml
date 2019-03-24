@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="changed slice size to 100">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-    </list>
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -399,14 +396,7 @@
       <workItem from="1553262546147" duration="1666000" />
       <workItem from="1553335958699" duration="1225000" />
       <workItem from="1553343224816" duration="40000" />
-      <workItem from="1553431806786" duration="19000" />
-    </task>
-    <task id="LOCAL-00020" summary="functionality to store latestGroup bys per operation (COUNT, SUM, AVG, etc)">
-      <created>1545513125817</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1545513125817</updated>
+      <workItem from="1553431806786" duration="642000" />
     </task>
     <task id="LOCAL-00021" summary="bug fixes">
       <created>1545514007405</created>
@@ -744,11 +734,18 @@
       <option name="project" value="LOCAL" />
       <updated>1553264359719</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="changed slice size to 200">
+      <created>1553431840861</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1553431840862</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="318625000" />
+    <option name="totallyTimeSpent" value="319248000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="824" extended-state="0" />
@@ -847,7 +844,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="made group by possible for multiple group by fields" />
     <MESSAGE value="caclculate gb incrementaly based on other fields gb" />
     <MESSAGE value="fixed incremantal processing for AVERAGE operation" />
     <MESSAGE value="lintering fixes" />
@@ -872,7 +868,8 @@
     <MESSAGE value="changed slice size to 20" />
     <MESSAGE value="changed slice size to 50" />
     <MESSAGE value="changed slice size to 100" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed slice size to 100" />
+    <MESSAGE value="changed slice size to 200" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed slice size to 200" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/dist/js/sb-admin-2.min.js">
