@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="changed slice size to 100">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
@@ -16,15 +16,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/index.ejs">
           <provider selected="true" editor-type-id="text-editor">
@@ -66,6 +57,15 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="139">
               <caret line="351" column="32" selection-start-line="351" selection-start-column="32" selection-end-line="351" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/helper.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="167">
+              <caret line="13" column="1" lean-forward="true" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -396,21 +396,10 @@
       <workItem from="1553182146723" duration="9672000" />
       <workItem from="1553253188695" duration="4035000" />
       <workItem from="1553261536949" duration="607000" />
-      <workItem from="1553262546147" duration="13000" />
-    </task>
-    <task id="LOCAL-00018" summary="fixes in group by">
-      <created>1545160048123</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1545160048123</updated>
-    </task>
-    <task id="LOCAL-00019" summary="functionality to store latestGroup bys per operation (COUNT, SUM, AVG, etc)">
-      <created>1545490452927</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1545490452927</updated>
+      <workItem from="1553262546147" duration="1666000" />
+      <workItem from="1553335958699" duration="1225000" />
+      <workItem from="1553343224816" duration="40000" />
+      <workItem from="1553431806786" duration="19000" />
     </task>
     <task id="LOCAL-00020" summary="functionality to store latestGroup bys per operation (COUNT, SUM, AVG, etc)">
       <created>1545513125817</created>
@@ -741,18 +730,32 @@
       <option name="project" value="LOCAL" />
       <updated>1553260906700</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="changed slice size to 50">
+      <created>1553262568620</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1553262568621</updated>
+    </task>
+    <task id="LOCAL-00068" summary="changed slice size to 100">
+      <created>1553264359719</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1553264359719</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="315688000" />
+    <option name="totallyTimeSpent" value="318625000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="824" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="824" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7296748" visible="true" weight="0.3118741" />
-      <window_info id="Structure" order="1" sideWeight="0.2703252" side_tool="true" visible="true" weight="0.3118741" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.72357726" visible="true" weight="0.32474965" />
+      <window_info id="Structure" order="1" sideWeight="0.27642277" side_tool="true" visible="true" weight="0.32474965" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -763,11 +766,11 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="8" sideWeight="0.49713877" visible="true" weight="0.32786885" />
+      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49499285" visible="true" weight="0.32786885" />
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.5028612" side_tool="true" visible="true" weight="0.32786885" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.50500715" side_tool="true" visible="true" weight="0.32786885" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -844,8 +847,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ALL CALCULATIONS ON SQL" />
-    <MESSAGE value="updated dataset slices and contracts" />
     <MESSAGE value="made group by possible for multiple group by fields" />
     <MESSAGE value="caclculate gb incrementaly based on other fields gb" />
     <MESSAGE value="fixed incremantal processing for AVERAGE operation" />
@@ -869,7 +870,9 @@
     <MESSAGE value="microoptimization in slices sized 1" />
     <MESSAGE value="microoptimization in slices sized &gt; 1" />
     <MESSAGE value="changed slice size to 20" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed slice size to 20" />
+    <MESSAGE value="changed slice size to 50" />
+    <MESSAGE value="changed slice size to 100" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed slice size to 100" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/dist/js/sb-admin-2.min.js">
@@ -1007,13 +1010,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/helper.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="20" selection-start-column="20" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -1100,6 +1096,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="2" selection-start-line="19" selection-start-column="2" selection-end-line="19" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helper.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="13" column="1" lean-forward="true" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
         </state>
       </provider>
     </entry>
