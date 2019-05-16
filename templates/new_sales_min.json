@@ -45,5 +45,9 @@
         }
       ]
     }
-  }
+  },
+  "views" : [{ "name": "BrandName|ProductCategoryName(COUNT)",
+    "gbFields": "BrandName | ProductCategoryName",
+    "operation":  "COUNT", "aggregationField":  "OnlineSalesKey",
+    "SQLTable": "CREATE TEMPORARY TABLE tempTbl(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, COUNTOnlineSalesKey int)"}]
 }

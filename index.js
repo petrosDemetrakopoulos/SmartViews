@@ -77,49 +77,7 @@ app.get('/benchmark', function (req, res) {
             let gbResult = groupBy(jsonObj,'Occupation');
             console.log(microtime.nowDouble() - timeStart + ' seconds');
             res.send(gbResult);
-            /**
-             * [
-             * 	{a:'1', b:'2', c:'3'},
-             * 	{a:'4', b:'5'. c:'6'}
-             * ]
-             */
         });
-});
-
-function calculateGBPython(data, gbField, aggregateField, operation, cb) {
-    let spawn = require('child_process').spawn;
-    let process = spawn('python', ['./gb.py', data, gbField, aggregateField, operation]);
-    let result = '';
-    try {
-        process.stdout.on('data', function (data) {
-            console.log(data.toString());
-            result += data.toString();
-        });
-        process.on('exit', function () {
-            return cb(result)
-        });
-    } catch(e) {
-        process.stdout.on('error', function (err) {
-            return cb(null,err);
-        });
-    }
-}
-
-app.get('/python', function (req, res) {
-    let spawn = require('child_process').spawn;
-    let process = spawn('python', ['./gb.py', jsonData]);
-
-    process.stdout.on('data', function (data) {
-        res.send(data.toString());
-    });
-    process.stdout.on('error', function (error) {
-        console.log(error);
-        res.send(error.toString());
-    });
-
-    process.stdout.on('close', (code, signal) => {
-        console.log(`child process terminated due to receipt of signal ${signal} ${code}`);
-    });
 });
 
 app.get('/form/:contract', function (req, res) {
@@ -143,10 +101,12 @@ app.get('/form/:contract', function (req, res) {
     groupBys = groupBys.map(function (obj) {
         return obj.fields;
     });
+    let readyViews = fact_tbl.views;
+    readyViews = readyViews.map(x => x.name);
     groupBys = helper.removeDuplicates(groupBys);
     groupBys.push(fact_tbl.groupBys.TOP.fields);
     console.log(groupBys);
-    res.render('form',{'template':templ, 'name': fact_tbl.name, 'address': address, 'groupBys':groupBys});
+    res.render('form',{'template':templ, 'name': fact_tbl.name, 'address': address, 'groupBys':groupBys, 'readyViews': readyViews});
 });
 
 http.listen(3000, () => {
@@ -220,6 +180,79 @@ app.get('/readFromFile', function (req, res) {
         })
 });
 
+function cost(groupBysArray) {
+    for(let i = 0; i < groupBysArray.length; i++){
+        let crnGroupBy = groupBysArray[i];
+        let crnCost = (0.5 * crnGroupBy.columnSize) + (10 / crnGroupBy.gbTimestamp);
+        crnGroupBy.cost = crnCost;
+        groupBysArray[i] = crnGroupBy;
+    }
+    return groupBysArray;
+}
+
+app.get('/getViewByName/:viewName', function (req,res) {
+    let fact_tbl = require('./templates/new_sales_min');
+    let templ = {};
+    if ('template' in fact_tbl) {
+        templ = fact_tbl['template'];
+    } else {
+        templ = fact_tbl;
+    }
+    let viewsDefined = fact_tbl.views;
+    console.log(req.params.viewName);
+    let found = false;
+    let view = {};
+    for(let crnView in viewsDefined){
+        console.log(crnView);
+        if(fact_tbl.views[crnView].name === req.params.viewName) {
+            found = true;
+            view = crnView;
+            break;
+        }
+    }
+    if(!found){
+        return res.send({error: "view not found"});
+    }
+    if (contract) {
+        contract.methods.groupId().call(function (err, result) {
+            console.log('********');
+            console.log(result);
+            console.log('*****');
+            if (!err) {
+                contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
+                    if (!err) {
+                         let len = Object.keys(resultGB).length;
+                         for (let j = 0; j < len / 2; j++) {
+                             delete resultGB[j];
+                         }
+                         let transformedArray = [];
+                         console.log(resultGB);
+                        for(let j = 0; j < resultGB.hashes.length; j++){
+                            transformedArray[j] = {hash: resultGB.hashes[j],
+                                latestFact:resultGB.latFacts[j], columnSize:  resultGB.columnSize[j], columns:  resultGB.columns[j],
+                                gbTimestamp: resultGB.gbTimestamp[j]};
+                        }
+                        transformedArray = cost(transformedArray);
+                        return res.send(transformedArray);
+                    } else {
+                        console.log(err);
+                        console.log('ERRRRRR');
+                        return res.send(err);
+                    }
+                })
+            } else {
+                console.log(err);
+                console.log('ERRRRRR');
+                res.send(err);
+            }
+        });
+    }else {
+        res.status(400);
+        res.send({ status: 'ERROR', options: 'Contract not deployed' });
+    }
+
+});
+
 app.get('/deployContract/:fn', function (req, res) {
     web3.eth.getAccounts(function (err, accounts) {
         if (!err) {
@@ -285,6 +318,7 @@ async function addManyFactsNew(facts, sliceSize) {
         }).on('error', (err) => {
             console.log('error:', err);
         }).on('transactionHash', (hash) => {
+            console.log(i);
             io.emit('progress', i/allSlicesReady.length);
         });
         i++;
@@ -345,11 +379,14 @@ async function addManyFacts(facts) {
 app.get('/load_dataset/:dt', function (req, res) {
     let dt = require('./' + req.params.dt);
     console.log("ENDPOINT HIT AGAIN");
+    console.log(running);
     if (contract) {
         if (!running) {
+            console.log("enter 1");
             running = true;
             let startTime = microtime.nowDouble();
             addManyFactsNew(dt,10).then(retval => {
+                console.log("enter 2");
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
                 console.log(retval);
@@ -377,6 +414,7 @@ app.get('/new_contract/:fn', function (req, res) {
     let secondLine = 'contract ' + fact_tbl.name + ' { \n';
     let thirdLine = '\tuint public dataId;\n';
     let fourthLine = '\tuint public groupId;\n\n';
+    let sixthLine = "\tuint public viewId;\n\n";
     let fifthLine = '\tuint public lastCount;\n' +
         '\tuint public lastSUM;\n' +
         '\tuint public lastMin;\n' +
@@ -402,19 +440,21 @@ app.get('/new_contract/:fn', function (req, res) {
         let crnProp = fact_tbl.properties[i];
         properties += "\t\t" + crnProp.data_type + " " + crnProp.key + ";\n";
     }
-    let groupStruct = "\tstruct groupBy{ \n  \t\tstring hash;\n" + '  \t\tuint latestFact;\n' +
-        "        uint timestamp;\n\t}\n";
-    let groupMapping =  "\tmapping(uint => groupBy) public groupBys;\n\n";
+    let groupStruct = "\tstruct groupBy{ \n  \t\tstring hash;\n" + '  \t\tuint latestFact;\n' + '  \t\tuint colSize;\n' +
+         '  \t\tstring columns;\n' + "        uint timestamp;\n\t}\n";
+    let gbView = "\tstruct gbView{ \n  \t\tstring viewDef;\n}\n"; // viewDef is a strigifiedJSON defining a view
+    let viewMapping = "\tmapping(uint => gbView) public gbViews;\n\n";
+    let groupMapping = "\tmapping(uint => groupBy) public groupBys;\n\n";
     properties += "\t\tuint timestamp;\n";
     let closeStruct = "\t}\n";
-    let mapping = "\tmapping(uint =>" + fact_tbl.struct_Name +") public facts;\n\n";
+    let mapping = "\tmapping(uint =>" + fact_tbl.struct_Name + ") public facts;\n\n";
     let addParams = '';
     let addFact = "\tfunction addFact(";
 
 
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length-1)) {
+        if (i === (fact_tbl.properties.length - 1)) {
             addParams += crnProp.data_type + ' ' + crnProp.key + ") ";
         } else {
             addParams += crnProp.data_type + ' ' + crnProp.key + ",";
@@ -423,7 +463,7 @@ app.get('/new_contract/:fn', function (req, res) {
     let retParams = 'public returns (';
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length-1)) {
+        if (i === (fact_tbl.properties.length - 1)) {
             retParams += crnProp.data_type + ' ' + ", uint ID){\n";
         } else {
             retParams += crnProp.data_type + ' ' + ",";
@@ -433,13 +473,13 @@ app.get('/new_contract/:fn', function (req, res) {
     let setters = '';
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        setters += "\t\tfacts[dataId]." + crnProp.key  + "= " +  crnProp.key + ";\n";
+        setters += "\t\tfacts[dataId]." + crnProp.key + "= " + crnProp.key + ";\n";
     }
     setters += "\t\tfacts[dataId].timestamp = now;\n \t\tdataId += 1;\n";
     let retStmt = "\t\treturn (";
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        retStmt += "facts[dataId-1]." + crnProp.key  + ",";
+        retStmt += "facts[dataId-1]." + crnProp.key + ",";
     }
     retStmt += "dataId -1);\n\t}\n\n";
 
@@ -448,20 +488,28 @@ app.get('/new_contract/:fn', function (req, res) {
     let retVals = '';
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length-1)) {
-            getParams += crnProp.data_type + " " + crnProp.key +", uint timestamp" + "){\n";
-            retVals += "facts[id]." + crnProp.key + ", facts[id].timestamp" +  ");\n\t}\n\n";
+        if (i === (fact_tbl.properties.length - 1)) {
+            getParams += crnProp.data_type + " " + crnProp.key + ", uint timestamp" + "){\n";
+            retVals += "facts[id]." + crnProp.key + ", facts[id].timestamp" + ");\n\t}\n\n";
         } else {
             getParams += crnProp.data_type + " " + crnProp.key + ",";
             retVals += "facts[id]." + crnProp.key + ",";
         }
     }
-    let retFact = "\t\treturn (" + retVals ;
+    let retFact = "\t\treturn (" + retVals;
 
-    let addGroupBy = "\tfunction addGroupBy(string hash, bytes32 category, uint latestFact) public returns(string groupAdded, uint groupID){\n" +
+    let addView = "\tfunction addView(string definition) public returns(string viewAdded, uint viewID) { \n" +
+        "    \t\tgbViews[viewId].viewDef = definition;\n" +
+        "    \t\tviewId += 1;\n" +
+        "    \t\treturn (gbViews[viewId-1].viewDef, viewId-1);\n" +
+        "    \t}\n\n";
+
+    let addGroupBy = "\tfunction addGroupBy(string hash, bytes32 category, uint latestFact, uint colSize, string columns) public returns(string groupAdded, uint groupID){\n" +
         "    \t\tgroupBys[groupId].hash = hash;\n" +
         "    \t\tgroupBys[groupId].timestamp = now;\n" +
         "    \t\tgroupBys[groupId].latestFact = latestFact;\n" +
+        "    \t\tgroupBys[groupId].colSize = colSize;\n" +
+        "    \t\tgroupBys[groupId].columns = columns;\n" +
         "\t\t\tif(category == COUNT_LITERAL){\n" +
         "\t\t\t\tlastCount  = groupID;\n" +
         "\t\t\t} else if(category == SUM_LITERAL){\n" +
@@ -477,42 +525,42 @@ app.get('/new_contract/:fn', function (req, res) {
         "    \t\treturn (groupBys[groupId-1].hash, groupId-1);\n" +
         "    \t}\n\n";
 
-    let getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp, uint latFact){\n" +
-        "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact);\n" +
+    let getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp, uint latFact, string cols){\n" +
+        "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns);\n" +
         "    \t}\n\n";
 
-    let getLatestGroupBy = "function getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb){\n" +
+    let getLatestGroupBy = "function getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb, uint colSz, string gbCols){\n" +
         "\t\tif(groupId > 0){\n" +
         "\t\t\tif(operation == COUNT_LITERAL){\n" +
         "\t\t\t\tif(lastCount >= 0){\n" +
-        "\t\t\t\t\treturn (groupBys[lastCount].hash, groupBys[lastCount].timestamp, groupBys[lastCount].latestFact);\n" +
+        "\t\t\t\t\treturn (groupBys[lastCount].hash, groupBys[lastCount].timestamp, groupBys[lastCount].latestFact, groupBys[lastCount].colSize, groupBys[lastCount].columns);\n" +
         "\t\t\t\t}\n" +
         "\t\t\t} else if (operation == SUM_LITERAL){\n" +
         "\t\t\t\tif(lastSUM >= 0){\n" +
-        "\t\t\t\t\treturn (groupBys[lastSUM].hash, groupBys[lastSUM].timestamp, groupBys[lastCount].latestFact);\n" +
+        "\t\t\t\t\treturn (groupBys[lastSUM].hash, groupBys[lastSUM].timestamp, groupBys[lastSUM].latestFact, groupBys[lastSUM].colSize, groupBys[lastSUM].columns);\n" +
         "\t\t\t\t}\n" +
         "\t\t\t} else if (operation == MIN_LITERAL){\n" +
         "\t\t\t\tif(lastMin >= 0){\n" +
-        "\t\t\t\t\treturn (groupBys[lastMin].hash, groupBys[lastMin].timestamp, groupBys[lastCount].latestFact);\n" +
+        "\t\t\t\t\treturn (groupBys[lastMin].hash, groupBys[lastMin].timestamp, groupBys[lastMin].latestFact, groupBys[lastMin].colSize, groupBys[lastMin].columns);\n" +
         "\t\t\t\t}\n" +
         "\t\t\t} else if (operation == MAX_LITERAL){\n" +
         "\t\t\t\tif(lastMax >= 0){\n" +
-        "\t\t\t\t\treturn (groupBys[lastMax].hash, groupBys[lastMax].timestamp, groupBys[lastCount].latestFact);\n" +
+        "\t\t\t\t\treturn (groupBys[lastMax].hash, groupBys[lastMax].timestamp, groupBys[lastMax].latestFact, groupBys[lastMax].colSize, groupBys[lastMax].columns);\n" +
         "\t\t\t\t}\n" +
         "\t\t\t} else if (operation == AVERAGE_LITERAL){\n" +
         "\t\t\t\tif(lastAverage >= 0){\n" +
-        "\t\t\t\t\treturn (groupBys[lastAverage].hash, groupBys[lastAverage].timestamp, groupBys[lastCount].latestFact);\n" +
+        "\t\t\t\t\treturn (groupBys[lastAverage].hash, groupBys[lastAverage].timestamp, groupBys[lastAverage].latestFact, groupBys[lastAverage].colSize, groupBys[lastAverage].columns);\n" +
         "\t\t\t\t}\n" +
         "\t\t\t}\n" +
         "\t\t}\n" +
-        "\t\t\treturn (\"\",0,0);\n" +
+        "\t\t\treturn (\"\",0,0,0,\"\");\n" +
         "\t}\n\n";
 
     let retValsLatest = '';
     let getParamsLatest = '';
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length-1)) {
+        if (i === (fact_tbl.properties.length - 1)) {
             getParamsLatest += crnProp.data_type + ' ' + crnProp.key + '){\n';
             retValsLatest += 'facts[dataId-1].' + crnProp.key + ');\n\t';
         } else {
@@ -520,12 +568,12 @@ app.get('/new_contract/:fn', function (req, res) {
             retValsLatest += "facts[dataId-1]." + crnProp.key + ',';
         }
     }
-    let retFactLatest = '\t\t\treturn (' + retValsLatest ;
+    let retFactLatest = '\t\t\treturn (' + retValsLatest;
     let emptyRetFactLatest = '';
 
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length-1)) {
+        if (i === (fact_tbl.properties.length - 1)) {
             if (crnProp.data_type === 'string') {
                 emptyRetFactLatest += "\"\"" + ");\n\t";
             } else {
@@ -546,6 +594,29 @@ app.get('/new_contract/:fn', function (req, res) {
         "\t\t\treturn (" + emptyRetFactLatest +
         "\t}\n" +
         "\t}\n\n";
+
+    let getAllViews = '\tfunction getAllViews(uint viewID) public returns (string[] viewDefinitions){\n';
+    let getAllViewsDec = '\t\tstring[] memory allViews = new string[](viewID);\n';
+    let getViewsLoop = '\t\tfor(uint i =0; i < viewID; i++){\n' +
+        '\t\t gbView storage crnView = gbViews[i];\n' +
+        '\t\t allViews[i] = crnView.viewDef;\n' +
+        '\t\t}\n' +
+        '\t\treturn(allViews);\n' +
+        '\t}\n';
+
+    let getAllGBs = '\tfunction getAllGroupBys(uint groupById) public returns (string[] hashes, uint[] latFacts, uint[] columnSize, string[] columns, uint[] gbTimestamp){\n';
+    let getAllGBsDec = '\t\tstring[] memory allHashes = new string[](groupById);\n' + '\t\tuint[] memory allLatFact = new uint[](groupById);\n' + '\t\tuint[] memory allColSize = new uint[](groupById);\n' + '\t\tuint[] memory allTs = new uint[](groupById);\n'
+    + '\t\tstring[] memory allColumns = new string[](groupById);\n';
+    let getGBsLoop = '\t\tfor(uint i =0; i < groupById; i++){\n' +
+        '\t\t groupBy storage crnGb = groupBys[i];\n' +
+        '\t\t allHashes[i] = crnGb.hash;\n' +
+        '\t\t allLatFact[i] = crnGb.latestFact;\n' +
+        '\t\t allColSize[i] = crnGb.colSize;\n' +
+        '\t\t allColumns[i] = crnGb.columns;\n' +
+        '\t\t allTs[i] = crnGb.timestamp;\n' +
+        '\t\t}\n' +
+        '\t\treturn(allHashes, allLatFact, allColSize, allColumns, allTs);\n' +
+        '\t}\n';
 
 
     let getAllFacts = '\tfunction getAllFacts(uint id) public returns (';
@@ -628,7 +699,11 @@ app.get('/new_contract/:fn', function (req, res) {
         "\t\t}\n" +
         "\t\treturn (facts[dataId-1].payload,dataId -1);\n" +
         "\t}";
-    contrPayload = firstLine + secondLine + thirdLine + fourthLine + fifthLine +  constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + addFact + setters + retStmt + getFact + getParams + retFact + addGroupBy + getGroupBy + getLatestGroupBy + getAllFacts + getFactFromTo + addManyFacts +  '\n}';
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine + sixthLine + fifthLine +
+        constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + gbView +
+        viewMapping + addFact + setters + retStmt + getFact + getParams + retFact + addView + addGroupBy +
+        getGroupBy + getLatestGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +
+        getGBsLoop + getAllFacts + getFactFromTo + addManyFacts +  '\n}';
     fs.writeFile('contracts/' + fact_tbl.name + '.sol', contrPayload, function (err) {
         if (err) {
             res.send({ msg: 'error' });
@@ -831,7 +906,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
     //      ELSE CALCULATE GROUBY FOR THE DELTAS (AKA THE ROWS ADDED AFTER THE LATEST GROUPBY) AND APPEND TO THE ALREADY SAVED IN REDIS
     console.log("gb hit again");
     if(!gbRunning) {
-        running = true;
+       // running = true;
         let gbFields = [];
         if (req.params.field.indexOf('|') > -1) {
             // more than 1 group by fields
@@ -840,7 +915,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
             gbFields.push(req.params.field);
         }
         console.log(gbFields);
-        let python = false;
         if (contract) {
             let timeStart = 0;
             contract.methods.dataId().call(function (err, latestId) {
@@ -850,6 +924,9 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                     if (latestGroupBy.ts > 0) {
                         contract.methods.getFact(latestId - 1).call(function (err, latestFact) {
                             if (latestGroupBy.ts >= latestFact.timestamp) {
+                                //get all groupbys from blockchain and keep only the ones that fields can be calculated from
+                                //run cost function
+                                //select the one with the less cost and calculate incrementaly
                                 // check what is the latest groupBy
                                 // if latest groupby contains all fields for the new groupby requested
                                 // -> incrementaly calculate the groupby requested by summing the one in redis cache
@@ -862,7 +939,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                         res.send(error);
                                     } else {
                                         let timeCacheFinish = microtime.nowDouble();
-                                        let timeCache = timeCacheFinish - timeFetchStart;
+                                        let timeCache = timeCacheFinish - timeCacheStart;
                                         cachedGroupBy = JSON.parse(cachedGroupBy);
                                         console.log('**');
                                         console.log(cachedGroupBy);
@@ -919,55 +996,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                         //  }
                                     }
                                     timeStart = microtime.nowDouble();
-
-                                    // python
-                                    if (python) {
-                                        calculateGBPython(deltas.toString(), req.params.field, req.params.aggregateField, req.params.operation).then(result => {
-                                            result = JSON.parse(result);
-                                            console.log('$$$$$');
-                                            console.log(result);
-                                            console.log('$$$$$');
-                                            result = JSON.parse(result);
-                                            result.operation = req.params.operation;
-                                            result.field = req.params.aggregateField;
-                                            result.time = microtime.nowDouble() - timeStart;
-                                            let deltaGroupBy = result;
-                                            client.get(latestGroupBy.latestGroupBy, function (error, cachedGroupBy) {
-                                                if (error) {
-                                                    console.log(error);
-                                                    gbRunning = false;
-                                                    res.send(error);
-                                                } else {
-                                                    console.log('GET result ->' + cachedGroupBy);
-
-                                                    // IF COUNT / SUM -> ADD
-                                                    // ELIF MIN -> NEW_MIN = MIN OF MINS
-
-                                                    let ObCachedGB = JSON.parse(cachedGroupBy);
-                                                    let updatedGB = {};
-                                                    if (ObCachedGB['operation'] === 'SUM') {
-                                                        updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
-                                                    } else if (ObCachedGB['operation'] === 'COUNT') {
-                                                        updatedGB = helper.sumObjects(ObCachedGB, deltaGroupBy);
-                                                    } else if (ObCachedGB['operation'] === 'MAX') {
-                                                        updatedGB = helper.maxObjects(ObCachedGB, deltaGroupBy)
-                                                    } else if (ObCachedGB['operation'] === 'MIN') {
-                                                        updatedGB = helper.minObjects(ObCachedGB, deltaGroupBy)
-                                                    } else { // AVERAGE
-                                                        updatedGB = helper.averageObjects(ObCachedGB, deltaGroupBy)
-                                                    }
-                                                    let timeFinish = microtime.nowDouble();
-                                                    client.set(latestGroupBy.latestGroupBy, JSON.stringify(updatedGB), redis.print);
-                                                    updatedGB.executionTime = timeFinish - timeStart;
-                                                    updatedGB.blockchainFetchTime = timeFetchEnd - timeFetchStart;
-                                                    gbRunning = false;
-                                                    io.emit('gb_results', JSON.stringify(updatedGB));
-                                                    res.send(JSON.stringify(updatedGB));
-                                                }
-                                            });
-                                        });
-                                    } else {
-
                                         // calculate groupby for deltas in SQL
                                         let SQLCalculationTimeStart = microtime.nowDouble();
                                         connection.query(createTable, function (error, results, fields) {
@@ -1082,6 +1110,7 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                                     updatedGB.sqlCalculationTime = SQLCalculationTimeEnd - SQLCalculationTimeStart;
                                                                     updatedGB.cacheTime = cacheTimeEnd - cacheTimeStart;
                                                                     updatedGB.blockchainFetchTime = timeFetchEnd - timeFetchStart;
+                                                                    //add the newly calculated groupby in blockchain and redis cache
                                                                     gbRunning = false;
                                                                     io.emit('gb_results', JSON.stringify(updatedGB));
                                                                     res.send(JSON.stringify(updatedGB));
@@ -1127,7 +1156,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                         //         res.send(JSON.stringify(updatedGB));
                                         //     }
                                         // });
-                                    }
 
                                     //      console.log('DELTAS GB---->');
                                     //      console.log(deltaGroupBy);
@@ -1142,8 +1170,10 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                         });
                     } else {
                         // NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING
+                        console.log("NO GROUP BY, SHOULD CALCULATE IT FROM THE BEGGINING");
                         let timeFetchStart = microtime.nowDouble();
                         getAllFacts(latestId).then(retval => {
+                            console.log("got all facts");
                             let timeFetchEnd = microtime.nowDouble();
                             timeStart = microtime.nowDouble();
                             let groupByResult;
@@ -1153,43 +1183,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                 gas: 15000000,
                                 gasPrice: '30000000000000'
                             };
-                            if (python) {
-                                calculateGBPython(retval, req.params.field, req.params.aggregateField, req.params.operation, function (results, err) {
-                                    if (err) {
-                                        console.log(err);
-                                    }
-                                    timeFinish = microtime.nowDouble();
-                                    console.log('$$$$$');
-                                    console.log(results);
-                                    console.log('$$$$$');
-                                    results = JSON.parse(results);
-                                    results.operation = req.params.operation;
-                                    results.field = req.params.aggregateField;
-                                    results.time = timeFinish - timeStart;
-                                    groupByResult = results;
-                                    groupByResult = JSON.stringify(groupByResult);
-                                    md5sum = crypto.createHash('md5');
-                                    md5sum.update(groupByResult);
-                                    let hash = md5sum.digest('hex');
-                                    console.log(hash);
-                                    client.set(hash, groupByResult, redis.print);
-                                    contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation), latestId).send(transactionObject, (err, txHash) => {
-                                        console.log('send:', err, txHash);
-                                    }).on('error', (err) => {
-                                        console.log('error:', err);
-                                        io.emit('gb_results', err);
-                                        res.send(err);
-                                    }).on('transactionHash', (err) => {
-                                        console.log('transactionHash:', err);
-                                    }).on('receipt', (receipt) => {
-                                        console.log('receipt:', receipt);
-                                        groupByResult = JSON.parse(groupByResult);
-                                        groupByResult.receipt = receipt;
-                                        io.emit('gb_results', JSON.stringify(groupByResult));
-                                        res.send(JSON.stringify(groupByResult));
-                                    })
-                                });
-                            } else {
                                 let SQLCalculationTimeStart = microtime.nowDouble();
                                 connection.query(createTable, function (error, results, fields) {
                                     if (error) throw error;
@@ -1253,8 +1246,11 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                     console.log('**');
                                                     console.log(JSON.stringify(groupBySqlResult));
                                                     console.log('**');
+                                                    console.log(groupBySqlResult);
+                                                    let colSize = groupBySqlResult.groupByFields.length;
+                                                    let columns = JSON.stringify({fields: groupBySqlResult.groupByFields});
                                                     client.set(hash, JSON.stringify(groupBySqlResult), redis.print);
-                                                    contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation), latestId).send(transactionObject, (err, txHash) => {
+                                                    contract.methods.addGroupBy(hash, Web3.utils.fromAscii(req.params.operation), latestId, colSize, columns).send(transactionObject, (err, txHash) => {
                                                         console.log('send:', err, txHash);
                                                     }).on('error', (err) => {
                                                         console.log('error:', err);
@@ -1280,7 +1276,6 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                         });
                                     });
                                 });
-                            }
                         }).catch(error => {
                             console.log(error);
                         });

@@ -181,6 +181,40 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
+                        Ready Views
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Select view</label>
+                                    <select class="form-control" id="viewName">
+                                        <% for(let i = 0; i < readyViews.length; i++) {%>
+                                        <option><%=readyViews[i]%></option>
+                                        <%}%>
+                                    </select>
+                                </div>
+                                <%if(address !== "0"){%>
+                                    <button class="btn btn-primary" id="buttonFetchView">Fetch view</button>
+                                <%} else {%>
+                                    <button class="btn btn-primary disabled" id="buttonFetchView">Fetch view</button>
+                                <%}%>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Output</label>
+                                <textarea readonly id="outputView" class="form-control" rows="7"></textarea>
+                                <label>Execution Time: </label> <p id="executionTime"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
                         Group by
                     </div>
                     <div class="panel-body">
@@ -314,6 +348,10 @@
         getFactById($("#factId").val());
     });
 
+    $(document).on('click', '#buttonFetchView', function(){
+        fetchViewByName($("#viewName").val())
+    });
+
     $(document).on('click', '#buttonGetAll', function(){
         getAllFacts();
     });
@@ -381,6 +419,17 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
             }
         };
         xhttp.open("GET", "/getallfacts/", true);
+        xhttp.send();
+    }
+
+    function fetchViewByName(viewName) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                $("#outputView").val(this.responseText);
+            }
+        };
+        xhttp.open("GET", "/getViewByName/" + viewName, true);
         xhttp.send();
     }
 
