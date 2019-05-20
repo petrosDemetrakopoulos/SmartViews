@@ -315,7 +315,7 @@ async function generateContract(templateFileName) {
                 templ = fact_tbl;
             }
             console.log(templ);
-            return resolve({msg: 'OK', filename: fact_tbl.name, template: templ});
+            return resolve({msg: 'OK', filename: fact_tbl.name, template: templ, createTable: createTable,tableName: tableName });
         });
     });
 }

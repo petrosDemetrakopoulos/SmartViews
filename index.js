@@ -207,12 +207,28 @@ app.get('/getViewByName/:viewName', function (req,res) {
         console.log(crnView);
         if(fact_tbl.views[crnView].name === req.params.viewName) {
             found = true;
-            view = crnView;
+            view = fact_tbl.views[crnView];
             break;
         }
     }
+
     if(!found){
         return res.send({error: "view not found"});
+    }
+
+    let gbFields = [];
+    console.log(view);
+    console.log("***");
+    console.log(view.gbFields);
+    if (view.gbFields.indexOf('|') > -1) {
+        // more than 1 group by fields
+        gbFields = view.gbFields.split('|');
+    } else {
+        gbFields.push(view.gbFields);
+    }
+    view.gbFields = gbFields;
+    for(let index in view.gbFields){
+        view.gbFields[index] = view.gbFields[index].trim();
     }
     if (contract) {
         contract.methods.groupId().call(function (err, result) {
@@ -233,6 +249,27 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 latestFact:resultGB.latFacts[j], columnSize:  resultGB.columnSize[j], columns:  resultGB.columns[j],
                                 gbTimestamp: resultGB.gbTimestamp[j]};
                         }
+
+                        for (let i = 0; i < transformedArray.length; i++) {
+                            let containsAllFields = true;
+                            let crnView = transformedArray[i];
+
+                            let cachedGBFields = JSON.parse(crnView.columns);
+                            console.log("###");
+                            for(let index in cachedGBFields.fields){
+                                cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
+                            }
+                            console.log(cachedGBFields);
+                            console.log("###");
+                            for (let j = 0; j < view.gbFields.length; j++) {
+                                console.log(view.gbFields[j]);
+                                if (!cachedGBFields.fields.includes(view.gbFields[j])) {
+                                    containsAllFields = false
+                                }
+                            }
+                            transformedArray[i].containsAllFields = containsAllFields;
+                        }
+
                         transformedArray = cost(transformedArray);
                         return res.send(transformedArray);
                     } else {
@@ -383,15 +420,11 @@ app.get('/load_dataset/:dt', function (req, res) {
     console.log(running);
     if (contract) {
         if (!running) {
-            console.log("enter 1");
             running = true;
             let startTime = microtime.nowDouble();
             addManyFactsNew(dt,10).then(retval => {
-                console.log("enter 2");
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
-                console.log(retval);
-                console.log('DONE');
                 running = false;
                 io.emit("DONE","TRUE");
                 console.log("Added " + dt.length + " records in " + timeDiff + " seconds");
@@ -408,14 +441,11 @@ app.get('/load_dataset/:dt', function (req, res) {
 
 app.get('/new_contract/:fn', function (req, res) {
     contractGenerator.generateContract(req.params.fn).then(function(result){
-        console.log("##");
-        console.log(result);
-        createTable = result.template.createTable;
-        tableName = result.template.table_name;
+        createTable = result.createTable;
+        tableName = result.tableName;
         return res.send({ msg: 'OK', 'filename':result.filename + '.sol', 'template': result.template });
     } , function(err) {
         console.log(err);
-        console.log("**");
         return res.send({ msg: 'error' });
     });
 });
