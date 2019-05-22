@@ -53,5 +53,9 @@
     { "name": "BrandName|ProductCategoryName - AVERAGE UnitPrice",
       "gbFields": "BrandName | ProductCategoryName",
       "operation":  "AVERAGE", "aggregationField":  "UnitPrice",
-      "SQLTable": "CREATE TEMPORARY TABLE tempTblAVGTwo(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, SUMUnitPrice float null, COUNTUnitPrice int)"}]
+      "SQLTable": "CREATE TEMPORARY TABLE tempTblAVGTwo(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, SUMUnitPrice float null, COUNTUnitPrice int)"},
+    { "name": "BrandName|ProductCategoryName - SUM UnitPrice",
+      "gbFields": "BrandName | ProductCategoryName",
+      "operation":  "SUM", "aggregationField":  "UnitPrice",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTblSUM(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, SUMUnitPrice float)"}]
 }

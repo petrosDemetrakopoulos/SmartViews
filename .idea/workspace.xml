@@ -4,9 +4,7 @@
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/saleMin_first_100.json" beforeDir="false" afterPath="$PROJECT_DIR$/saleMin_first_100.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/new_sales_min.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/new_sales_min.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transformations.js" beforeDir="false" afterPath="$PROJECT_DIR$/transformations.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -31,8 +29,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/form.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5430">
-              <caret line="362" column="14" selection-start-line="362" selection-start-column="14" selection-end-line="362" selection-end-column="14" />
+            <state relative-caret-position="426">
+              <caret line="330" column="27" selection-start-line="330" selection-start-column="15" selection-end-line="330" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -49,8 +47,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="730" column="76" selection-start-line="730" selection-start-column="76" selection-end-line="730" selection-end-column="76" />
+            <state relative-caret-position="395">
+              <caret line="890" column="52" lean-forward="true" selection-start-line="890" selection-start-column="52" selection-end-line="890" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -58,8 +56,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/transformations.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="377">
-              <caret line="64" column="52" lean-forward="true" selection-start-line="64" selection-start-column="52" selection-end-line="64" selection-end-column="52" />
+            <state relative-caret-position="46">
+              <caret line="62" column="69" selection-start-line="62" selection-start-column="69" selection-end-line="62" selection-end-column="69" />
             </state>
           </provider>
         </entry>
@@ -85,8 +83,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="55" column="55" selection-start-line="55" selection-start-column="55" selection-end-line="55" selection-end-column="55" />
+            <state relative-caret-position="488">
+              <caret line="55" column="195" selection-start-line="55" selection-start-column="195" selection-end-line="55" selection-end-column="195" />
             </state>
           </provider>
         </entry>
@@ -102,22 +100,15 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>deployC</find>
-      <find>addGr</find>
-      <find>getAllG</find>
-      <find>addManyF</find>
-      <find>createCo</find>
       <find>deploy</find>
       <find>generate</find>
       <find>addMan</find>
       <find>liste</find>
       <find>view</find>
-      <find>create</find>
       <find>cost</find>
       <find>group</find>
       <find>getVi</find>
       <find>CREATE TA</find>
-      <find>connec</find>
       <find>sql</find>
       <find>connection.qu</find>
       <find>INSERT IN</find>
@@ -132,6 +123,13 @@
       <find>CREATE TEMPORARY TABLE tempTbl</find>
       <find>cli</find>
       <find>CREATE</find>
+      <find>saveOnCache</find>
+      <find>transformRed</find>
+      <find>connec</find>
+      <find>create</find>
+      <find>calc</find>
+      <find>getAll</find>
+      <find>getAllFa</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -191,11 +189,11 @@
         <option value="$PROJECT_DIR$/.eslintrc.json" />
         <option value="$PROJECT_DIR$/helper.js" />
         <option value="$PROJECT_DIR$/views/dashboard.ejs" />
-        <option value="$PROJECT_DIR$/views/form.ejs" />
         <option value="$PROJECT_DIR$/contracts/SalesMin.sol" />
         <option value="$PROJECT_DIR$/contractGenerator.js" />
-        <option value="$PROJECT_DIR$/templates/new_sales_min.json" />
         <option value="$PROJECT_DIR$/transformations.js" />
+        <option value="$PROJECT_DIR$/views/form.ejs" />
+        <option value="$PROJECT_DIR$/templates/new_sales_min.json" />
         <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
@@ -408,21 +406,7 @@
       <workItem from="1558379022266" duration="765000" />
       <workItem from="1558456121668" duration="851000" />
       <workItem from="1558458881507" duration="5464000" />
-      <workItem from="1558513711176" duration="3811000" />
-    </task>
-    <task id="LOCAL-00028" summary="calculations on sql and proper transformation before redis save">
-      <created>1550074202164</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1550074202165</updated>
-    </task>
-    <task id="LOCAL-00029" summary="calculations on sql and proper transformation before redis save">
-      <created>1550074385395</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1550074385395</updated>
+      <workItem from="1558513711176" duration="14128000" />
     </task>
     <task id="LOCAL-00030" summary="calculations on sql and proper transformation before redis save">
       <created>1550074607755</created>
@@ -753,23 +737,37 @@
       <option name="project" value="LOCAL" />
       <updated>1558363268522</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Major upgrades regarding ready views incremental calculation on no new facts case -- AVERAGE func case finally solved!">
+      <created>1558518570190</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1558518570190</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Major upgrades regarding ready views incremental calculation on no new facts case -- return it ready from cache if fields, operation is same and no new facts">
+      <created>1558523871578</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1558523871578</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="374790000" />
+    <option name="totallyTimeSpent" value="385107000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-51" y="23" width="1440" height="822" extended-state="0" />
+    <frame x="69" y="23" width="1440" height="822" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.68225807" visible="true" weight="0.19742489" />
-      <window_info id="Structure" order="1" sideWeight="0.31774193" side_tool="true" visible="true" weight="0.19742489" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7451299" visible="true" weight="0.19742489" />
+      <window_info id="Structure" order="1" sideWeight="0.25487012" side_tool="true" visible="true" weight="0.19742489" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8190272" visible="true" weight="0.15068494" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8190272" visible="true" weight="0.15616438" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -779,7 +777,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.18097281" side_tool="true" visible="true" weight="0.15068494" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.18097281" side_tool="true" visible="true" weight="0.15616438" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -856,8 +854,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixed trigger again issue on timeout" />
-    <MESSAGE value="LOGS" />
     <MESSAGE value="try to fix fire again issue on add data" />
     <MESSAGE value="added timeout in groupby" />
     <MESSAGE value="slices functionality on write" />
@@ -881,7 +877,9 @@
     <MESSAGE value="contract generation moved in separate file" />
     <MESSAGE value="Major fixes regarding ready views" />
     <MESSAGE value="Major upgradea regarding ready views incremental calculation on no new facts case" />
-    <option name="LAST_COMMIT_MESSAGE" value="Major upgradea regarding ready views incremental calculation on no new facts case" />
+    <MESSAGE value="Major upgrades regarding ready views incremental calculation on no new facts case -- AVERAGE func case finally solved!" />
+    <MESSAGE value="Major upgrades regarding ready views incremental calculation on no new facts case -- return it ready from cache if fields, operation is same and no new facts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Major upgrades regarding ready views incremental calculation on no new facts case -- return it ready from cache if fields, operation is same and no new facts" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/dist/css/sb-admin-2.css">
@@ -1077,13 +1075,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/form.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5430">
-          <caret line="362" column="14" selection-start-line="362" selection-start-column="14" selection-end-line="362" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/contracts/SalesMin.sol">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1275">
@@ -1105,24 +1096,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
+    <entry file="file://$PROJECT_DIR$/transformations.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="55" column="55" selection-start-line="55" selection-start-column="55" selection-end-line="55" selection-end-column="55" />
+        <state relative-caret-position="46">
+          <caret line="62" column="69" selection-start-line="62" selection-start-column="69" selection-end-line="62" selection-end-column="69" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/transformations.js">
+    <entry file="file://$PROJECT_DIR$/views/form.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="377">
-          <caret line="64" column="52" lean-forward="true" selection-start-line="64" selection-start-column="52" selection-end-line="64" selection-end-column="52" />
+        <state relative-caret-position="426">
+          <caret line="330" column="27" selection-start-line="330" selection-start-column="15" selection-end-line="330" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="488">
+          <caret line="55" column="195" selection-start-line="55" selection-start-column="195" selection-end-line="55" selection-end-column="195" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="730" column="76" selection-start-line="730" selection-start-column="76" selection-end-line="730" selection-end-column="76" />
+        <state relative-caret-position="395">
+          <caret line="890" column="52" lean-forward="true" selection-start-line="890" selection-start-column="52" selection-end-line="890" selection-end-column="52" />
         </state>
       </provider>
     </entry>
