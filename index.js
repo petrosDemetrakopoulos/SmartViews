@@ -531,6 +531,29 @@ function cost(groupBysArray) {
     return groupBysArray;
 }
 
+function containsAllFields(transformedArray, view) {
+    for (let i = 0; i < transformedArray.length; i++) {
+        let containsAllFields = true;
+        let crnView = transformedArray[i];
+
+        let cachedGBFields = JSON.parse(crnView.columns);
+        console.log("###");
+        for(let index in cachedGBFields.fields){
+            cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
+        }
+        console.log(cachedGBFields);
+        console.log("###");
+        for (let j = 0; j < view.gbFields.length; j++) {
+            console.log(view.gbFields[j]);
+            if (!cachedGBFields.fields.includes(view.gbFields[j])) {
+                containsAllFields = false
+            }
+        }
+        transformedArray[i].containsAllFields = containsAllFields;
+    }
+    return transformedArray;
+}
+
 app.get('/getViewByName/:viewName', function (req,res) {
     let fact_tbl = require('./templates/new_sales_min');
     let templ = {};
@@ -590,25 +613,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 gbTimestamp: resultGB.gbTimestamp[j]};
                         }
 
-                        for (let i = 0; i < transformedArray.length; i++) {
-                            let containsAllFields = true;
-                            let crnView = transformedArray[i];
-
-                            let cachedGBFields = JSON.parse(crnView.columns);
-                            console.log("###");
-                            for(let index in cachedGBFields.fields){
-                                cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
-                            }
-                            console.log(cachedGBFields);
-                            console.log("###");
-                            for (let j = 0; j < view.gbFields.length; j++) {
-                                console.log(view.gbFields[j]);
-                                if (!cachedGBFields.fields.includes(view.gbFields[j])) {
-                                    containsAllFields = false
-                                }
-                            }
-                            transformedArray[i].containsAllFields = containsAllFields;
-                        }
+                        transformedArray = containsAllFields(transformedArray, view); //assigns the containsAllFields value
                         let filteredGBs = [];
                         for (let i = 0; i < transformedArray.length; i++) {
                             if(transformedArray[i].containsAllFields) {
@@ -650,7 +655,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                 view.operation === cachedGroupBy.operation) {
                                                 //caclculating the reduced Group By in SQL
                                                 console.log(cachedGroupBy);
-                                                let inserts = "";
                                                 let tableName = cachedGroupBy.gbCreateTable.split(" ");
                                                 tableName = tableName[3];
                                                 tableName = tableName.split('(')[0];
@@ -659,16 +663,30 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                     if (error) throw error;
                                                     let rows = [];
                                                     let lastCol = "";
-                                                    let prelastCol = ""; // need thi for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
+                                                    let prelastCol = ""; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                     await Object.keys(cachedGroupBy).forEach(function (key, index) {
                                                         if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
                                                             let crnRow = JSON.parse(key);
                                                             lastCol = cachedGroupBy.gbCreateTable.split(" ");
-                                                            prelastCol = lastCol[lastCol.length - 3];
-                                                            lastCol = lastCol[lastCol.length - 2];
+                                                            console.log("######");
                                                             console.log(lastCol);
+                                                            console.log("######");
+                                                            prelastCol = lastCol[lastCol.length - 4];
+                                                            lastCol = lastCol[lastCol.length - 2];
+                                                            console.log("---" + lastCol);
+                                                            console.log("@@@");
+                                                            console.log(cachedGroupBy);
                                                             let gbVals = Object.values(cachedGroupBy);
-                                                            crnRow[lastCol] = gbVals[index];
+                                                            console.log("crnRow = " + JSON.stringify(crnRow));
+                                                            console.log("lastCol = " + lastCol);
+                                                            console.log("prelastCol = " + prelastCol);
+                                                            console.log("gbVals[index] = " + JSON.stringify(gbVals[index]));
+                                                            if(view.operation === "AVERAGE"){
+                                                                crnRow[prelastCol] = gbVals[index]["sum"];
+                                                                crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
+                                                            } else {
+                                                                crnRow[lastCol] = gbVals[index]; //BUG THERE ON AVERAGEEE
+                                                            }
                                                             rows.push(crnRow);
                                                         }
                                                     });
@@ -677,15 +695,23 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                         table: tableName,
                                                         values: rows
                                                     });
+                                                    console.log("SQL QUERY INSERT = ");
                                                     console.log(sqlInsert.query);
                                                     let editedQuery = sqlInsert.query.replace(/"/g, '');
                                                     editedQuery = editedQuery.replace(/''/g, 'null');
+                                                    console.log("edited insert query is:");
+                                                    console.log(editedQuery);
                                                      await connection.query(editedQuery, async function (error, results, fields) {
-                                                         if (error) throw error;
+                                                         if (error){
+                                                             console.log(error);
+                                                             throw error;
+                                                         }
+                                                         console.log("INSERT QUERY RES = ");
+                                                         console.log(results);
                                                          let op = "";
                                                          let gbQuery = {};
                                                          if (view.operation === "SUM" || view.operation === "COUNT") {
-                                                             op = "SUM";
+                                                             op = "SUM"; //operation is set to "SUM" both for COUNT and SUM operation
                                                          } else if(view.operation === "MIN"){
                                                              op = "MIN"
                                                          } else if(view.operation === "MAX"){
@@ -696,12 +722,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                  table: tableName,
                                                                  group: gbFields,
                                                                  fields: [gbFields,
-                                                                     {
-                                                                         func: {
+                                                                     {func: {
                                                                              name: op,
-                                                                             args: [
-                                                                                 {field: lastCol}
-                                                                             ]
+                                                                             args: [{field: lastCol}]
                                                                          }
                                                                      }]
                                                              });
@@ -711,20 +734,14 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                  table: tableName,
                                                                  group: gbFields,
                                                                  fields: [gbFields,
-                                                                     {
-                                                                         func: {
+                                                                     {func: {
                                                                              name: 'SUM',
-                                                                             args: [
-                                                                                 {field: prelastCol}
-                                                                             ]
+                                                                             args: [{field: prelastCol}]
                                                                          }
                                                                      },
-                                                                     {
-                                                                         func: {
-                                                                             name: 'COUNT',
-                                                                             args: [
-                                                                                 {field: lastCol}
-                                                                             ]
+                                                                     {func: {
+                                                                             name: 'SUM',
+                                                                             args: [{field: lastCol}]
                                                                          }
                                                                      }]
                                                              });
@@ -732,10 +749,26 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                              let editedGBQuery = gbQuery.query.replace(/"/g, '');
                                                              editedGBQuery = editedGBQuery.replace(/''/g, 'null');
                                                              await connection.query(editedGBQuery, function (error, results, fields) {
-                                                                 if (error) throw error;
+                                                                 if (error){
+                                                                     console.log(error);
+                                                                     throw error;
+                                                                 }
+
+                                                                 if(view.operation === "AVERAGE"){
+                                                                    let editedResponse = transformations.transformReadyAverage(results);
+                                                                    return res.send(editedResponse);
+                                                                 }
+
                                                                  console.log(results);
+
+                                                                 let groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, gbFields);
+                                                                 console.log("####");
+                                                                 console.log(groupBySqlResult);
+                                                                 console.log("******");
+                                                                 console.log(mostEfficient.hash);
+                                                                 client.set(mostEfficient.hash, JSON.stringify(groupBySqlResult), redis.print);
                                                                  //save the new results back in redis and blockchain
-                                                                 return res.send(results);
+                                                                 return res.send(groupBySqlResult);
                                                              });
 
                                                          console.log("****************");
@@ -1108,7 +1141,8 @@ app.get('/groupby/:field/:operation/:aggregateField', function (req, res) {
                                                 let SQLCalculationTimeEnd = microtime.nowDouble();
                                                 if (!err) {
                                                     let groupBySqlResult = transformations.transformGBFromSQL(results3, req.params.operation, req.params.aggregateField, gbFields);
-                                                    groupBySqlResult.gbCreateTable = "CREATE TEMPORARY TABLE tempTblGB(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, UnitPrice float null, COUNTOnlineSalesKey int)"
+                                                    //groupBySqlResult.gbCreateTable = "CREATE TEMPORARY TABLE tempTblGB(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, UnitPrice float null, COUNTOnlineSalesKey int)";
+                                                    groupBySqlResult.gbCreateTable = "CREATE TEMPORARY TABLE tempTblAVG(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, UnitPrice float null, SUMUnitPrice float, COUNTUnitPrice int)";
                                                     let timeFinish = microtime.nowDouble();
                                                     md5sum = crypto.createHash('md5');
                                                     md5sum.update(JSON.stringify(groupBySqlResult));

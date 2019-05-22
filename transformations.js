@@ -5,6 +5,9 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
     if (operation === 'COUNT') {
         console.log('OPERATION = COUNT');
         for (let i = 0; i < groupByResult.length; i++) {
+            console.log("/////");
+            console.log(groupByResult[i]);
+            console.log("/////");
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
             let filtered = groupByResult[i];
@@ -54,6 +57,22 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
     }
     transformed['groupByFields'] = gbField;
     transformed['field'] = aggregateField;
+    return transformed;
+}
+
+function transformReadyAverage(groupByResult){
+    let transformed = {};
+    for (let i = 0; i < groupByResult.length; i++) {
+        let crnRes = groupByResult[i];
+        let sumOfCountsField = Object.keys(crnRes)[Object.values(crnRes).length - 1];
+        let sumOfSumsField = Object.keys(crnRes)[Object.values(crnRes).length - 2];
+        let crnCount = groupByResult[i][sumOfCountsField];
+        let crnSum = groupByResult[i][sumOfSumsField];
+        delete groupByResult[i][sumOfCountsField];
+        delete groupByResult[i][sumOfSumsField];
+        let filtered = groupByResult[i];
+        transformed[JSON.stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
+    }
     return transformed;
 }
 
@@ -228,5 +247,6 @@ function calculateReducedGB (operation, aggregateField, cachedGroupBy, gbFields)
 module.exports = {
     transformGBFromSQL: transformGBFromSQL,
     transformGB: transformGB,
-    calculateReducedGB: calculateReducedGB
+    calculateReducedGB: calculateReducedGB,
+    transformReadyAverage: transformReadyAverage
 };

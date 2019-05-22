@@ -49,5 +49,9 @@
   "views" : [{ "name": "BrandName|ProductCategoryName(COUNT)",
     "gbFields": "BrandName | ProductCategoryName",
     "operation":  "COUNT", "aggregationField":  "OnlineSalesKey",
-    "SQLTable": "CREATE TEMPORARY TABLE tempTbl(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, COUNTOnlineSalesKey int)"}]
+    "SQLTable": "CREATE TEMPORARY TABLE tempTbl(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, COUNTOnlineSalesKey int)"},
+    { "name": "BrandName|ProductCategoryName - AVERAGE UnitPrice",
+      "gbFields": "BrandName | ProductCategoryName",
+      "operation":  "AVERAGE", "aggregationField":  "UnitPrice",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTblAVGTwo(BrandName varchar(50) charset utf8 null, ProductCategoryName varchar(30) charset utf8 null, SUMUnitPrice float null, COUNTUnitPrice int)"}]
 }
