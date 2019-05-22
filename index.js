@@ -918,7 +918,34 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                     }
                                                 }
                                             });
-                                        }
+                                        } else {
+                                            //we have deltas -> we fetch them
+                                            getFactsFromTo(mostEfficient.latestFact, latestId).then(deltas => {
+                                                connection.query(createTable, function (error, results, fields) {
+                                                    if (error) throw error;
+                                                    for (let i = 0; i < deltas.length; i++) {
+                                                        delete deltas[i].timestamp;
+                                                    }
+
+                                                    let sql = jsonSql.build({
+                                                        type: 'insert',
+                                                        table: tableName,
+                                                        values: deltas
+                                                    });
+
+                                                    let editedQuery = sql.query.replace(/"/g, '');
+                                                    editedQuery = editedQuery.replace(/''/g, 'null');
+                                                    console.log(editedQuery);
+                                                    connection.query(editedQuery, function (error, results2, fields) { //import deltas in sql for calculations
+                                                        calculateNewGroupBy(results2, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+                                                            //CALCULATING THE VIEW JUST FOR THE DELTAS
+                                                            // THEN MERGE IT WITH THE ONES IN CACHE
+                                                            // TODO: FETCH ALREADY PART FROM CACHE AND MERGE IT WITH THE ONE CALCULATED
+                                                            // THEN SAVE BACK IN CACHE
+                                                        });
+                                                    });
+                                            });
+                                        });
                                     });
                                 }
                             });
