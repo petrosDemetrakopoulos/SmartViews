@@ -60,7 +60,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
     return transformed;
 }
 
-function transformReadyAverage(groupByResult){
+function transformReadyAverage(groupByResult, gbField, aggregateField){
     let transformed = {};
     for (let i = 0; i < groupByResult.length; i++) {
         let crnRes = groupByResult[i];
@@ -73,6 +73,9 @@ function transformReadyAverage(groupByResult){
         let filtered = groupByResult[i];
         transformed[JSON.stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
     }
+    transformed['operation'] = 'AVERAGE';
+    transformed['groupByFields'] = gbField;
+    transformed['field'] = aggregateField;
     return transformed;
 }
 

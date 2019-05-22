@@ -328,6 +328,10 @@
         $("#outputGB").val(msg);
     });
 
+    socket.on('view_results', function(msg){
+        $("#outputView").val(msg);
+    });
+
     let fl = "";
     const $fileInput = document.getElementById('dataset')
     $fileInput.addEventListener('change', function (event) {

@@ -554,6 +554,27 @@ function containsAllFields(transformedArray, view) {
     return transformedArray;
 }
 
+function saveOnCache(gbResult, operation, latestId){
+    console.log("SAVE ON CACHE BEGUN");
+    const transactionObject = {
+        from: acc,
+        gas: 15000000,
+        gasPrice: '30000000000000'
+    };
+    md5sum = crypto.createHash('md5');
+    md5sum.update(JSON.stringify(gbResult));
+    let hash = md5sum.digest('hex');
+    console.log(hash);
+    console.log('**');
+    console.log(JSON.stringify(gbResult));
+    console.log('**');
+    console.log(gbResult);
+    let colSize = gbResult.groupByFields.length;
+    let columns = JSON.stringify({fields: gbResult.groupByFields});
+    client.set(hash, JSON.stringify(gbResult), redis.print);
+   return contract.methods.addGroupBy(hash, Web3.utils.fromAscii(operation), latestId, colSize, columns).send(transactionObject);
+}
+
 app.get('/getViewByName/:viewName', function (req,res) {
     let fact_tbl = require('./templates/new_sales_min');
     let templ = {};
@@ -668,19 +689,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                         if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
                                                             let crnRow = JSON.parse(key);
                                                             lastCol = cachedGroupBy.gbCreateTable.split(" ");
-                                                            console.log("######");
-                                                            console.log(lastCol);
-                                                            console.log("######");
                                                             prelastCol = lastCol[lastCol.length - 4];
                                                             lastCol = lastCol[lastCol.length - 2];
-                                                            console.log("---" + lastCol);
-                                                            console.log("@@@");
-                                                            console.log(cachedGroupBy);
                                                             let gbVals = Object.values(cachedGroupBy);
-                                                            console.log("crnRow = " + JSON.stringify(crnRow));
-                                                            console.log("lastCol = " + lastCol);
-                                                            console.log("prelastCol = " + prelastCol);
-                                                            console.log("gbVals[index] = " + JSON.stringify(gbVals[index]));
                                                             if(view.operation === "AVERAGE"){
                                                                 crnRow[prelastCol] = gbVals[index]["sum"];
                                                                 crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
@@ -748,38 +759,52 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                          }
                                                              let editedGBQuery = gbQuery.query.replace(/"/g, '');
                                                              editedGBQuery = editedGBQuery.replace(/''/g, 'null');
-                                                             await connection.query(editedGBQuery, function (error, results, fields) {
-                                                                 if (error){
+                                                             await connection.query(editedGBQuery, async function (error, results, fields) {
+                                                                 if (error) {
                                                                      console.log(error);
                                                                      throw error;
                                                                  }
+                                                                 await connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                                                                     if (err) {
+                                                                         console.log(err);
+                                                                         throw err;
+                                                                     }
 
-                                                                 if(view.operation === "AVERAGE"){
-                                                                    let editedResponse = transformations.transformReadyAverage(results);
-                                                                    return res.send(editedResponse);
-                                                                 }
-
-                                                                 console.log(results);
-
-                                                                 let groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, gbFields);
-                                                                 console.log("####");
-                                                                 console.log(groupBySqlResult);
-                                                                 console.log("******");
-                                                                 console.log(mostEfficient.hash);
-                                                                 client.set(mostEfficient.hash, JSON.stringify(groupBySqlResult), redis.print);
-                                                                 //save the new results back in redis and blockchain
-                                                                 return res.send(groupBySqlResult);
+                                                                     let groupBySqlResult = {};
+                                                                     console.log("SFLILLLLL");
+                                                                     console.log(results);
+                                                                     console.log("SFLILLLLL");
+                                                                     if (view.operation === "AVERAGE") {
+                                                                         groupBySqlResult = transformations.transformReadyAverage(results, view.gbFields, view.aggregationField);
+                                                                     } else {
+                                                                         groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, gbFields);
+                                                                     }
+                                                                     return saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                         console.log('error:', err);
+                                                                         res.send(err);
+                                                                     }).on('transactionHash', (err) => {
+                                                                         console.log('transactionHash:', err);
+                                                                     }).on('receipt', (receipt) => {
+                                                                         console.log('receipt:', receipt);
+                                                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                         return res.send(JSON.stringify(groupBySqlResult));
+                                                                     });
+                                                                 });
                                                              });
-
-                                                         console.log("****************");
-                                                         console.log(results);
                                                      });
                                                 });
                                             } else {
                                                 //this means we should proceeed to new group by calculation from the beggining
                                             }
-                                            //this means we just have to return the group by stored in cache
-                                            console.log(cachedGroupBy);
+                                        } else {
+                                            if (cachedGroupBy.field === view.aggregationField &&
+                                                view.operation === cachedGroupBy.operation) {
+                                                //this means we just have to return the group by stored in cache
+                                                //field, operation are same and no new records written
+                                                console.log(cachedGroupBy);
+                                                io.emit('view_results', JSON.stringify(cachedGroupBy));
+                                                return res.send(cachedGroupBy);
+                                            }
                                         }
                                     });
                                     }
