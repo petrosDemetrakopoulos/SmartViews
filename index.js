@@ -575,6 +575,13 @@ function saveOnCache(gbResult, operation, latestId){
    return contract.methods.addGroupBy(hash, Web3.utils.fromAscii(operation), latestId, colSize, columns).send(transactionObject);
 }
 
+function removeTimestamps(records) {
+    for (let i = 0; i < records.length; i++) {
+        delete records[i].timestamp;
+    }
+}
+
+
 function calculateNewGroupBy(facts, operation, gbFields, aggregationField, callback) {
 
     connection.query(createTable, function (error, results, fields) { //creating the SQL table for "Fact Table"
@@ -923,9 +930,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                             getFactsFromTo(mostEfficient.latestFact, latestId).then(deltas => {
                                                 connection.query(createTable, function (error, results, fields) {
                                                     if (error) throw error;
-                                                    for (let i = 0; i < deltas.length; i++) {
-                                                        delete deltas[i].timestamp;
-                                                    }
+                                                    deltas = removeTimestamps(deltas);
 
                                                     let sql = jsonSql.build({
                                                         type: 'insert',
@@ -961,11 +966,10 @@ app.get('/getViewByName/:viewName', function (req,res) {
                     contract.methods.dataId().call(function (err, latestId) {
                         if(err) throw err;
                         getAllFacts(latestId).then(retval => {
-                            for (let i = 0; i < retval.length; i++) {
-                                delete retval[i].timestamp;
-                            }
+                            let facts = removeTimestamps(retval);
+
                             console.log("CALCULATING NEW GB FROM BEGGINING");
-                            calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+                            calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
                                 saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                     console.log('error:', err);
                                     res.send(err);
