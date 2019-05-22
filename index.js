@@ -683,241 +683,276 @@ app.get('/getViewByName/:viewName', function (req,res) {
     if (contract) {
         contract.methods.groupId().call(function (err, result) {
             if (!err) {
-                contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
-                    if (!err) {
-                        let len = Object.keys(resultGB).length;
-                        for (let j = 0; j < len / 2; j++) {
-                            delete resultGB[j];
-                        }
-                        let transformedArray = [];
-                        console.log(resultGB);
-                        for(let j = 0; j < resultGB.hashes.length; j++){
-                            transformedArray[j] = {hash: resultGB.hashes[j],
-                                latestFact:resultGB.latFacts[j], columnSize:  resultGB.columnSize[j], columns:  resultGB.columns[j],
-                                gbTimestamp: resultGB.gbTimestamp[j]};
-                        }
-
-                        transformedArray = containsAllFields(transformedArray, view); //assigns the containsAllFields value
-                        let filteredGBs = [];
-                        for (let i = 0; i < transformedArray.length; i++) {
-                            if(transformedArray[i].containsAllFields) {
-                                filteredGBs.push(transformedArray[i]);
+                if(result > 0) { //At least one group by already exists
+                    contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
+                        if (!err) {
+                            let len = Object.keys(resultGB).length;
+                            for (let j = 0; j < len / 2; j++) {
+                                delete resultGB[j];
                             }
-                        }
-                        //filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
-                        //assign costs
-                        filteredGBs = cost(filteredGBs);
-
-                        //pick the one with the less cost
-                        filteredGBs.sort(function(a,b) { return parseFloat(a.cost) - parseFloat(b.cost) }); //order ascending
-                        let mostEfficient = filteredGBs[0]; // TODO: check what we do in case we have no groub bys that match those criteria
-                        contract.methods.dataId().call(function (err, latestId) {
-                            if (err) {
-                                console.log(err);
-                                return res.send(err);
+                            let transformedArray = [];
+                            console.log(resultGB);
+                            for (let j = 0; j < resultGB.hashes.length; j++) {
+                                transformedArray[j] = {
+                                    hash: resultGB.hashes[j],
+                                    latestFact: resultGB.latFacts[j],
+                                    columnSize: resultGB.columnSize[j],
+                                    columns: resultGB.columns[j],
+                                    gbTimestamp: resultGB.gbTimestamp[j]
+                                };
                             }
-                            if (mostEfficient.gbTimestamp > 0) {
-                            contract.methods.getFact(latestId - 1).call(function (err, latestFact) {
+
+                            transformedArray = containsAllFields(transformedArray, view); //assigns the containsAllFields value
+                            let filteredGBs = [];
+                            for (let i = 0; i < transformedArray.length; i++) {
+                                if (transformedArray[i].containsAllFields) {
+                                    filteredGBs.push(transformedArray[i]);
+                                }
+                            }
+                            //filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
+                            //assign costs
+                            filteredGBs = cost(filteredGBs);
+
+                            //pick the one with the less cost
+                            filteredGBs.sort(function (a, b) {
+                                return parseFloat(a.cost) - parseFloat(b.cost)
+                            }); //order ascending
+                            let mostEfficient = filteredGBs[0]; // TODO: check what we do in case we have no groub bys that match those criteria
+                            contract.methods.dataId().call(function (err, latestId) {
                                 if (err) {
                                     console.log(err);
                                     return res.send(err);
                                 }
-
-                                if (mostEfficient.gbTimestamp >= latestFact.timestamp) {
-                                    //NO NEW FACTS after the latest group by
-                                    // -> incrementaly calculate the groupby requested by summing the one in redis cache
-                                    client.get(mostEfficient.hash, function (error, cachedGroupBy) {
-                                        if(err){
-                                            console.log(error);
-                                            return res.send(error);
+                                if (mostEfficient.gbTimestamp > 0) {
+                                    contract.methods.getFact(latestId - 1).call(function (err, latestFact) {
+                                        if (err) {
+                                            console.log(err);
+                                            return res.send(err);
                                         }
-                                        cachedGroupBy = JSON.parse(cachedGroupBy);
-                                        if(cachedGroupBy.groupByFields.length !== view.gbFields.length) {
-                                            //this means we want to calculate a different group by than the stored one
-                                            //but however it can be calculated just from redis cache
-                                            if (cachedGroupBy.field === view.aggregationField &&
-                                                view.operation === cachedGroupBy.operation) {
-                                                //caclculating the reduced Group By in SQL
-                                                console.log(cachedGroupBy);
-                                                let tableName = cachedGroupBy.gbCreateTable.split(" ");
-                                                tableName = tableName[3];
-                                                tableName = tableName.split('(')[0];
-                                                console.log("TABLE NAME = " + tableName);
-                                                connection.query(cachedGroupBy.gbCreateTable, async function (error, results, fields) {
-                                                    if (error) throw error;
-                                                    let rows = [];
-                                                    let lastCol = "";
-                                                    let prelastCol = ""; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-                                                    await Object.keys(cachedGroupBy).forEach(function (key, index) {
-                                                        if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
-                                                            let crnRow = JSON.parse(key);
-                                                            lastCol = cachedGroupBy.gbCreateTable.split(" ");
-                                                            prelastCol = lastCol[lastCol.length - 4];
-                                                            lastCol = lastCol[lastCol.length - 2];
-                                                            let gbVals = Object.values(cachedGroupBy);
-                                                            if(view.operation === "AVERAGE"){
-                                                                crnRow[prelastCol] = gbVals[index]["sum"];
-                                                                crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
-                                                            } else {
-                                                                crnRow[lastCol] = gbVals[index]; //BUG THERE ON AVERAGEEE
+
+                                        if (mostEfficient.gbTimestamp >= latestFact.timestamp) {
+                                            //NO NEW FACTS after the latest group by
+                                            // -> incrementaly calculate the groupby requested by summing the one in redis cache
+                                            client.get(mostEfficient.hash, function (error, cachedGroupBy) {
+                                                if (err) {
+                                                    console.log(error);
+                                                    return res.send(error);
+                                                }
+                                                cachedGroupBy = JSON.parse(cachedGroupBy);
+                                                if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
+                                                    //this means we want to calculate a different group by than the stored one
+                                                    //but however it can be calculated just from redis cache
+                                                    if (cachedGroupBy.field === view.aggregationField &&
+                                                        view.operation === cachedGroupBy.operation) {
+                                                        //caclculating the reduced Group By in SQL
+                                                        console.log(cachedGroupBy);
+                                                        let tableName = cachedGroupBy.gbCreateTable.split(" ");
+                                                        tableName = tableName[3];
+                                                        tableName = tableName.split('(')[0];
+                                                        console.log("TABLE NAME = " + tableName);
+                                                        connection.query(cachedGroupBy.gbCreateTable, async function (error, results, fields) {
+                                                            if (error) throw error;
+                                                            let rows = [];
+                                                            let lastCol = "";
+                                                            let prelastCol = ""; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
+                                                            await Object.keys(cachedGroupBy).forEach(function (key, index) {
+                                                                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
+                                                                    let crnRow = JSON.parse(key);
+                                                                    lastCol = cachedGroupBy.gbCreateTable.split(" ");
+                                                                    prelastCol = lastCol[lastCol.length - 4];
+                                                                    lastCol = lastCol[lastCol.length - 2];
+                                                                    let gbVals = Object.values(cachedGroupBy);
+                                                                    if (view.operation === "AVERAGE") {
+                                                                        crnRow[prelastCol] = gbVals[index]["sum"];
+                                                                        crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
+                                                                    } else {
+                                                                        crnRow[lastCol] = gbVals[index]; //BUG THERE ON AVERAGEEE
+                                                                    }
+                                                                    rows.push(crnRow);
+                                                                }
+                                                            });
+                                                            let sqlInsert = jsonSql.build({
+                                                                type: 'insert',
+                                                                table: tableName,
+                                                                values: rows
+                                                            });
+                                                            console.log("SQL QUERY INSERT = ");
+                                                            console.log(sqlInsert.query);
+                                                            let editedQuery = sqlInsert.query.replace(/"/g, '');
+                                                            editedQuery = editedQuery.replace(/''/g, 'null');
+                                                            console.log("edited insert query is:");
+                                                            console.log(editedQuery);
+                                                            await connection.query(editedQuery, async function (error, results, fields) {
+                                                                if (error) {
+                                                                    console.log(error);
+                                                                    throw error;
+                                                                }
+                                                                console.log("INSERT QUERY RES = ");
+                                                                console.log(results);
+                                                                let op = "";
+                                                                let gbQuery = {};
+                                                                if (view.operation === "SUM" || view.operation === "COUNT") {
+                                                                    op = "SUM"; //operation is set to "SUM" both for COUNT and SUM operation
+                                                                } else if (view.operation === "MIN") {
+                                                                    op = "MIN"
+                                                                } else if (view.operation === "MAX") {
+                                                                    op = "MAX";
+                                                                }
+                                                                gbQuery = jsonSql.build({
+                                                                    type: 'select',
+                                                                    table: tableName,
+                                                                    group: gbFields,
+                                                                    fields: [gbFields,
+                                                                        {
+                                                                            func: {
+                                                                                name: op,
+                                                                                args: [{field: lastCol}]
+                                                                            }
+                                                                        }]
+                                                                });
+                                                                if (view.operation === "AVERAGE") {
+                                                                    gbQuery = jsonSql.build({
+                                                                        type: 'select',
+                                                                        table: tableName,
+                                                                        group: gbFields,
+                                                                        fields: [gbFields,
+                                                                            {
+                                                                                func: {
+                                                                                    name: 'SUM',
+                                                                                    args: [{field: prelastCol}]
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                func: {
+                                                                                    name: 'SUM',
+                                                                                    args: [{field: lastCol}]
+                                                                                }
+                                                                            }]
+                                                                    });
+                                                                }
+                                                                let editedGBQuery = gbQuery.query.replace(/"/g, '');
+                                                                editedGBQuery = editedGBQuery.replace(/''/g, 'null');
+                                                                await connection.query(editedGBQuery, async function (error, results, fields) {
+                                                                    if (error) {
+                                                                        console.log(error);
+                                                                        throw error;
+                                                                    }
+                                                                    await connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                                                                        if (err) {
+                                                                            console.log(err);
+                                                                            throw err;
+                                                                        }
+
+                                                                        let groupBySqlResult = {};
+                                                                        if (view.operation === "AVERAGE") {
+                                                                            groupBySqlResult = transformations.transformReadyAverage(results, view.gbFields, view.aggregationField);
+                                                                        } else {
+                                                                            groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, gbFields);
+                                                                        }
+                                                                        return saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                            console.log('error:', err);
+                                                                            res.send(err);
+                                                                        }).on('transactionHash', (err) => {
+                                                                            console.log('transactionHash:', err);
+                                                                        }).on('receipt', (receipt) => {
+                                                                            console.log('receipt:', receipt);
+                                                                            io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                            return res.send(JSON.stringify(groupBySqlResult));
+                                                                        });
+                                                                    });
+                                                                });
+                                                            });
+                                                        });
+                                                    } else {
+                                                        //some fields contained in a Group by but operation and aggregation fields differ
+                                                        //this means we should proceed to new group by calculation from the begining
+                                                        getAllFacts(latestId).then(retval => {
+                                                            for (let i = 0; i < retval.length; i++) {
+                                                                delete retval[i].timestamp;
                                                             }
-                                                            rows.push(crnRow);
-                                                        }
-                                                    });
-                                                    let sqlInsert = jsonSql.build({
-                                                        type: 'insert',
-                                                        table: tableName,
-                                                        values: rows
-                                                    });
-                                                    console.log("SQL QUERY INSERT = ");
-                                                    console.log(sqlInsert.query);
-                                                    let editedQuery = sqlInsert.query.replace(/"/g, '');
-                                                    editedQuery = editedQuery.replace(/''/g, 'null');
-                                                    console.log("edited insert query is:");
-                                                    console.log(editedQuery);
-                                                     await connection.query(editedQuery, async function (error, results, fields) {
-                                                         if (error){
-                                                             console.log(error);
-                                                             throw error;
-                                                         }
-                                                         console.log("INSERT QUERY RES = ");
-                                                         console.log(results);
-                                                         let op = "";
-                                                         let gbQuery = {};
-                                                         if (view.operation === "SUM" || view.operation === "COUNT") {
-                                                             op = "SUM"; //operation is set to "SUM" both for COUNT and SUM operation
-                                                         } else if(view.operation === "MIN"){
-                                                             op = "MIN"
-                                                         } else if(view.operation === "MAX"){
-                                                             op = "MAX";
-                                                         }
-                                                             gbQuery = jsonSql.build({
-                                                                 type: 'select',
-                                                                 table: tableName,
-                                                                 group: gbFields,
-                                                                 fields: [gbFields,
-                                                                     {func: {
-                                                                             name: op,
-                                                                             args: [{field: lastCol}]
-                                                                         }
-                                                                     }]
-                                                             });
-                                                         if(view.operation === "AVERAGE"){
-                                                             gbQuery = jsonSql.build({
-                                                                 type: 'select',
-                                                                 table: tableName,
-                                                                 group: gbFields,
-                                                                 fields: [gbFields,
-                                                                     {func: {
-                                                                             name: 'SUM',
-                                                                             args: [{field: prelastCol}]
-                                                                         }
-                                                                     },
-                                                                     {func: {
-                                                                             name: 'SUM',
-                                                                             args: [{field: lastCol}]
-                                                                         }
-                                                                     }]
-                                                             });
-                                                         }
-                                                             let editedGBQuery = gbQuery.query.replace(/"/g, '');
-                                                             editedGBQuery = editedGBQuery.replace(/''/g, 'null');
-                                                             await connection.query(editedGBQuery, async function (error, results, fields) {
-                                                                 if (error) {
-                                                                     console.log(error);
-                                                                     throw error;
-                                                                 }
-                                                                 await connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
-                                                                     if (err) {
-                                                                         console.log(err);
-                                                                         throw err;
-                                                                     }
-
-                                                                     let groupBySqlResult = {};
-                                                                     if (view.operation === "AVERAGE") {
-                                                                         groupBySqlResult = transformations.transformReadyAverage(results, view.gbFields, view.aggregationField);
-                                                                     } else {
-                                                                         groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, gbFields);
-                                                                     }
-                                                                     return saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
-                                                                         console.log('error:', err);
-                                                                         res.send(err);
-                                                                     }).on('transactionHash', (err) => {
-                                                                         console.log('transactionHash:', err);
-                                                                     }).on('receipt', (receipt) => {
-                                                                         console.log('receipt:', receipt);
-                                                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                                                         return res.send(JSON.stringify(groupBySqlResult));
-                                                                     });
-                                                                 });
-                                                             });
-                                                     });
-                                                });
-                                            } else {
-                                                //some fields contained in a Group by but operation and aggregation fields differ
-                                                //this means we should proceed to new group by calculation from the begining
-                                                getAllFacts(latestId).then(retval => {
-                                                    for (let i = 0; i < retval.length; i++) {
-                                                        delete retval[i].timestamp;
-                                                    }
-                                                    console.log("CALCULATING NEW GB FROM BEGGINING");
-                                                    calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
-                                                        saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
-                                                            console.log('error:', err);
-                                                            res.send(err);
-                                                        }).on('transactionHash', (err) => {
-                                                            console.log('transactionHash:', err);
-                                                        }).on('receipt', (receipt) => {
-                                                            console.log('receipt:', receipt);
-                                                            io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                                            return res.send(JSON.stringify(groupBySqlResult));
+                                                            console.log("CALCULATING NEW GB FROM BEGGINING");
+                                                            calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+                                                                saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                    console.log('error:', err);
+                                                                    res.send(err);
+                                                                }).on('transactionHash', (err) => {
+                                                                    console.log('transactionHash:', err);
+                                                                }).on('receipt', (receipt) => {
+                                                                    console.log('receipt:', receipt);
+                                                                    io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                    return res.send(JSON.stringify(groupBySqlResult));
+                                                                });
+                                                            });
                                                         });
-                                                    });
-                                                });
 
-                                            }
-                                        } else {
-                                            if (cachedGroupBy.field === view.aggregationField &&
-                                                view.operation === cachedGroupBy.operation) {
-                                                //this means we just have to return the group by stored in cache
-                                                //field, operation are same and no new records written
-                                                console.log(cachedGroupBy);
-                                                io.emit('view_results', JSON.stringify(cachedGroupBy));
-                                                return res.send(cachedGroupBy);
-                                            } else {
-                                                //same fields but different operation or different aggregate field
-                                                //this means we should proceed to new group by calculation from the begining
-                                                getAllFacts(latestId).then( retval => {
-                                                    for (let i = 0; i < retval.length; i++) {
-                                                        delete retval[i].timestamp;
                                                     }
-                                                    console.log("CALCULATING NEW GB FROM BEGGINING");
-                                                    calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
-                                                        saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
-                                                            console.log('error:', err);
-                                                            res.send(err);
-                                                        }).on('transactionHash', (err) => {
-                                                            console.log('transactionHash:', err);
-                                                        }).on('receipt', (receipt) => {
-                                                            console.log('receipt:', receipt);
-                                                            io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                                            return res.send(JSON.stringify(groupBySqlResult));
+                                                } else {
+                                                    if (cachedGroupBy.field === view.aggregationField &&
+                                                        view.operation === cachedGroupBy.operation) {
+                                                        //this means we just have to return the group by stored in cache
+                                                        //field, operation are same and no new records written
+                                                        console.log(cachedGroupBy);
+                                                        io.emit('view_results', JSON.stringify(cachedGroupBy));
+                                                        return res.send(cachedGroupBy);
+                                                    } else {
+                                                        //same fields but different operation or different aggregate field
+                                                        //this means we should proceed to new group by calculation from the begining
+                                                        getAllFacts(latestId).then(retval => {
+                                                            for (let i = 0; i < retval.length; i++) {
+                                                                delete retval[i].timestamp;
+                                                            }
+                                                            console.log("CALCULATING NEW GB FROM BEGGINING");
+                                                            calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+                                                                saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                    console.log('error:', err);
+                                                                    res.send(err);
+                                                                }).on('transactionHash', (err) => {
+                                                                    console.log('transactionHash:', err);
+                                                                }).on('receipt', (receipt) => {
+                                                                    console.log('receipt:', receipt);
+                                                                    io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                    return res.send(JSON.stringify(groupBySqlResult));
+                                                                });
+                                                            });
                                                         });
-                                                    });
-                                                })
-                                            }
+                                                    }
+                                                }
+                                            });
                                         }
                                     });
-                                    }
-                                });
+                                }
+                            });
+                            //  return res.send({allGbs: filteredGBs, mostEfficient: mostEfficient});
+                        } else {
+                            console.log(err);
+                            return res.send(err);
+                        }
+                    })
+                } else {
+                    //No group bys exist in cache, we are in the initial state
+                    //this means we should proceed to new group by calculation from the begining
+                    contract.methods.dataId().call(function (err, latestId) {
+                        if(err) throw err;
+                        getAllFacts(latestId).then(retval => {
+                            for (let i = 0; i < retval.length; i++) {
+                                delete retval[i].timestamp;
                             }
+                            console.log("CALCULATING NEW GB FROM BEGGINING");
+                            calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+                                saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                    console.log('error:', err);
+                                    res.send(err);
+                                }).on('transactionHash', (err) => {
+                                    console.log('transactionHash:', err);
+                                }).on('receipt', (receipt) => {
+                                    console.log('receipt:', receipt);
+                                    io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                    return res.send(JSON.stringify(groupBySqlResult));
+                                });
+                            });
                         });
-                      //  return res.send({allGbs: filteredGBs, mostEfficient: mostEfficient});
-                    } else {
-                        console.log(err);
-                        return res.send(err);
-                    }
-                })
+                    });
+                }
             } else {
                 console.log(err);
                 console.log('ERRRRRR');
