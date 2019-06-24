@@ -4,6 +4,7 @@ const solc = require('solc');
 const fs = require('fs');
 const delay = require('delay');
 const groupBy = require('group-by');
+const config = require('./config');
 const dataset = require('./dataset_1k');
 let fact_tbl = require('./templates/fact_tbl');
 const crypto = require('crypto');
@@ -29,9 +30,9 @@ const csvtojson = require('csvtojson');
 const jsonSql = require('json-sql')({separatedValues: false});
 
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
 const redis = require('redis');
-const client = redis.createClient(6379, '127.0.0.1');
+const client = redis.createClient(config.redisPort, config.redisIP);
 client.on('connect', function () {
     console.log('Redis client connected');
 });
@@ -228,13 +229,6 @@ async function addManyFactsNew(facts, sliceSize) {
                 return JSON.stringify(fct);
             });
         });
-        // for (const slc of slices) {
-        //     let crnProms = [];
-        //     crnProms = slc.map(fct => {
-        //         return JSON.stringify(fct);
-        //     });
-        //     allSlicesReady.push(crnProms);
-        // }
     } else {
         allSlicesReady = facts.map(fact => {
             return [JSON.stringify(fact)];
@@ -252,24 +246,6 @@ async function addManyFactsNew(facts, sliceSize) {
         });
         i++;
     }
-
-    // for (const fact of facts) {
-    //     let strFact = JSON.stringify(fact);
-    //     proms.push(strFact);
-    //     console.log(strFact);
-    // }
-    // console.log("done loop");
-    // console.log(proms.length);
-    // let transPromise = await contract.methods.addFacts(proms).send(transactionObject, (err, txHash) => {
-    // console.log(err);
-    //     console.log(txHash);
-    // }).on('error', (err) => {
-    //     console.log('error:', err);
-    // }).on('transactionHash', (hash) => {
-    //     console.log("***");
-    //     console.log(hash);
-    //     console.log("***");
-    // });
     return Promise.resolve(true);
 }
 
@@ -308,7 +284,7 @@ app.get('/load_dataset/:dt', function (req, res) {
         if (!running) {
             running = true;
             let startTime = microtime.nowDouble();
-            addManyFactsNew(dt,10).then(retval => {
+            addManyFactsNew(dt,config.recordsSlice).then(retval => {
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
                 running = false;
@@ -546,10 +522,40 @@ function saveOnCache(gbResult, operation, latestId){
     console.log(JSON.stringify(gbResult));
     console.log('**');
     console.log(gbResult);
+    let gbResultSize = Object.keys(gbResult).length;
+    let slicedGbResult = [];
+    if(gbResultSize > config.cacheSlice){
+        let crnSlice = [];
+        let metaKeys = {operation: gbResult["operation"], groupByFields: gbResult["groupByFields"], field: gbResult["field"]};
+        for (const key of Object.keys(gbResult)) {
+            if(key !== "operation" && key !== "groupByFields" && key !== "field") {
+                console.log(key);
+                crnSlice.push({[key]: gbResult[key]});
+                if (crnSlice.length >= config.cacheSlice) {
+                    slicedGbResult.push(crnSlice);
+                    crnSlice = [];
+                }
+            }
+        }
+        slicedGbResult.push(metaKeys);
+    }
+    console.log(slicedGbResult);
     let colSize = gbResult.groupByFields.length;
     let columns = JSON.stringify({fields: gbResult.groupByFields});
-    client.set(hash, JSON.stringify(gbResult), redis.print);
-   return contract.methods.addGroupBy(hash, Web3.utils.fromAscii(operation), latestId, colSize, columns).send(mainTransactionObject);
+    let num = 0;
+    let crnHash = "";
+    if(slicedGbResult.length > 0) {
+        for (const slice in slicedGbResult) {
+            crnHash = hash + "_" + num;
+            console.log(crnHash);
+            client.set(crnHash, JSON.stringify(slicedGbResult[slice]), redis.print);
+            num++;
+        }
+    } else {
+        crnHash = hash + "_0";
+        client.set(crnHash, JSON.stringify(gbResult), redis.print);
+    }
+   return contract.methods.addGroupBy(crnHash, Web3.utils.fromAscii(operation), latestId, colSize, columns).send(mainTransactionObject);
 }
 
 function removeTimestamps(records) {
@@ -749,13 +755,9 @@ function mergeGroupBys(groupByA, groupByB, gbCreateTable, tableName, view, lastC
 
         let editedQueryA = sqlInsertA.query.replace(/"/g, '');
         editedQueryA = editedQueryA.replace(/''/g, 'null');
-        console.log("edited insert query A is:");
-        console.log(editedQueryA);
 
         let editedQueryB = sqlInsertB.query.replace(/"/g, '');
         editedQueryB = editedQueryB.replace(/''/g, 'null');
-        console.log("edited insert query A is:");
-        console.log(editedQueryB);
 
         connection.query(editedQueryA,  function (err, results, fields) {
             if(err) throw err;
@@ -855,8 +857,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
     }
 
     let gbFields = [];
-    console.log(view);
-    console.log(view.gbFields);
     if (view.gbFields.indexOf('|') > -1) {
         // more than 1 group by fields
         gbFields = view.gbFields.split('|');
@@ -924,12 +924,54 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                         if (mostEfficient.gbTimestamp >= latestFact.timestamp) {
                                             //NO NEW FACTS after the latest group by
                                             // -> incrementaly calculate the groupby requested by summing the one in redis cache
-                                            client.get(mostEfficient.hash, function (error, cachedGroupBy) {
+                                            let hashId = mostEfficient.hash.split("_")[1];
+                                            let hashBody = mostEfficient.hash.split("_")[0];
+                                            let allHashes = [];
+                                                for (let i = 0; i <= hashId; i++) {
+                                                    allHashes.push(hashBody + "_" + i);
+                                                }
+
+                                                client.mget(allHashes, function (error, allCached) {
+                                                    if (error) {
+                                                        console.log(error);
+                                                        return res.send(error);
+                                                    }
+                                                    console.log("SSSSS");
+                                                    console.log(allCached);
+                                                    let cachedGroupBy = {};
+                                                    if(allCached.length === 1){ //it is <= of slice size, so it is not sliced
+                                                        cachedGroupBy = JSON.parse(allCached[0]);
+                                                    } else { //it is sliced
+                                                        let mergedArray = [];
+                                                        for(const index in allCached){
+                                                            let crnSub = allCached[index];
+                                                            console.log("******************8");
+                                                            console.log(crnSub);
+                                                            let crnSubArray = JSON.parse(crnSub);
+                                                            for(const kv in crnSubArray){
+                                                                if(kv !== "operation" && kv !== "groupByFields" && kv !== "field") {
+                                                                    mergedArray.push(crnSubArray[kv]);
+                                                                } else {
+                                                                    for(const meta in crnSubArray){
+                                                                        mergedArray.push({[meta]: crnSubArray[meta]});
+                                                                    }
+                                                                    break;
+                                                                   // mergedArray.push(crnSubArray);
+                                                                }
+                                                            }
+                                                        }
+                                                        let gbFinal = {};
+                                                        for(const i in mergedArray){
+                                                            let crnKey = Object.keys(mergedArray[i])[0];
+                                                            gbFinal[crnKey] =  Object.values(mergedArray[i])[0];
+                                                        }
+                                                        cachedGroupBy = gbFinal;
+                                                    }
+
                                                 if (err) {
                                                     console.log(error);
                                                     return res.send(error);
                                                 }
-                                                cachedGroupBy = JSON.parse(cachedGroupBy);
                                                 if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
                                                     //this means we want to calculate a different group by than the stored one
                                                     //but however it can be calculated just from redis cache
@@ -1047,8 +1089,8 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             console.log('transactionHash:', err);
                                                                         }).on('receipt', (receipt) => {
                                                                             console.log('receipt:', receipt);
-                                                                            io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                                                            return res.send(JSON.stringify(groupBySqlResult));
+                                                                            io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\",""));
+                                                                            return res.send(JSON.stringify(groupBySqlResult).replace("\\",""));
                                                                         });
                                                                     });
                                                                 });
@@ -1084,7 +1126,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                         //field, operation are same and no new records written
                                                         console.log(cachedGroupBy);
                                                         io.emit('view_results', JSON.stringify(cachedGroupBy));
-                                                        return res.send(cachedGroupBy);
+                                                        return res.send(JSON.stringify(cachedGroupBy));
                                                     } else {
                                                         //same fields but different operation or different aggregate field
                                                         //this means we should proceed to new group by calculation from the begining
@@ -1111,17 +1153,16 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                             });
                                         } else {
                                             //we have deltas -> we fetch them
+                                            //CALCULATING THE VIEW JUST FOR THE DELTAS
+                                            // THEN MERGE IT WITH THE ONES IN CACHE
+                                            // THEN SAVE BACK IN CACHE
                                             getFactsFromTo(mostEfficient.latestFact, latestId-1).then(deltas => {
                                                 connection.query(createTable, function (error, results, fields) {
                                                     if (error) throw error;
                                                     deltas = removeTimestamps(deltas);
                                                     console.log("CALCULATING GB FOR DELTAS:");
                                                         calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField, async function (groupBySqlResult) {
-                                                            console.log("DELTA CALCULATED GB:");
-                                                            console.log(groupBySqlResult);
                                                             client.get(mostEfficient.hash, async function (error, cachedGroupBy) {
-                                                                console.log("cached gb");
-                                                                console.log(cachedGroupBy);
 
                                                                 cachedGroupBy = JSON.parse(cachedGroupBy);
                                                                 if (cachedGroupBy.field === view.aggregationField &&
@@ -1142,8 +1183,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         let viewNameSQL = view.SQLTable.split(" ");
                                                                         viewNameSQL = viewNameSQL[3];
                                                                         viewNameSQL = viewNameSQL.split('(')[0];
-                                                                        console.log("TABLE NAME = " + viewNameSQL);
-
 
                                                                         let rows = [];
                                                                         let rowsDelta = [];
@@ -1190,10 +1229,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                     }
                                                                 }
                                                             });
-                                                            //CALCULATING THE VIEW JUST FOR THE DELTAS
-                                                            // THEN MERGE IT WITH THE ONES IN CACHE
-                                                            // TODO: FETCH ALREADY PART FROM CACHE AND MERGE IT WITH THE ONE CALCULATED
-                                                            // THEN SAVE BACK IN CACHE
                                                         });
                                                 });
                                             });
