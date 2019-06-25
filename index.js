@@ -537,8 +537,12 @@ function saveOnCache(gbResult, operation, latestId){
                 }
             }
         }
+        if(crnSlice.length > 0){
+            slicedGbResult.push(crnSlice); //we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
+        }
         slicedGbResult.push(metaKeys);
     }
+    console.log("SLICED GB RESULT = ");
     console.log(slicedGbResult);
     let colSize = gbResult.groupByFields.length;
     let columns = JSON.stringify({fields: gbResult.groupByFields});
@@ -895,11 +899,20 @@ app.get('/getViewByName/:viewName', function (req,res) {
 
                             transformedArray = containsAllFields(transformedArray, view); //assigns the containsAllFields value
                             let filteredGBs = [];
+                            let sortedByTS = [];
                             for (let i = 0; i < transformedArray.length; i++) {
                                 if (transformedArray[i].containsAllFields) {
                                     filteredGBs.push(transformedArray[i]);
                                 }
+                                sortedByTS.push(transformedArray[i]);
                             }
+
+                            sortedByTS.sort(function (a, b) {
+                                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+                            });
+                            console.log("SFSFSFSFSFSF");
+                            console.log(sortedByTS);
+                            console.log("SFSFSFSFSFSF");
                             //filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
                             //assign costs
                             filteredGBs = cost(filteredGBs);
@@ -1162,9 +1175,55 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                     deltas = removeTimestamps(deltas);
                                                     console.log("CALCULATING GB FOR DELTAS:");
                                                         calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField, async function (groupBySqlResult) {
-                                                            client.get(mostEfficient.hash, async function (error, cachedGroupBy) {
 
-                                                                cachedGroupBy = JSON.parse(cachedGroupBy);
+
+                                                            let hashId = mostEfficient.hash.split("_")[1];
+                                                            let hashBody = mostEfficient.hash.split("_")[0];
+                                                            let allHashes = [];
+                                                            for (let i = 0; i <= hashId; i++) {
+                                                                allHashes.push(hashBody + "_" + i);
+                                                            }
+
+                                                            client.mget(allHashes, async function (error, allCached) {
+                                                                if (error) {
+                                                                    console.log(error);
+                                                                    return res.send(error);
+                                                                }
+                                                                console.log("SSSSS");
+                                                                console.log(allCached);
+                                                                let cachedGroupBy = {};
+                                                                if(allCached.length === 1){ //it is <= of slice size, so it is not sliced
+                                                                    cachedGroupBy = JSON.parse(allCached[0]);
+                                                                } else { //it is sliced
+                                                                    let mergedArray = [];
+                                                                    for(const index in allCached){
+                                                                        let crnSub = allCached[index];
+                                                                        console.log("******************8");
+                                                                        console.log(crnSub);
+                                                                        let crnSubArray = JSON.parse(crnSub);
+                                                                        for(const kv in crnSubArray){
+                                                                            if(kv !== "operation" && kv !== "groupByFields" && kv !== "field") {
+                                                                                mergedArray.push(crnSubArray[kv]);
+                                                                            } else {
+                                                                                for(const meta in crnSubArray){
+                                                                                    mergedArray.push({[meta]: crnSubArray[meta]});
+                                                                                }
+                                                                                break;
+                                                                                // mergedArray.push(crnSubArray);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    let gbFinal = {};
+                                                                    for(const i in mergedArray){
+                                                                        let crnKey = Object.keys(mergedArray[i])[0];
+                                                                        gbFinal[crnKey] =  Object.values(mergedArray[i])[0];
+                                                                    }
+                                                                    cachedGroupBy = gbFinal;
+                                                                }
+
+                                                                console.log(cachedGroupBy);
+                                                                console.log("8=====D");
+                                                              //  cachedGroupBy = JSON.parse(cachedGroupBy);
                                                                 if (cachedGroupBy.field === view.aggregationField &&
                                                                     view.operation === cachedGroupBy.operation) {
                                                                     if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
@@ -1190,7 +1249,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                                         await Object.keys(cachedGroupBy).forEach(function (key, index) {
                                                                             if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
+                                                                                console.log("8");
                                                                                 let crnRow = JSON.parse(key);
+                                                                                console.log(crnRow);
                                                                                 lastCol = view.SQLTable.split(" ");
                                                                                 prelastCol = lastCol[lastCol.length - 4];
                                                                                 lastCol = lastCol[lastCol.length - 2];
@@ -1221,7 +1282,10 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 rowsDelta.push(crnRow);
                                                                             }
                                                                         });
-
+                                                                        console.log("####");
+                                                                        console.log(rows);
+                                                                        console.log(rowsDelta);
+                                                                        console.log("####");
                                                                         mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult) {
                                                                             console.log(mergeResult);
                                                                             return res.send(mergeResult);
