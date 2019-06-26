@@ -573,8 +573,12 @@ function removeTimestamps(records) {
 function calculateNewGroupBy(facts, operation, gbFields, aggregationField, callback) {
     connection.query('DROP TABLE IF EXISTS ' + tableName, function (err, resultDrop) {
         if (err) throw err;
+        console.log("DROP RES: = ");
+        console.log(resultDrop);
         connection.query(createTable, function (error, results, fields) { //creating the SQL table for "Fact Table"
             if (error) throw error;
+            console.log("FACTS TO ADD");
+            console.log(facts);
             let sql = jsonSql.build({
                 type: 'insert',
                 table: tableName,
@@ -910,9 +914,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                             sortedByTS.sort(function (a, b) {
                                 return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
                             });
-                            console.log("SFSFSFSFSFSF");
+                            console.log("SORTED GBs by Timestamp:");
                             console.log(sortedByTS);
-                            console.log("SFSFSFSFSFSF");
+                            console.log("________________________");
                             //filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
                             //assign costs
                             filteredGBs = cost(filteredGBs);
@@ -1176,7 +1180,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                     console.log("CALCULATING GB FOR DELTAS:");
                                                         calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField, async function (groupBySqlResult) {
 
-
                                                             let hashId = mostEfficient.hash.split("_")[1];
                                                             let hashBody = mostEfficient.hash.split("_")[0];
                                                             let allHashes = [];
@@ -1222,7 +1225,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                 }
 
                                                                 console.log(cachedGroupBy);
-                                                                console.log("8=====D");
                                                               //  cachedGroupBy = JSON.parse(cachedGroupBy);
                                                                 if (cachedGroupBy.field === view.aggregationField &&
                                                                     view.operation === cachedGroupBy.operation) {
@@ -1249,9 +1251,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                                         await Object.keys(cachedGroupBy).forEach(function (key, index) {
                                                                             if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
-                                                                                console.log("8");
                                                                                 let crnRow = JSON.parse(key);
-                                                                                console.log(crnRow);
                                                                                 lastCol = view.SQLTable.split(" ");
                                                                                 prelastCol = lastCol[lastCol.length - 4];
                                                                                 lastCol = lastCol[lastCol.length - 2];
@@ -1282,13 +1282,23 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 rowsDelta.push(crnRow);
                                                                             }
                                                                         });
-                                                                        console.log("####");
-                                                                        console.log(rows);
-                                                                        console.log(rowsDelta);
-                                                                        console.log("####");
+
                                                                         mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult) {
-                                                                            console.log(mergeResult);
-                                                                            return res.send(mergeResult);
+                                                                            //SAVE ON CACHE BEFORE RETURN
+                                                                            mergeResult.operation = view.operation;
+                                                                            mergeResult.field = view.aggregationField;
+                                                                            saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                                console.log('error:', err);
+                                                                                res.send(err);
+                                                                            }).on('transactionHash', (err) => {
+                                                                                console.log('transactionHash:', err);
+                                                                            }).on('receipt', (receipt) => {
+                                                                                console.log('receipt:', receipt);
+                                                                                io.emit('view_results', mergeResult);
+                                                                                return res.send(mergeResult);
+                                                                            });
+                                                                           // console.log(mergeResult);
+                                                                           // return res.send(mergeResult);
                                                                         });
                                                                     }
                                                                 }
@@ -1313,9 +1323,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                         if (err) throw err;
                         getAllFacts(latestId).then(retval => {
                             let facts = removeTimestamps(retval);
-                            console.log(facts);
                             console.log("CALCULATING NEW GB FROM BEGGINING");
                             calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+
                                 saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                     console.log('error:', err);
                                     res.send(err);

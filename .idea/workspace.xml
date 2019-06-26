@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -47,8 +46,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="528" column="126" selection-start-line="528" selection-start-column="126" selection-end-line="528" selection-end-column="126" />
+            <state relative-caret-position="208">
+              <caret line="1291" column="99" selection-start-line="1291" selection-start-column="99" selection-end-line="1291" selection-end-column="99" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dataset_100.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -92,7 +100,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="885">
+            <state relative-caret-position="343">
               <caret line="59" column="15" selection-start-line="59" selection-start-column="7" selection-end-line="59" selection-end-column="15" />
             </state>
           </provider>
@@ -109,12 +117,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>transactionO</find>
-      <find>removeT</find>
-      <find>createTa</find>
-      <find>connec</find>
-      <find>calculateNew</find>
-      <find>calc</find>
       <find>let gbF</find>
       <find>DELTA CA</find>
       <find>cached gb</find>
@@ -124,21 +126,27 @@
       <find>addMa</find>
       <find>client.</find>
       <find>client.set</find>
-      <find>saveOn</find>
-      <find>client.get</find>
       <find>most</find>
       <find>res.send</find>
       <find>calculateN</find>
       <find>.repl</find>
       <find>local</find>
       <find>clien</find>
-      <find>saveO</find>
       <find>saveOnC</find>
       <find>mget</find>
       <find>getAllGr</find>
-      <find>mergeG</find>
       <find>mostEfficient.hash</find>
       <find>save</find>
+      <find>client.get</find>
+      <find>TS</find>
+      <find>CALCULATING GB</find>
+      <find>SFSFSFSFSFSF</find>
+      <find>mergeG</find>
+      <find>8=====D</find>
+      <find>merge</find>
+      <find>saveO</find>
+      <find>saveOn</find>
+      <find>b</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -231,7 +239,7 @@
             <path>
               <item name="interface" type="b2602c69:ProjectViewProjectNode" />
               <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="contracts" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="interface" type="b2602c69:ProjectViewProjectNode" />
@@ -424,14 +432,8 @@
       <workItem from="1558612833087" duration="3605000" />
       <workItem from="1561371153353" duration="11497000" />
       <workItem from="1561402624165" duration="1052000" />
-      <workItem from="1561483769295" duration="2349000" />
-    </task>
-    <task id="LOCAL-00036" summary="ALL CALCULATIONS ON SQL">
-      <created>1550162174617</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1550162174617</updated>
+      <workItem from="1561483769295" duration="4615000" />
+      <workItem from="1561547819141" duration="1238000" />
     </task>
     <task id="LOCAL-00037" summary="updated dataset slices and contracts">
       <created>1550163295694</created>
@@ -769,23 +771,30 @@
       <option name="project" value="LOCAL" />
       <updated>1561403206683</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="fixed buf on cache slicing">
+      <created>1561486262077</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1561486262077</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="418208000" />
+    <option name="totallyTimeSpent" value="421712000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="44" y="23" width="1440" height="820" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.72684085" visible="true" weight="0.21745351" />
-      <window_info id="Structure" order="1" sideWeight="0.27315915" side_tool="true" visible="true" weight="0.21745351" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7234513" visible="true" weight="0.22818312" />
+      <window_info id="Structure" order="1" sideWeight="0.27654868" side_tool="true" visible="true" weight="0.22818312" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.879113" visible="true" weight="0.4217033" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8783977" visible="true" weight="0.3791209" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -795,7 +804,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12088698" side_tool="true" visible="true" weight="0.4217033" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12160229" side_tool="true" visible="true" weight="0.3791209" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -872,7 +881,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="socket on gb results" />
     <MESSAGE value="change slice size to 10" />
     <MESSAGE value="change slice size to 1" />
     <MESSAGE value="fixes in slices for 1 objct pr slice" />
@@ -897,12 +905,10 @@
     <MESSAGE value="created micro function for removing timestamps from records" />
     <MESSAGE value="fixed issue on delta gb calculation" />
     <MESSAGE value="new feature: cache slicing&#10;created: config file" />
-    <option name="LAST_COMMIT_MESSAGE" value="new feature: cache slicing&#10;created: config file" />
+    <MESSAGE value="fixed buf on cache slicing" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed buf on cache slicing" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/dist/css/sb-admin-2.min.css">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.css">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1067,13 +1073,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataset_100.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1082,6 +1081,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/sales.json">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/mysql/lib/protocol/Protocol.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="277" column="22" selection-start-line="277" selection-start-column="22" selection-end-line="277" selection-end-column="22" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
       <provider selected="true" editor-type-id="text-editor">
@@ -1101,6 +1107,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="24" selection-start-column="24" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset_100.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="20" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -1127,22 +1147,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="885">
+        <state relative-caret-position="343">
           <caret line="59" column="15" selection-start-line="59" selection-start-column="7" selection-end-line="59" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="20" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="528" column="126" selection-start-line="528" selection-start-column="126" selection-end-line="528" selection-end-column="126" />
+        <state relative-caret-position="208">
+          <caret line="1291" column="99" selection-start-line="1291" selection-start-column="99" selection-end-line="1291" selection-end-column="99" />
         </state>
       </provider>
     </entry>
