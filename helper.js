@@ -1,3 +1,4 @@
+const config = require('./config');
 function sumObjects (ob1, ob2) {
     let sum = {};
 
@@ -90,11 +91,68 @@ function removeDuplicates (arr) {
     });
 }
 
+function configFileValidations() {
+    let missingFields = [];
+    if(!config.hasOwnProperty("recordsSlice")){
+        missingFields.push("recordsSlice");
+    }
+    if(!config.hasOwnProperty("cacheEvictionPolicy")){
+        missingFields.push("cacheEvictionPolicy");
+    }
+    if(!config.hasOwnProperty("maxCacheSize")){
+        missingFields.push("maxCacheSize");
+    }
+    if(!config.hasOwnProperty("cacheSlice")){
+        missingFields.push("cacheSlice");
+    }
+    if(!config.hasOwnProperty("redisPort")){
+        missingFields.push("redisPort");
+    }
+    if(!config.hasOwnProperty("redisIP")){
+        missingFields.push("redisIP");
+    }
+    if(!config.hasOwnProperty("blockchainIP")){
+        missingFields.push("blockchainIP");
+    }
+    if(missingFields.length > 0){
+        return {passed: false, missingFields: missingFields};
+    }
+    let formatErrors = [];
+    if(!Number.isInteger(config.recordsSlice)){
+        formatErrors.push({field: "recordsSlice", error: "Should be integer"});
+    }
+    if(!Number.isInteger(config.cacheSlice)){
+        formatErrors.push({field: "cacheSlice", error: "Should be integer"});
+    }
+    if(!Number.isInteger(config.maxCacheSize)){
+        formatErrors.push({field: "maxCacheSize", error: "Should be integer"});
+    }
+    if(!Number.isInteger(config.redisPort)){
+        formatErrors.push({field: "redisPort", error: "Should be integer"});
+    }
+    if(config.cacheEvictionPolicy !== "FIFO" && config.cacheEvictionPolicy !== "COST FUNCTION"){
+        formatErrors.push({field: "cacheEvictionPolicy", error: "Should be either 'FIFO' or 'COST FUNCTION'"});
+    }
+    if((typeof config.blockchainIP) !== 'string'){
+        formatErrors.push({field: "blockchainIP", error: "Should be string"});
+    }
+    if((typeof config.redisIP) !== 'string'){
+        formatErrors.push({field: "redisIP", error: "Should be string"});
+    }
+
+    if(formatErrors.length > 0){
+        return {passed: false, formatErrors: formatErrors};
+    }
+    return {passed: true};
+
+}
+
 module.exports = {
     sumObjects: sumObjects,
     maxObjects: maxObjects,
     minObjects: minObjects,
     averageObjects: averageObjects,
     flatten: flatten,
-    removeDuplicates: removeDuplicates
+    removeDuplicates: removeDuplicates,
+    configFileValidations: configFileValidations
 };

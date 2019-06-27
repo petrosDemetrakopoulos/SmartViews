@@ -111,33 +111,40 @@ app.get('/form/:contract', function (req, res) {
     console.log(groupBys);
     res.render('form',{'template':templ, 'name': fact_tbl.name, 'address': address, 'groupBys':groupBys, 'readyViews': readyViews});
 });
-
 http.listen(3000, () => {
     console.log(`Example app listening on http://localhost:3000/dashboard`);
     let mysqlConfig = {};
-    if(process.env.NODE_ENV === 'development'){
-        mysqlConfig = {
-            host: 'localhost',
-            user: 'root',
-            password: 'Xonelgataandrou1!',
-            database: 'Ptychiaki'
-        };
-    } else if(process.env.NODE_ENV === 'lab'){
-        mysqlConfig = {
-            host: 'localhost',
-            user: 'root',
-            password: 'Iwanttobelive1',
-            database: 'Ptychiaki'
-        };
-    }
-    connection = mysql.createConnection(mysqlConfig);
-    connection.connect(function (err) {
-        if (err) {
-            console.error('error connecting to mySQL: ' + err.stack);
-            return;
+    let validations = helper.configFileValidations();
+    if(validations.passed) {
+        if (process.env.NODE_ENV === 'development') {
+            mysqlConfig = {
+                host: 'localhost',
+                user: 'root',
+                password: 'Xonelgataandrou1!',
+                database: 'Ptychiaki'
+            };
+        } else if (process.env.NODE_ENV === 'lab') {
+            mysqlConfig = {
+                host: 'localhost',
+                user: 'root',
+                password: 'Iwanttobelive1',
+                database: 'Ptychiaki'
+            };
         }
-        console.log('mySQL connected');
-    });
+        connection = mysql.createConnection(mysqlConfig);
+        connection.connect(function (err) {
+            if (err) {
+                console.error('error connecting to mySQL: ' + err.stack);
+                return;
+            }
+            console.log('mySQL connected');
+        });
+    } else {
+        console.log("Config file validations failed");
+        console.log(validations);
+        //if config validations fail, stop the server
+        process.exit(1);
+    }
 });
 
 async function deploy(account, contractPath) {
@@ -915,7 +922,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
                             });
                             console.log("SORTED GBs by Timestamp:");
-                            console.log(sortedByTS);
+                            console.log(sortedByTS); //TS ORDER ascending, the first ones are older than the last ones.
                             console.log("________________________");
                             //filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
                             //assign costs
