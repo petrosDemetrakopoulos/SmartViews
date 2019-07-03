@@ -178,8 +178,7 @@ async function deploy(account, contractPath) {
 }
 
 app.get('/readFromFile', function (req, res) {
-    csv
-        .fromPath('dataset.txt',{delimiter: '|'})
+    csv.fromPath('dataset.txt',{delimiter: '|'})
         .on('data', function (data) {
             console.log(data);
         })
@@ -213,7 +212,7 @@ app.get('/deployContract/:fn', function (req, res) {
     });
 });
 
-async function addManyFactsNew(facts, sliceSize) {
+async function addManyFacts(facts, sliceSize) {
     console.log('length = ' + facts.length);
     let proms = [];
     let allSlicesReady = [];
@@ -255,32 +254,6 @@ async function addManyFactsNew(facts, sliceSize) {
     return Promise.resolve(true);
 }
 
-async function addManyFacts(facts) {
-    console.log('length = ' + facts.length);
-    let proms = [];
-    let i = 0;
-    for (const fact of facts) {
-        let strFact = JSON.stringify(fact);
-        let transPromise = await contract.methods.addFact(strFact).send(mainTransactionObject, (err, txHash) => {
-            //console.log('send:', err, txHash);
-        }).on('error', (err) => {
-            console.log('error:', err);
-        }).on('transactionHash', (err) => {
-                //console.log('transactionHash:', err);
-                io.emit('progress', i/facts.length);
-                console.log(i);
-            });
-            // .on('receipt', (receipt) => {
-            //     // console.log('receipt:', receipt);
-            //     io.emit('progress', i/facts.length);
-            //     console.log(i);
-            // }).
-        i++;
-    }
-    // console.log('LOOP ENDED EXECUTING BATCH');
-    // batch.execute();
-    return Promise.resolve(true);
-}
 
 app.get('/load_dataset/:dt', function (req, res) {
     let dt = require('./' + req.params.dt);
@@ -290,7 +263,7 @@ app.get('/load_dataset/:dt', function (req, res) {
         if (!running) {
             running = true;
             let startTime = microtime.nowDouble();
-            addManyFactsNew(dt,config.recordsSlice).then(retval => {
+            addManyFacts(dt,config.recordsSlice).then(retval => {
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
                 running = false;
