@@ -339,14 +339,6 @@ app.get('/getFactById/:id', function (req, res) {
     }
 });
 
-app.get('/allFacts', function (req, res) {
-    getAllFactsHeavy(50).then(retval => {
-        res.send(retval);
-    }).catch(error => {
-        console.log(error);
-    })
-});
-
 async function getAllFactsHeavy(factsLength) {
     let allFacts = [];
     await contract.methods.getAllFacts(factsLength).call(function (err, result) {
@@ -426,7 +418,7 @@ app.get('/getFactsFromTo/:from/:to', function (req,res) {
    });
 });
 
-app.get('/getallfacts', function (req, res) {
+app.get('/allfacts', function (req, res) {
     if (contract) {
         contract.methods.dataId().call(function (err, result) {
             if (!err) {
@@ -1806,7 +1798,7 @@ app.get('/getcount', function (req, res) {
 
 app.post('/addFact', function (req, res) {
     if (contract) {
-        let addFactPromise = contract.methods.addFact(web3.utils.fromAscii(JSON.stringify(req.body)));
+        let addFactPromise = contract.methods.addFact(JSON.stringify(req.body));
         addFactPromise.send(mainTransactionObject, (err, txHash) => {
             console.log('send:', err, txHash);
         }).on('error', (err) => {

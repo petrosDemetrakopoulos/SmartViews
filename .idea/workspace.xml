@@ -3,42 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/contractGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/SalesMin.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/SalesMin.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/_bytes1.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/_bytes2.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/_bytes3.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/_bytes4.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/_bytes5.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/bytes1.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/bytes3.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/int1.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/int2.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/int3.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/int4.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/int5.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/string1.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/string2.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/string3.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/string4.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/string5.sol" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/1bytes.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/1int.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/1string.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/2bytes.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/2int.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/2strings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/3bytes.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/3int.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/3strings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/4bytes.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/4int.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/4strings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/5bytes.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/5int.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/5strings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/new_sales_min.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/new_sales_min.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -54,7 +20,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="25">
               <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
             </state>
           </provider>
@@ -63,8 +29,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/form.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="553">
-              <caret line="327" column="30" selection-start-line="327" selection-start-column="30" selection-end-line="327" selection-end-column="30" />
+            <state relative-caret-position="153">
+              <caret line="416" column="28" lean-forward="true" selection-start-line="416" selection-start-column="28" selection-end-line="416" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -72,8 +38,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="110">
-              <caret line="1136" column="105" selection-start-line="1136" selection-start-column="105" selection-end-line="1136" selection-end-column="105" />
+            <state relative-caret-position="172">
+              <caret line="428" column="37" selection-start-line="428" selection-start-column="37" selection-end-line="428" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -81,8 +47,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/contracts/SalesMin.sol">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="128" column="44" lean-forward="true" selection-start-line="128" selection-start-column="44" selection-end-line="128" selection-end-column="44" />
+            <state relative-caret-position="251">
+              <caret line="48" column="39" lean-forward="true" selection-start-line="48" selection-start-column="39" selection-end-line="48" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -90,7 +56,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/contractGenerator.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="88">
+            <state relative-caret-position="3620">
               <caret line="244" column="35" lean-forward="true" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
             </state>
           </provider>
@@ -125,15 +91,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>addMa</find>
-      <find>client.</find>
-      <find>client.set</find>
-      <find>most</find>
-      <find>res.send</find>
-      <find>calculateN</find>
-      <find>.repl</find>
-      <find>local</find>
-      <find>clien</find>
       <find>saveOnC</find>
       <find>mget</find>
       <find>getAllGr</find>
@@ -155,6 +112,15 @@
       <find>sortedBy</find>
       <find>saveOn</find>
       <find>save</find>
+      <find>keys to rem</find>
+      <find>genera</find>
+      <find>addF</find>
+      <find>addFa</find>
+      <find>addFact</find>
+      <find>getAll</find>
+      <find>getAllFactsH</find>
+      <find>getallfacts</find>
+      <find>allFacts</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -214,18 +180,18 @@
         <option value="$PROJECT_DIR$/.eslintrc.json" />
         <option value="$PROJECT_DIR$/views/dashboard.ejs" />
         <option value="$PROJECT_DIR$/transformations.js" />
-        <option value="$PROJECT_DIR$/views/form.ejs" />
         <option value="$PROJECT_DIR$/helper.js" />
         <option value="$PROJECT_DIR$/config.json" />
         <option value="$PROJECT_DIR$/contracts/SalesMin.sol" />
         <option value="$PROJECT_DIR$/contractGenerator.js" />
         <option value="$PROJECT_DIR$/templates/new_sales_min.json" />
+        <option value="$PROJECT_DIR$/views/form.ejs" />
         <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-81" />
+    <option name="x" value="-44" />
     <option name="y" value="23" />
     <option name="width" value="1484" />
     <option name="height" value="820" />
@@ -449,21 +415,7 @@
       <workItem from="1561547819141" duration="3934000" />
       <workItem from="1561640682245" duration="1252000" />
       <workItem from="1562145150210" duration="60000" />
-      <workItem from="1562145438503" duration="7019000" />
-    </task>
-    <task id="LOCAL-00039" summary="caclculate gb incrementaly based on other fields gb">
-      <created>1550585779516</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1550585779516</updated>
-    </task>
-    <task id="LOCAL-00040" summary="organized the things a bit">
-      <created>1550586599364</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1550586599364</updated>
+      <workItem from="1562145438503" duration="9085000" />
     </task>
     <task id="LOCAL-00041" summary="fixed incremantal processing for AVERAGE operation">
       <created>1550613086683</created>
@@ -794,22 +746,37 @@
       <option name="project" value="LOCAL" />
       <updated>1561641523358</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="- some minor bug fixes regarding discrepancies in fields names&#10;- added fifo eviction policy &#10;- deleted some unnedede contracts and templates">
+      <created>1562157523126</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1562157523127</updated>
+    </task>
+    <task id="LOCAL-00089" summary="fixed issue in unique fact insertion">
+      <created>1562159323068</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1562159323068</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="432739000" />
+    <option name="totallyTimeSpent" value="434805000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="26" y="23" width="1484" height="820" extended-state="0" />
+    <frame x="-44" y="23" width="1484" height="820" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7177419" visible="true" weight="0.17059639" />
-      <window_info id="Structure" order="1" sideWeight="0.28225806" side_tool="true" visible="true" weight="0.17059639" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7169811" visible="true" weight="0.17059639" />
+      <window_info id="Structure" order="1" sideWeight="0.28301886" side_tool="true" visible="true" weight="0.17059639" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.87656033" visible="true" weight="0.31868133" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.87656033" visible="true" weight="0.3447802" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -819,7 +786,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12343967" side_tool="true" visible="true" weight="0.31868133" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12343967" side_tool="true" visible="true" weight="0.3447802" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -896,8 +863,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixes in slices for 1 objct pr slice" />
-    <MESSAGE value="microoptimization in slices sized 1" />
     <MESSAGE value="microoptimization in slices sized &gt; 1" />
     <MESSAGE value="changed slice size to 20" />
     <MESSAGE value="changed slice size to 50" />
@@ -921,7 +886,9 @@
     <MESSAGE value="fixed buf on cache slicing" />
     <MESSAGE value="fixed minor bug on deltas gb calculation merge with existing gb" />
     <MESSAGE value="add: validations for config file in server start" />
-    <option name="LAST_COMMIT_MESSAGE" value="add: validations for config file in server start" />
+    <MESSAGE value="- some minor bug fixes regarding discrepancies in fields names&#10;- added fifo eviction policy &#10;- deleted some unnedede contracts and templates" />
+    <MESSAGE value="fixed issue in unique fact insertion" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed issue in unique fact insertion" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.css">
@@ -1104,13 +1071,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/transformations.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1065">
@@ -1139,27 +1099,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/form.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="553">
-          <caret line="327" column="30" selection-start-line="327" selection-start-column="30" selection-end-line="327" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contractGenerator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="244" column="35" lean-forward="true" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/SalesMin.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="128" column="44" lean-forward="true" selection-start-line="128" selection-start-column="44" selection-end-line="128" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
@@ -1167,10 +1106,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/contractGenerator.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3620">
+          <caret line="244" column="35" lean-forward="true" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contracts/SalesMin.sol">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="48" column="39" lean-forward="true" selection-start-line="48" selection-start-column="39" selection-end-line="48" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/form.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="416" column="28" lean-forward="true" selection-start-line="416" selection-start-column="28" selection-end-line="416" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="1136" column="105" selection-start-line="1136" selection-start-column="105" selection-end-line="1136" selection-end-column="105" />
+        <state relative-caret-position="172">
+          <caret line="428" column="37" selection-start-line="428" selection-start-column="37" selection-end-line="428" selection-end-column="37" />
         </state>
       </provider>
     </entry>
