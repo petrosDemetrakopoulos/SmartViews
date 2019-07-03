@@ -91,6 +91,13 @@ function removeDuplicates (arr) {
     });
 }
 
+function removeTimestamps(records) {
+    for (let i = 0; i < records.length; i++) {
+        delete records[i].timestamp;
+    }
+    return records;
+}
+
 function configFileValidations() {
     let missingFields = [];
     if(!config.hasOwnProperty("recordsSlice")){
@@ -154,5 +161,6 @@ module.exports = {
     averageObjects: averageObjects,
     flatten: flatten,
     removeDuplicates: removeDuplicates,
-    configFileValidations: configFileValidations
+    configFileValidations: configFileValidations,
+    removeTimestamps: removeTimestamps
 };
