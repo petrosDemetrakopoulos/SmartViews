@@ -29,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/form.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="107">
-              <caret line="414" column="40" selection-start-line="414" selection-start-column="40" selection-end-line="414" selection-end-column="40" />
+            <state relative-caret-position="149">
+              <caret line="335" column="17" selection-start-line="335" selection-start-column="12" selection-end-line="335" selection-end-column="17" />
               <folding>
                 <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
@@ -99,7 +99,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>saveOn</find>
       <find>save</find>
       <find>keys to rem</find>
       <find>genera</find>
@@ -129,6 +128,7 @@
       <find>**</find>
       <find>saveO</find>
       <find>view</find>
+      <find>conso</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -426,14 +426,7 @@
       <workItem from="1562145438503" duration="10961000" />
       <workItem from="1562161575883" duration="921000" />
       <workItem from="1562162727109" duration="1997000" />
-      <workItem from="1562178742522" duration="7437000" />
-    </task>
-    <task id="LOCAL-00047" summary="added times separately">
-      <created>1552648281178</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1552648281178</updated>
+      <workItem from="1562178742522" duration="7605000" />
     </task>
     <task id="LOCAL-00048" summary="added times separately">
       <created>1552990566534</created>
@@ -771,14 +764,21 @@
       <option name="project" value="LOCAL" />
       <updated>1562163158142</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="presentation in front end as a table">
+      <created>1562187110910</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1562187110912</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="447036000" />
+    <option name="totallyTimeSpent" value="447204000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="217" y="322" width="1484" height="820" extended-state="0" />
+    <frame x="-63" y="23" width="1484" height="820" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.71128106" visible="true" weight="0.17683773" />
@@ -874,7 +874,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="changed slice size to 1000" />
     <MESSAGE value="changed slice size to 10" />
     <MESSAGE value="fixes and new feature regarding declarations of views in blockchain" />
     <MESSAGE value="contract generation moved in separate file" />
@@ -899,7 +898,8 @@
     <MESSAGE value="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)" />
     <MESSAGE value="code cleanup" />
     <MESSAGE value="fixed minor formating issue in view output" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed minor formating issue in view output" />
+    <MESSAGE value="presentation in front end as a table" />
+    <option name="LAST_COMMIT_MESSAGE" value="presentation in front end as a table" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.css">
@@ -1135,8 +1135,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/form.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="414" column="40" selection-start-line="414" selection-start-column="40" selection-end-line="414" selection-end-column="40" />
+        <state relative-caret-position="149">
+          <caret line="335" column="17" selection-start-line="335" selection-start-column="12" selection-end-line="335" selection-end-column="17" />
           <folding>
             <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
