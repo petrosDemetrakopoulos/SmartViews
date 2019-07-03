@@ -42,7 +42,7 @@ contract SalesMin {
 
 	struct gbView{ 
   		string viewDef;
-}
+	}
 	mapping(uint => gbView) public gbViews;
 
 	function addFact(string payload) public returns (string , uint ID){
@@ -57,37 +57,37 @@ contract SalesMin {
 	}
 
 	function addView(string definition) public returns(string viewAdded, uint viewID) { 
-    		gbViews[viewId].viewDef = definition;
-    		viewId += 1;
-    		return (gbViews[viewId-1].viewDef, viewId-1);
-    	}
+		gbViews[viewId].viewDef = definition;
+		viewId += 1;
+		return (gbViews[viewId-1].viewDef, viewId-1);
+	}
 
 	function addGroupBy(string hash, bytes32 category, uint latestFact, uint colSize, string columns) public returns(string groupAdded, uint groupID){
-    		groupBys[groupId].hash = hash;
-    		groupBys[groupId].timestamp = now;
-    		groupBys[groupId].latestFact = latestFact;
-    		groupBys[groupId].colSize = colSize;
-    		groupBys[groupId].columns = columns;
-			if(category == COUNT_LITERAL){
-				lastCount  = groupID;
-			} else if(category == SUM_LITERAL){
-				lastSUM = groupID;
-			} else if(category == MIN_LITERAL){
-				lastMin = groupID;
-			} else if(category == MAX_LITERAL){
-				lastMax = groupID;
-			} else if(category == AVERAGE_LITERAL){
-				lastAverage = groupID;
-			}
-    		groupId += 1;
-    		return (groupBys[groupId-1].hash, groupId-1);
-    	}
+		groupBys[groupId].hash = hash;
+		groupBys[groupId].timestamp = now;
+		groupBys[groupId].latestFact = latestFact;
+		groupBys[groupId].colSize = colSize;
+		groupBys[groupId].columns = columns;
+		if(category == COUNT_LITERAL){
+			lastCount  = groupID;
+		} else if(category == SUM_LITERAL){
+			lastSUM = groupID;
+		} else if(category == MIN_LITERAL){
+			lastMin = groupID;
+		} else if(category == MAX_LITERAL){
+			lastMax = groupID;
+		} else if(category == AVERAGE_LITERAL){
+			lastAverage = groupID;
+		}
+		groupId += 1;
+		return (groupBys[groupId-1].hash, groupId-1);
+	}
 
 	function getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp, uint latFact, string cols){
-    		return(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns);
-    	}
+		return(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns);
+	}
 
-function getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb, uint colSz, string gbCols){
+	function getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb, uint colSz, string gbCols){
 		if(groupId > 0){
 			if(operation == COUNT_LITERAL){
 				if(lastCount >= 0){
@@ -111,7 +111,7 @@ function getLatestGroupBy(bytes32 operation) public constant returns(string late
 				}
 			}
 		}
-			return ("",0,0,0,"");
+		return ("",0,0,0,"");
 	}
 
 	function getAllViews(uint viewID) public returns (string[] viewDefinitions){
@@ -152,7 +152,7 @@ function getLatestGroupBy(bytes32 operation) public constant returns(string late
 	function getFactsFromTo(uint from, uint to) public returns (string[] payloadsFromTo, uint[] timestampsFromTo){
 		string[] memory payloadss = new string[](to - from);
 		uint[] memory timestampss = new uint[](to - from);
-			uint j = 0;
+		uint j = 0;
 		for(uint i = from; i < to; i++){
 			Salemin storage fact = facts[j];
 			payloadss[j] = fact.payload;
@@ -161,7 +161,7 @@ function getLatestGroupBy(bytes32 operation) public constant returns(string late
 		}
 		return (payloadss,timestampss);
 	}
-function addFacts(string[] payloadsss) public returns (string, uint IDMany){
+	function addFacts(string[] payloadsss) public returns (string, uint IDMany){
 		for(uint i =0; i < payloadsss.length; i++){
 			facts[dataId].payload= payloadsss[i];
 			facts[dataId].timestamp = now;
@@ -169,4 +169,12 @@ function addFacts(string[] payloadsss) public returns (string, uint IDMany){
 		}
 		return (facts[dataId-1].payload,dataId -1);
 	}
+	function deleteGBsById(uint[] gbIds) public returns (uint){
+		for(uint i=0; i < gbIds.length; i++){
+			uint crnDelId = gbIds[i];
+			delete groupBys[crnDelId];
+		}
+		return (gbIds[gbIds.length - 1]);
+	}
+
 }

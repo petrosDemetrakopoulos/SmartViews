@@ -904,7 +904,8 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                     latestFact: resultGB.latFacts[j],
                                     columnSize: resultGB.columnSize[j],
                                     columns: resultGB.columns[j],
-                                    gbTimestamp: resultGB.gbTimestamp[j]
+                                    gbTimestamp: resultGB.gbTimestamp[j],
+                                    id: j
                                 };
                             }
 
@@ -1106,15 +1107,47 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         } else {
                                                                             groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, gbFields);
                                                                         }
+                                                                        groupBySqlResult.operation = view.operation;
+                                                                        groupBySqlResult.field = view.aggregationField;
                                                                         return saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                                             console.log('error:', err);
                                                                             res.send(err);
                                                                         }).on('transactionHash', (err) => {
                                                                             console.log('transactionHash:', err);
                                                                         }).on('receipt', (receipt) => {
-                                                                            console.log('receipt:', receipt);
-                                                                            io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\",""));
-                                                                            return res.send(JSON.stringify(groupBySqlResult).replace("\\",""));
+                                                                            if(sortedByTS.length >= config.maxCacheSize){
+                                                                                let keysToDelete = [];
+                                                                                let gbIdsToDelete = [];
+                                                                                if(config.cacheEvictionPolicy === "FIFO"){
+                                                                                    for(let i = 0; i < config.maxCacheSize; i++){
+                                                                                        keysToDelete.push(sortedByTS[i].hash);
+                                                                                        let crnHash = sortedByTS[i].hash;
+                                                                                        let cachedGBSplited = crnHash.split("_");
+                                                                                        let cachedGBLength = parseInt(cachedGBSplited[1]);
+                                                                                        if(cachedGBLength > 0){  //reconstructing all the hashes in cache if it is sliced
+                                                                                            for(let j = 0; j < cachedGBLength; j++){
+                                                                                                keysToDelete.push(cachedGBSplited[0] + "_"+j);
+                                                                                            }
+                                                                                        }
+                                                                                        gbIdsToDelete[i] = sortedByTS[i].id;
+                                                                                    }
+                                                                                    console.log("keys to remove from cache are:");
+                                                                                    console.log(keysToDelete);
+                                                                                }
+                                                                                client.del(keysToDelete);
+                                                                                contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                    if (!err) {
+                                                                                        console.log('receipt:', receipt);
+                                                                                        io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\",""));
+                                                                                        return res.send(JSON.stringify(groupBySqlResult).replace("\\",""));
+                                                                                    }
+                                                                                    return res.send(err);
+                                                                                });
+                                                                            } else {
+                                                                                console.log('receipt:', receipt);
+                                                                                io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
+                                                                                return res.send(JSON.stringify(groupBySqlResult).replace("\\", ""));
+                                                                            }
                                                                         });
                                                                     });
                                                                 });
@@ -1129,6 +1162,8 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                             }
                                                             console.log("CALCULATING NEW GB FROM BEGGINING");
                                                             calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+                                                                groupBySqlResult.gbCreateTable = view.SQLTable;
+                                                                groupBySqlResult.field = view.aggregationField;
                                                                 saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                                     console.log('error:', err);
                                                                     res.send(err);
@@ -1160,6 +1195,8 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                             }
                                                             console.log("CALCULATING NEW GB FROM BEGGINING");
                                                             calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
+                                                                groupBySqlResult.gbCreateTable = view.SQLTable;
+                                                                groupBySqlResult.field = view.aggregationField;
                                                                 saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                                     console.log('error:', err);
                                                                     res.send(err);
@@ -1244,6 +1281,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             } else {
                                                                                 groupBySqlResultReduced = transformations.transformGBFromSQL(reducedResult, op, lastCol, gbFields);
                                                                             }
+                                                                            return res.send(groupBySqlResultReduced);
                                                                         });
                                                                     } else {
                                                                         //group by fields of deltas and cached are the same so
@@ -1294,6 +1332,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             //SAVE ON CACHE BEFORE RETURN
                                                                             mergeResult.operation = view.operation;
                                                                             mergeResult.field = view.aggregationField;
+                                                                            mergeResult.gbCreateTable = view.SQLTable;
                                                                             saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
                                                                                 console.log('error:', err);
                                                                                 res.send(err);
@@ -1332,7 +1371,8 @@ app.get('/getViewByName/:viewName', function (req,res) {
                             let facts = removeTimestamps(retval);
                             console.log("CALCULATING NEW GB FROM BEGGINING");
                             calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult) {
-
+                                groupBySqlResult.gbCreateTable = view.SQLTable;
+                                groupBySqlResult.field = view.aggregationField;
                                 saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                     console.log('error:', err);
                                     res.send(err);

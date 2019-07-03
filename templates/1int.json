@@ -1,7 +1,0 @@
-{
-  "name": "int1",
-  "struct_Name": "int_1",
-  "properties":[
-    {"key": "key_1", "data_type": "uint"}
-  ]
-}

@@ -1,7 +1,0 @@
-{
-  "name": "_bytes1",
-  "struct_Name": "bytes_1",
-  "properties":[
-    {"key": "key_1", "data_type": "bytes32"}
-  ]
-}

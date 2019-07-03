@@ -1,7 +1,0 @@
-{
-  "name": "string1",
-  "struct_Name": "string_1",
-  "properties":[
-    {"key": "key_1", "data_type": "string"}
-  ]
-}

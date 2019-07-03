@@ -38,7 +38,7 @@ async function generateContract(templateFileName) {
     }
     let groupStruct = "\tstruct groupBy{ \n  \t\tstring hash;\n" + '  \t\tuint latestFact;\n' + '  \t\tuint colSize;\n' +
         '  \t\tstring columns;\n' + "        uint timestamp;\n\t}\n";
-    let gbView = "\tstruct gbView{ \n  \t\tstring viewDef;\n}\n"; // viewDef is a strigifiedJSON defining a view
+    let gbView = "\tstruct gbView{ \n  \t\tstring viewDef;\n\t}\n"; // viewDef is a strigifiedJSON defining a view
     let viewMapping = "\tmapping(uint => gbView) public gbViews;\n\n";
     let groupMapping = "\tmapping(uint => groupBy) public groupBys;\n\n";
     properties += "\t\tuint timestamp;\n";
@@ -95,37 +95,37 @@ async function generateContract(templateFileName) {
     let retFact = "\t\treturn (" + retVals;
 
     let addView = "\tfunction addView(string definition) public returns(string viewAdded, uint viewID) { \n" +
-        "    \t\tgbViews[viewId].viewDef = definition;\n" +
-        "    \t\tviewId += 1;\n" +
-        "    \t\treturn (gbViews[viewId-1].viewDef, viewId-1);\n" +
-        "    \t}\n\n";
+        "\t\tgbViews[viewId].viewDef = definition;\n" +
+        "\t\tviewId += 1;\n" +
+        "\t\treturn (gbViews[viewId-1].viewDef, viewId-1);\n" +
+        "\t}\n\n";
 
     let addGroupBy = "\tfunction addGroupBy(string hash, bytes32 category, uint latestFact, uint colSize, string columns) public returns(string groupAdded, uint groupID){\n" +
-        "    \t\tgroupBys[groupId].hash = hash;\n" +
-        "    \t\tgroupBys[groupId].timestamp = now;\n" +
-        "    \t\tgroupBys[groupId].latestFact = latestFact;\n" +
-        "    \t\tgroupBys[groupId].colSize = colSize;\n" +
-        "    \t\tgroupBys[groupId].columns = columns;\n" +
-        "\t\t\tif(category == COUNT_LITERAL){\n" +
-        "\t\t\t\tlastCount  = groupID;\n" +
-        "\t\t\t} else if(category == SUM_LITERAL){\n" +
-        "\t\t\t\tlastSUM = groupID;\n" +
-        "\t\t\t} else if(category == MIN_LITERAL){\n" +
-        "\t\t\t\tlastMin = groupID;\n" +
-        "\t\t\t} else if(category == MAX_LITERAL){\n" +
-        "\t\t\t\tlastMax = groupID;\n" +
-        "\t\t\t} else if(category == AVERAGE_LITERAL){\n" +
-        "\t\t\t\tlastAverage = groupID;\n" +
-        "\t\t\t}\n" +
-        "    \t\tgroupId += 1;\n" +
-        "    \t\treturn (groupBys[groupId-1].hash, groupId-1);\n" +
-        "    \t}\n\n";
+        "\t\tgroupBys[groupId].hash = hash;\n" +
+        "\t\tgroupBys[groupId].timestamp = now;\n" +
+        "\t\tgroupBys[groupId].latestFact = latestFact;\n" +
+        "\t\tgroupBys[groupId].colSize = colSize;\n" +
+        "\t\tgroupBys[groupId].columns = columns;\n" +
+        "\t\tif(category == COUNT_LITERAL){\n" +
+        "\t\t\tlastCount  = groupID;\n" +
+        "\t\t} else if(category == SUM_LITERAL){\n" +
+        "\t\t\tlastSUM = groupID;\n" +
+        "\t\t} else if(category == MIN_LITERAL){\n" +
+        "\t\t\tlastMin = groupID;\n" +
+        "\t\t} else if(category == MAX_LITERAL){\n" +
+        "\t\t\tlastMax = groupID;\n" +
+        "\t\t} else if(category == AVERAGE_LITERAL){\n" +
+        "\t\t\tlastAverage = groupID;\n" +
+        "\t\t}\n" +
+        "\t\tgroupId += 1;\n" +
+        "\t\treturn (groupBys[groupId-1].hash, groupId-1);\n" +
+        "\t}\n\n";
 
     let getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp, uint latFact, string cols){\n" +
-        "    \t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns);\n" +
-        "    \t}\n\n";
+        "\t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns);\n" +
+        "\t}\n\n";
 
-    let getLatestGroupBy = "function getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb, uint colSz, string gbCols){\n" +
+    let getLatestGroupBy = "\tfunction getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb, uint colSz, string gbCols){\n" +
         "\t\tif(groupId > 0){\n" +
         "\t\t\tif(operation == COUNT_LITERAL){\n" +
         "\t\t\t\tif(lastCount >= 0){\n" +
@@ -149,7 +149,7 @@ async function generateContract(templateFileName) {
         "\t\t\t\t}\n" +
         "\t\t\t}\n" +
         "\t\t}\n" +
-        "\t\t\treturn (\"\",0,0,0,\"\");\n" +
+        "\t\treturn (\"\",0,0,0,\"\");\n" +
         "\t}\n\n";
 
     let retValsLatest = '';
@@ -253,7 +253,7 @@ async function generateContract(templateFileName) {
     let retValsFromTo = '';
     let assignementsFromTo = '';
     let retStmtFromTo = '';
-    let arrCounter = "\t\t\tuint j = 0;\n";
+    let arrCounter = "\t\tuint j = 0;\n";
     let counterIncr = "\t\t\tj++;\n";
 
     for (let i = 0; i < fact_tbl.properties.length; i++) {
@@ -287,19 +287,30 @@ async function generateContract(templateFileName) {
     loopLineFromTo += firstLoopLineFromTo + assignementsFromTo + getRetFromTo + '\t}\n';
 
     getFactFromTo = getFactFromTo + getParamsFromTo + retValsFromTo + arrCounter + loopLineFromTo;
-    let addManyFacts = "function addFacts(string[] payloadsss) public returns (string, uint IDMany){\n" +
+    let addManyFacts = "\tfunction addFacts(string[] payloadsss) public returns (string, uint IDMany){\n" +
         "\t\tfor(uint i =0; i < payloadsss.length; i++){\n" +
         "\t\t\tfacts[dataId].payload= payloadsss[i];\n" +
         "\t\t\tfacts[dataId].timestamp = now;\n" +
         "\t\t\tdataId += 1;\n" +
         "\t\t}\n" +
         "\t\treturn (facts[dataId-1].payload,dataId -1);\n" +
-        "\t}";
+        "\t}\n";
+
+    let deleteGBById = "\tfunction deleteGBsById(uint[] gbIds) public returns (uint){\n";
+    deleteGBById += "\t\tfor(uint i=0; i < gbIds.length; i++){\n";
+    deleteGBById += "\t\t\tuint crnDelId = gbIds[i];\n";
+    deleteGBById += "\t\t\tdelete groupBys[crnDelId];\n";
+    deleteGBById += "\t\t}\n";
+    deleteGBById += "\t\treturn (gbIds[gbIds.length - 1]);\n";
+    deleteGBById += "\t}\n";
+
+
+
     contrPayload = firstLine + secondLine + thirdLine + fourthLine + sixthLine + fifthLine +
         constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + gbView +
         viewMapping + addFact + setters + retStmt + getFact + getParams + retFact + addView + addGroupBy +
         getGroupBy + getLatestGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +
-        getGBsLoop + getAllFacts + getFactFromTo + addManyFacts +  '\n}';
+        getGBsLoop + getAllFacts + getFactFromTo + addManyFacts + deleteGBById + '\n}';
     return new Promise( function(resolve , reject ) {
         fs.writeFile('contracts/' + fact_tbl.name + '.sol', contrPayload, function (err) {
             if (err) {
