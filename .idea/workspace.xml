@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -40,7 +37,7 @@
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="175">
-              <caret line="1014" column="77" selection-start-line="1014" selection-start-column="71" selection-end-line="1014" selection-end-column="77" />
+              <caret line="214" column="21" selection-start-line="214" selection-start-column="15" selection-end-line="214" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -92,12 +89,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>mergeG</find>
-      <find>8=====D</find>
-      <find>merge</find>
-      <find>b</find>
-      <find>TS</find>
-      <find>start</find>
       <find>app</find>
       <find>config</find>
       <find>conf</find>
@@ -118,10 +109,16 @@
       <find>^^</find>
       <find>DataHandler</find>
       <find>allFacts</find>
-      <find>calculateNew</find>
       <find>calculateNewGroupBy</find>
       <find>removeTim</find>
       <find>throw</find>
+      <find>mergeGr</find>
+      <find>calculateRed</find>
+      <find>calculateNew</find>
+      <find>addManyFacts</find>
+      <find>addManyFactsNew</find>
+      <find>Heavy</find>
+      <find>addMan</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -192,7 +189,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="54" />
+    <option name="x" value="-24" />
     <option name="y" value="23" />
     <option name="width" value="1484" />
     <option name="height" value="820" />
@@ -417,14 +414,7 @@
       <workItem from="1561640682245" duration="1252000" />
       <workItem from="1562145150210" duration="60000" />
       <workItem from="1562145438503" duration="10961000" />
-      <workItem from="1562161575883" duration="373000" />
-    </task>
-    <task id="LOCAL-00043" summary="lintering fixes">
-      <created>1550947453319</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1550947453319</updated>
+      <workItem from="1562161575883" duration="697000" />
     </task>
     <task id="LOCAL-00044" summary="organized the things a bit">
       <created>1550948018080</created>
@@ -762,14 +752,21 @@
       <option name="project" value="LOCAL" />
       <updated>1562160358992</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;">
+      <created>1562162154798</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1562162154804</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="437054000" />
+    <option name="totallyTimeSpent" value="437378000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="54" y="23" width="1484" height="820" extended-state="0" />
+    <frame x="-24" y="23" width="1484" height="820" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7154742" visible="true" weight="0.17267683" />
@@ -865,7 +862,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="changed slice size to 50" />
     <MESSAGE value="changed slice size to 100" />
     <MESSAGE value="changed slice size to 200" />
     <MESSAGE value="changed slice size to 500" />
@@ -890,7 +886,8 @@
     <MESSAGE value="fixed issue in unique fact insertion" />
     <MESSAGE value="fixed some API related issues" />
     <MESSAGE value="removed old and obsolete group by logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed old and obsolete group by logic" />
+    <MESSAGE value="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.css">
@@ -1127,7 +1124,7 @@
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
-          <caret line="1014" column="77" selection-start-line="1014" selection-start-column="71" selection-end-line="1014" selection-end-column="77" />
+          <caret line="214" column="21" selection-start-line="214" selection-start-column="15" selection-end-line="214" selection-end-column="21" />
         </state>
       </provider>
     </entry>

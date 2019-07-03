@@ -541,15 +541,11 @@ function calculateNewGroupBy(facts, operation, gbFields, aggregationField, callb
             console.log(err);
             callback(null, err);
         }
-        console.log("DROP RES: = ");
-        console.log(resultDrop);
         connection.query(createTable, function (error, results, fields) { //creating the SQL table for "Fact Table"
             if (error) {
                 console.log(error);
                 callback(null, error);
             }
-            console.log("FACTS TO ADD");
-            console.log(facts);
             if(facts.length === 0){
                 callback(null, {error: "No facts"});
             }
