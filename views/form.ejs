@@ -405,14 +405,13 @@
 
 let crnContractDeployed = <%-JSON.stringify(template)%>;
     $( "#addFact" ).click(function() {
-        let fields = [];
-        let values = [];
+        let factPayload = {};
+        console.log(crnContractDeployed);
         for(var i = 0; i < crnContractDeployed.properties.length; i++){
             let crnKey = crnContractDeployed.properties[i];
-            fields.push(crnKey);
-            values.push({key:crnKey.key, value: $("#" + crnKey.key).val(), type: crnKey.data_type});
+            factPayload[crnKey['key']] =  $("#" + crnKey.key).val();
         }
-        addFact(values);
+        addFact(factPayload);
     });
 
     function getAllFacts() {
@@ -448,7 +447,7 @@ function getFactById(id) {
     xhttp.send();
 }
 
-    function addFact(values) {
+    function addFact(factPayload) {
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/addFact", true);
         xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -457,7 +456,8 @@ function getFactById(id) {
                 $("#output").val(this.responseText);
             }
         };
-        xhttp.send(JSON.stringify({values: values}));
+        console.log(factPayload);
+        xhttp.send(JSON.stringify(factPayload));
     }
 </script>
 

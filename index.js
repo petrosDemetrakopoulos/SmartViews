@@ -356,6 +356,7 @@ async function getAllFactsHeavy(factsLength) {
                 delete result[j];
             }
             if ('payloads' in result) {
+                console.log(result['payloads']);
                 for (let i = 0; i < result['payloads'].length; i++) {
                     let crnLn = JSON.parse(result['payloads'][i]);
                     crnLn.timestamp =  result['timestamps'][i];
@@ -1805,47 +1806,7 @@ app.get('/getcount', function (req, res) {
 
 app.post('/addFact', function (req, res) {
     if (contract) {
-        console.log(req.body);
-        let vals = req.body.values;
-        for (let i = 0; i < req.body.values.length; i++) {
-            let crnVal = req.body.values[i];
-            if (crnVal.type === 'bytes32') {
-                req.body.values[i].value = web3.utils.fromAscii(req.body.values[i].value);
-            }
-        }
-        let valsLength = vals.length;
-        let addFactPromise;
-        if (valsLength === 1) {
-            addFactPromise = contract.methods.addFact(vals[0].value);
-        } else if (valsLength === 2) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value);
-        } else if (valsLength === 3) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value);
-        } else if (valsLength === 4) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value);
-        } else if (valsLength === 5) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value);
-        } else if (valsLength === 6) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value);
-        } else if (valsLength === 7) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value);
-        } else if (valsLength === 8) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value);
-        } else if (valsLength === 9) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value);
-        } else if (valsLength === 10) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value, vals[9].value);
-        } else if (valsLength === 52) {
-            addFactPromise = contract.methods.addFact(vals[0].value, vals[1].value, vals[2].value, vals[3].value, vals[4].value, vals[5].value, vals[6].value, vals[7].value, vals[8].value, vals[9].value,
-                vals[10].value, vals[11].value, vals[12].value, vals[13].value, vals[14].value, vals[15].value, vals[16].value, vals[17].value, vals[18].value, vals[19].value,
-                vals[20].value, vals[21].value, vals[22].value, vals[23].value, vals[24].value, vals[25].value, vals[26].value, vals[27].value, vals[28].value, vals[29].value,
-                vals[30].value, vals[31].value, vals[32].value, vals[33].value, vals[34].value, vals[35].value, vals[36].value, vals[37].value, vals[38].value, vals[39].value,
-                vals[40].value, vals[41].value, vals[42].value, vals[43].value, vals[44].value, vals[45].value, vals[46].value, vals[47].value, vals[48].value, vals[49].value,
-                vals[50].value, vals[51].value);
-        } else {
-            res.status(400);
-            res.send({ status: 'ERROR', options: 'Contract not supporting more than 10 fields' });
-        }
+        let addFactPromise = contract.methods.addFact(web3.utils.fromAscii(JSON.stringify(req.body)));
         addFactPromise.send(mainTransactionObject, (err, txHash) => {
             console.log('send:', err, txHash);
         }).on('error', (err) => {
