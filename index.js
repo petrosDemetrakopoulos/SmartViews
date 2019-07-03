@@ -1145,6 +1145,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                 }).on('transactionHash', (err) => {
                                                                     console.log('transactionHash:', err);
                                                                 }).on('receipt', (receipt) => {
+                                                                    delete groupBySqlResult.gbCreateTable;
                                                                     console.log('receipt:', receipt);
                                                                     io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                     return res.send(JSON.stringify(groupBySqlResult));
@@ -1181,6 +1182,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                 }).on('transactionHash', (err) => {
                                                                     console.log('transactionHash:', err);
                                                                 }).on('receipt', (receipt) => {
+                                                                    delete groupBySqlResult.gbCreateTable;
                                                                     console.log('receipt:', receipt);
                                                                     io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                     return res.send(JSON.stringify(groupBySqlResult));
@@ -1255,6 +1257,15 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                     if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
                                                                         calculateReducedGroupBy(cachedGroupBy, view, gbFields, function (reducedResult, error) {
                                                                             //MERGE reducedResult with groupBySQLResult
+                                                                            let op = "";
+                                                                            if (view.operation === "SUM" || view.operation === "COUNT") {
+                                                                                op = "SUM"; //operation is set to "SUM" both for COUNT and SUM operation
+                                                                            } else if (view.operation === "MIN") {
+                                                                                op = "MIN"
+                                                                            } else if (view.operation === "MAX") {
+                                                                                op = "MAX";
+                                                                            }
+
                                                                             if(error){
                                                                                 return res.send(error);
                                                                             }
@@ -1262,7 +1273,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             if (view.operation === "AVERAGE") {
                                                                                 groupBySqlResultReduced = transformations.transformReadyAverage(reducedResult, view.gbFields, view.aggregationField);
                                                                             } else {
-                                                                                groupBySqlResultReduced = transformations.transformGBFromSQL(reducedResult, op, lastCol, gbFields);
+                                                                                groupBySqlResultReduced = transformations.transformGBFromSQL(reducedResult, op, lastCol, gbFields); // BUG THERE. FIX IT!
                                                                             }
                                                                             return res.send(groupBySqlResultReduced);
                                                                         });
@@ -1325,6 +1336,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             }).on('transactionHash', (err) => {
                                                                                 console.log('transactionHash:', err);
                                                                             }).on('receipt', (receipt) => {
+                                                                                delete groupBySqlResult.gbCreateTable;
                                                                                 console.log('receipt:', receipt);
                                                                                 io.emit('view_results', mergeResult);
                                                                                 return res.send(mergeResult);
@@ -1369,9 +1381,13 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 }).on('transactionHash', (err) => {
                                     console.log('transactionHash:', err);
                                 }).on('receipt', (receipt) => {
+                                    delete groupBySqlResult.gbCreateTable;
+                                    console.log("@@@@@@@");
+                                    console.log(groupBySqlResult);
                                     console.log('receipt:', receipt);
                                     io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                    return res.send(JSON.stringify(groupBySqlResult));
+                                    return res.send(groupBySqlResult);
+                                        //.replace(/"/g, "'"));
                                 });
                             });
                         });

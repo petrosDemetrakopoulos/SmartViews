@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -19,7 +20,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3525">
+            <state relative-caret-position="459">
               <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
             </state>
           </provider>
@@ -28,8 +29,16 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/form.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="378" column="70" selection-start-line="378" selection-start-column="70" selection-end-line="378" selection-end-column="70" />
+            <state relative-caret-position="107">
+              <caret line="414" column="40" selection-start-line="414" selection-start-column="40" selection-end-line="414" selection-end-column="40" />
+              <folding>
+                <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -37,8 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8220">
-              <caret line="548" column="35" selection-start-line="548" selection-start-column="35" selection-end-line="548" selection-end-column="35" />
+            <state relative-caret-position="282">
+              <caret line="1388" column="68" selection-start-line="1388" selection-start-column="68" selection-end-line="1388" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -90,11 +99,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>config</find>
-      <find>conf</find>
-      <find>saveO</find>
-      <find>sorted</find>
-      <find>sortedBy</find>
       <find>saveOn</find>
       <find>save</find>
       <find>keys to rem</find>
@@ -120,6 +124,11 @@
       <find>Heavy</find>
       <find>addMan</find>
       <find>FACTS T</find>
+      <find>gbCre</find>
+      <find>lastCo</find>
+      <find>**</find>
+      <find>saveO</find>
+      <find>view</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -190,7 +199,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-28" />
+    <option name="x" value="-63" />
     <option name="y" value="23" />
     <option name="width" value="1484" />
     <option name="height" value="820" />
@@ -416,14 +425,8 @@
       <workItem from="1562145150210" duration="60000" />
       <workItem from="1562145438503" duration="10961000" />
       <workItem from="1562161575883" duration="921000" />
-      <workItem from="1562162727109" duration="357000" />
-    </task>
-    <task id="LOCAL-00046" summary="set environments">
-      <created>1551790561244</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1551790561244</updated>
+      <workItem from="1562162727109" duration="1997000" />
+      <workItem from="1562178742522" duration="7437000" />
     </task>
     <task id="LOCAL-00047" summary="added times separately">
       <created>1552648281178</created>
@@ -761,23 +764,30 @@
       <option name="project" value="LOCAL" />
       <updated>1562162483401</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="fixed minor formating issue in view output">
+      <created>1562163158141</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1562163158142</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="437959000" />
+    <option name="totallyTimeSpent" value="447036000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="74" y="23" width="1484" height="820" extended-state="0" />
+    <frame x="217" y="322" width="1484" height="820" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7117347" visible="true" weight="0.17475729" />
-      <window_info id="Structure" order="1" sideWeight="0.28826532" side_tool="true" visible="true" weight="0.17475729" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.71128106" visible="true" weight="0.17683773" />
+      <window_info id="Structure" order="1" sideWeight="0.28871894" side_tool="true" visible="true" weight="0.17683773" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8751734" visible="true" weight="0.46153846" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8744799" visible="true" weight="0.2815934" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -787,7 +797,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12482663" side_tool="true" visible="true" weight="0.46153846" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12552011" side_tool="true" visible="true" weight="0.2815934" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -864,7 +874,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="changed slice size to 500" />
     <MESSAGE value="changed slice size to 1000" />
     <MESSAGE value="changed slice size to 10" />
     <MESSAGE value="fixes and new feature regarding declarations of views in blockchain" />
@@ -889,7 +898,8 @@
     <MESSAGE value="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;" />
     <MESSAGE value="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)" />
     <MESSAGE value="code cleanup" />
-    <option name="LAST_COMMIT_MESSAGE" value="code cleanup" />
+    <MESSAGE value="fixed minor formating issue in view output" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed minor formating issue in view output" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.css">
@@ -977,17 +987,17 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gb.py">
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
+        </state>
+      </provider>
       <provider selected="true" editor-type-id="live-pycharm">
         <state>
           <first_editor relative-caret-position="120">
             <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
           </first_editor>
           <second_editor />
-        </state>
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -1081,20 +1091,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3525">
-          <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8220">
-          <caret line="548" column="35" selection-start-line="548" selection-start-column="35" selection-end-line="548" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/contracts/SalesMin.sol">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="720">
@@ -1123,10 +1119,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="1388" column="68" selection-start-line="1388" selection-start-column="68" selection-end-line="1388" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/views/form.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="378" column="70" selection-start-line="378" selection-start-column="70" selection-end-line="378" selection-end-column="70" />
+        <state relative-caret-position="107">
+          <caret line="414" column="40" selection-start-line="414" selection-start-column="40" selection-end-line="414" selection-end-column="40" />
+          <folding>
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

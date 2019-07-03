@@ -202,6 +202,11 @@
                                 <label>Execution Time: </label> <p id="executionTime"></p>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-6 tblResults">
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -264,7 +269,6 @@
 
     socket.on('DONE', function(msg){
         if(msg === "TRUE"){
-            console.log("GOT socket MESSAGE DONE!");
             xhttpDep.abort();
         } else {
             xhttpDep = new XMLHttpRequest();
@@ -291,7 +295,6 @@
     }, false)
 
     $(document).on('click', '#addFactFromFile', function(){
-        console.log("ADD FACT BUTTON PRESSED");
         addFactFromFile();
     });
 
@@ -315,7 +318,6 @@
     });
 
     function addFactFromFile() {
-        console.log("ADD FACT FROM FILE CALLED");
         xhttpDep.onreadystatechange = function () {
             if (this.readyState <= 3) {
                 $('#status').html("Importing data...");
@@ -353,7 +355,6 @@
 let crnContractDeployed = <%-JSON.stringify(template)%>;
     $( "#addFact" ).click(function() {
         let factPayload = {};
-        console.log(crnContractDeployed);
         for(var i = 0; i < crnContractDeployed.properties.length; i++){
             let crnKey = crnContractDeployed.properties[i];
             factPayload[crnKey['key']] =  $("#" + crnKey.key).val();
@@ -377,7 +378,50 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var editedResp = this.responseText.replace(/\\/g, '');
-                $("#outputView").val(editedResp);
+                $("#outputView").val(editedResp.replace('"{', "'{").replace('}"', "}'"));
+                let edited = editedResp.replace(/"{/g, "'{").replace(/}"/g, "}'");
+                let splited = edited.split("':")
+
+                for(let i = 0; i < splited.length; i ++){
+                    let secondSplit = []
+                    secondSplit = splited[i].split(",'");
+                    splited[i] = secondSplit;
+                }
+                let flattenedArray = [];
+                splited[splited.length - 1][0] = splited[splited.length - 1][0].split(",")[0];
+                for(let i = 0; i < splited.length; i++){
+                    let crnArr = splited[i];
+                    for(let j = 0; j < crnArr.length; j++){
+                        flattenedArray.push(crnArr[j])
+                    }
+                }
+                flattenedArray[0] = flattenedArray[0].replace("{'","");
+                let keys = Object.keys(JSON.parse(flattenedArray[0]));
+                for(let i = 0 ; i < flattenedArray.length; i+=2){
+                    flattenedArray[i] = JSON.parse(flattenedArray[i])
+                }
+
+                var table_body = '<table class="table table-bordered">';
+                table_body += "<tr>";
+                for(var j=0;j<keys.length ;j++){
+                    table_body += '<th style="text-weight: bold; text-align: center;">' + keys[j] + '</th>';
+                }
+                table_body += '<th>Value</th>';
+                table_body += '</tr>';
+                for(var i=0;i<flattenedArray.length;i+=2){
+                    table_body+='<tr>';
+                    for(var j=0;j<keys.length;j++){
+                        let crnKey = keys[j];
+                        table_body +='<td>';
+                        table_body +=flattenedArray[i][crnKey];
+                        table_body +='</td>';
+                    }
+                    table_body +='<td>' + flattenedArray[i+1] + '</td>';
+                    table_body+='</tr>';
+                }
+                table_body+='</table>';
+                $('.tblResults').html(table_body);
+
             }
         };
         xhttp.open("GET", "/getViewByName/" + viewName, true);
@@ -404,7 +448,6 @@ function getFactById(id) {
                 $("#output").val(this.responseText);
             }
         };
-        console.log(factPayload);
         xhttp.send(JSON.stringify(factPayload));
     }
 </script>
