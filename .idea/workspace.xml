@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -24,20 +25,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/form.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3180">
-              <caret line="212" column="8" selection-start-line="212" selection-start-column="8" selection-end-line="212" selection-end-column="8" />
+            <state relative-caret-position="281">
+              <caret line="378" column="70" selection-start-line="378" selection-start-column="70" selection-end-line="378" selection-end-column="70" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="214" column="21" selection-start-line="214" selection-start-column="15" selection-end-line="214" selection-end-column="21" />
+            <state relative-caret-position="8220">
+              <caret line="548" column="35" selection-start-line="548" selection-start-column="35" selection-end-line="548" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -63,7 +64,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helper.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
+            <state relative-caret-position="2460">
               <caret line="164" column="38" selection-start-line="164" selection-start-column="38" selection-end-line="164" selection-end-column="38" />
             </state>
           </provider>
@@ -89,7 +90,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>app</find>
       <find>config</find>
       <find>conf</find>
       <find>saveO</find>
@@ -119,6 +119,7 @@
       <find>addManyFactsNew</find>
       <find>Heavy</find>
       <find>addMan</find>
+      <find>FACTS T</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -182,14 +183,14 @@
         <option value="$PROJECT_DIR$/contracts/SalesMin.sol" />
         <option value="$PROJECT_DIR$/contractGenerator.js" />
         <option value="$PROJECT_DIR$/templates/new_sales_min.json" />
-        <option value="$PROJECT_DIR$/views/form.ejs" />
         <option value="$PROJECT_DIR$/helper.js" />
         <option value="$PROJECT_DIR$/index.js" />
+        <option value="$PROJECT_DIR$/views/form.ejs" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-24" />
+    <option name="x" value="-28" />
     <option name="y" value="23" />
     <option name="width" value="1484" />
     <option name="height" value="820" />
@@ -200,7 +201,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -231,6 +231,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -414,21 +415,8 @@
       <workItem from="1561640682245" duration="1252000" />
       <workItem from="1562145150210" duration="60000" />
       <workItem from="1562145438503" duration="10961000" />
-      <workItem from="1562161575883" duration="697000" />
-    </task>
-    <task id="LOCAL-00044" summary="organized the things a bit">
-      <created>1550948018080</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1550948018080</updated>
-    </task>
-    <task id="LOCAL-00045" summary="many many fixes and correct fetching only for deltas">
-      <created>1551352483778</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1551352483778</updated>
+      <workItem from="1562161575883" duration="921000" />
+      <workItem from="1562162727109" duration="357000" />
     </task>
     <task id="LOCAL-00046" summary="set environments">
       <created>1551790561244</created>
@@ -759,23 +747,37 @@
       <option name="project" value="LOCAL" />
       <updated>1562162154804</updated>
     </task>
-    <option name="localTasksCounter" value="93" />
+    <task id="LOCAL-00093" summary="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)">
+      <created>1562162321350</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1562162321350</updated>
+    </task>
+    <task id="LOCAL-00094" summary="code cleanup">
+      <created>1562162483401</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1562162483401</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="437378000" />
+    <option name="totallyTimeSpent" value="437959000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-24" y="23" width="1484" height="820" extended-state="0" />
+    <frame x="74" y="23" width="1484" height="820" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7154742" visible="true" weight="0.17267683" />
-      <window_info id="Structure" order="1" sideWeight="0.28452578" side_tool="true" visible="true" weight="0.17267683" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7117347" visible="true" weight="0.17475729" />
+      <window_info id="Structure" order="1" sideWeight="0.28826532" side_tool="true" visible="true" weight="0.17475729" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.87656033" weight="0.30082417" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8751734" visible="true" weight="0.46153846" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -785,7 +787,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77610874" weight="0.63760215" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12343967" side_tool="true" visible="true" weight="0.17445055" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12482663" side_tool="true" visible="true" weight="0.46153846" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -862,8 +864,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="changed slice size to 100" />
-    <MESSAGE value="changed slice size to 200" />
     <MESSAGE value="changed slice size to 500" />
     <MESSAGE value="changed slice size to 1000" />
     <MESSAGE value="changed slice size to 10" />
@@ -887,7 +887,9 @@
     <MESSAGE value="fixed some API related issues" />
     <MESSAGE value="removed old and obsolete group by logic" />
     <MESSAGE value="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;" />
+    <MESSAGE value="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)" />
+    <MESSAGE value="code cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="code cleanup" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/css/sb-admin-2.css">
@@ -1086,10 +1088,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/form.ejs">
+    <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3180">
-          <caret line="212" column="8" selection-start-line="212" selection-start-column="8" selection-end-line="212" selection-end-column="8" />
+        <state relative-caret-position="8220">
+          <caret line="548" column="35" selection-start-line="548" selection-start-column="35" selection-end-line="548" selection-end-column="35" />
         </state>
       </provider>
     </entry>
@@ -1107,6 +1109,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/helper.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2460">
+          <caret line="164" column="38" selection-start-line="164" selection-start-column="38" selection-end-line="164" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="825">
@@ -1114,17 +1123,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/helper.js">
+    <entry file="file://$PROJECT_DIR$/views/form.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="164" column="38" selection-start-line="164" selection-start-column="38" selection-end-line="164" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="214" column="21" selection-start-line="214" selection-start-column="15" selection-end-line="214" selection-end-column="21" />
+        <state relative-caret-position="281">
+          <caret line="378" column="70" selection-start-line="378" selection-start-column="70" selection-end-line="378" selection-end-column="70" />
         </state>
       </provider>
     </entry>

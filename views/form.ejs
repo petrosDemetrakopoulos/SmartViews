@@ -376,7 +376,8 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
-                $("#outputView").val(this.responseText);
+                var editedResp = this.responseText.replace(/\\/g, '');
+                $("#outputView").val(editedResp);
             }
         };
         xhttp.open("GET", "/getViewByName/" + viewName, true);
