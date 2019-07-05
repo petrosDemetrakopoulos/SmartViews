@@ -7,29 +7,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title><%= name %></title>
-
     <!-- Bootstrap Core CSS -->
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- MetisMenu CSS -->
     <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
-
     <!-- Custom Fonts -->
     <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://raw.githubusercontent.com/daneden/animate.css/master/animate.css" rel="stylesheet" type="text/css">
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
 </head>
-
 <body>
 
 <div id="wrapper">
@@ -45,7 +38,6 @@
             <a class="navbar-brand">Blockchain data warehouse</a>
         </div>
         <!-- /.navbar-header -->
-
         <ul class="nav navbar-top-links navbar-right">
             <!-- /.dropdown -->
             <li class="dropdown">
@@ -58,11 +50,11 @@
                             <div>
                                 <p>
                                     <strong id="taskName">Data input</strong>
-                                    <span class="pull-right text-muted" id="taskComp">40% Complete</span>
+                                    <span class="pull-right text-muted taskComp">40% Complete</span>
                                 </p>
                                 <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="pb">
-                                        <span class="sr-only" id="taskComp">40% Complete (success)</span>
+                                    <div class="progress-bar progress-bar-success pb" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="pb">
+                                        <span class="sr-only taskComp">40% Complete (success)</span>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +115,6 @@
                                     <button class="btn btn-default disabled">Reset</button>
                                     <%}%>
                                 <br>
-                                <br>
                                 <label>Add data from file</label>
                                 <input type="file" id="dataset">
                             </div>
@@ -131,6 +122,18 @@
                             <div class="col-lg-6">
                                 <label>Output</label>
                                 <textarea readonly id="output" class="form-control" rows="7"></textarea>
+                                <br>
+                                <div class="inputProgress" style="visibility: hidden">
+                                <div class="progress progress-striped active">
+                                    <div class="progress-bar progress-bar-success pb" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="pb">
+                                        <span class="sr-only taskComp"></span>
+                                    </div>
+                                </div>
+                                <p>
+                                    <strong id="taskName">Data input</strong>
+                                    <span class="pull-right text-muted taskComp"></span>
+                                </p>
+                                </div>
                             </div>
                             <!-- /.col-lg-6 (nested) -->
                         </div>
@@ -270,13 +273,15 @@
     var xhttpDep = new XMLHttpRequest();
     socket.on('progress', function(msg){
         $('#pbLi').css("display", "block");
-        $('#pb').attr('aria-valuenow', (msg*100).toFixed(1));
-        $('#pb').css('width', (msg*100).toFixed(1) + "%");
-        $('#taskComp').html((msg*100).toFixed(1) + "%");
+        $('.inputProgress').css("visibility", "");
+        $('.inputProgress').css("display", "block");
+        $('.pb').attr('aria-valuenow', (msg*100).toFixed(1));
+        $('.pb').css('width', (msg*100).toFixed(1) + "%");
+        $('.taskComp').html((msg*100).toFixed(1) + "%");
         let finished = false;
         if(msg*100 >= 99){
             if(!finished) {
-                $('#taskComp').html("Completed!");
+                $('.taskComp').html("Completed!");
                 $.notify({
                     // options
                     message: 'Data import completed!'
@@ -323,8 +328,6 @@
             fl = event.target.files[0];
             $("#addFactFromFile").removeClass("disabled");
         }
-        // event.target.files[0] is selected file
-        // you'll need to pass that to FileRader :)
     }, false)
 
     $(document).on('click', '#addFactFromFile', function(){
@@ -345,16 +348,18 @@
 
     function addFactFromFile() {
         xhttpDep.onreadystatechange = function () {
+            let $status =  $('#status');
+            $('.inputProgress').css('visibility','');
             if (this.readyState <= 3) {
-                $('#status').html("Importing data...");
+                $status.html("Importing data...");
             }
             if (this.readyState === 4 && this.status === 200) {
-                $('#status').html("Data imported: " + this.responseText);
-                $('#status').css({"color": 'green', "font-weight": "bold"});
+                $status.html("Data imported: " + this.responseText);
+                $status.css({"color": 'green', "font-weight": "bold"});
                 $("#prompt").remove();
             } else if (this.status === 400) {
-                $('#status').html("Error while importing data");
-                $('#status').css({"color": 'red'});
+                $status.html("Error while importing data");
+                $status.css({"color": 'red'});
             }
         };
 
@@ -480,16 +485,16 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                     flattenedArray[i] = JSON.parse(flattenedArray[i])
                 }
 
-                var table_body = '<table class="table table-bordered">';
+                let table_body = '<table class="table table-bordered">';
                 table_body += "<tr>";
-                for(var j=0;j<keys.length ;j++){
+                for(let j=0;j<keys.length ;j++){
                     table_body += '<th style="text-weight: bold; text-align: center;">' + keys[j] + '</th>';
                 }
                 table_body += '<th>Value</th>';
                 table_body += '</tr>';
-                for(var i=0;i<flattenedArray.length;i+=2){
+                for(let i=0;i<flattenedArray.length;i+=2){
                     table_body+='<tr>';
-                    for(var j=0;j<keys.length;j++){
+                    for(let j=0;j<keys.length;j++){
                         let crnKey = keys[j];
                         table_body +='<td>';
                         table_body +=flattenedArray[i][crnKey];
@@ -508,7 +513,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
     }
 
 function getFactById(id) {
-    var xhttp = new XMLHttpRequest();
+    let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             $("#outputGet").val(this.responseText);
@@ -519,7 +524,7 @@ function getFactById(id) {
 }
 
     function addFact(factPayload) {
-        var xhttp = new XMLHttpRequest();
+        let xhttp = new XMLHttpRequest();
         xhttp.open("POST", "/addFact", true);
         xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhttp.onreadystatechange = function() {
@@ -530,5 +535,4 @@ function getFactById(id) {
         xhttp.send(JSON.stringify(factPayload));
     }
 </script>
-
 </html>
