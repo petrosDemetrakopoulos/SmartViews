@@ -1,0 +1,60 @@
+{
+  "name": "ABCD",
+  "struct_Name": "Abcd",
+  "properties":[
+    {"key": "payload", "data_type": "string"}],
+  "template": {
+    "properties": [
+      {
+        "key": "pk"
+      },
+      {
+        "key": "A"
+      },
+      {
+        "key": "B"
+      },
+      {
+        "key": "C"
+      },
+      {
+        "key": "D"
+      }
+    ],
+    "create_table": "CREATE TEMPORARY TABLE ABCD(\n\tpk int not null\n\t\tprimary key,\n\tA int,\n\tB int,\n\tC int,\n\tD FLOAT(2));\n\n",
+    "table_name": "ABCD"
+  },
+  "groupBys": {
+    "TOP": {
+      "fields": "pk | A | B | C | D",
+      "children": [
+        {"fields": "A | B",
+          "children": [
+            {"fields": "A"},
+            {"fields": "B"}
+          ]
+        },
+        {"fields": "A | C",
+          "children": [
+            {"fields": "A"},
+            {"fields": "C"}
+          ]
+        },
+        {"fields": "A | D",
+          "children": [
+            {"fields": "A"},
+            {"fields": "D"}
+          ]
+        }
+      ]
+    }
+  },
+  "views" : [{ "name": "A|B(COUNT)",
+    "gbFields": "A | B",
+    "operation":  "COUNT", "aggregationField":  "pk",
+    "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)"},
+    { "name": "A(COUNT)",
+      "gbFields": "A",
+      "operation":  "COUNT", "aggregationField":  "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)"}
+]}

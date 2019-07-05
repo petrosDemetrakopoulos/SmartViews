@@ -255,7 +255,7 @@ async function addManyFacts(facts, sliceSize) {
 
 
 app.get('/load_dataset/:dt', function (req, res) {
-    let dt = require('./' + req.params.dt);
+    let dt = require('./testData/' + req.params.dt);
     console.log("ENDPOINT HIT AGAIN");
     console.log(running);
     if (contract) {
@@ -827,7 +827,8 @@ function mergeGroupBys(groupByA, groupByB, gbCreateTable, tableName, view, lastC
 }
 
 app.get('/getViewByName/:viewName', function (req,res) {
-    let fact_tbl = require('./templates/new_sales_min');
+    let fact_tbl = require('./templates/ABCD');
+    //let fact_tbl = require('./templates/new_sales_min');
     let viewsDefined = fact_tbl.views;
     console.log(req.params.viewName);
     let found = false;
@@ -1101,7 +1102,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         }).on('transactionHash', (err) => {
                                                                             console.log('transactionHash:', err);
                                                                         }).on('receipt', (receipt) => {
-                                                                            let cacheSaveTimeStop = microtime.nowDouble();
+                                                                            let cacheSaveTimeEnd = microtime.nowDouble();
                                                                             if(sortedByTS.length >= config.maxCacheSize){
                                                                                 let keysToDelete = [];
                                                                                 let gbIdsToDelete = [];
@@ -1126,6 +1127,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                     if (!err) {
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\",""));
+                                                                                        groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                        groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) +  (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
+                                                                                        groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                         return res.send(JSON.stringify(groupBySqlResult).replace("\\",""));
                                                                                     }
                                                                                     return res.send(err);
