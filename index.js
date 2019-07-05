@@ -1126,16 +1126,21 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
                                                                                     if (!err) {
                                                                                         console.log('receipt:', receipt);
-                                                                                        io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\",""));
                                                                                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                         groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) +  (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
                                                                                         groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                        groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
+                                                                                        io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\",""));
                                                                                         return res.send(JSON.stringify(groupBySqlResult).replace("\\",""));
                                                                                     }
                                                                                     return res.send(err);
                                                                                 });
                                                                             } else {
                                                                                 console.log('receipt:', receipt);
+                                                                                groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) +  (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
+                                                                                groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
                                                                                 io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
                                                                                 return res.send(JSON.stringify(groupBySqlResult).replace("\\", ""));
                                                                             }
@@ -1188,7 +1193,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                         view.operation === cachedGroupBy.operation) {
                                                         //this means we just have to return the group by stored in cache
                                                         //field, operation are same and no new records written
-                                                        console.log(cachedGroupBy);
+                                                    //    console.log(cachedGroupBy);
                                                         cachedGroupBy.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                         cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
                                                         io.emit('view_results', JSON.stringify(cachedGroupBy));
@@ -1264,8 +1269,8 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                     console.log(error);
                                                                     return res.send(error);
                                                                 }
-                                                                console.log("SSSSS");
-                                                                console.log(allCached);
+                                                          //      console.log("SSSSS");
+                                                          //      console.log(allCached);
                                                                 let cachedGroupBy = {};
                                                                 if(allCached.length === 1){ //it is <= of slice size, so it is not sliced
                                                                     cachedGroupBy = JSON.parse(allCached[0]);
@@ -1331,8 +1336,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             await Object.keys(reducedResult).forEach(function (key, index) {
                                                                                 if(key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable'){
                                                                                     let crnRow = JSON.parse(key);
-                                                                                    console.log("crn key = " + key);
-                                                                                    console.log(crnRow);
                                                                                     lastCol = view.SQLTable.split(" ");
                                                                                     prelastCol = lastCol[lastCol.length - 4];
                                                                                     lastCol = lastCol[lastCol.length - 2];
@@ -1350,8 +1353,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             await Object.keys(groupBySqlResult).forEach(function (key, index) {
                                                                                 if(key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable'){
                                                                                     let crnRow = JSON.parse(key);
-                                                                                    console.log("crn key = " + key);
-                                                                                    console.log(crnRow);
                                                                                     lastCol = view.SQLTable.split(" ");
                                                                                     prelastCol = lastCol[lastCol.length - 4];
                                                                                     lastCol = lastCol[lastCol.length - 2];
@@ -1399,7 +1400,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                     } else {
                                                                         //group by fields of deltas and cached are the same so
                                                                         //MERGE cached and groupBySqlResults
-                                                                        console.log("PERIPTOSAAAAARAAAA");
                                                                         let viewNameSQL = view.SQLTable.split(" ");
                                                                         viewNameSQL = viewNameSQL[3];
                                                                         viewNameSQL = viewNameSQL.split('(')[0];
@@ -1516,8 +1516,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 }).on('receipt', (receipt) => {
                                     let cacheSaveTimeEnd = microtime.nowDouble();
                                     delete groupBySqlResult.gbCreateTable;
-                                    console.log("@@@@@@@");
-                                    console.log(groupBySqlResult);
                                     console.log('receipt:', receipt);
                                     groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
                                     groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
