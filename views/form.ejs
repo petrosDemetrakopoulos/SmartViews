@@ -234,7 +234,7 @@
                                     <div class="progress-bar progress-bar-danger" role="progressbar" id="cacheSaveTime">
                                         Cache Save
                                     </div>
-                                    <div class="progress-bar" role="progressbar" id="cacheRetrieveTime" style="color: purple;">
+                                    <div class="progress-bar" role="progressbar" id="cacheRetrieveTime" style="background-color: purple !important;">
                                         Cache Retrieve
                                     </div>
                                 </div>
@@ -430,13 +430,26 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                     usefullMeta.push(meta[i]);
                 }
                 let cacheRetrieveTime = 0;
+                let totalTime = 0;
+                let bcTime = 0;
+                let sqlTime = 0;
+                let cacheSaveTime = 0;
+
                 if(cacheRetrieveIndex > -1){
                     cacheRetrieveTime =  parseFloat(meta[cacheRetrieveIndex].split(":")[1]);
                 }
-                let totalTime = parseFloat(meta[totalTimeIndex].split(":")[1]);
-                let bcTime = parseFloat(meta[bcTimeIndex].split(":")[1]);
-                let sqlTime = parseFloat(meta[sqlTimeIndex].split(":")[1]);
-                let cacheSaveTime = parseFloat(meta[cacheTimeIndex].split(":")[1]);
+                if(totalTimeIndex > -1){
+                    totalTime =  parseFloat(meta[totalTimeIndex].split(":")[1]);
+                }
+                if(bcTimeIndex > -1){
+                    bcTime =  parseFloat(meta[bcTimeIndex].split(":")[1]);
+                }
+                if(sqlTimeIndex > -1){
+                    sqlTime =  parseFloat(meta[sqlTimeIndex].split(":")[1]);
+                }
+                if(cacheTimeIndex > -1){
+                    cacheSaveTime =  parseFloat(meta[cacheTimeIndex].split(":")[1]);
+                }
 
 
                 $('#total').html(totalTime.toFixed(5));
