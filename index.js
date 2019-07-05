@@ -214,7 +214,6 @@ app.get('/deployContract/:fn', function (req, res) {
 
 async function addManyFacts(facts, sliceSize) {
     console.log('length = ' + facts.length);
-    let proms = [];
     let allSlicesReady = [];
     if(sliceSize > 1) {
         let slices = [];
@@ -240,16 +239,16 @@ async function addManyFacts(facts, sliceSize) {
         });
     }
 
-    let i = 0;
+    let i = 1;
     for(const slc of allSlicesReady){
-        let transPromise = await contract.methods.addFacts(slc).send(mainTransactionObject, (err, txHash) => {
+        await contract.methods.addFacts(slc).send(mainTransactionObject, (err, txHash) => {
         }).on('error', (err) => {
             console.log('error:', err);
         }).on('transactionHash', (hash) => {
             console.log(i);
             io.emit('progress', i/allSlicesReady.length);
+            i++;
         });
-        i++;
     }
     return Promise.resolve(true);
 }

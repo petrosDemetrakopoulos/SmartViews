@@ -396,8 +396,6 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 $("#outputView").val(editedResp.replace('"{', "'{").replace('}"', "}'"));
                 let edited = editedResp.replace(/"{/g, "'{").replace(/}"/g, "}'");
                 let splited = edited.split("':")
-                console.log(splited);
-                console.log(splited[splited.length - 1])
                 let meta = splited[splited.length - 1].split(",");
                 let usefullMeta = [];
                 let usefullMetaIndex = -1;
@@ -457,20 +455,17 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 $('#sql').html(sqlTime.toFixed(5));
                 $('#cacheSave').html(cacheSaveTime.toFixed(5));
                 $('#cacheRetrieve').html(cacheRetrieveTime.toFixed(5));
-                console.log("cache retrieve time = " + cacheRetrieveTime);
 
                 $('.progress').css("visibility","");
                 $('#bcTime').css("width",(bcTime / totalTime)*100 + "%");
                 $('#cacheSaveTime').css("width",(cacheSaveTime / totalTime)*100 + "%");
                 $('#cacheRetrieveTime').css("width",(cacheRetrieveTime / totalTime)*100 + "%");
                 $('#sqlTime').css("width",(sqlTime / totalTime)*100 + "%");
-                console.log(usefullMeta);
                 for(let i = 0; i < splited.length; i ++){
                     let secondSplit = []
                     secondSplit = splited[i].split(",'");
                     splited[i] = secondSplit;
                 }
-                console.log(splited);
                 let flattenedArray = [];
                 splited[splited.length - 1][0] = splited[splited.length - 1][0].split(",")[0];
                 for(let i = 0; i < splited.length; i++){
