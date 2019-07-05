@@ -1,6 +1,9 @@
 function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) {
+    console.log("***");
     console.log(groupByResult);
+    console.log("***");
     console.log(gbField);
+    console.log("***");
     let transformed = {};
     if (operation === 'COUNT') {
         console.log('OPERATION = COUNT');
@@ -18,10 +21,13 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
         console.log('OPERATION = SUM');
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['SUM(' + aggregateField + ')'];
+            console.log(crnCount);
             delete groupByResult[i]['SUM(' + aggregateField + ')'];
             let filtered = groupByResult[i];
             transformed[JSON.stringify(filtered)] = crnCount;
         }
+        console.log("TRANSFORMED DURING TRANSFORMATION");
+        console.log(transformed);
         transformed['operation'] = 'SUM';
     } else if (operation === 'MIN') {
         console.log('OPERATION = MIN');

@@ -190,21 +190,54 @@
                                         <%}%>
                                     </select>
                                 </div>
+                                <div class="tblResults">
+                                </div>
                                 <%if(address !== "0"){%>
                                     <button class="btn btn-primary" id="buttonFetchView">Fetch view</button>
                                 <%} else {%>
                                     <button class="btn btn-primary disabled" id="buttonFetchView">Fetch view</button>
                                 <%}%>
+                                <br>
+                                <br>
                             </div>
                             <div class="col-lg-6">
                                 <label>Output</label>
                                 <textarea readonly id="outputView" class="form-control" rows="7"></textarea>
-                                <label>Execution Time: </label> <p id="executionTime"></p>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-6 tblResults">
-
+                            <div class="col-lg-6 timesTbl">
+                                    <table class="table table-bordered">
+                                    <tr>
+                                        <th>Total time (s)</th>
+                                        <th>Blockchain time (s)</th>
+                                        <th>SQL time (s)</th>
+                                        <th>Cache save time (s)</th>
+                                        <th>Cache retrieve time (s)</th>
+                                    </tr>
+                                    <tr>
+                                        <td id="total"></td>
+                                        <td id="bc"></td>
+                                        <td id="sql"></td>
+                                        <td id="cacheSave"></td>
+                                        <td id="cacheRetrieve"></td>
+                                    </tr>
+                                    </table>
+                                <br>
+                                <div class="progress" style="visibility: hidden">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" id="bcTime">
+                                        Blockchain fetch
+                                    </div>
+                                    <div class="progress-bar progress-bar-warning" role="progressbar" id="sqlTime">
+                                        SQL Compute
+                                    </div>
+                                    <div class="progress-bar progress-bar-danger" role="progressbar" id="cacheSaveTime">
+                                        Cache Save
+                                    </div>
+                                    <div class="progress-bar" role="progressbar" id="cacheRetrieveTime" style="color: purple;">
+                                        Cache Retrieve
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -310,13 +343,6 @@
         getAllFacts();
     });
 
-    $(document).on('click', '#buttonGroupBy', function(){
-        var selectedKey = $('#fieldSelect').find("option:selected").text();
-        var selectedOp = $('#typeSelect').find("option:selected").text();
-        var aggregateSelected = $('#aggregateFieldSelect').find("option:selected").text();
-        groupBy(selectedKey,selectedOp,aggregateSelected);
-    });
-
     function addFactFromFile() {
         xhttpDep.onreadystatechange = function () {
             if (this.readyState <= 3) {
@@ -340,17 +366,6 @@
         xhttpDep.send();
     }
 
-    function groupBy(field, operation, aggregateField) {
-        var xhttp = new XMLHttpRequest();
-        field = field.replace(" ","");
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                $("#outputGB").val(this.responseText);
-            }
-        };
-        xhttp.open("GET", "/groupby/" + field + "/" + operation + "/" + aggregateField, true);
-        xhttp.send();
-    }
 
 let crnContractDeployed = <%-JSON.stringify(template)%>;
     $( "#addFact" ).click(function() {
@@ -381,12 +396,68 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 $("#outputView").val(editedResp.replace('"{', "'{").replace('}"', "}'"));
                 let edited = editedResp.replace(/"{/g, "'{").replace(/}"/g, "}'");
                 let splited = edited.split("':")
+                console.log(splited);
+                console.log(splited[splited.length - 1])
+                let meta = splited[splited.length - 1].split(",");
+                let usefullMeta = [];
+                let usefullMetaIndex = -1;
+                let sqlTimeIndex = -1;
+                let bcTimeIndex = -1;
+                let cacheTimeIndex = -1;
+                let totalTimeIndex = -1;
+                let cacheRetrieveIndex = -1;
+                for(let i =0; i < meta.length; i++){
+                    if(meta[i].indexOf("operation") >= 0){
+                        usefullMetaIndex = i;
+                    }
+                    if(meta[i].indexOf("sqlTime") >= 0){
+                        sqlTimeIndex = i;
+                    }
+                    if(meta[i].indexOf("bcTime") >= 0){
+                        bcTimeIndex = i;
+                    }
+                    if(meta[i].indexOf("cacheSaveTime") >= 0){
+                        cacheTimeIndex = i;
+                    }
+                    if(meta[i].indexOf("cacheRetrieveTime") >= 0){
+                        cacheRetrieveIndex = i;
+                    }
+                    if(meta[i].indexOf("totalTime") >= 0){
+                        totalTimeIndex = i;
+                    }
+                }
+                for(let i = usefullMetaIndex; i < meta.length; i++){
+                    usefullMeta.push(meta[i]);
+                }
+                let cacheRetrieveTime = 0;
+                if(cacheRetrieveIndex > -1){
+                    cacheRetrieveTime =  parseFloat(meta[cacheRetrieveIndex].split(":")[1]);
+                }
+                let totalTime = parseFloat(meta[totalTimeIndex].split(":")[1]);
+                let bcTime = parseFloat(meta[bcTimeIndex].split(":")[1]);
+                let sqlTime = parseFloat(meta[sqlTimeIndex].split(":")[1]);
+                let cacheSaveTime = parseFloat(meta[cacheTimeIndex].split(":")[1]);
 
+
+                $('#total').html(totalTime.toFixed(5));
+                $('#bc').html(bcTime.toFixed(5));
+                $('#sql').html(sqlTime.toFixed(5));
+                $('#cacheSave').html(cacheSaveTime.toFixed(5));
+                $('#cacheRetrieve').html(cacheRetrieveTime.toFixed(5));
+                console.log("cache retrieve time = " + cacheRetrieveTime);
+
+                $('.progress').css("visibility","");
+                $('#bcTime').css("width",(bcTime / totalTime)*100 + "%");
+                $('#cacheSaveTime').css("width",(cacheSaveTime / totalTime)*100 + "%");
+                $('#cacheRetrieveTime').css("width",(cacheRetrieveTime / totalTime)*100 + "%");
+                $('#sqlTime').css("width",(sqlTime / totalTime)*100 + "%");
+                console.log(usefullMeta);
                 for(let i = 0; i < splited.length; i ++){
                     let secondSplit = []
                     secondSplit = splited[i].split(",'");
                     splited[i] = secondSplit;
                 }
+                console.log(splited);
                 let flattenedArray = [];
                 splited[splited.length - 1][0] = splited[splited.length - 1][0].split(",")[0];
                 for(let i = 0; i < splited.length; i++){
