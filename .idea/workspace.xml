@@ -17,20 +17,6 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testDataGenerator.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="24" column="26" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testData/100fourcol.json">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/testData/1Mfourcol.json">
           <provider selected="true" editor-type-id="LargeFileEditor" />
         </entry>
@@ -38,8 +24,26 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="1137" column="77" selection-start-line="1137" selection-start-column="77" selection-end-line="1137" selection-end-column="77" />
+            <state relative-caret-position="-82">
+              <caret line="1571" column="63" selection-start-line="1571" selection-start-column="63" selection-end-line="1571" selection-end-column="63" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/views/index.ejs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/views/form.ejs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="7905">
+              <caret line="527" column="32" selection-start-line="527" selection-start-column="28" selection-end-line="527" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -47,7 +51,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/vendor/bootstrap/js/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
+            <state relative-caret-position="23565">
               <caret line="1575" column="30" selection-start-line="1575" selection-start-column="30" selection-end-line="1575" selection-end-column="30" />
             </state>
           </provider>
@@ -66,7 +70,7 @@
         <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="315">
-              <caret line="21" column="29" lean-forward="true" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
+              <caret line="21" column="29" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -75,7 +79,7 @@
         <entry file="file://$PROJECT_DIR$/templates/ABCD.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="900">
-              <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+              <caret line="60" selection-start-line="60" selection-end-line="60" />
             </state>
           </provider>
         </entry>
@@ -105,15 +109,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>view</find>
-      <find>grou</find>
-      <find>group</find>
-      <find>saveO</find>
-      <find>tblRes</find>
-      <find>Fetch</find>
-      <find>calc</find>
-      <find>cacheTim</find>
-      <find>cacheS</find>
       <find>prelas</find>
       <find>mergeG</find>
       <find>mergeGr</find>
@@ -135,6 +130,15 @@
       <find>io.emit('pro</find>
       <find>console.lo</find>
       <find>sqlTimeEndC</find>
+      <find>FIFO</find>
+      <find>cost</find>
+      <find>calculationCo</find>
+      <find>deleteFr</find>
+      <find>sortedBy</find>
+      <find>cacheE</find>
+      <find>deleteFro</find>
+      <find>saveOn</find>
+      <find>/add</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -216,6 +220,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -235,13 +240,17 @@
             </path>
             <path>
               <item name="interface" type="b2602c69:ProjectViewProjectNode" />
+              <item name="interface" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -431,14 +440,9 @@
       <workItem from="1562247882875" duration="6919000" />
       <workItem from="1562264638599" duration="864000" />
       <workItem from="1562316578981" duration="12249000" />
-      <workItem from="1562369130978" duration="272000" />
-    </task>
-    <task id="LOCAL-00054" summary="added timeout in groupby">
-      <created>1553182834266</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1553182834266</updated>
+      <workItem from="1562369130978" duration="355000" />
+      <workItem from="1562404804232" duration="4058000" />
+      <workItem from="1562434923628" duration="1388000" />
     </task>
     <task id="LOCAL-00055" summary="slices functionality on write">
       <created>1553189040521</created>
@@ -776,11 +780,18 @@
       <option name="project" value="LOCAL" />
       <updated>1562332476559</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="added some missing time counts">
+      <created>1562369430980</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1562369430981</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="471953000" />
+    <option name="totallyTimeSpent" value="477482000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -793,14 +804,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="26" y="23" width="1484" height="813" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.701107" visible="true" weight="0.1851595" />
-      <window_info id="Structure" order="1" sideWeight="0.29889297" side_tool="true" visible="true" weight="0.1851595" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6985646" visible="true" weight="0.18932039" />
+      <window_info id="Structure" order="1" sideWeight="0.3014354" side_tool="true" visible="true" weight="0.18932039" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.870319" visible="true" weight="0.2482663" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.870319" weight="0.2482663" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -810,7 +822,7 @@
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
       <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77461857" weight="0.4147018" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12968099" side_tool="true" visible="true" weight="0.2482663" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12968099" side_tool="true" visible="true" weight="0.13037448" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -1044,13 +1056,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/saleMin_second_10K.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1106,13 +1111,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/form.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4200">
-          <caret line="280" column="29" selection-start-line="280" selection-start-column="29" selection-end-line="280" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/testDataGenerator.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -1124,8 +1122,29 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/testData/1Mfourcol.json">
-      <provider editor-type-id="text-editor" />
       <provider selected="true" editor-type-id="LargeFileEditor" />
+      <provider editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/index.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/form.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7905">
+          <caret line="527" column="32" selection-start-line="527" selection-start-column="28" selection-end-line="527" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/vendor/bootstrap/js/bootstrap.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23565">
+          <caret line="1575" column="30" selection-start-line="1575" selection-start-column="30" selection-end-line="1575" selection-end-column="30" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/helper.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -1137,14 +1156,14 @@
     <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
-          <caret line="21" column="29" lean-forward="true" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
+          <caret line="21" column="29" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/ABCD.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="900">
-          <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+          <caret line="60" selection-start-line="60" selection-end-line="60" />
         </state>
       </provider>
     </entry>
@@ -1158,17 +1177,10 @@
     <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/bootstrap/js/bootstrap.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="1575" column="30" selection-start-line="1575" selection-start-column="30" selection-end-line="1575" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="1137" column="77" selection-start-line="1137" selection-start-column="77" selection-end-line="1137" selection-end-column="77" />
+        <state relative-caret-position="-82">
+          <caret line="1571" column="63" selection-start-line="1571" selection-start-column="63" selection-end-line="1571" selection-end-column="63" />
         </state>
       </provider>
     </entry>

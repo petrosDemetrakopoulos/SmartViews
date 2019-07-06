@@ -69,19 +69,6 @@ app.get('/dashboard', function (req, res) {
     });
 });
 
-app.get('/benchmark', function (req, res) {
-    // var stream = fs.createReadStream('../dataset.csv');
-    csvtojson({ delimiter: '|' })
-        .fromFile('../dataset.csv')
-        .then((jsonObj)=>{
-            console.log(jsonObj);
-            let timeStart = microtime.nowDouble();
-            let gbResult = groupBy(jsonObj,'Occupation');
-            console.log(microtime.nowDouble() - timeStart + ' seconds');
-            res.send(gbResult);
-        });
-});
-
 app.get('/form/:contract', function (req, res) {
     let fact_tbl = require('./templates/' + req.params.contract);
     let templ = {};
@@ -110,6 +97,7 @@ app.get('/form/:contract', function (req, res) {
     console.log(groupBys);
     res.render('form',{'template':templ, 'name': fact_tbl.name, 'address': address, 'groupBys':groupBys, 'readyViews': readyViews});
 });
+
 http.listen(3000, () => {
     console.log(`Example app listening on http://localhost:3000/dashboard`);
     let mysqlConfig = {};
@@ -431,35 +419,25 @@ app.get('/groupbyId/:id', function (req, res) {
     }
 });
 
-app.post('/addFacts', function (req, res) {
-    if (contract) {
-        if (req.body.products.length === req.body.quantities.length === req.body.customers.length) {
-            contract.methods.addFacts(req.body.products, req.body.quantities, req.body.customers).call(function (err, result) {
-                if (!err) {
-                    res.send(result)
-                } else {
-                    console.log(err);
-                    res.send(err);
-                }
-            })
-        } else {
-            res.status(400);
-            res.send({status: 'ERROR',options: 'Arrays must have the same dimension' });
-        }
-    } else {
-        res.status(400);
-        res.send({status: 'ERROR',options: 'Contract not deployed' });
-    }
-});
-
-function cost(groupBysArray) {
-    for(let i = 0; i < groupBysArray.length; i++){
-        let crnGroupBy = groupBysArray[i];
+//this function  assigns a cost to each group by
+function calculationCost(groupBys) {
+    for(let i = 0; i < groupBys.length; i++){
+        let crnGroupBy = groupBys[i];
         let crnCost = (0.5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
         crnGroupBy.cost = crnCost;
-        groupBysArray[i] = crnGroupBy;
+        groupBys[i] = crnGroupBy;
     }
-    return groupBysArray;
+    return groupBys;
+}
+
+function cacheEvictionCost(groupBys) {
+    for(let i = 0; i < groupBys.length; i++){
+        let crnGroupBy = groupBys[i];
+        let crnCost = (5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
+        crnGroupBy.cacheEvictionCost = crnCost;
+        groupBys[i] = crnGroupBy;
+    }
+    return groupBys;
 }
 
 function containsAllFields(transformedArray, view) {
@@ -826,6 +804,29 @@ function mergeGroupBys(groupByA, groupByB, gbCreateTable, tableName, view, lastC
     });
 }
 
+function deleteFromCache(evicted, callback){
+        let keysToDelete = [];
+        let gbIdsToDelete = [];
+        if(config.cacheEvictionPolicy === "FIFO"){
+            for(let i = 0; i < config.maxCacheSize; i++){
+                keysToDelete.push(evicted[i].hash);
+                let crnHash = evicted[i].hash;
+                let cachedGBSplited = crnHash.split("_");
+                let cachedGBLength = parseInt(cachedGBSplited[1]);
+                if(cachedGBLength > 0){  //reconstructing all the hashes in cache if it is sliced
+                    for(let j = 0; j < cachedGBLength; j++){
+                        keysToDelete.push(cachedGBSplited[0] + "_"+j);
+                    }
+                }
+                gbIdsToDelete[i] = evicted[i].id;
+            }
+            console.log("keys to remove from cache are:");
+            console.log(keysToDelete);
+        }
+        client.del(keysToDelete);
+        callback(gbIdsToDelete);
+}
+
 app.get('/getViewByName/:viewName', function (req,res) {
     let fact_tbl = require('./templates/ABCD');
     //let fact_tbl = require('./templates/new_sales_min');
@@ -888,22 +889,28 @@ app.get('/getViewByName/:viewName', function (req,res) {
 
                             transformedArray = containsAllFields(transformedArray, view); //assigns the containsAllFields value
                             let filteredGBs = [];
-                            let sortedByTS = [];
+                            let sortedByEvictionCost = [];
                             for (let i = 0; i < transformedArray.length; i++) { //filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
                                 if (transformedArray[i].containsAllFields) {
                                     filteredGBs.push(transformedArray[i]);
                                 }
-                                sortedByTS.push(transformedArray[i]);
+                                sortedByEvictionCost.push(transformedArray[i]);
                             }
+                            sortedByEvictionCost = cacheEvictionCost(sortedByEvictionCost);
 
-                            sortedByTS.sort(function (a, b) {
-                                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+                            sortedByEvictionCost.sort(function (a, b) {
+                                if (config.cacheEvictionPolicy === "FIFO") {
+                                    return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+                                } else if (config.cacheEvictionPolicy === "costFunction") {
+                                    return parseFloat(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
+                                }
                             });
-                            console.log("SORTED GBs by Timestamp:");
-                            console.log(sortedByTS); //TS ORDER ascending, the first ones are older than the last ones.
+
+                            console.log("SORTED GBs by eviction cost:");
+                            console.log(sortedByEvictionCost); //TS ORDER ascending, the first ones are less "expensive" older than the last ones.
                             console.log("________________________");
                             //assign costs
-                            filteredGBs = cost(filteredGBs);
+                            filteredGBs = calculationCost(filteredGBs);
 
                             //pick the one with the less cost
                             filteredGBs.sort(function (a, b) {
@@ -932,44 +939,42 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                             let hashId = mostEfficient.hash.split("_")[1];
                                             let hashBody = mostEfficient.hash.split("_")[0];
                                             let allHashes = [];
-                                                for (let i = 0; i <= hashId; i++) {
-                                                    allHashes.push(hashBody + "_" + i);
+                                            for (let i = 0; i <= hashId; i++) {
+                                                allHashes.push(hashBody + "_" + i);
+                                            }
+                                            let cacheRetrieveTimeStart = microtime.nowDouble();
+                                            client.mget(allHashes, function (error, allCached) {
+                                                let cacheRetrieveTimeEnd = microtime.nowDouble();
+                                                if (error) {
+                                                    console.log(error);
+                                                    return res.send(error);
                                                 }
-                                                let cacheRetrieveTimeStart = microtime.nowDouble();
-                                                client.mget(allHashes, function (error, allCached) {
-                                                    let cacheRetrieveTimeEnd = microtime.nowDouble();
-                                                    if (error) {
-                                                        console.log(error);
-                                                        return res.send(error);
-                                                    }
-                                                    console.log("SSSSS");
-                                                    console.log(allCached);
-                                                    let cachedGroupBy = {};
-                                                    if(allCached.length === 1){ //it is <= of slice size, so it is not sliced
-                                                        cachedGroupBy = JSON.parse(allCached[0]);
-                                                    } else { //it is sliced
-                                                        let mergedArray = [];
-                                                        for(const index in allCached){
-                                                            let crnSub = allCached[index];
-                                                            let crnSubArray = JSON.parse(crnSub);
-                                                            for(const kv in crnSubArray){
-                                                                if(kv !== "operation" && kv !== "groupByFields" && kv !== "field") {
-                                                                    mergedArray.push(crnSubArray[kv]);
-                                                                } else {
-                                                                    for(const meta in crnSubArray){
-                                                                        mergedArray.push({[meta]: crnSubArray[meta]});
-                                                                    }
-                                                                    break;
+                                                let cachedGroupBy = {};
+                                                if (allCached.length === 1) { //it is <= of slice size, so it is not sliced
+                                                    cachedGroupBy = JSON.parse(allCached[0]);
+                                                } else { //it is sliced
+                                                    let mergedArray = [];
+                                                    for (const index in allCached) {
+                                                        let crnSub = allCached[index];
+                                                        let crnSubArray = JSON.parse(crnSub);
+                                                        for (const kv in crnSubArray) {
+                                                            if (kv !== "operation" && kv !== "groupByFields" && kv !== "field") {
+                                                                mergedArray.push(crnSubArray[kv]);
+                                                            } else {
+                                                                for (const meta in crnSubArray) {
+                                                                    mergedArray.push({[meta]: crnSubArray[meta]});
                                                                 }
+                                                                break;
                                                             }
                                                         }
-                                                        let gbFinal = {};
-                                                        for(const i in mergedArray){
-                                                            let crnKey = Object.keys(mergedArray[i])[0];
-                                                            gbFinal[crnKey] =  Object.values(mergedArray[i])[0];
-                                                        }
-                                                        cachedGroupBy = gbFinal;
                                                     }
+                                                    let gbFinal = {};
+                                                    for (const i in mergedArray) {
+                                                        let crnKey = Object.keys(mergedArray[i])[0];
+                                                        gbFinal[crnKey] = Object.values(mergedArray[i])[0];
+                                                    }
+                                                    cachedGroupBy = gbFinal;
+                                                }
 
                                                 if (err) {
                                                     console.log(error);
@@ -1074,7 +1079,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                 editedGBQuery = editedGBQuery.replace(/''/g, 'null');
                                                                 let sqlTimeStartSelect = microtime.nowDouble();
                                                                 await connection.query(editedGBQuery, async function (error, results, fields) {
-                                                                    let sqlTimeEndSelect= microtime.nowDouble();
+                                                                    let sqlTimeEndSelect = microtime.nowDouble();
                                                                     if (error) {
                                                                         console.log(error);
                                                                         throw error;
@@ -1102,43 +1107,25 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         }).on('transactionHash', (err) => {
                                                                             console.log('transactionHash:', err);
                                                                         }).on('receipt', (receipt) => {
+                                                                            console.log('receipt:', receipt);
                                                                             let cacheSaveTimeEnd = microtime.nowDouble();
-                                                                            if(sortedByTS.length >= config.maxCacheSize){
-                                                                                let keysToDelete = [];
-                                                                                let gbIdsToDelete = [];
-                                                                                if(config.cacheEvictionPolicy === "FIFO"){
-                                                                                    for(let i = 0; i < config.maxCacheSize; i++){
-                                                                                        keysToDelete.push(sortedByTS[i].hash);
-                                                                                        let crnHash = sortedByTS[i].hash;
-                                                                                        let cachedGBSplited = crnHash.split("_");
-                                                                                        let cachedGBLength = parseInt(cachedGBSplited[1]);
-                                                                                        if(cachedGBLength > 0){  //reconstructing all the hashes in cache if it is sliced
-                                                                                            for(let j = 0; j < cachedGBLength; j++){
-                                                                                                keysToDelete.push(cachedGBSplited[0] + "_"+j);
-                                                                                            }
+                                                                            if (sortedByEvictionCost.length >= config.maxCacheSize) {
+                                                                                deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                    contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                        if (!err) {
+                                                                                            groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                            groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) + (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
+                                                                                            groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                            groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
+                                                                                            io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
+                                                                                            return res.send(JSON.stringify(groupBySqlResult).replace("\\", ""));
                                                                                         }
-                                                                                        gbIdsToDelete[i] = sortedByTS[i].id;
-                                                                                    }
-                                                                                    console.log("keys to remove from cache are:");
-                                                                                    console.log(keysToDelete);
-                                                                                }
-                                                                                client.del(keysToDelete);
-                                                                                contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-                                                                                    if (!err) {
-                                                                                        console.log('receipt:', receipt);
-                                                                                        groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                        groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) +  (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
-                                                                                        groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                                        groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
-                                                                                        io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\",""));
-                                                                                        return res.send(JSON.stringify(groupBySqlResult).replace("\\",""));
-                                                                                    }
-                                                                                    return res.send(err);
+                                                                                        return res.send(err);
+                                                                                    });
                                                                                 });
                                                                             } else {
-                                                                                console.log('receipt:', receipt);
                                                                                 groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) +  (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
+                                                                                groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) + (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
                                                                                 groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                 groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
                                                                                 io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
@@ -1160,9 +1147,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                             }
                                                             console.log("CALCULATING NEW GB FROM BEGGINING");
                                                             let sqlTimeStart = microtime.nowDouble();
-                                                            calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult,error) {
+                                                            calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                 let sqlTimeEnd = microtime.nowDouble();
-                                                                if(error){
+                                                                if (error) {
                                                                     return res.send(error);
                                                                 }
                                                                 groupBySqlResult.gbCreateTable = view.SQLTable;
@@ -1176,13 +1163,30 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                 }).on('receipt', (receipt) => {
                                                                     let cacheSaveTimeEnd = microtime.nowDouble();
                                                                     delete groupBySqlResult.gbCreateTable;
-                                                                    groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                    groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
-                                                                    groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                    groupBySqlResult.totalTime =  groupBySqlResult.sqlTime +  groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                                                    console.log('receipt:', receipt);
-                                                                    io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                                                    return res.send(JSON.stringify(groupBySqlResult));
+                                                                    if (sortedByEvictionCost.length >= config.maxCacheSize) {
+                                                                        deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                            contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                if (!err) {
+                                                                                    groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                                                                    groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
+                                                                                    groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                    groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                                                                    console.log('receipt:', receipt);
+                                                                                    io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                                    return res.send(JSON.stringify(groupBySqlResult));
+                                                                                }
+                                                                                return res.send(err);
+                                                                            });
+                                                                        });
+                                                                    } else {
+                                                                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                                                        groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
+                                                                        groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                        groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                                                        console.log('receipt:', receipt);
+                                                                        io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                        return res.send(JSON.stringify(groupBySqlResult));
+                                                                    }
                                                                 });
                                                             });
                                                         });
@@ -1193,7 +1197,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                         view.operation === cachedGroupBy.operation) {
                                                         //this means we just have to return the group by stored in cache
                                                         //field, operation are same and no new records written
-                                                    //    console.log(cachedGroupBy);
                                                         cachedGroupBy.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                         cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
                                                         io.emit('view_results', JSON.stringify(cachedGroupBy));
@@ -1211,12 +1214,12 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                             let sqlTimeStart = microtime.nowDouble();
                                                             calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                 let sqlTimeEnd = microtime.nowDouble();
-                                                                if(error){
+                                                                if (error) {
                                                                     return res.send(error);
                                                                 }
                                                                 groupBySqlResult.gbCreateTable = view.SQLTable;
                                                                 groupBySqlResult.field = view.aggregationField;
-                                                                let cachSaveTimeStart = microtime.nowDouble();
+                                                                let cacheSaveTimeStart = microtime.nowDouble();
                                                                 saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                                     console.log('error:', err);
                                                                     res.send(err);
@@ -1225,12 +1228,30 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                 }).on('receipt', (receipt) => {
                                                                     let cachSaveTimeEnd = microtime.nowDouble();
                                                                     delete groupBySqlResult.gbCreateTable;
-                                                                    groupBySqlResult.bcTime = bcTimeEnd -bcTimeStart;
-                                                                    groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                    groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime;
-                                                                    console.log('receipt:', receipt);
-                                                                    io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                                                    return res.send(JSON.stringify(groupBySqlResult));
+                                                                    if (sortedByEvictionCost.length >= config.maxCacheSize) {
+                                                                        deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                            contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                if (!err) {
+                                                                                    groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
+                                                                                    groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                                                                    groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
+                                                                                    groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
+                                                                                    console.log('receipt:', receipt);
+                                                                                    io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                                    return res.send(JSON.stringify(groupBySqlResult));
+                                                                                }
+                                                                                return res.send(err);
+                                                                            });
+                                                                        });
+                                                                    } else {
+                                                                        groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
+                                                                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                                                        groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
+                                                                        groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
+                                                                        console.log('receipt:', receipt);
+                                                                        io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                                                        return res.send(JSON.stringify(groupBySqlResult));
+                                                                    }
                                                                 });
                                                             });
                                                         });
@@ -1243,163 +1264,70 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                             // THEN MERGE IT WITH THE ONES IN CACHE
                                             // THEN SAVE BACK IN CACHE
                                             let bcTimeStart = microtime.nowDouble();
-                                            getFactsFromTo(mostEfficient.latestFact, latestId-1).then(deltas => {
+                                            getFactsFromTo(mostEfficient.latestFact, latestId - 1).then(deltas => {
                                                 let bcTimeEnd = microtime.nowDouble();
                                                 connection.query(createTable, function (error, results, fields) {
                                                     if (error) throw error;
                                                     deltas = helper.removeTimestamps(deltas);
                                                     console.log("CALCULATING GB FOR DELTAS:");
                                                     let sqlTimeStart = microtime.nowDouble();
-                                                        calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField, async function (groupBySqlResult, error) {
-                                                            let sqlTimeEnd = microtime.nowDouble();
-                                                            if(error){
+                                                    calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField, async function (groupBySqlResult, error) {
+                                                        let sqlTimeEnd = microtime.nowDouble();
+                                                        if (error) {
+                                                            return res.send(error);
+                                                        }
+                                                        let hashId = mostEfficient.hash.split("_")[1];
+                                                        let hashBody = mostEfficient.hash.split("_")[0];
+                                                        let allHashes = [];
+                                                        for (let i = 0; i <= hashId; i++) {
+                                                            allHashes.push(hashBody + "_" + i);
+                                                        }
+
+                                                        let cacheRetrieveTimeStart = microtime.nowDouble();
+                                                        client.mget(allHashes, async function (error, allCached) {
+                                                            let cacheRetrieveTimeEnd = microtime.nowDouble();
+                                                            if (error) {
+                                                                console.log(error);
                                                                 return res.send(error);
                                                             }
-                                                            let hashId = mostEfficient.hash.split("_")[1];
-                                                            let hashBody = mostEfficient.hash.split("_")[0];
-                                                            let allHashes = [];
-                                                            for (let i = 0; i <= hashId; i++) {
-                                                                allHashes.push(hashBody + "_" + i);
-                                                            }
 
-                                                            let cacheRetrieveTimeStart = microtime.nowDouble();
-                                                            client.mget(allHashes, async function (error, allCached) {
-                                                                let cacheRetrieveTimeEnd = microtime.nowDouble();
-                                                                if (error) {
-                                                                    console.log(error);
-                                                                    return res.send(error);
-                                                                }
-                                                          //      console.log("SSSSS");
-                                                          //      console.log(allCached);
-                                                                let cachedGroupBy = {};
-                                                                if(allCached.length === 1){ //it is <= of slice size, so it is not sliced
-                                                                    cachedGroupBy = JSON.parse(allCached[0]);
-                                                                } else { //it is sliced
-                                                                    let mergedArray = [];
-                                                                    for(const index in allCached){
-                                                                        let crnSub = allCached[index];
-                                                                        let crnSubArray = JSON.parse(crnSub);
-                                                                        for(const kv in crnSubArray){
-                                                                            if(kv !== "operation" && kv !== "groupByFields" && kv !== "field") {
-                                                                                mergedArray.push(crnSubArray[kv]);
-                                                                            } else {
-                                                                                for(const meta in crnSubArray){
-                                                                                    mergedArray.push({[meta]: crnSubArray[meta]});
-                                                                                }
-                                                                                break;
+                                                            let cachedGroupBy = {};
+                                                            if (allCached.length === 1) { //it is <= of slice size, so it is not sliced
+                                                                cachedGroupBy = JSON.parse(allCached[0]);
+                                                            } else { //it is sliced
+                                                                let mergedArray = [];
+                                                                for (const index in allCached) {
+                                                                    let crnSub = allCached[index];
+                                                                    let crnSubArray = JSON.parse(crnSub);
+                                                                    for (const kv in crnSubArray) {
+                                                                        if (kv !== "operation" && kv !== "groupByFields" && kv !== "field") {
+                                                                            mergedArray.push(crnSubArray[kv]);
+                                                                        } else {
+                                                                            for (const meta in crnSubArray) {
+                                                                                mergedArray.push({[meta]: crnSubArray[meta]});
                                                                             }
+                                                                            break;
                                                                         }
                                                                     }
-                                                                    let gbFinal = {};
-                                                                    for(const i in mergedArray){
-                                                                        let crnKey = Object.keys(mergedArray[i])[0];
-                                                                        gbFinal[crnKey] =  Object.values(mergedArray[i])[0];
-                                                                    }
-                                                                    cachedGroupBy = gbFinal;
                                                                 }
+                                                                let gbFinal = {};
+                                                                for (const i in mergedArray) {
+                                                                    let crnKey = Object.keys(mergedArray[i])[0];
+                                                                    gbFinal[crnKey] = Object.values(mergedArray[i])[0];
+                                                                }
+                                                                cachedGroupBy = gbFinal;
+                                                            }
 
-                                                                if (cachedGroupBy.field === view.aggregationField &&
-                                                                    view.operation === cachedGroupBy.operation) {
-                                                                    if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
-                                                                        let reductionTimeStart = microtime.nowDouble();
-                                                                        calculateReducedGroupBy(cachedGroupBy, view, gbFields, async function (reducedResult, error) {
-                                                                            let reductionTimeEnd = microtime.nowDouble();
-                                                                            if(error){
-                                                                                return res.send(error);
-                                                                            }
+                                                            if (cachedGroupBy.field === view.aggregationField &&
+                                                                view.operation === cachedGroupBy.operation) {
+                                                                if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
+                                                                    let reductionTimeStart = microtime.nowDouble();
+                                                                    calculateReducedGroupBy(cachedGroupBy, view, gbFields, async function (reducedResult, error) {
+                                                                        let reductionTimeEnd = microtime.nowDouble();
+                                                                        if (error) {
+                                                                            return res.send(error);
+                                                                        }
 
-                                                                            let viewNameSQL = view.SQLTable.split(" ");
-                                                                            viewNameSQL = viewNameSQL[3];
-                                                                            viewNameSQL = viewNameSQL.split('(')[0];
-
-                                                                            let rows = [];
-                                                                            let rowsDelta = [];
-                                                                            let lastCol = "";
-                                                                            let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-                                                                            lastCol = view.SQLTable.split(" ");
-                                                                            prelastCol = lastCol[lastCol.length - 4];
-                                                                            lastCol = lastCol[lastCol.length - 2];
-
-                                                                            //MERGE reducedResult with groupBySQLResult
-                                                                            let op = "";
-                                                                            if (view.operation === "SUM" || view.operation === "COUNT") {
-                                                                                op = "SUM"; //operation is set to "SUM" both for COUNT and SUM operation
-                                                                            } else if (view.operation === "MIN") {
-                                                                                op = "MIN"
-                                                                            } else if (view.operation === "MAX") {
-                                                                                op = "MAX";
-                                                                            }
-
-                                                                            reducedResult = transformations.transformGBFromSQL(reducedResult, op, lastCol, gbFields);
-                                                                            reducedResult.field = view.aggregationField;
-
-                                                                            await Object.keys(reducedResult).forEach(function (key, index) {
-                                                                                if(key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable'){
-                                                                                    let crnRow = JSON.parse(key);
-                                                                                    lastCol = view.SQLTable.split(" ");
-                                                                                    prelastCol = lastCol[lastCol.length - 4];
-                                                                                    lastCol = lastCol[lastCol.length - 2];
-                                                                                    let gbVals = Object.values(reducedResult);
-                                                                                    if (view.operation === "AVERAGE") {
-                                                                                        crnRow[prelastCol] = gbVals[index]["sum"];
-                                                                                        crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
-                                                                                    } else {
-                                                                                        crnRow[lastCol] = gbVals[index]; //BUG THERE ON AVERAGEEE
-                                                                                    }
-                                                                                    rows.push(crnRow);
-                                                                                }
-                                                                            });
-
-                                                                            await Object.keys(groupBySqlResult).forEach(function (key, index) {
-                                                                                if(key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable'){
-                                                                                    let crnRow = JSON.parse(key);
-                                                                                    lastCol = view.SQLTable.split(" ");
-                                                                                    prelastCol = lastCol[lastCol.length - 4];
-                                                                                    lastCol = lastCol[lastCol.length - 2];
-                                                                                    let gbVals = Object.values(groupBySqlResult);
-                                                                                    if (view.operation === "AVERAGE") {
-                                                                                        crnRow[prelastCol] = gbVals[index]["sum"];
-                                                                                        crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
-                                                                                    } else {
-                                                                                        crnRow[lastCol] = gbVals[index]; //BUG THERE ON AVERAGEEE
-                                                                                    }
-                                                                                    rowsDelta.push(crnRow);
-                                                                                }
-                                                                            });
-
-                                                                            let mergeTimeStart = microtime.nowDouble();
-                                                                            mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult, error) {
-                                                                                let mergeTimeEnd = microtime.nowDouble();
-                                                                                if(error){
-                                                                                    return res.send(error);
-                                                                                }
-                                                                                mergeResult.operation = view.operation;
-                                                                                mergeResult.field = view.aggregationField;
-                                                                                mergeResult.gbCreateTable = view.SQLTable;
-                                                                                //save on cache before return
-                                                                                let cacheSaveTimeStart = microtime.nowDouble();
-                                                                                saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
-                                                                                    console.log('error:', err);
-                                                                                    res.send(err);
-                                                                                }).on('transactionHash', (err) => {
-                                                                                    console.log('transactionHash:', err);
-                                                                                }).on('receipt', (receipt) => {
-                                                                                    let cacheSaveTimeEnd = microtime.nowDouble();
-                                                                                    delete mergeResult.gbCreateTable;
-                                                                                    mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);;
-                                                                                    mergeResult.bcTime = bcTimeEnd - bcTimeStart;
-                                                                                    mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                    mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                                    mergeResult.totalTime =  mergeResult.sqlTime +  mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-                                                                                    console.log('receipt:', receipt);
-                                                                                    io.emit('view_results', mergeResult);
-                                                                                    return res.send(mergeResult);
-                                                                                });
-                                                                            });
-                                                                        });
-                                                                    } else {
-                                                                        //group by fields of deltas and cached are the same so
-                                                                        //MERGE cached and groupBySqlResults
                                                                         let viewNameSQL = view.SQLTable.split(" ");
                                                                         viewNameSQL = viewNameSQL[3];
                                                                         viewNameSQL = viewNameSQL.split('(')[0];
@@ -1408,13 +1336,30 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         let rowsDelta = [];
                                                                         let lastCol = "";
                                                                         let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-                                                                        await Object.keys(cachedGroupBy).forEach(function (key, index) {
+                                                                        lastCol = view.SQLTable.split(" ");
+                                                                        prelastCol = lastCol[lastCol.length - 4];
+                                                                        lastCol = lastCol[lastCol.length - 2];
+
+                                                                        //MERGE reducedResult with groupBySQLResult
+                                                                        let op = "";
+                                                                        if (view.operation === "SUM" || view.operation === "COUNT") {
+                                                                            op = "SUM"; //operation is set to "SUM" both for COUNT and SUM operation
+                                                                        } else if (view.operation === "MIN") {
+                                                                            op = "MIN"
+                                                                        } else if (view.operation === "MAX") {
+                                                                            op = "MAX";
+                                                                        }
+
+                                                                        reducedResult = transformations.transformGBFromSQL(reducedResult, op, lastCol, gbFields);
+                                                                        reducedResult.field = view.aggregationField;
+
+                                                                        await Object.keys(reducedResult).forEach(function (key, index) {
                                                                             if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
                                                                                 let crnRow = JSON.parse(key);
                                                                                 lastCol = view.SQLTable.split(" ");
                                                                                 prelastCol = lastCol[lastCol.length - 4];
                                                                                 lastCol = lastCol[lastCol.length - 2];
-                                                                                let gbVals = Object.values(cachedGroupBy);
+                                                                                let gbVals = Object.values(reducedResult);
                                                                                 if (view.operation === "AVERAGE") {
                                                                                     crnRow[prelastCol] = gbVals[index]["sum"];
                                                                                     crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
@@ -1431,7 +1376,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 lastCol = view.SQLTable.split(" ");
                                                                                 prelastCol = lastCol[lastCol.length - 4];
                                                                                 lastCol = lastCol[lastCol.length - 2];
-                                                                                let gbVals = Object.values(cachedGroupBy);
+                                                                                let gbVals = Object.values(groupBySqlResult);
                                                                                 if (view.operation === "AVERAGE") {
                                                                                     crnRow[prelastCol] = gbVals[index]["sum"];
                                                                                     crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
@@ -1441,16 +1386,17 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 rowsDelta.push(crnRow);
                                                                             }
                                                                         });
+
                                                                         let mergeTimeStart = microtime.nowDouble();
                                                                         mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult, error) {
                                                                             let mergeTimeEnd = microtime.nowDouble();
-                                                                            //SAVE ON CACHE BEFORE RETURN
-                                                                            if(error){
+                                                                            if (error) {
                                                                                 return res.send(error);
                                                                             }
                                                                             mergeResult.operation = view.operation;
                                                                             mergeResult.field = view.aggregationField;
                                                                             mergeResult.gbCreateTable = view.SQLTable;
+                                                                            //save on cache before return
                                                                             let cacheSaveTimeStart = microtime.nowDouble();
                                                                             saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
                                                                                 console.log('error:', err);
@@ -1460,26 +1406,136 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             }).on('receipt', (receipt) => {
                                                                                 let cacheSaveTimeEnd = microtime.nowDouble();
                                                                                 delete mergeResult.gbCreateTable;
+                                                                                if (sortedByEvictionCost.length >= config.maxCacheSize) {
+                                                                                    deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                        contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                            if (!err) {
+                                                                                                mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
+                                                                                                mergeResult.bcTime = bcTimeEnd - bcTimeStart;
+                                                                                                mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                                mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                                mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                                console.log('receipt:', receipt);
+                                                                                                io.emit('view_results', mergeResult);
+                                                                                                return res.send(mergeResult);
+                                                                                            }
+                                                                                            return res.send(err);
+                                                                                        });
+                                                                                    });
+                                                                                } else {
+                                                                                    mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
+                                                                                    mergeResult.bcTime = bcTimeEnd - bcTimeStart;
+                                                                                    mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                    mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                    mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                    console.log('receipt:', receipt);
+                                                                                    io.emit('view_results', mergeResult);
+                                                                                    return res.send(mergeResult);
+                                                                                }
+                                                                            });
+                                                                        });
+                                                                    });
+                                                                } else {
+                                                                    //group by fields of deltas and cached are the same so
+                                                                    //MERGE cached and groupBySqlResults
+                                                                    let viewNameSQL = view.SQLTable.split(" ");
+                                                                    viewNameSQL = viewNameSQL[3];
+                                                                    viewNameSQL = viewNameSQL.split('(')[0];
+
+                                                                    let rows = [];
+                                                                    let rowsDelta = [];
+                                                                    let lastCol = "";
+                                                                    let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
+                                                                    await Object.keys(cachedGroupBy).forEach(function (key, index) {
+                                                                        if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
+                                                                            let crnRow = JSON.parse(key);
+                                                                            lastCol = view.SQLTable.split(" ");
+                                                                            prelastCol = lastCol[lastCol.length - 4];
+                                                                            lastCol = lastCol[lastCol.length - 2];
+                                                                            let gbVals = Object.values(cachedGroupBy);
+                                                                            if (view.operation === "AVERAGE") {
+                                                                                crnRow[prelastCol] = gbVals[index]["sum"];
+                                                                                crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
+                                                                            } else {
+                                                                                crnRow[lastCol] = gbVals[index]; //BUG THERE ON AVERAGEEE
+                                                                            }
+                                                                            rows.push(crnRow);
+                                                                        }
+                                                                    });
+
+                                                                    await Object.keys(groupBySqlResult).forEach(function (key, index) {
+                                                                        if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
+                                                                            let crnRow = JSON.parse(key);
+                                                                            lastCol = view.SQLTable.split(" ");
+                                                                            prelastCol = lastCol[lastCol.length - 4];
+                                                                            lastCol = lastCol[lastCol.length - 2];
+                                                                            let gbVals = Object.values(cachedGroupBy);
+                                                                            if (view.operation === "AVERAGE") {
+                                                                                crnRow[prelastCol] = gbVals[index]["sum"];
+                                                                                crnRow[lastCol] = gbVals[index]["count"]; //BUG THERE ON AVERAGEEE
+                                                                            } else {
+                                                                                crnRow[lastCol] = gbVals[index]; //BUG THERE ON AVERAGEEE
+                                                                            }
+                                                                            rowsDelta.push(crnRow);
+                                                                        }
+                                                                    });
+                                                                    let mergeTimeStart = microtime.nowDouble();
+                                                                    mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult, error) {
+                                                                        let mergeTimeEnd = microtime.nowDouble();
+                                                                        //SAVE ON CACHE BEFORE RETURN
+                                                                        if (error) {
+                                                                            return res.send(error);
+                                                                        }
+                                                                        mergeResult.operation = view.operation;
+                                                                        mergeResult.field = view.aggregationField;
+                                                                        mergeResult.gbCreateTable = view.SQLTable;
+                                                                        let cacheSaveTimeStart = microtime.nowDouble();
+                                                                        saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                            console.log('error:', err);
+                                                                            res.send(err);
+                                                                        }).on('transactionHash', (err) => {
+                                                                            console.log('transactionHash:', err);
+                                                                        }).on('receipt', (receipt) => {
+                                                                            let cacheSaveTimeEnd = microtime.nowDouble();
+                                                                            delete mergeResult.gbCreateTable;
+                                                                            if (sortedByEvictionCost.length >= config.maxCacheSize) {
+                                                                                deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                    contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                        if (!err) {
+                                                                                            mergeResult.bcTime = bcTimeEnd - bcTimeStart;
+                                                                                            mergeResult.sqlTime = (mergeTimeEnd - mergeTimeStart) + (sqlTimeEnd - sqlTimeStart);
+                                                                                            mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                            mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                            mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                            console.log('receipt:', receipt);
+                                                                                            io.emit('view_results', mergeResult);
+                                                                                            return res.send(mergeResult);
+                                                                                        }
+                                                                                        return res.send(err);
+                                                                                    });
+                                                                                });
+                                                                            } else {
                                                                                 mergeResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                                 mergeResult.sqlTime = (mergeTimeEnd - mergeTimeStart) + (sqlTimeEnd - sqlTimeStart);
                                                                                 mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                 mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                                mergeResult.totalTime =  mergeResult.bcTime +  mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
                                                                                 console.log('receipt:', receipt);
                                                                                 io.emit('view_results', mergeResult);
                                                                                 return res.send(mergeResult);
-                                                                            });
+                                                                            }
                                                                         });
-                                                                    }
+                                                                    });
                                                                 }
-                                                            });
+                                                            }
                                                         });
+                                                    });
                                                 });
                                             });
                                         }
                                     });
+                                    //  return res.send({allGbs: filteredGBs, mostEfficient: mostEfficient});
                                 }
-                                //  return res.send({allGbs: filteredGBs, mostEfficient: mostEfficient});
                             });
                         } else {
                             console.log(err);
@@ -1533,7 +1589,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                 return res.send(err);
             }
         });
-    }else {
+    } else {
         res.status(400);
         return  res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
