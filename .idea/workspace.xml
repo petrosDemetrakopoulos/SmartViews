@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="added cache eviction policy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/testDataGenerator.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -14,88 +17,45 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FavoritesManager">
+    <favorites_list name="interface" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testData/1Mfourcol.json">
-          <provider selected="true" editor-type-id="LargeFileEditor" />
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-82">
-              <caret line="1571" column="63" selection-start-line="1571" selection-start-column="63" selection-end-line="1571" selection-end-column="63" />
+            <state relative-caret-position="15">
+              <caret line="222" column="11" selection-start-line="222" selection-start-column="11" selection-end-line="222" selection-end-column="11" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/index.ejs">
+        <entry file="file://$PROJECT_DIR$/config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
+            <state relative-caret-position="120">
+              <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/form.ejs">
+        <entry file="file://$PROJECT_DIR$/contractGenerator.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7905">
-              <caret line="527" column="32" selection-start-line="527" selection-start-column="28" selection-end-line="527" selection-end-column="32" />
+            <state relative-caret-position="367">
+              <caret line="244" column="35" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/vendor/bootstrap/js/bootstrap.js">
+        <entry file="file://$PROJECT_DIR$/testDataGenerator.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="23565">
-              <caret line="1575" column="30" selection-start-line="1575" selection-start-column="30" selection-end-line="1575" selection-end-column="30" />
+            <state relative-caret-position="269">
+              <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/helper.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2460">
-              <caret line="164" column="38" selection-start-line="164" selection-start-column="38" selection-end-line="164" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="29" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/ABCD.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="900">
-              <caret line="60" selection-start-line="60" selection-end-line="60" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dataset_100.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -109,22 +69,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>prelas</find>
-      <find>mergeG</find>
-      <find>mergeGr</find>
-      <find>merge</find>
-      <find>.gbC</find>
-      <find>getFactsFr</find>
-      <find>calculateN</find>
-      <find>calculateRed</find>
-      <find>bcTim</find>
-      <find>mostE</find>
-      <find>append</find>
-      <find>*****</find>
-      <find>PERIP</find>
-      <find>progr</find>
-      <find>conso</find>
-      <find>status</find>
       <find>pbLi</find>
       <find>taskCo</find>
       <find>io.emit('pro</find>
@@ -139,6 +83,22 @@
       <find>deleteFro</find>
       <find>saveOn</find>
       <find>/add</find>
+      <find>&quot;A&quot;:0,&quot;B&quot;:29</find>
+      <find>&quot;A&quot;:1,&quot;B&quot;:32</find>
+      <find>&quot;A&quot;:77,&quot;B&quot;:10</find>
+      <find>&quot;A&quot;:51,&quot;B&quot;:70</find>
+      <find>addMan</find>
+      <find>in</find>
+      <find>addMany</find>
+      <find>runn</find>
+      <find>gbRu</find>
+      <find>runni</find>
+      <find>saveO</find>
+      <find>return res.send</find>
+      <find>getAll</find>
+      <find>latestId</find>
+      <find>calculateN</find>
+      <find>console.log</find>
     </findStrings>
     <replaceStrings>
       <replace>let</replace>
@@ -194,7 +154,6 @@
         <option value="$PROJECT_DIR$/.eslintignore" />
         <option value="$PROJECT_DIR$/.eslintrc.json" />
         <option value="$PROJECT_DIR$/views/dashboard.ejs" />
-        <option value="$PROJECT_DIR$/config.json" />
         <option value="$PROJECT_DIR$/contracts/SalesMin.sol" />
         <option value="$PROJECT_DIR$/contractGenerator.js" />
         <option value="$PROJECT_DIR$/templates/new_sales_min.json" />
@@ -204,12 +163,12 @@
         <option value="$PROJECT_DIR$/testData/1Mfourcol.json" />
         <option value="$PROJECT_DIR$/templates/ABCD.json" />
         <option value="$PROJECT_DIR$/testDataGenerator.js" />
+        <option value="$PROJECT_DIR$/config.json" />
         <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="26" />
     <option name="y" value="23" />
     <option name="width" value="1484" />
     <option name="height" value="813" />
@@ -442,14 +401,10 @@
       <workItem from="1562316578981" duration="12249000" />
       <workItem from="1562369130978" duration="355000" />
       <workItem from="1562404804232" duration="4058000" />
-      <workItem from="1562434923628" duration="1388000" />
-    </task>
-    <task id="LOCAL-00055" summary="slices functionality on write">
-      <created>1553189040521</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1553189040521</updated>
+      <workItem from="1562434923628" duration="3598000" />
+      <workItem from="1562487202742" duration="4670000" />
+      <workItem from="1562529111137" duration="3034000" />
+      <workItem from="1562579258364" duration="4905000" />
     </task>
     <task id="LOCAL-00056" summary="fixes in group by endpoint">
       <created>1553193212498</created>
@@ -787,11 +742,18 @@
       <option name="project" value="LOCAL" />
       <updated>1562369430981</updated>
     </task>
-    <option name="localTasksCounter" value="104" />
+    <task id="LOCAL-00104" summary="added cache eviction policy">
+      <created>1562437883400</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1562437883401</updated>
+    </task>
+    <option name="localTasksCounter" value="105" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="477482000" />
+    <option name="totallyTimeSpent" value="492301000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -803,16 +765,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="26" y="23" width="1484" height="813" extended-state="0" />
+    <frame x="0" y="23" width="1484" height="813" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6985646" visible="true" weight="0.18932039" />
-      <window_info id="Structure" order="1" sideWeight="0.3014354" side_tool="true" visible="true" weight="0.18932039" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.69184893" visible="true" weight="0.19694868" />
+      <window_info id="Structure" order="1" sideWeight="0.3081511" side_tool="true" visible="true" weight="0.19694868" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.870319" weight="0.2482663" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8654646" visible="true" weight="0.30235782" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -821,8 +783,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.4899857" weight="0.24246575" />
       <window_info anchor="bottom" id="Heroku" order="9" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.77461857" weight="0.4147018" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.12968099" side_tool="true" visible="true" weight="0.13037448" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.7718447" weight="0.4147018" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.13453537" side_tool="true" visible="true" weight="0.30235782" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -899,7 +861,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Major upgrades regarding ready views incremental calculation on no new facts case -- AVERAGE func case finally solved!" />
     <MESSAGE value="Major upgrades regarding ready views incremental calculation on no new facts case -- return it ready from cache if fields, operation is same and no new facts" />
     <MESSAGE value="calculate gb from begining ig not significant operation / fields in best cached group by" />
     <MESSAGE value="calculate gb from begining if no group bys have ever been calculated (aka cold start)" />
@@ -924,7 +885,8 @@
     <MESSAGE value="minor fix regarding progress report in fact insertion" />
     <MESSAGE value="minor ui fixes" />
     <MESSAGE value="added some missing time counts" />
-    <option name="LAST_COMMIT_MESSAGE" value="added some missing time counts" />
+    <MESSAGE value="added cache eviction policy" />
+    <option name="LAST_COMMIT_MESSAGE" value="added cache eviction policy" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/views/forms.ejs" />
@@ -1003,17 +965,17 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gb.py">
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
+        </state>
+      </provider>
       <provider selected="true" editor-type-id="live-pycharm">
         <state>
           <first_editor relative-caret-position="120">
             <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
           </first_editor>
           <second_editor />
-        </state>
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -1076,13 +1038,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="41" selection-start-line="7" selection-start-column="41" selection-end-line="7" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -1097,38 +1052,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/contractGenerator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3660">
-          <caret line="244" column="35" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/transformations.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="17" column="9" selection-start-line="17" selection-start-column="9" selection-end-line="17" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testDataGenerator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="26" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testData/100fourcol.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testData/1Mfourcol.json">
-      <provider selected="true" editor-type-id="LargeFileEditor" />
-      <provider editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
         </state>
       </provider>
     </entry>
@@ -1160,13 +1087,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/ABCD.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="60" selection-start-line="60" selection-end-line="60" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dataset_100.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1177,10 +1097,56 @@
     <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/testData/1Mfourcol.json">
+      <provider editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="LargeFileEditor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/ABCD.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testData/100fourcol.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="4143" selection-start-column="4130" selection-end-column="4143" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/index.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="19" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testDataGenerator.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contractGenerator.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="244" column="35" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-82">
-          <caret line="1571" column="63" selection-start-line="1571" selection-start-column="63" selection-end-line="1571" selection-end-column="63" />
+        <state relative-caret-position="15">
+          <caret line="222" column="11" selection-start-line="222" selection-start-column="11" selection-end-line="222" selection-end-column="11" />
         </state>
       </provider>
     </entry>
