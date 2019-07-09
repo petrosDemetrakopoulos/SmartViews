@@ -213,6 +213,7 @@
                                     <table class="table table-bordered">
                                     <tr>
                                         <th>Total time (s)</th>
+                                        <th>All total time(s)</th>
                                         <th>Blockchain time (s)</th>
                                         <th>SQL time (s)</th>
                                         <th>Cache save time (s)</th>
@@ -220,6 +221,7 @@
                                     </tr>
                                     <tr>
                                         <td id="total"></td>
+                                        <td id="allTotal"></td>
                                         <td id="bc"></td>
                                         <td id="sql"></td>
                                         <td id="cacheSave"></td>
@@ -271,6 +273,8 @@
 <script>
     var socket = io();
     var xhttpDep = new XMLHttpRequest();
+    var gbXhttp = new XMLHttpRequest();
+    let gbRunning = false;
     socket.on('progress', function(msg){
         $('#pbLi').css("display", "block");
         $('.inputProgress').css("visibility", "");
@@ -318,11 +322,12 @@
     });
 
     socket.on('view_results', function(msg){
+        gbXhttp = null;
         $("#outputView").val(msg);
     });
 
     let fl = "";
-    const $fileInput = document.getElementById('dataset')
+    const $fileInput = document.getElementById('dataset');
     $fileInput.addEventListener('change', function (event) {
         if(event.target.files.length > 0){
             fl = event.target.files[0];
@@ -339,6 +344,7 @@
     });
 
     $(document).on('click', '#buttonFetchView', function(){
+        gbRunning = true;
         fetchViewByName($("#viewName").val())
     });
 
@@ -394,8 +400,8 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
     }
 
     function fetchViewByName(viewName) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
+       gbXhttp = new XMLHttpRequest();
+        gbXhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var editedResp = this.responseText.replace(/\\/g, '');
                 $("#outputView").val(editedResp.replace('"{', "'{").replace('}"', "}'"));
@@ -408,6 +414,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 let bcTimeIndex = -1;
                 let cacheTimeIndex = -1;
                 let totalTimeIndex = -1;
+                let allTotalTimeIndex = -1
                 let cacheRetrieveIndex = -1;
                 for(let i =0; i < meta.length; i++){
                     if(meta[i].indexOf("operation") >= 0){
@@ -428,6 +435,10 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                     if(meta[i].indexOf("totalTime") >= 0){
                         totalTimeIndex = i;
                     }
+                    if(meta[i].indexOf("allTotal") >= 0){
+                        allTotalTimeIndex = i;
+                    }
+
                 }
                 for(let i = usefullMetaIndex; i < meta.length; i++){
                     usefullMeta.push(meta[i]);
@@ -437,6 +448,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 let bcTime = 0;
                 let sqlTime = 0;
                 let cacheSaveTime = 0;
+                let allTotalTime = 0;
 
                 if(cacheRetrieveIndex > -1){
                     cacheRetrieveTime =  parseFloat(meta[cacheRetrieveIndex].split(":")[1]);
@@ -453,9 +465,13 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 if(cacheTimeIndex > -1){
                     cacheSaveTime =  parseFloat(meta[cacheTimeIndex].split(":")[1]);
                 }
+                if(allTotalTimeIndex > -1){
+                    allTotalTime =  parseFloat(meta[allTotalTimeIndex].split(":")[1]);
+                }
 
 
                 $('#total').html(totalTime.toFixed(5));
+                $('#allTotal').html(allTotalTime.toFixed(5));
                 $('#bc').html(bcTime.toFixed(5));
                 $('#sql').html(sqlTime.toFixed(5));
                 $('#cacheSave').html(cacheSaveTime.toFixed(5));
@@ -505,11 +521,15 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 }
                 table_body+='</table>';
                 $('.tblResults').html(table_body);
-
+                gbXhttp = null;
             }
         };
-        xhttp.open("GET", "/getViewByName/" + viewName, true);
-        xhttp.send();
+        gbXhttp.ontimeout = function (e) {
+            console.log("TIMEOUT");
+            gbXhttp.abort();
+        };
+        gbXhttp.open("GET", "/getViewByName/" + viewName, true);
+        gbXhttp.send();
     }
 
 function getFactById(id) {

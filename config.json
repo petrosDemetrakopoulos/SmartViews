@@ -6,5 +6,5 @@
   "redisPort": 6379,
   "redisIP": "127.0.0.1",
   "blockchainIP": "http://localhost:8545",
-  "cacheEnabled": false
+  "cacheEnabled": true
 }

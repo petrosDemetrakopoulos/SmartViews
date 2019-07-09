@@ -57,10 +57,6 @@ app.get('/', function (req, res) {
     })
 });
 
-io.on('connection', function (socket) {
-    console.log('a user connected');
-});
-
 app.get('/dashboard', function (req, res) {
     fs.readdir('./templates', function (err, items) {
         web3.eth.getBlockNumber().then(blockNum => {
@@ -330,6 +326,7 @@ async function getAllFacts(factsLength) {
                 for (let  j = 0; j < len / 2; j ++) {
                     delete result2[j];
                 }
+                console.log("got fact " + i);
                 if ('payload' in result2) {
                     let crnLn = JSON.parse(result2['payload']);
                     crnLn.timestamp = result2['timestamp'];
@@ -465,11 +462,6 @@ function saveOnCache(gbResult, operation, latestId){
     md5sum = crypto.createHash('md5');
     md5sum.update(JSON.stringify(gbResult));
     let hash = md5sum.digest('hex');
-    console.log(hash);
-    console.log('**');
-    console.log(JSON.stringify(gbResult));
-    console.log('**');
-    console.log(gbResult);
     let gbResultSize = Object.keys(gbResult).length;
     let slicedGbResult = [];
     if(gbResultSize > config.cacheSlice){
@@ -490,8 +482,6 @@ function saveOnCache(gbResult, operation, latestId){
         }
         slicedGbResult.push(metaKeys);
     }
-    console.log("SLICED GB RESULT = ");
-    console.log(slicedGbResult);
     let colSize = gbResult.groupByFields.length;
     let columns = JSON.stringify({fields: gbResult.groupByFields});
     let num = 0;
@@ -821,6 +811,7 @@ function deleteFromCache(evicted, callback){
 }
 
 app.get('/getViewByName/:viewName', function (req,res) {
+    let totalStart = microtime.nowDouble();
     let fact_tbl = require('./templates/ABCD');
     //let fact_tbl = require('./templates/new_sales_min');
     let viewsDefined = fact_tbl.views;
@@ -842,7 +833,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
 
     console.log("VIEW BY NAME ENDPOINT HIT AGAIN");
     console.log(gbRunning);
-    if (!gbRunning) {
+    if (!gbRunning && !running) {
         gbRunning = true;
         let gbFields = [];
         if (view.gbFields.indexOf('|') > -1) {
@@ -861,6 +852,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
         }
         if (contract) {
             if (config.cacheEnabled) {
+                console.log("cache enabled = TRUE");
             let getGroupIdTimeStart = microtime.nowDouble();
             contract.methods.groupId().call(function (err, result) {
                 let getGroupIdTimeEnd = microtime.nowDouble();
@@ -1110,11 +1102,13 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 if (sortedByEvictionCost.length >= config.maxCacheSize) {
                                                                                     deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                         contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                            let totalEnd = microtime.nowDouble();
                                                                                             if (!err) {
                                                                                                 groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                                 groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) + (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
                                                                                                 groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                                 groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
+                                                                                                groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                                 io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
                                                                                                 gbRunning = false;
                                                                                                 return res.send(JSON.stringify(groupBySqlResult).replace("\\", ""));
@@ -1124,10 +1118,12 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                         });
                                                                                     });
                                                                                 } else {
+                                                                                    let totalEnd = microtime.nowDouble();
                                                                                     groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                     groupBySqlResult.sqlTime = (sqlTimeEndCT - sqlTimeStartCT) + (sqlTimeEndInsert - sqlTimeStartInsert) + (sqlTimeEndSelect - sqlTimeStartSelect) + (sqlTimeEndDrop - sqlTimeStartDrop);
                                                                                     groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                     groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
+                                                                                    groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                     io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
                                                                                     gbRunning = false;
                                                                                     return res.send(JSON.stringify(groupBySqlResult).replace("\\", ""));
@@ -1169,11 +1165,13 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         if (sortedByEvictionCost.length >= config.maxCacheSize) {
                                                                             deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                 contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                    let totalEnd = microtime.nowDouble();
                                                                                     if (!err) {
                                                                                         groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
                                                                                         groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                         groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                                                                        groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                                         gbRunning = false;
@@ -1184,10 +1182,12 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 });
                                                                             });
                                                                         } else {
+                                                                            let totalEnd = microtime.nowDouble();
                                                                             groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
                                                                             groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                             groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                             groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                                                            groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                             console.log('receipt:', receipt);
                                                                             io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                             gbRunning = false;
@@ -1201,10 +1201,12 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                     } else {
                                                         if (cachedGroupBy.field === view.aggregationField &&
                                                             view.operation === cachedGroupBy.operation) {
+                                                            let totalEnd = microtime.nowDouble();
                                                             //this means we just have to return the group by stored in cache
                                                             //field, operation are same and no new records written
                                                             cachedGroupBy.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                             cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
+                                                            cachedGroupBy.allTotal = totalEnd - totalStart;
                                                             io.emit('view_results', JSON.stringify(cachedGroupBy));
                                                             gbRunning = false;
                                                             return res.send(JSON.stringify(cachedGroupBy));
@@ -1240,11 +1242,13 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         if (sortedByEvictionCost.length >= config.maxCacheSize) {
                                                                             deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                 contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                    let totalEnd = microtime.nowDouble();
                                                                                     if (!err) {
                                                                                         groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                                         groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
                                                                                         groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
                                                                                         groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
+                                                                                        groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                                         gbRunning = false;
@@ -1255,10 +1259,12 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 });
                                                                             });
                                                                         } else {
+                                                                            let totalEnd = microtime.nowDouble();
                                                                             groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                             groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
                                                                             groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
                                                                             groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
+                                                                            groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                             console.log('receipt:', receipt);
                                                                             io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                             gbRunning = false;
@@ -1426,12 +1432,20 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                     if (sortedByEvictionCost.length >= config.maxCacheSize) {
                                                                                         deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                             contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                                let totalEnd = microtime.nowDouble();
                                                                                                 if (!err) {
                                                                                                     mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
                                                                                                     mergeResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                                                     mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                                     mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                                     mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                                    mergeResult.allTotal = totalEnd - totalStart;
+                                                                                                    console.log("sql time = " + mergeResult.sqlTime);
+                                                                                                    console.log("bc time = " + mergeResult.bcTime);
+                                                                                                    console.log("cache save time = " + mergeResult.cacheSaveTime);
+                                                                                                    console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
+                                                                                                    console.log("total time = " + mergeResult.totalTime);
+                                                                                                    console.log("all total time = " + mergeResult.allTotal);
                                                                                                     console.log('receipt:', receipt);
                                                                                                     io.emit('view_results', mergeResult);
                                                                                                     gbRunning = false;
@@ -1442,11 +1456,19 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                             });
                                                                                         });
                                                                                     } else {
+                                                                                        let totalEnd = microtime.nowDouble();
                                                                                         mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
                                                                                         mergeResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                                         mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                         mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                         mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                        mergeResult.allTotal = totalEnd - totalStart;
+                                                                                        console.log("sql time = " + mergeResult.sqlTime);
+                                                                                        console.log("bc time = " + mergeResult.bcTime);
+                                                                                        console.log("cache save time = " + mergeResult.cacheSaveTime);
+                                                                                        console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
+                                                                                        console.log("total time = " + mergeResult.totalTime);
+                                                                                        console.log("all total time = " + mergeResult.allTotal);
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', mergeResult);
                                                                                         gbRunning = false;
@@ -1523,12 +1545,20 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                 if (sortedByEvictionCost.length >= config.maxCacheSize) {
                                                                                     deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                         contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+                                                                                            let totalEnd = microtime.nowDouble();
                                                                                             if (!err) {
                                                                                                 mergeResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                                                 mergeResult.sqlTime = (mergeTimeEnd - mergeTimeStart) + (sqlTimeEnd - sqlTimeStart);
                                                                                                 mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                                 mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                                 mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                                mergeResult.allTotal = totalEnd - totalStart;
+                                                                                                console.log("sql time = " + mergeResult.sqlTime);
+                                                                                                console.log("bc time = " + mergeResult.bcTime);
+                                                                                                console.log("cache save time = " + mergeResult.cacheSaveTime);
+                                                                                                console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
+                                                                                                console.log("total time = " + mergeResult.totalTime);
+                                                                                                console.log("all total time = " + mergeResult.allTotal);
                                                                                                 console.log('receipt:', receipt);
                                                                                                 io.emit('view_results', mergeResult);
                                                                                                 gbRunning = false;
@@ -1539,11 +1569,19 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                         });
                                                                                     });
                                                                                 } else {
+                                                                                    let totalEnd = microtime.nowDouble();
                                                                                     mergeResult.bcTime = bcTimeEnd - bcTimeStart;
                                                                                     mergeResult.sqlTime = (mergeTimeEnd - mergeTimeStart) + (sqlTimeEnd - sqlTimeStart);
                                                                                     mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                     mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                     mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                    mergeResult.allTotal = totalEnd - totalStart;
+                                                                                    console.log("sql time = " + mergeResult.sqlTime);
+                                                                                    console.log("bc time = " + mergeResult.bcTime);
+                                                                                    console.log("cache save time = " + mergeResult.cacheSaveTime);
+                                                                                    console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
+                                                                                    console.log("total time = " + mergeResult.totalTime);
+                                                                                    console.log("all total time = " + mergeResult.allTotal);
                                                                                     console.log('receipt:', receipt);
                                                                                     io.emit('view_results', mergeResult);
                                                                                     gbRunning = false;
@@ -1601,11 +1639,18 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                     }).on('receipt', (receipt) => {
                                         let cacheSaveTimeEnd = microtime.nowDouble();
                                         delete groupBySqlResult.gbCreateTable;
+                                        let totalEnd = microtime.nowDouble();
                                         console.log('receipt:', receipt);
                                         groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
                                         groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
                                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                         groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                        groupBySqlResult.allTotal = totalEnd - totalStart;
+                                        console.log("sql time = " + groupBySqlResult.sqlTime);
+                                        console.log("bc time = " + groupBySqlResult.bcTime);
+                                        console.log("cache save time = " + groupBySqlResult.cacheSaveTime);
+                                        console.log("total time = " + groupBySqlResult.totalTime);
+                                        console.log("all total time = " + groupBySqlResult.allTotal);
                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
                                         gbRunning = false;
                                         return res.send(groupBySqlResult);
@@ -1621,8 +1666,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                 }
             });
         } else {
-                //cache not enabled, so just fetch everything everytime from blockcahin and then make calculation in sql
-                //just like the case that the cache is originaly empty
+                console.log("cache enabled = FALSE");
+                //cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
+                //just like the case that the cache is originally empty
                 let bcTimeStart = microtime.nowDouble();
                 contract.methods.dataId().call(function (err, latestId) {
                     if (err) throw err;
@@ -1637,6 +1683,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                         let sqlTimeStart = microtime.nowDouble();
                         calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                             let sqlTimeEnd = microtime.nowDouble();
+                            let totalEnd = microtime.nowDouble();
                             if (error) {
                                 gbRunning = false;
                                 return res.send(JSON.stringify(error))
@@ -1646,6 +1693,11 @@ app.get('/getViewByName/:viewName', function (req,res) {
                             groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
                             groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
                             groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime;
+                            groupBySqlResult.allTotal = totalEnd - totalStart;
+                            console.log("sql time = " + groupBySqlResult.sqlTime);
+                            console.log("bc time = " + groupBySqlResult.bcTime);
+                            console.log("total time = " + groupBySqlResult.totalTime);
+                            console.log("all total time = " + groupBySqlResult.allTotal);
                             io.emit('view_results', JSON.stringify(groupBySqlResult));
                             gbRunning = false;
                             return res.send(groupBySqlResult);

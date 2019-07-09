@@ -8,9 +8,6 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
     if (operation === 'COUNT') {
         console.log('OPERATION = COUNT');
         for (let i = 0; i < groupByResult.length; i++) {
-            console.log("/////");
-            console.log(groupByResult[i]);
-            console.log("/////");
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
             let filtered = groupByResult[i];
@@ -21,13 +18,10 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
         console.log('OPERATION = SUM');
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['SUM(' + aggregateField + ')'];
-            console.log(crnCount);
             delete groupByResult[i]['SUM(' + aggregateField + ')'];
             let filtered = groupByResult[i];
             transformed[JSON.stringify(filtered)] = crnCount;
         }
-        console.log("TRANSFORMED DURING TRANSFORMATION");
-        console.log(transformed);
         transformed['operation'] = 'SUM';
     } else if (operation === 'MIN') {
         console.log('OPERATION = MIN');
@@ -196,8 +190,6 @@ function calculateReducedGB (operation, aggregateField, cachedGroupBy, gbFields)
             let crnKey = uniqueKeysArray[j];
             respObj[crnKey] = sumPerKey[j];
         }
-        console.log(uniqueKeysArray);
-        console.log(sumPerKey);
     } else if (operation === 'MIN') {
         let minPerKey = [];
         for (let j = 0; j < uniqueKeysArray.length; j++) {
@@ -247,8 +239,6 @@ function calculateReducedGB (operation, aggregateField, cachedGroupBy, gbFields)
             let crnKey = uniqueKeysArray[j];
             respObj[crnKey] = avgPerKey[j];
         }
-        console.log(uniqueKeysArray);
-        console.log(avgPerKey);
     }
     return respObj;
 }
