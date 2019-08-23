@@ -36,7 +36,7 @@ async function generateContract(templateFileName) {
         let crnProp = fact_tbl.properties[i];
         properties += "\t\t" + crnProp.data_type + " " + crnProp.key + ";\n";
     }
-    let groupStruct = "\tstruct groupBy{ \n  \t\tstring hash;\n" + '  \t\tuint latestFact;\n' + '  \t\tuint colSize;\n' +
+    let groupStruct = "\tstruct groupBy{ \n  \t\tstring hash;\n" + '  \t\tuint latestFact;\n'  + '        uint size;\n\t' + '\t\tuint colSize;\n' +
         '  \t\tstring columns;\n' + "        uint timestamp;\n\t}\n";
     let gbView = "\tstruct gbView{ \n  \t\tstring viewDef;\n\t}\n"; // viewDef is a strigifiedJSON defining a view
     let viewMapping = "\tmapping(uint => gbView) public gbViews;\n\n";
@@ -100,11 +100,12 @@ async function generateContract(templateFileName) {
         "\t\treturn (gbViews[viewId-1].viewDef, viewId-1);\n" +
         "\t}\n\n";
 
-    let addGroupBy = "\tfunction addGroupBy(string hash, bytes32 category, uint latestFact, uint colSize, string columns) public returns(string groupAdded, uint groupID){\n" +
+    let addGroupBy = "\tfunction addGroupBy(string hash, bytes32 category, uint latestFact, uint colSize, uint size, string columns) public returns(string groupAdded, uint groupID){\n" +
         "\t\tgroupBys[groupId].hash = hash;\n" +
         "\t\tgroupBys[groupId].timestamp = now;\n" +
         "\t\tgroupBys[groupId].latestFact = latestFact;\n" +
         "\t\tgroupBys[groupId].colSize = colSize;\n" +
+        "\t\tgroupBys[groupId].size = size;\n" +
         "\t\tgroupBys[groupId].columns = columns;\n" +
         "\t\tif(category == COUNT_LITERAL){\n" +
         "\t\t\tlastCount  = groupID;\n" +
@@ -121,8 +122,8 @@ async function generateContract(templateFileName) {
         "\t\treturn (groupBys[groupId-1].hash, groupId-1);\n" +
         "\t}\n\n";
 
-    let getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp, uint latFact, string cols){\n" +
-        "\t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns);\n" +
+    let getGroupBy = "\tfunction getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp, uint latFact, string cols, uint sz){\n" +
+        "\t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns, groupBys[idGroup].size);\n" +
         "\t}\n\n";
 
     let getLatestGroupBy = "\tfunction getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb, uint colSz, string gbCols){\n" +
@@ -200,18 +201,19 @@ async function generateContract(templateFileName) {
         '\t\treturn(allViews);\n' +
         '\t}\n';
 
-    let getAllGBs = '\tfunction getAllGroupBys(uint groupById) public returns (string[] hashes, uint[] latFacts, uint[] columnSize, string[] columns, uint[] gbTimestamp){\n';
-    let getAllGBsDec = '\t\tstring[] memory allHashes = new string[](groupById);\n' + '\t\tuint[] memory allLatFact = new uint[](groupById);\n' + '\t\tuint[] memory allColSize = new uint[](groupById);\n' + '\t\tuint[] memory allTs = new uint[](groupById);\n'
+    let getAllGBs = '\tfunction getAllGroupBys(uint groupById) public returns (string[] hashes, uint[] latFacts, uint[] columnSize, uint[] size,  string[] columns, uint[] gbTimestamp){\n';
+    let getAllGBsDec = '\t\tstring[] memory allHashes = new string[](groupById);\n' + '\t\tuint[] memory allLatFact = new uint[](groupById);\n' + '\t\tuint[] memory allColSize = new uint[](groupById);\n' + '\t\tuint[] memory allSize = new uint[](groupById);\n' + '\t\tuint[] memory allTs = new uint[](groupById);\n'
         + '\t\tstring[] memory allColumns = new string[](groupById);\n';
     let getGBsLoop = '\t\tfor(uint i =0; i < groupById; i++){\n' +
         '\t\t groupBy storage crnGb = groupBys[i];\n' +
         '\t\t allHashes[i] = crnGb.hash;\n' +
         '\t\t allLatFact[i] = crnGb.latestFact;\n' +
         '\t\t allColSize[i] = crnGb.colSize;\n' +
+        '\t\t allSize[i] = crnGb.size;\n' +
         '\t\t allColumns[i] = crnGb.columns;\n' +
         '\t\t allTs[i] = crnGb.timestamp;\n' +
         '\t\t}\n' +
-        '\t\treturn(allHashes, allLatFact, allColSize, allColumns, allTs);\n' +
+        '\t\treturn(allHashes, allLatFact, allColSize, allSize, allColumns, allTs);\n' +
         '\t}\n';
 
 

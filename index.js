@@ -436,6 +436,29 @@ function cacheEvictionCost(groupBys) {
     return groupBys;
 }
 
+function cacheEvictionCostOfficial(groupBys, latestFact) { //the functio we write on paper
+    //where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
+    //which is the cost to materialize view V from view Vi (where V < Vi)
+    let a = 10; //factor of deltas
+    let sizeDeltas = 0;
+    let sizeCached = 0; //crnGroubBy
+    for(let i = 0; i < groupBys.length; i++){
+        let crnGroupBy = groupBys[i];
+        console.log("@@");
+        console.log(crnGroupBy);
+        console.log("@@");
+        sizeDeltas = latestFact - Number.parseInt(crnGroupBy.latestFact); //latestFact is the latest fact written in bc
+        sizeCached = Number.parseInt(crnGroupBy.size);
+        console.log("sizeCached = " + sizeCached);
+        console.log("sizeDeltas = " + sizeDeltas);
+        let crnCost =  a * sizeDeltas + sizeCached;
+        console.log("final cost = " + crnCost);
+        crnGroupBy.cacheEvictionCost = crnCost;
+        groupBys[i] = crnGroupBy;
+    }
+    return groupBys;
+}
+
 function containsAllFields(transformedArray, view) {
     for (let i = 0; i < transformedArray.length; i++) {
         let containsAllFields = true;
@@ -497,7 +520,7 @@ function saveOnCache(gbResult, operation, latestId){
         crnHash = hash + "_0";
         client.set(crnHash, JSON.stringify(gbResult), redis.print);
     }
-   return contract.methods.addGroupBy(crnHash, Web3.utils.fromAscii(operation), latestId, colSize, columns).send(mainTransactionObject);
+   return contract.methods.addGroupBy(crnHash, Web3.utils.fromAscii(operation), latestId, colSize, gbResultSize, columns).send(mainTransactionObject);
 }
 
 
@@ -859,13 +882,16 @@ app.get('/getViewByName/:viewName', function (req,res) {
                 if (!err) {
                     if (result > 0) { //At least one group by already exists
                         let getAllGBsFromBCTimeStart = microtime.nowDouble();
-                        contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
+                        contract.methods.getAllGroupBys(result).call(async function (err, resultGB) {
                             let getAllGBsFromBCTimeEnd = microtime.nowDouble();
                             if (!err) {
                                 let len = Object.keys(resultGB).length;
                                 for (let j = 0; j < len / 2; j++) {
                                     delete resultGB[j];
                                 }
+                                console.log("%%%%%");
+                                console.log(resultGB);
+                                console.log("%%%%%");
                                 let transformedArray = [];
                                 for (let j = 0; j < resultGB.hashes.length; j++) {
                                     transformedArray[j] = {
@@ -874,6 +900,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                         columnSize: resultGB.columnSize[j],
                                         columns: resultGB.columns[j],
                                         gbTimestamp: resultGB.gbTimestamp[j],
+                                        size: resultGB.size[j],
                                         id: j
                                     };
                                 }
@@ -887,7 +914,13 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                     }
                                     sortedByEvictionCost.push(transformedArray[i]);
                                 }
-                                sortedByEvictionCost = cacheEvictionCost(sortedByEvictionCost);
+
+                                await contract.methods.dataId().call(function (err, latestId) {
+                                    sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId);
+                                });
+                                console.log("cache eviction costs assigned:");
+                                console.log(sortedByEvictionCost);
+
 
                                 sortedByEvictionCost.sort(function (a, b) {
                                     if (config.cacheEvictionPolicy === "FIFO") {

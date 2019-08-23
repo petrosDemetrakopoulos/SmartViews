@@ -4,14 +4,9 @@
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/contractGenerator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/testDataGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transformations.js" beforeDir="false" afterPath="$PROJECT_DIR$/transformations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/.tmp/" />
-    <ignored path="$PROJECT_DIR$/temp/" />
-    <ignored path="$PROJECT_DIR$/tmp/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,76 +16,6 @@
   <component name="FavoritesManager">
     <favorites_list name="interface" />
   </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="57" column="3" selection-start-line="57" selection-start-column="3" selection-end-line="57" selection-end-column="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/transformations.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="240" column="9" selection-start-line="240" selection-start-column="9" selection-end-line="240" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/index.ejs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
-              <caret line="42" column="24" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/form.ejs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="322" lean-forward="true" selection-start-line="322" selection-end-line="322" />
-              <folding>
-                <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testDataGenerator.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="18" lean-forward="true" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/contractGenerator.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3660">
-              <caret line="244" column="35" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
-  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -98,157 +23,17 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>gbRu</find>
-      <find>runni</find>
-      <find>saveO</find>
-      <find>return res.send</find>
-      <find>getAll</find>
-      <find>latestId</find>
-      <find>calculateN</find>
-      <find>console.log</find>
-      <find>VIEW BY</find>
-      <find>getAllFa</find>
-      <find>getAllFacts(</find>
-      <find>deployContractSales</find>
-      <find>fetchVi</find>
-      <find>we have deltas</find>
-      <find>a user</find>
-      <find>tot</find>
-      <find>getView</find>
-      <find>allTo</find>
-      <find>load</find>
-      <find>load_</find>
-      <find>total</find>
-      <find>testDa</find>
-      <find>getV</find>
-      <find>gbXhttp</find>
-      <find>io.emit</find>
-      <find>addMan</find>
-      <find>addFact</find>
-      <find>getAllFacts</find>
-      <find>*</find>
-      <find>conso</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>let</replace>
-      <replace>function (</replace>
-      <replace>) {</replace>
-      <replace>if (</replace>
-      <replace>'</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/contracts/DataHandler.sol" />
-        <option value="$PROJECT_DIR$/contracts/FactTable.sol" />
-        <option value="$PROJECT_DIR$/templates/fact_tbl.json" />
-        <option value="$PROJECT_DIR$/templates/cars.json" />
-        <option value="$PROJECT_DIR$/contracts/1string.json" />
-        <option value="$PROJECT_DIR$/contracts/2strings.json" />
-        <option value="$PROJECT_DIR$/contracts/3strings.json" />
-        <option value="$PROJECT_DIR$/templates/1string.json" />
-        <option value="$PROJECT_DIR$/templates/2strings.json" />
-        <option value="$PROJECT_DIR$/templates/3strings.json" />
-        <option value="$PROJECT_DIR$/templates/4strings.json" />
-        <option value="$PROJECT_DIR$/templates/5strings.json" />
-        <option value="$PROJECT_DIR$/templates/1int.json" />
-        <option value="$PROJECT_DIR$/templates/2int.json" />
-        <option value="$PROJECT_DIR$/templates/3int.json" />
-        <option value="$PROJECT_DIR$/templates/4int.json" />
-        <option value="$PROJECT_DIR$/templates/5int.json" />
-        <option value="$PROJECT_DIR$/templates/1bytes.json" />
-        <option value="$PROJECT_DIR$/contracts/bytes1.sol" />
-        <option value="$PROJECT_DIR$/templates/2bytes.json" />
-        <option value="$PROJECT_DIR$/templates/4bytes.json" />
-        <option value="$PROJECT_DIR$/templates/5bytes.json" />
-        <option value="$PROJECT_DIR$/templates/3bytes.json" />
-        <option value="$PROJECT_DIR$/contracts/Cars.sol" />
-        <option value="$PROJECT_DIR$/templates/sales.json" />
-        <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/views/index.ejs" />
-        <option value="$PROJECT_DIR$/public/js/bootstrap-notify.js" />
-        <option value="$PROJECT_DIR$/contracts/int2.sol" />
-        <option value="$PROJECT_DIR$/gb.py" />
-        <option value="$PROJECT_DIR$/dataset.json" />
-        <option value="$PROJECT_DIR$/contracts/sales_new.sol" />
-        <option value="$PROJECT_DIR$/contracts/sales_json.sol" />
-        <option value="$PROJECT_DIR$/contracts/Sales.sol" />
-        <option value="$PROJECT_DIR$/dataset_100.json" />
-        <option value="$PROJECT_DIR$/templates/new_sales.json" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/.eslintignore" />
-        <option value="$PROJECT_DIR$/.eslintrc.json" />
-        <option value="$PROJECT_DIR$/views/dashboard.ejs" />
-        <option value="$PROJECT_DIR$/contracts/SalesMin.sol" />
-        <option value="$PROJECT_DIR$/contractGenerator.js" />
-        <option value="$PROJECT_DIR$/templates/new_sales_min.json" />
-        <option value="$PROJECT_DIR$/helper.js" />
-        <option value="$PROJECT_DIR$/testData/1Mfourcol.json" />
-        <option value="$PROJECT_DIR$/templates/ABCD.json" />
-        <option value="$PROJECT_DIR$/testDataGenerator.js" />
-        <option value="$PROJECT_DIR$/views/form.ejs" />
-        <option value="$PROJECT_DIR$/index.js" />
-        <option value="$PROJECT_DIR$/config.json" />
-        <option value="$PROJECT_DIR$/transformations.js" />
-      </list>
-    </option>
-  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-40" />
-    <option name="y" value="23" />
-    <option name="width" value="1484" />
+    <option name="x" value="-1" />
+    <option name="y" value="34" />
+    <option name="width" value="1440" />
     <option name="height" value="813" />
   </component>
+  <component name="ProjectId" id="1OnOcEjU2adIgnxqN7s7rKyAy8W" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="contracts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="testData" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="interface" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="interface" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
-  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -444,14 +229,12 @@
       <workItem from="1562579258364" duration="5031000" />
       <workItem from="1562588139590" duration="7962000" />
       <workItem from="1562600109396" duration="9897000" />
-      <workItem from="1562668904582" duration="34489000" />
-    </task>
-    <task id="LOCAL-00057" summary="changed slice size">
-      <created>1553193278232</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1553193278232</updated>
+      <workItem from="1562668904582" duration="34540000" />
+      <workItem from="1562710110145" duration="317000" />
+      <workItem from="1562743358837" duration="15297000" />
+      <workItem from="1564609977137" duration="341000" />
+      <workItem from="1566559319744" duration="475000" />
+      <workItem from="1566560250590" duration="4611000" />
     </task>
     <task id="LOCAL-00058" summary="emit gb result to socket">
       <created>1553198009682</created>
@@ -789,11 +572,15 @@
       <option name="project" value="LOCAL" />
       <updated>1562584844012</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="- some error handling&#10;- add time counts where missing">
+      <created>1562709198904</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1562709198905</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
-  </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="544775000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -804,59 +591,6 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-40" y="23" width="1484" height="813" extended-state="0" />
-    <editor active="true" />
-    <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.68591225" visible="true" weight="0.20527045" />
-      <window_info id="Structure" order="1" sideWeight="0.31408775" side_tool="true" weight="0.20249653" />
-      <window_info id="npm" order="2" side_tool="true" />
-      <window_info id="Favorites" order="3" sideWeight="0.31408775" side_tool="true" weight="0.20249653" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49713877" weight="0.51362395" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.8599168" visible="true" weight="0.4257975" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.6945637" weight="0.41746247" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49930653" weight="0.20110957" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.4899857" weight="0.24246575" />
-      <window_info anchor="bottom" id="Heroku" order="9" />
-      <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49928468" weight="0.329235" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.76837724" weight="0.4147018" />
-      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.14008322" side_tool="true" visible="true" weight="0.4257975" />
-      <window_info anchor="bottom" id="TypeScript" order="13" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Api Debugger" order="3" />
-      <window_info anchor="right" id="JSON Viewer" order="4" />
-    </layout>
-    <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.36123034" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="npm" order="2" side_tool="true" />
-      <window_info id="Favorites" order="3" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.24076608" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Heroku" order="9" />
-      <window_info anchor="bottom" id="Statistic" order="10" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.24897401" />
-      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Api Debugger" order="3" />
-      <window_info anchor="right" id="JSON Viewer" order="4" />
-    </layout-to-restore>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
@@ -866,20 +600,7 @@
         <entry key="MAIN">
           <value>
             <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
-              <option name="COLUMN_ORDER">
-                <list>
-                  <option value="0" />
-                  <option value="1" />
-                  <option value="2" />
-                  <option value="3" />
-                </list>
-              </option>
+              <option name="COLUMN_ORDER" />
             </State>
           </value>
         </entry>
@@ -901,7 +622,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="calculate gb from begining ig not significant operation / fields in best cached group by" />
     <MESSAGE value="calculate gb from begining if no group bys have ever been calculated (aka cold start)" />
     <MESSAGE value="calculate gb for deltas and merge with the one already existed in cache" />
     <MESSAGE value="created micro function for removing timestamps from records" />
@@ -926,276 +646,7 @@
     <MESSAGE value="added some missing time counts" />
     <MESSAGE value="added cache eviction policy" />
     <MESSAGE value="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation" />
-    <option name="LAST_COMMIT_MESSAGE" value="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation" />
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/js/bootstrap-notify.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6165">
-          <caret line="411" column="6" selection-start-line="411" selection-start-column="6" selection-end-line="411" selection-end-column="6" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#162#169#1" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/int2.sol" />
-    <entry file="file://$PROJECT_DIR$/node_modules/group-by/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset.csv" />
-    <entry file="file://$PROJECT_DIR$/dataset.json" />
-    <entry file="file://$PROJECT_DIR$/dataset_1k.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/lodash/core.min.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset_200.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset_300.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/Sales.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="45" column="33" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/fact_tbl.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/sales_json.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="44" column="68" selection-start-line="44" selection-start-column="68" selection-end-line="44" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/first_5k.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="29" lean-forward="true" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset_new.csv">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/color_brandname_category.json" />
-    <entry file="file://$PROJECT_DIR$/templates/new_sales_min.js" />
-    <entry file="file://$PROJECT_DIR$/brand_color_category_100.json" />
-    <entry file="file://$PROJECT_DIR$/brand_color_category.json" />
-    <entry file="file://$PROJECT_DIR$/brand_color_category_UnitPrice.json" />
-    <entry file="file://$PROJECT_DIR$/brand_color_category_UnitPrice_100.json" />
-    <entry file="file://$PROJECT_DIR$/templates/new_sales.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="8" selection-start-line="7" selection-start-column="5" selection-end-line="9" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gb.py">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="live-pycharm">
-        <state>
-          <first_editor relative-caret-position="120">
-            <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/brand_category_price_full.json">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="-108" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.eslintrc.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="18" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package-lock.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.eslintignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="10" selection-start-line="3" selection-start-column="10" selection-end-line="3" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/brand_category_price_100.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/saleMin_second_10K.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/sales.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/mysql/lib/protocol/Protocol.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="277" column="22" selection-start-line="277" selection-start-column="22" selection-end-line="277" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/sales_new.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
-          <caret line="57" selection-start-line="57" selection-end-line="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/dashboard.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="235" column="59" selection-start-line="235" selection-start-column="59" selection-end-line="235" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/SalesMin.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="48" column="39" selection-start-line="48" selection-start-column="39" selection-end-line="48" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/vendor/bootstrap/js/bootstrap.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23565">
-          <caret line="1575" column="30" selection-start-line="1575" selection-start-column="30" selection-end-line="1575" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/helper.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2460">
-          <caret line="164" column="38" selection-start-line="164" selection-start-column="38" selection-end-line="164" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/new_sales_min.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="29" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset_100.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/saleMin_first_10k.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testData/1Mfourcol.json">
-      <provider editor-type-id="text-editor" />
-      <provider selected="true" editor-type-id="LargeFileEditor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/ABCD.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testData/100fourcol.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="4143" selection-start-column="4130" selection-end-column="4143" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contractGenerator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3660">
-          <caret line="244" column="35" selection-start-line="244" selection-start-column="35" selection-end-line="244" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testDataGenerator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contracts/ABCD.sol">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2111" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="42" column="24" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/form.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="322" lean-forward="true" selection-start-line="322" selection-end-line="322" />
-          <folding>
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="18" lean-forward="true" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="57" column="3" selection-start-line="57" selection-start-column="3" selection-end-line="57" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/transformations.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="240" column="9" selection-start-line="240" selection-start-column="9" selection-end-line="240" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
+    <MESSAGE value="- some error handling&#10;- add time counts where missing" />
+    <option name="LAST_COMMIT_MESSAGE" value="- some error handling&#10;- add time counts where missing" />
   </component>
 </project>

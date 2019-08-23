@@ -1,5 +1,5 @@
 {
-  "recordsSlice": 500,
+  "recordsSlice": 2000,
   "cacheEvictionPolicy": "FIFO",
   "maxCacheSize": 2,
   "cacheSlice": 2,
