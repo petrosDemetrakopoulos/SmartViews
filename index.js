@@ -608,7 +608,7 @@ function calculateNewGroupBy(facts, operation, gbFields, aggregationField, callb
 function calculateReducedGroupBy(cachedGroupBy,view, gbFields, callback) {
     //this means we want to calculate a different group by than the stored one
     //but however it can be calculated just from redis cache
-        //caclculating the reduced Group By in SQL
+    //calculating the reduced Group By in SQL
         console.log(cachedGroupBy);
         let tableName = cachedGroupBy.gbCreateTable.split(" ");
         tableName = tableName[3];
@@ -650,7 +650,6 @@ function calculateReducedGroupBy(cachedGroupBy,view, gbFields, callback) {
                     callback(null, error);
                 }
                 let op = "";
-                let gbQuery = {};
                 if (view.operation === "SUM" || view.operation === "COUNT") {
                     op = "SUM"; //operation is set to "SUM" both for COUNT and SUM operation
                 } else if (view.operation === "MIN") {
@@ -658,7 +657,7 @@ function calculateReducedGroupBy(cachedGroupBy,view, gbFields, callback) {
                 } else if (view.operation === "MAX") {
                     op = "MAX";
                 }
-                gbQuery = jsonSql.build({
+                let gbQuery = jsonSql.build({
                     type: 'select',
                     table: tableName,
                     group: gbFields,
@@ -889,9 +888,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 for (let j = 0; j < len / 2; j++) {
                                     delete resultGB[j];
                                 }
-                                console.log("%%%%%");
-                                console.log(resultGB);
-                                console.log("%%%%%");
                                 let transformedArray = [];
                                 for (let j = 0; j < resultGB.hashes.length; j++) {
                                     transformedArray[j] = {
@@ -917,6 +913,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
 
                                 await contract.methods.dataId().call(function (err, latestId) {
                                     sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId);
+                                    filteredGBs = cacheEvictionCostOfficial(filteredGBs, latestId);
                                 });
                                 console.log("cache eviction costs assigned:");
                                 console.log(sortedByEvictionCost);
@@ -931,18 +928,22 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 });
 
                                 console.log("SORTED GBs by eviction cost:");
-                                console.log(sortedByEvictionCost); //TS ORDER ascending, the first ones are less "expensive" older than the last ones.
+                                console.log(sortedByEvictionCost); //TS ORDER ascending, the first ones are less "expensive" than the last ones.
                                 console.log("________________________");
                                 //assign costs
-                                filteredGBs = calculationCost(filteredGBs);
+                               // filteredGBs = cacheEvictionCostOfficial(filteredGBs, latestId);
 
                                 //pick the one with the less cost
                                 filteredGBs.sort(function (a, b) {
                                     return parseFloat(a.cost) - parseFloat(b.cost)
                                 }); //order ascending
                                 let mostEfficient = filteredGBs[0]; // TODO: check what we do in case we have no groub bys that match those criteria
+                                console.log("MOST EFFICIENT IS:");
+                                console.log(mostEfficient);
                                 let getLatestFactIdTimeStart = microtime.nowDouble();
                                 contract.methods.dataId().call(function (err, latestId) {
+                                    console.log("LATEST ID IS:");
+                                    console.log(latestId);
                                     let getLatestFactIdTimeEnd = microtime.nowDouble();
                                     if (err) {
                                         console.log(err);
@@ -950,6 +951,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                         return res.send(err);
                                     }
                                     if (mostEfficient.gbTimestamp > 0) {
+                                        console.log("MOST EFF > 0");
                                         let getLatestFactTimeStart = microtime.nowDouble();
                                         contract.methods.getFact(latestId - 1).call(function (err, latestFact) {
                                             let getLatestFactTimeEnd = microtime.nowDouble();
@@ -958,8 +960,9 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                 gbRunning = false;
                                                 return res.send(err);
                                             }
-
-                                            if (mostEfficient.gbTimestamp >= latestFact.timestamp) {
+                                            console.log(latestFact);
+                                            if (mostEfficient.gbTimestamp > latestFact.timestamp) {
+                                                console.log("NO NEW FACTS");
                                                 //NO NEW FACTS after the latest group by
                                                 // -> incrementaly calculate the groupby requested by summing the one in redis cache
                                                 let hashId = mostEfficient.hash.split("_")[1];
@@ -1310,6 +1313,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                     }
                                                 });
                                             } else {
+                                                console.log("DELTAS DETECTED");
                                                 //we have deltas -> we fetch them
                                                 //CALCULATING THE VIEW JUST FOR THE DELTAS
                                                 // THEN MERGE IT WITH THE ONES IN CACHE
@@ -1511,6 +1515,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             });
                                                                         });
                                                                     } else {
+                                                                        console.log("GB FIELDS OF DELTAS AND CACHED ARE THE SAME")
                                                                         //group by fields of deltas and cached are the same so
                                                                         //MERGE cached and groupBySqlResults
                                                                         let viewNameSQL = view.SQLTable.split(" ");
@@ -1558,6 +1563,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                         mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult, error) {
                                                                             let mergeTimeEnd = microtime.nowDouble();
                                                                             //SAVE ON CACHE BEFORE RETURN
+                                                                            console.log("SAVE ON CACHE BEFORE RETURN");
                                                                             if (error) {
                                                                                 gbRunning = false;
                                                                                 return res.send(error);

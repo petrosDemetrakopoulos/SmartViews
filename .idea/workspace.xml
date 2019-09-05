@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/contractGenerator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,15 +29,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
-    <option name="y" value="34" />
-    <option name="width" value="1440" />
-    <option name="height" value="813" />
-  </component>
   <component name="ProjectId" id="1OnOcEjU2adIgnxqN7s7rKyAy8W" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="8.9.1" />
@@ -234,14 +232,10 @@
       <workItem from="1562743358837" duration="15297000" />
       <workItem from="1564609977137" duration="341000" />
       <workItem from="1566559319744" duration="475000" />
-      <workItem from="1566560250590" duration="4611000" />
-    </task>
-    <task id="LOCAL-00058" summary="emit gb result to socket">
-      <created>1553198009682</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1553198009682</updated>
+      <workItem from="1566560250590" duration="5906000" />
+      <workItem from="1566602956398" duration="212000" />
+      <workItem from="1566812669836" duration="7595000" />
+      <workItem from="1567673887542" duration="2847000" />
     </task>
     <task id="LOCAL-00059" summary="socket on gb results">
       <created>1553198101349</created>
@@ -579,17 +573,15 @@
       <option name="project" value="LOCAL" />
       <updated>1562709198905</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="-added official cost function logic mentioned in paper">
+      <created>1566582503407</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1566582503407</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
     <servers />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -622,7 +614,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="calculate gb from begining if no group bys have ever been calculated (aka cold start)" />
     <MESSAGE value="calculate gb for deltas and merge with the one already existed in cache" />
     <MESSAGE value="created micro function for removing timestamps from records" />
     <MESSAGE value="fixed issue on delta gb calculation" />
@@ -647,6 +638,7 @@
     <MESSAGE value="added cache eviction policy" />
     <MESSAGE value="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation" />
     <MESSAGE value="- some error handling&#10;- add time counts where missing" />
-    <option name="LAST_COMMIT_MESSAGE" value="- some error handling&#10;- add time counts where missing" />
+    <MESSAGE value="-added official cost function logic mentioned in paper" />
+    <option name="LAST_COMMIT_MESSAGE" value="-added official cost function logic mentioned in paper" />
   </component>
 </project>

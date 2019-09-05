@@ -1,7 +1,7 @@
 {
   "recordsSlice": 2000,
   "cacheEvictionPolicy": "FIFO",
-  "maxCacheSize": 2,
+  "maxCacheSize": 20,
   "cacheSlice": 2,
   "redisPort": 6379,
   "redisIP": "127.0.0.1",
