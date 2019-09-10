@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/config_lab.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_lab.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -242,21 +239,7 @@
       <workItem from="1568029275235" duration="7000" />
       <workItem from="1568104854951" duration="5397000" />
       <workItem from="1568145899990" duration="102000" />
-      <workItem from="1568146025975" duration="1377000" />
-    </task>
-    <task id="LOCAL-00062" summary="fixes in slices for 1 objct pr slice">
-      <created>1553255590909</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1553255590909</updated>
-    </task>
-    <task id="LOCAL-00063" summary="fixes in slices for 1 objct pr slice">
-      <created>1553255680687</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1553255680687</updated>
+      <workItem from="1568146025975" duration="1948000" />
     </task>
     <task id="LOCAL-00064" summary="microoptimization in slices sized 1">
       <created>1553256283312</created>
@@ -587,7 +570,21 @@
       <option name="project" value="LOCAL" />
       <updated>1568146737558</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="Polishing the directory structure and readme.">
+      <created>1568147424760</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1568147424760</updated>
+    </task>
+    <task id="LOCAL-00112" summary="Polishing the directory structure and readme.">
+      <created>1568147607220</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1568147607220</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

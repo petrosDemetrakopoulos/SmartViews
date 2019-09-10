@@ -91,7 +91,7 @@ app.get('/form/:contract', function (req, res) {
 });
 
 http.listen(3000, () => {
-    console.log(`Example app listening on http://localhost:3000/dashboard`);
+    console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
     let mysqlConfig = {};
     let validations = helper.configFileValidations();
     if(validations.passed) {
@@ -274,7 +274,6 @@ async function getAllFactsHeavy(factsLength) {
                 delete result[j];
             }
             if ('payloads' in result) {
-               // console.log(result['payloads']);
                 for (let i = 0; i < result['payloads'].length; i++) {
                     let crnLn = JSON.parse(result['payloads'][i]);
                     crnLn.timestamp =  result['timestamps'][i];
