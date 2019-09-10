@@ -4,7 +4,7 @@ const solc = require('solc');
 const fs = require('fs');
 const delay = require('delay');
 const groupBy = require('group-by');
-const config = require('./config');
+const config = require('./config_private');
 let fact_tbl = require('./templates/fact_tbl');
 const crypto = require('crypto');
 let md5sum = crypto.createHash('md5');
@@ -98,21 +98,7 @@ http.listen(3000, () => {
     let mysqlConfig = {};
     let validations = helper.configFileValidations();
     if(validations.passed) {
-        if (process.env.NODE_ENV === 'development') {
-            mysqlConfig = {
-                host: 'localhost',
-                user: 'root',
-                password: 'Xonelgataandrou1!',
-                database: 'Ptychiaki'
-            };
-        } else if (process.env.NODE_ENV === 'lab') {
-            mysqlConfig = {
-                host: 'localhost',
-                user: 'root',
-                password: 'Iwanttobelive1',
-                database: 'Ptychiaki'
-            };
-        }
+        mysqlConfig = config.sql;
         connection = mysql.createConnection(mysqlConfig);
         connection.connect(function (err) {
             if (err) {

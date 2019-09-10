@@ -61,3 +61,5 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
     ├── form.ejs
     └── index.ejs
 ```
+### Run instructions
+After you clone the repo type ```npm install``` in the directory project and wait until all dependencies are installed. Then update th ```config.json``` file with the 
