@@ -2,13 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const solc = require('solc');
 const fs = require('fs');
-const delay = require('delay');
 const groupBy = require('group-by');
 const config = require('./config_private');
 let fact_tbl = require('./templates/fact_tbl');
 const crypto = require('crypto');
 let md5sum = crypto.createHash('md5');
-const csv = require('fast-csv');
 abiDecoder = require('abi-decoder');
 const app = express();
 const jsonParser = bodyParser.json();
@@ -25,7 +23,6 @@ app.use(express.static('public'));
 const microtime = require('microtime');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
-const csvtojson = require('csvtojson');
 const jsonSql = require('json-sql')({separatedValues: false});
 
 const Web3 = require('web3');
@@ -145,17 +142,6 @@ async function deploy(account, contractPath) {
         });
     return contractInstance.options;
 }
-
-app.get('/readFromFile', function (req, res) {
-    csv.fromPath('dataset.txt',{delimiter: '|'})
-        .on('data', function (data) {
-            console.log(data);
-        })
-        .on('end', function () {
-            console.log('done');
-            res.send('done');
-        })
-});
 
 app.get('/deployContract/:fn', function (req, res) {
     web3.eth.getAccounts(function (err, accounts) {
