@@ -3,10 +3,24 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/brand_category_price_100.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_100.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_1k.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_200.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_300.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/first_5k.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gb.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/testDataGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_scripts/exp1.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/saleMin_first_100.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/saleMin_first_10k.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/saleMin_second_10K.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/second_5k.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_5k.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/transformations.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/transformations.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,11 +57,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/helpers" />
+      <recent name="$PROJECT_DIR$/test_scripts" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$/public/css" />
-      <recent name="$PROJECT_DIR$/views" />
-      <recent name="$PROJECT_DIR$/public/js" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -239,14 +253,9 @@
       <workItem from="1567762845645" duration="10693000" />
       <workItem from="1567847771610" duration="4379000" />
       <workItem from="1568029275235" duration="7000" />
-      <workItem from="1568104854951" duration="5318000" />
-    </task>
-    <task id="LOCAL-00060" summary="change slice size to 10">
-      <created>1553253519663</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1553253519663</updated>
+      <workItem from="1568104854951" duration="5397000" />
+      <workItem from="1568145899990" duration="102000" />
+      <workItem from="1568146025975" duration="529000" />
     </task>
     <task id="LOCAL-00061" summary="change slice size to 1">
       <created>1553255239829</created>
@@ -584,7 +593,14 @@
       <option name="project" value="LOCAL" />
       <updated>1567676909590</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL-00109" summary="mechanism to auto slice group bys for cache">
+      <created>1568113356214</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1568113356214</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -618,7 +634,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="created micro function for removing timestamps from records" />
     <MESSAGE value="fixed issue on delta gb calculation" />
     <MESSAGE value="new feature: cache slicing&#10;created: config file" />
     <MESSAGE value="fixed buf on cache slicing" />
@@ -643,6 +658,7 @@
     <MESSAGE value="- some error handling&#10;- add time counts where missing" />
     <MESSAGE value="-added official cost function logic mentioned in paper" />
     <MESSAGE value="fixes in exp script" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixes in exp script" />
+    <MESSAGE value="mechanism to auto slice group bys for cache" />
+    <option name="LAST_COMMIT_MESSAGE" value="mechanism to auto slice group bys for cache" />
   </component>
 </project>
