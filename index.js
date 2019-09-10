@@ -487,23 +487,67 @@ function saveOnCache(gbResult, operation, latestId){
     let hash = md5sum.digest('hex');
     let gbResultSize = Object.keys(gbResult).length;
     let slicedGbResult = [];
-    if(gbResultSize > config.cacheSlice){
-        let crnSlice = [];
-        let metaKeys = {operation: gbResult["operation"], groupByFields: gbResult["groupByFields"], field: gbResult["field"]};
-        for (const key of Object.keys(gbResult)) {
-            if(key !== "operation" && key !== "groupByFields" && key !== "field") {
-                console.log(key);
-                crnSlice.push({[key]: gbResult[key]});
-                if (crnSlice.length >= config.cacheSlice) {
-                    slicedGbResult.push(crnSlice);
-                    crnSlice = [];
+    if(config.autoCacheSlice === "manual") {
+        if (gbResultSize > config.cacheSlice) {
+            let crnSlice = [];
+            let metaKeys = {
+                operation: gbResult["operation"],
+                groupByFields: gbResult["groupByFields"],
+                field: gbResult["field"]
+            };
+            for (const key of Object.keys(gbResult)) {
+                if (key !== "operation" && key !== "groupByFields" && key !== "field") {
+                    console.log(key);
+                    crnSlice.push({[key]: gbResult[key]});
+                    if (crnSlice.length >= config.cacheSlice) {
+                        slicedGbResult.push(crnSlice);
+                        crnSlice = [];
+                    }
                 }
             }
+            if (crnSlice.length > 0) {
+                slicedGbResult.push(crnSlice); //we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
+            }
+            slicedGbResult.push(metaKeys);
         }
-        if(crnSlice.length > 0){
-            slicedGbResult.push(crnSlice); //we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
+    } else {
+        //redis allows 512MB per stored string, so we divide the result of our gb with 512MB to find cache slice
+        //maxGbSize is the max number of bytes in a row of the result
+        let mb512InBytes = 512 * 1024 * 1024;
+        let maxGbSize = config.maxGbSize;
+        console.log("GB RESULT SIZE in bytes = " + gbResultSize * maxGbSize);
+        console.log("size a cache position can hold in bytes: " +  mb512InBytes);
+        if ((gbResultSize * maxGbSize) > mb512InBytes) {
+            //  let cacheSlice = mb512InBytes / config.maxGbSize;
+            let crnSlice = [];
+            let metaKeys = {
+                operation: gbResult["operation"],
+                groupByFields: gbResult["groupByFields"],
+                field: gbResult["field"]
+            };
+            let rowsAddedInslice = 0;
+            let crnSliceLengthInBytes = 0;
+            for (const key of Object.keys(gbResult)) {
+                if (key !== "operation" && key !== "groupByFields" && key !== "field") {
+                    console.log(key);
+                    crnSlice.push({[key]: gbResult[key]});
+                    rowsAddedInslice++;
+                    crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
+                    console.log("Rows added in slice:");
+                    console.log(rowsAddedInslice);
+                    if (crnSliceLengthInBytes === (mb512InBytes - 40)) { //for hidden character like backslashes etc
+                        slicedGbResult.push(crnSlice);
+                        crnSlice = [];
+                    }
+                }
+            }
+            if (crnSlice.length > 0) {
+                slicedGbResult.push(crnSlice); //we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
+            }
+            slicedGbResult.push(metaKeys);
+        } else {
+            console.log("NO SLICING NEEDED");
         }
-        slicedGbResult.push(metaKeys);
     }
     let colSize = gbResult.groupByFields.length;
     let columns = JSON.stringify({fields: gbResult.groupByFields});

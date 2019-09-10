@@ -1,7 +1,7 @@
 const fs = require('fs');
 const request = require('request');
 const io = require('socket.io');
-let numberOfFacts = 10000;
+let numberOfFacts = 100;
 let fileToSaveTestData = "testData_";
 let crnRun  = 1;
 let crnExpIteration = 1;
@@ -39,19 +39,9 @@ fs.writeFile("testData/" + fileToSaveTestData + "1" + ".json", JSON.stringify(al
         if(err) {
             return console.log(err);
         }
-        let socket = require('socket.io-client')('http://localhost:3000');
-        socket.on('connect', function(){
-            console.log("connected successfully!");
-        });
-        socket.on('view_results', function(message) {
-            console.log('The server has a message for you:');
-        });
-        socket.on('progress', function(msg){
-            console.log(msg);
-        });
     let url = "http://localhost:3000/load_dataset/" + fileToSaveTestData + "1" + ".json";
     let urlSec = "http://localhost:3000/load_dataset/" + fileToSaveTestData + "2" + ".json";
-    let urlgbCountAB = "http://localhost:3000/getViewByName/A|B(COUNT)";
+    let urlgbCountAB = "http://localhost:3000/getViewByName/A|B|C|D(COUNT)";
     console.log("The file was saved!");
     //experiment scenario begins
     //1) We add n records

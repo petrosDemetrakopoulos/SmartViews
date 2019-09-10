@@ -1,8 +1,10 @@
 {
-  "recordsSlice": 2000,
+  "recordsSlice": 1000,
   "cacheEvictionPolicy": "FIFO",
   "maxCacheSize": 20,
-  "cacheSlice": 2,
+  "cacheSlice": 400,
+  "autoCacheSlice": "auto",
+  "maxGbSize": 100,
   "redisPort": 6379,
   "redisIP": "127.0.0.1",
   "blockchainIP": "http://localhost:8545",

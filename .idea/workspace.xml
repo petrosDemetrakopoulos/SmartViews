@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/testDataGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_scripts/exp1.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -235,14 +233,13 @@
       <workItem from="1566560250590" duration="5906000" />
       <workItem from="1566602956398" duration="212000" />
       <workItem from="1566812669836" duration="7595000" />
-      <workItem from="1567673887542" duration="2847000" />
-    </task>
-    <task id="LOCAL-00059" summary="socket on gb results">
-      <created>1553198101349</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1553198101349</updated>
+      <workItem from="1567673887542" duration="3276000" />
+      <workItem from="1567687654822" duration="5617000" />
+      <workItem from="1567698900170" duration="7814000" />
+      <workItem from="1567762845645" duration="10693000" />
+      <workItem from="1567847771610" duration="4379000" />
+      <workItem from="1568029275235" duration="7000" />
+      <workItem from="1568104854951" duration="5318000" />
     </task>
     <task id="LOCAL-00060" summary="change slice size to 10">
       <created>1553253519663</created>
@@ -580,7 +577,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566582503407</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="fixes in exp script">
+      <created>1567676909589</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1567676909590</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,7 +618,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="calculate gb for deltas and merge with the one already existed in cache" />
     <MESSAGE value="created micro function for removing timestamps from records" />
     <MESSAGE value="fixed issue on delta gb calculation" />
     <MESSAGE value="new feature: cache slicing&#10;created: config file" />
@@ -639,6 +642,7 @@
     <MESSAGE value="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation" />
     <MESSAGE value="- some error handling&#10;- add time counts where missing" />
     <MESSAGE value="-added official cost function logic mentioned in paper" />
-    <option name="LAST_COMMIT_MESSAGE" value="-added official cost function logic mentioned in paper" />
+    <MESSAGE value="fixes in exp script" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes in exp script" />
   </component>
 </project>
