@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="" />
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -238,13 +240,7 @@
       <workItem from="1568146025975" duration="2406000" />
       <workItem from="1568197725947" duration="3569000" />
       <workItem from="1568210090612" duration="954000" />
-    </task>
-    <task id="LOCAL-00069" summary="changed slice size to 200">
-      <created>1553431840861</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1553431840862</updated>
+      <workItem from="1568211216651" duration="305000" />
     </task>
     <task id="LOCAL-00070" summary="changed slice size to 500">
       <created>1553448595896</created>
@@ -582,7 +578,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568210886262</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="Changed Project Name">
+      <created>1568211376684</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1568211376684</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -616,7 +619,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- some minor bug fixes regarding discrepancies in fields names&#10;- added fifo eviction policy &#10;- deleted some unnedede contracts and templates" />
     <MESSAGE value="fixed issue in unique fact insertion" />
     <MESSAGE value="fixed some API related issues" />
     <MESSAGE value="removed old and obsolete group by logic" />
@@ -641,6 +643,7 @@
     <MESSAGE value="Added more info in README&#10;Minor issues fixes" />
     <MESSAGE value="Minor fixes and optimizations" />
     <MESSAGE value="Minor fixes and optimizations&#10;Removed unnneded packages" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor fixes and optimizations&#10;Removed unnneded packages" />
+    <MESSAGE value="Changed Project Name" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed Project Name" />
   </component>
 </project>

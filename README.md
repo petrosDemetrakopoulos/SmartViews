@@ -86,7 +86,7 @@ The config file should look like this:
 **The mySQL database must be created by you and it must be empty.**
 It is mandatory as the server uses SQL to do all the calculations for the Group Bys and the merging.
 
-#Before running the server
+# Before running the server
 Before you run the server you must do 3 things:
 
 1) Start mySQL server if not running
@@ -102,4 +102,4 @@ Smart-Views listening on http://localhost:3000/dashboard
 Redis  connected
 mySQL connected
 ``` 
-   
+
