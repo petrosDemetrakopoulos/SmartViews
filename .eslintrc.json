@@ -1,9 +1,10 @@
 {
     "extends": "standard",
     "rules": {
-        "max-len": [2, 165,
+        "max-len": [2, 195,
             {
-                "ignoreUrls": true
+                "ignoreUrls": true,
+                "ignoreComments": true
             }
         ],
         "camelcase": ["error", {"properties": "never"}],

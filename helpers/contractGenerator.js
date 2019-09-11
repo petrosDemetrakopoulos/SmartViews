@@ -69,7 +69,7 @@ async function generateContract (templateFileName) {
     let setters = '';
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        setters += "\t\tfacts[dataId]." + crnProp.key + "= " + crnProp.key + ";\n";
+        setters += "\t\tfacts[dataId]." + crnProp.key + '= ' + crnProp.key + ";\n";
     }
     setters += "\t\tfacts[dataId].timestamp = now;\n \t\tdataId += 1;\n";
     let retStmt = "\t\treturn (";

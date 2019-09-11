@@ -5,11 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/transformations.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/transformations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_scripts/exp1.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -248,14 +243,7 @@
       <workItem from="1568197725947" duration="3569000" />
       <workItem from="1568210090612" duration="954000" />
       <workItem from="1568211216651" duration="1615000" />
-      <workItem from="1568220662242" duration="4569000" />
-    </task>
-    <task id="LOCAL-00073" summary="fixes and new feature regarding declarations of views in blockchain">
-      <created>1558026100287</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1558026100288</updated>
+      <workItem from="1568220662242" duration="4996000" />
     </task>
     <task id="LOCAL-00074" summary="contract generation moved in separate file">
       <created>1558344573579</created>
@@ -593,7 +581,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568212407196</updated>
     </task>
-    <option name="localTasksCounter" value="122" />
+    <task id="LOCAL-00122" summary="fixed some lintering issues">
+      <created>1568225458388</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1568225458388</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -627,7 +622,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="removed old and obsolete group by logic" />
     <MESSAGE value="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;" />
     <MESSAGE value="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)" />
     <MESSAGE value="code cleanup" />
@@ -652,6 +646,7 @@
     <MESSAGE value="Changed Project Name" />
     <MESSAGE value="fixes in readme" />
     <MESSAGE value="fixes in front end" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixes in front end" />
+    <MESSAGE value="fixed some lintering issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed some lintering issues" />
   </component>
 </project>
