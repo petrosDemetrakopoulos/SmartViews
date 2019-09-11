@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -246,14 +242,7 @@
       <workItem from="1568210090612" duration="954000" />
       <workItem from="1568211216651" duration="1615000" />
       <workItem from="1568220662242" duration="5363000" />
-      <workItem from="1568243859644" duration="1874000" />
-    </task>
-    <task id="LOCAL-00076" summary="Major upgradea regarding ready views incremental calculation on no new facts case">
-      <created>1558363268522</created>
-      <option name="number" value="00076" />
-      <option name="presentableId" value="LOCAL-00076" />
-      <option name="project" value="LOCAL" />
-      <updated>1558363268522</updated>
+      <workItem from="1568243859644" duration="1988000" />
     </task>
     <task id="LOCAL-00077" summary="Major upgrades regarding ready views incremental calculation on no new facts case -- AVERAGE func case finally solved!">
       <created>1558518570190</created>
@@ -591,7 +580,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568225931229</updated>
     </task>
-    <option name="localTasksCounter" value="125" />
+    <task id="LOCAL-00125" summary="fixed some lintering issues">
+      <created>1568245836246</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1568245836247</updated>
+    </task>
+    <option name="localTasksCounter" value="126" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

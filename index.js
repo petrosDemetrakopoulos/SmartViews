@@ -268,7 +268,7 @@ async function getAllFactsHeavy (factsLength) {
     await contract.methods.getAllFacts(factsLength).call(function (err, result) {
         if (!err) {
             let len  = Object.keys(result).length;
-            for (let  j = 0; j < len / 2; j ++) {
+            for (let j = 0; j < len / 2; j++) {
                 delete result[j];
             }
             if ('payloads' in result) {
@@ -291,7 +291,7 @@ async function getAllFacts (factsLength) {
         await contract.methods.facts(i).call(function (err, result2) {
             if (!err) {
                 let len  = Object.keys(result2).length;
-                for (let  j = 0; j < len / 2; j ++) {
+                for (let j = 0; j < len / 2; j++) {
                     delete result2[j];
                 }
                 console.log("got fact " + i);
@@ -313,7 +313,7 @@ async function getFactsFromTo(from, to) {
     await contract.methods.getFactsFromTo(from, to).call(function (err, result) {
         if (!err) {
             let len  = Object.keys(result).length;
-            for (let  j = 0; j < len / 2; j ++) {
+            for (let j = 0; j < len / 2; j++) {
                 delete result[j];
             }
             if ('payloadsFromTo' in result) {
