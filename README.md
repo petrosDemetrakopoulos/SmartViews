@@ -95,5 +95,11 @@ Before you run the server you must do 3 things:
     Of course, in order to perform this action ```ganache-cli``` must be already installed. If you have not yet istalled ```ganache-cli``` you can do so by typing ```npm install ganache-cli -g```.
 3) Start ```redis-server```.  You can do this by simply typing ```redis-server``` in a terminal window. Again, be sure to have ```redis-server``` installed before you perform this action.
 
-Now you can type 
+Now you can type ```node index.js``` in the project root directory and if everything id fine, the server will start immediately.
+If everything is set up correct you should see the following lines in the terminal:
+```
+Smart-Views listening on http://localhost:3000/dashboard
+Redis  connected
+mySQL connected
+``` 
    

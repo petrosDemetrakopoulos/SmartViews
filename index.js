@@ -30,7 +30,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
 const redis = require('redis');
 const client = redis.createClient(config.redisPort, config.redisIP);
 client.on('connect', function () {
-    console.log('Redis client connected');
+    console.log('Redis connected');
 });
 client.on('error', function (err) {
     console.log('Something went wrong ' + err);
@@ -40,7 +40,7 @@ const mysql = require('mysql');
 let createTable = '';
 let tableName = '';
 let connection = null;
-let contractInstance = null;
+//let contractInstance = null;
 let contractsDeployed = [];
 
 web3.eth.defaultAccount = web3.eth.accounts[0];

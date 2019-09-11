@@ -4,6 +4,8 @@
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -239,14 +241,7 @@
       <workItem from="1568104854951" duration="5397000" />
       <workItem from="1568145899990" duration="102000" />
       <workItem from="1568146025975" duration="2406000" />
-      <workItem from="1568197725947" duration="1243000" />
-    </task>
-    <task id="LOCAL-00065" summary="microoptimization in slices sized &gt; 1">
-      <created>1553256872085</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1553256872085</updated>
+      <workItem from="1568197725947" duration="1767000" />
     </task>
     <task id="LOCAL-00066" summary="changed slice size to 20">
       <created>1553260906700</created>
@@ -584,7 +579,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568147993857</updated>
     </task>
-    <option name="localTasksCounter" value="114" />
+    <task id="LOCAL-00114" summary="Added more info in README">
+      <created>1568199133326</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1568199133327</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -618,7 +620,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="new feature: cache slicing&#10;created: config file" />
     <MESSAGE value="fixed buf on cache slicing" />
     <MESSAGE value="fixed minor bug on deltas gb calculation merge with existing gb" />
     <MESSAGE value="add: validations for config file in server start" />
@@ -643,6 +644,7 @@
     <MESSAGE value="fixes in exp script" />
     <MESSAGE value="mechanism to auto slice group bys for cache" />
     <MESSAGE value="Polishing the directory structure and readme." />
-    <option name="LAST_COMMIT_MESSAGE" value="Polishing the directory structure and readme." />
+    <MESSAGE value="Added more info in README" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added more info in README" />
   </component>
 </project>

@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 async function generateContract(templateFileName) {
-    let fact_tbl = require('./templates/' + templateFileName);
+    let fact_tbl = require('../templates/' + templateFileName);
     console.log(fact_tbl);
     let createTable = fact_tbl.template.create_table;
     let tableName = fact_tbl.template.table_name;
