@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const solc = require('solc');
 const fs = require('fs');
-const groupBy = require('group-by');
 const config = require('./config_private');
 let fact_tbl = require('./templates/fact_tbl');
 const crypto = require('crypto');
@@ -865,7 +864,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
         return res.send({error: "view not found"});
     }
 
-
     console.log("VIEW BY NAME ENDPOINT HIT AGAIN");
     console.log(gbRunning);
     if (!gbRunning && !running) {
@@ -930,7 +928,6 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                 });
                                 console.log("cache eviction costs assigned:");
                                 console.log(sortedByEvictionCost);
-
 
                                 sortedByEvictionCost.sort(function (a, b) {
                                     if (config.cacheEvictionPolicy === "FIFO") {
