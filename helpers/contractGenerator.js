@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-async function generateContract(templateFileName) {
+async function generateContract (templateFileName) {
     let fact_tbl = require('../templates/' + templateFileName);
     console.log(fact_tbl);
     let createTable = fact_tbl.template.create_table;
@@ -225,8 +225,8 @@ async function generateContract(templateFileName) {
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
-            getParamsAll += crnProp.data_type + "[] " + crnProp.key +"s, uint[] timestamps" + "){\n";
-            retValsAll += "\t\t" + crnProp.data_type + "[] memory " + crnProp.key + "ss = new " + crnProp.data_type + "[](id);\n";
+            getParamsAll += crnProp.data_type + '[] ' + crnProp.key +'s, uint[] timestamps' + '){\n';
+            retValsAll += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + "ss = new " + crnProp.data_type + "[](id);\n";
             retValsAll += "\t\tuint[] memory timestampss = new uint[](id);\n";
             assignements += "\t\t\t" + crnProp.key + "ss[i] = fact." + crnProp.key+';\n';
             assignements += '\t\t\t' + 'timestampss[i] = fact.timestamp;\n';
@@ -255,8 +255,8 @@ async function generateContract(templateFileName) {
     let retValsFromTo = '';
     let assignementsFromTo = '';
     let retStmtFromTo = '';
-    let arrCounter = "\t\tuint j = 0;\n";
-    let counterIncr = "\t\t\tj++;\n";
+    let arrCounter = '\t\tuint j = 0;\n';
+    let counterIncr = '\t\t\tj++;\n';
 
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
@@ -313,10 +313,9 @@ async function generateContract(templateFileName) {
         viewMapping + addFact + setters + retStmt + getFact + getParams + retFact + addView + addGroupBy +
         getGroupBy + getLatestGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +
         getGBsLoop + getAllFacts + getFactFromTo + addManyFacts + deleteGBById + '\n}';
-    return new Promise( function(resolve , reject ) {
+    return new Promise( function (resolve , reject) {
         fs.writeFile('contracts/' + fact_tbl.name + '.sol', contrPayload, function (err) {
             if (err) {
-                console.log("FUCKING ERROR");
                 console.log(err);
                 return reject({msg: 'error'});
             }

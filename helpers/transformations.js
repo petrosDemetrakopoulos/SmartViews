@@ -1,9 +1,9 @@
 function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) {
-    console.log("***");
+    console.log('***');
     console.log(groupByResult);
-    console.log("***");
+    console.log('***');
     console.log(gbField);
-    console.log("***");
+    console.log('***');
     let transformed = {};
     if (operation === 'COUNT') {
         console.log('OPERATION = COUNT');
@@ -60,7 +60,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
     return transformed;
 }
 
-function transformReadyAverage(groupByResult, gbField, aggregateField){
+function transformReadyAverage (groupByResult, gbField, aggregateField) {
     let transformed = {};
     for (let i = 0; i < groupByResult.length; i++) {
         let crnRes = groupByResult[i];
