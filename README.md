@@ -61,7 +61,7 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
     ├── form.ejs
     └── index.ejs
 ```
-### Run instructions
+## Run instructions
 After you clone the repo type ```npm install``` in the directory project and wait until all dependencies are installed. Then update th ```config.json``` file with the correct values for the fields ```redisPort```, ```redisIP```, ```blockchainIP``` and ```sql``` which are the most important ones in order to start the server.
 The config file should look like this:
 ```
@@ -86,7 +86,7 @@ The config file should look like this:
 **The mySQL database must be created by you and it must be empty.**
 It is mandatory as the server uses SQL to do all the calculations for the Group Bys and the merging.
 
-# Before running the server
+## Before running the server
 Before you run the server you must do 3 things:
 
 1) Start mySQL server if not running
