@@ -1641,58 +1641,58 @@ app.get('/getViewByName/:viewName', function (req,res) {
                         } else {
                             // No group bys exist in cache, we are in the initial state
                             // this means we should proceed to new group by calculation from the begining
-                                let bcTimeStart = microtime.nowDouble();
-                                contract.methods.dataId().call(function (err, latestId) {
-                                    if (err) throw err;
-                                    getAllFacts(latestId).then(retval => {
-                                        let bcTimeEnd = microtime.nowDouble();
-                                        if (retval.length === 0) {
+                            let bcTimeStart = microtime.nowDouble();
+                            contract.methods.dataId().call(function (err, latestId) {
+                                if (err) throw err;
+                                getAllFacts(latestId).then(retval => {
+                                    let bcTimeEnd = microtime.nowDouble();
+                                    if (retval.length === 0) {
+                                        gbRunning = false;
+                                        return res.send(JSON.stringify({ error: 'No facts exist in blockchain' }));
+                                    }
+                                    let facts = helper.removeTimestamps(retval);
+                                    console.log('CALCULATING NEW GB FROM BEGGINING');
+                                    let sqlTimeStart = microtime.nowDouble();
+                                    calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
+                                        let sqlTimeEnd = microtime.nowDouble();
+                                        if (error) {
                                             gbRunning = false;
-                                            return res.send(JSON.stringify({ error: 'No facts exist in blockchain' }));
+                                            return res.send(JSON.stringify(error))
                                         }
-                                        let facts = helper.removeTimestamps(retval);
-                                        console.log('CALCULATING NEW GB FROM BEGGINING');
-                                        let sqlTimeStart = microtime.nowDouble();
-                                        calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
-                                            let sqlTimeEnd = microtime.nowDouble();
-                                            if (error) {
-                                                gbRunning = false;
-                                                return res.send(JSON.stringify(error))
-                                            }
-                                            groupBySqlResult.gbCreateTable = view.SQLTable;
-                                            groupBySqlResult.field = view.aggregationField;
-                                            let cacheSaveTimeStart = microtime.nowDouble();
-                                            saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
-                                                console.log('error:', err);
-                                                gbRunning = false;
-                                                return res.send(err);
-                                            }).on('transactionHash', (err) => {
-                                                console.log('transactionHash:', err);
-                                            }).on('receipt', (receipt) => {
-                                                let cacheSaveTimeEnd = microtime.nowDouble();
-                                                delete groupBySqlResult.gbCreateTable;
-                                                let totalEnd = microtime.nowDouble();
-                                                console.log('receipt:', receipt);
-                                                groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
-                                                groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                                groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                helper.printTimes(groupBySqlResult);
-                                                io.emit('view_results', JSON.stringify(groupBySqlResult));
-                                                gbRunning = false;
-                                                return res.send(groupBySqlResult);
-                                            });
+                                        groupBySqlResult.gbCreateTable = view.SQLTable;
+                                        groupBySqlResult.field = view.aggregationField;
+                                        let cacheSaveTimeStart = microtime.nowDouble();
+                                        saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                            console.log('error:', err);
+                                            gbRunning = false;
+                                            return res.send(err);
+                                        }).on('transactionHash', (err) => {
+                                            console.log('transactionHash:', err);
+                                        }).on('receipt', (receipt) => {
+                                            let cacheSaveTimeEnd = microtime.nowDouble();
+                                            delete groupBySqlResult.gbCreateTable;
+                                            let totalEnd = microtime.nowDouble();
+                                            console.log('receipt:', receipt);
+                                            groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                            groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
+                                            groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                            groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                            groupBySqlResult.allTotal = totalEnd - totalStart;
+                                            helper.printTimes(groupBySqlResult);
+                                            io.emit('view_results', JSON.stringify(groupBySqlResult));
+                                            gbRunning = false;
+                                            return res.send(groupBySqlResult);
                                         });
                                     });
                                 });
-                            }
-                        } else {
-                            console.log(err);
-                            gbRunning = false;
-                            return res.send(err);
+                            });
                         }
-                    });
+                    } else {
+                        console.log(err);
+                        gbRunning = false;
+                        return res.send(err);
+                    }
+                });
             } else {
                 console.log('cache enabled = FALSE');
                 // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
