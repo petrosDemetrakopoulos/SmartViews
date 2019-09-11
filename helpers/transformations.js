@@ -137,7 +137,7 @@ function transformGB (groupByResult, operation, aggregateField) {
                 sum += Number(crnGoup[row][aggregateField]);
                 cnt += 1;
             }
-            groupByResult[key] = { 'average':sum / cnt, 'count': cnt, 'sum': sum };
+            groupByResult[key] = { 'average': sum / cnt, 'count': cnt, 'sum': sum };
         }
         groupByResult['operation'] = 'AVERAGE';
         groupByResult['field'] = aggregateField;
@@ -232,7 +232,7 @@ function calculateReducedGB (operation, aggregateField, cachedGroupBy, gbFields)
             let indexOfUK = uniqueKeysArray.indexOf(crnObj);
             let parsedObj = JSON.parse(avgPerKey[j]);
             let newSum = parsedObj['sum'] + originalArray[j]['sum'];
-            let newCount =  parsedObj['count'] + originalArray[j]['count'];
+            let newCount = parsedObj['count'] + originalArray[j]['count'];
             avgPerKey[indexOfUK] = { count: newCount, sum: newSum, average: newSum / newCount };
         }
         for (let j = 0; j < avgPerKey.length; j++) {

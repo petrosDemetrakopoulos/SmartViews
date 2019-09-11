@@ -56,10 +56,10 @@ function averageObjects (ob1, ob2) {
     Object.keys(ob1).forEach(key => {
         if (key !== 'operation' && key !== 'field' && key !== 'groupByFields') {
             if (ob2.hasOwnProperty(key)) {
-                let sum_new = ob1[key]['sum'] + ob2[key]['sum'];
-                let count_new = ob1[key]['count'] + ob2[key]['count'];
-                let avg_new = sum_new / count_new;
-                avg[key] = { 'average': avg_new, 'count': count_new, 'sum': sum_new };
+                let sumNew = ob1[key]['sum'] + ob2[key]['sum'];
+                let countNew = ob1[key]['count'] + ob2[key]['count'];
+                let avgNew = sumNew / countNew;
+                avg[key] = { 'average': avgNew, 'count': countNew, 'sum': sumNew };
             }
         }
     });
