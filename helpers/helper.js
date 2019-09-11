@@ -84,19 +84,19 @@ function flatten (items) {
 }
 
 function removeDuplicates (arr) {
-    return arr.filter(function(elem, index, self) {
+    return arr.filter(function (elem, index, self) {
         return index === self.indexOf(elem);
     });
 }
 
-function removeTimestamps(records) {
+function removeTimestamps (records) {
     for (let i = 0; i < records.length; i++) {
         delete records[i].timestamp;
     }
     return records;
 }
 
-function configFileValidations() {
+function configFileValidations () {
     let missingFields = [];
     if (!config.hasOwnProperty('recordsSlice')) {
         missingFields.push('recordsSlice');
@@ -123,16 +123,16 @@ function configFileValidations() {
         return { passed: false, missingFields: missingFields };
     }
     let formatErrors = [];
-    if (!Number.isInteger(config.recordsSlice)){
+    if (!Number.isInteger(config.recordsSlice)) {
         formatErrors.push({ field: 'recordsSlice', error: 'Should be integer' });
     }
-    if (!Number.isInteger(config.cacheSlice)){
+    if (!Number.isInteger(config.cacheSlice)) {
         formatErrors.push({ field: 'cacheSlice', error: 'Should be integer' });
     }
-    if (!Number.isInteger(config.maxCacheSize)){
+    if (!Number.isInteger(config.maxCacheSize)) {
         formatErrors.push({ field: 'maxCacheSize', error: 'Should be integer' });
     }
-    if (!Number.isInteger(config.redisPort)){
+    if (!Number.isInteger(config.redisPort)) {
         formatErrors.push({ field: 'redisPort', error: 'Should be integer' });
     }
     if (config.cacheEvictionPolicy !== 'FIFO' && config.cacheEvictionPolicy !== 'COST FUNCTION') {
@@ -151,7 +151,7 @@ function configFileValidations() {
     return { passed: true };
 }
 
-function printTimes(resultObject) {
+function printTimes (resultObject) {
     console.log('sql time = ' + resultObject.sqlTime);
     console.log('bc time = ' + resultObject.bcTime);
     console.log('cache save time = ' + resultObject.cacheSaveTime);

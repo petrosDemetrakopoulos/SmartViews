@@ -5,6 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -243,21 +245,8 @@
       <workItem from="1568197725947" duration="3569000" />
       <workItem from="1568210090612" duration="954000" />
       <workItem from="1568211216651" duration="1615000" />
-      <workItem from="1568220662242" duration="4996000" />
-    </task>
-    <task id="LOCAL-00074" summary="contract generation moved in separate file">
-      <created>1558344573579</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1558344573580</updated>
-    </task>
-    <task id="LOCAL-00075" summary="Major fixes regarding ready views">
-      <created>1558350445911</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1558350445912</updated>
+      <workItem from="1568220662242" duration="5363000" />
+      <workItem from="1568243859644" duration="1874000" />
     </task>
     <task id="LOCAL-00076" summary="Major upgradea regarding ready views incremental calculation on no new facts case">
       <created>1558363268522</created>
@@ -588,7 +577,21 @@
       <option name="project" value="LOCAL" />
       <updated>1568225458388</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="fixed some lintering issues">
+      <created>1568225739562</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1568225739562</updated>
+    </task>
+    <task id="LOCAL-00124" summary="fixed some lintering issues">
+      <created>1568225931229</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1568225931229</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
