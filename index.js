@@ -40,7 +40,6 @@ const mysql = require('mysql');
 let createTable = '';
 let tableName = '';
 let connection = null;
-//let contractInstance = null;
 let contractsDeployed = [];
 
 web3.eth.defaultAccount = web3.eth.accounts[0];
@@ -210,7 +209,7 @@ async function addManyFacts(facts, sliceSize) {
 
 
 app.get('/load_dataset/:dt', function (req, res) {
-    let dt = require('./testData/' + req.params.dt);
+    let dt = require('./test_data/' + req.params.dt);
     console.log("ENDPOINT HIT AGAIN");
     console.log(running);
     if (contract) {
@@ -1159,6 +1158,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                                 groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                                 groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
                                                                                                 groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                                                helper.printTimes(groupBySqlResult);
                                                                                                 io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
                                                                                                 gbRunning = false;
                                                                                                 return res.send(JSON.stringify(groupBySqlResult).replace("\\", ""));
@@ -1174,6 +1174,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                     groupBySqlResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                     groupBySqlResult.totalTime = groupBySqlResult.cacheSaveTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheRetrieveTime;
                                                                                     groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                                    helper.printTimes(groupBySqlResult);
                                                                                     io.emit('view_results', JSON.stringify(groupBySqlResult).replace("\\", ""));
                                                                                     gbRunning = false;
                                                                                     return res.send(JSON.stringify(groupBySqlResult).replace("\\", ""));
@@ -1222,6 +1223,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                         groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                                                                         groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                                        helper.printTimes(groupBySqlResult);
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                                         gbRunning = false;
@@ -1238,6 +1240,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                             groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                                                             groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                            helper.printTimes(groupBySqlResult);
                                                                             console.log('receipt:', receipt);
                                                                             io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                             gbRunning = false;
@@ -1299,6 +1302,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                         groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
                                                                                         groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
                                                                                         groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                                        helper.printTimes(groupBySqlResult);
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                                         gbRunning = false;
@@ -1315,6 +1319,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                             groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
                                                                             groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
                                                                             groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                            helper.printTimes(groupBySqlResult);
                                                                             console.log('receipt:', receipt);
                                                                             io.emit('view_results', JSON.stringify(groupBySqlResult));
                                                                             gbRunning = false;
@@ -1491,12 +1496,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                                     mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                                     mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
                                                                                                     mergeResult.allTotal = totalEnd - totalStart;
-                                                                                                    console.log("sql time = " + mergeResult.sqlTime);
-                                                                                                    console.log("bc time = " + mergeResult.bcTime);
-                                                                                                    console.log("cache save time = " + mergeResult.cacheSaveTime);
-                                                                                                    console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
-                                                                                                    console.log("total time = " + mergeResult.totalTime);
-                                                                                                    console.log("all total time = " + mergeResult.allTotal);
+                                                                                                    helper.printTimes(mergeResult);
                                                                                                     console.log('receipt:', receipt);
                                                                                                     io.emit('view_results', mergeResult);
                                                                                                     gbRunning = false;
@@ -1514,12 +1514,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                         mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                         mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
                                                                                         mergeResult.allTotal = totalEnd - totalStart;
-                                                                                        console.log("sql time = " + mergeResult.sqlTime);
-                                                                                        console.log("bc time = " + mergeResult.bcTime);
-                                                                                        console.log("cache save time = " + mergeResult.cacheSaveTime);
-                                                                                        console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
-                                                                                        console.log("total time = " + mergeResult.totalTime);
-                                                                                        console.log("all total time = " + mergeResult.allTotal);
+                                                                                        helper.printTimes(mergeResult);
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', mergeResult);
                                                                                         gbRunning = false;
@@ -1606,12 +1601,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                                 mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                                 mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
                                                                                                 mergeResult.allTotal = totalEnd - totalStart;
-                                                                                                console.log("sql time = " + mergeResult.sqlTime);
-                                                                                                console.log("bc time = " + mergeResult.bcTime);
-                                                                                                console.log("cache save time = " + mergeResult.cacheSaveTime);
-                                                                                                console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
-                                                                                                console.log("total time = " + mergeResult.totalTime);
-                                                                                                console.log("all total time = " + mergeResult.allTotal);
+                                                                                                helper.printTimes(mergeResult);
                                                                                                 console.log('receipt:', receipt);
                                                                                                 io.emit('view_results', mergeResult);
                                                                                                 gbRunning = false;
@@ -1629,12 +1619,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                                                                     mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                     mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
                                                                                     mergeResult.allTotal = totalEnd - totalStart;
-                                                                                    console.log("sql time = " + mergeResult.sqlTime);
-                                                                                    console.log("bc time = " + mergeResult.bcTime);
-                                                                                    console.log("cache save time = " + mergeResult.cacheSaveTime);
-                                                                                    console.log("cache retrieve time = " + mergeResult.cacheRetrieveTime);
-                                                                                    console.log("total time = " + mergeResult.totalTime);
-                                                                                    console.log("all total time = " + mergeResult.allTotal);
+                                                                                    helper.printTimes(mergeResult);
                                                                                     console.log('receipt:', receipt);
                                                                                     io.emit('view_results', mergeResult);
                                                                                     gbRunning = false;
@@ -1699,11 +1684,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                         groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                         groupBySqlResult.allTotal = totalEnd - totalStart;
-                                        console.log("sql time = " + groupBySqlResult.sqlTime);
-                                        console.log("bc time = " + groupBySqlResult.bcTime);
-                                        console.log("cache save time = " + groupBySqlResult.cacheSaveTime);
-                                        console.log("total time = " + groupBySqlResult.totalTime);
-                                        console.log("all total time = " + groupBySqlResult.allTotal);
+                                        helper.printTimes(groupBySqlResult);
                                         io.emit('view_results', JSON.stringify(groupBySqlResult));
                                         gbRunning = false;
                                         return res.send(groupBySqlResult);
@@ -1747,10 +1728,7 @@ app.get('/getViewByName/:viewName', function (req,res) {
                             groupBySqlResult.bcTime = bcTimeEnd - bcTimeStart;
                             groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime;
                             groupBySqlResult.allTotal = totalEnd - totalStart;
-                            console.log("sql time = " + groupBySqlResult.sqlTime);
-                            console.log("bc time = " + groupBySqlResult.bcTime);
-                            console.log("total time = " + groupBySqlResult.totalTime);
-                            console.log("all total time = " + groupBySqlResult.allTotal);
+                            helper.printTimes(groupBySqlResult);
                             io.emit('view_results', JSON.stringify(groupBySqlResult));
                             gbRunning = false;
                             return res.send(groupBySqlResult);

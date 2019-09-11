@@ -151,7 +151,17 @@ function configFileValidations() {
         return {passed: false, formatErrors: formatErrors};
     }
     return {passed: true};
+}
 
+function printTimes(resultObject){
+    console.log("sql time = " + resultObject.sqlTime);
+    console.log("bc time = " + resultObject.bcTime);
+    console.log("cache save time = " + resultObject.cacheSaveTime);
+    if(resultObject.cacheRetrieveTime) {
+        console.log("cache retrieve time = " + resultObject.cacheRetrieveTime);
+    }
+    console.log("total time = " + resultObject.totalTime);
+    console.log("all total time = " + resultObject.allTotal);
 }
 
 module.exports = {
@@ -162,5 +172,6 @@ module.exports = {
     flatten: flatten,
     removeDuplicates: removeDuplicates,
     configFileValidations: configFileValidations,
-    removeTimestamps: removeTimestamps
+    removeTimestamps: removeTimestamps,
+    printTimes: printTimes
 };
