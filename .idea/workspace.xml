@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Petros.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Petros.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -246,14 +244,8 @@
       <workItem from="1568210090612" duration="954000" />
       <workItem from="1568211216651" duration="1615000" />
       <workItem from="1568220662242" duration="5363000" />
-      <workItem from="1568243859644" duration="3091000" />
-    </task>
-    <task id="LOCAL-00079" summary="calculate gb from begining ig not significant operation / fields in best cached group by">
-      <created>1558529604962</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1558529604962</updated>
+      <workItem from="1568243859644" duration="3226000" />
+      <workItem from="1568284567225" duration="832000" />
     </task>
     <task id="LOCAL-00080" summary="calculate gb from begining if no group bys have ever been calculated (aka cold start)">
       <created>1558530070085</created>
@@ -591,7 +583,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568246120271</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <task id="LOCAL-00128" summary="fixed some lintering issues">
+      <created>1568247014182</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1568247014182</updated>
+    </task>
+    <option name="localTasksCounter" value="129" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

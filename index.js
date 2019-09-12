@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const solc = require('solc');
 const fs = require('fs');
 const config = require('./config_private');
-let fact_tbl = require('./templates/fact_tbl');
 const crypto = require('crypto');
+var path = require('path');
 let md5sum = crypto.createHash('md5');
 abiDecoder = require('abi-decoder');
 const app = express();
@@ -17,12 +17,12 @@ let running = false;
 let gbRunning = false;
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+app.set('views', path.join( __dirname, 'views'));
 app.use(express.static('public'));
 const microtime = require('microtime');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
-const jsonSql = require('json-sql')({separatedValues: false});
+const jsonSql = require('json-sql')({ separatedValues: false });
 
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
@@ -60,32 +60,32 @@ app.get('/dashboard', function (req, res) {
 });
 
 app.get('/form/:contract', function (req, res) {
-    let fact_tbl = require('./templates/' + req.params.contract);
+    let factTbl = require('./templates/' + req.params.contract);
     let templ = {};
-    if ('template' in fact_tbl) {
-        templ = fact_tbl['template'];
+    if ('template' in factTbl) {
+        templ = factTbl['template'];
     } else {
-        templ = fact_tbl;
+        templ = factTbl;
     }
     let address = '0';
     for (let i = 0; i < contractsDeployed.length; i++) {
-        if (contractsDeployed[i].contractName === fact_tbl.name) {
+        if (contractsDeployed[i].contractName === factTbl.name) {
             address = contractsDeployed[i].address;
             break;
         }
     }
-    let fbsField = fact_tbl.groupBys.TOP.children;
+    let fbsField = factTbl.groupBys.TOP.children;
 
     let groupBys = helper.flatten(fbsField);
     groupBys = groupBys.map(function (obj) {
         return obj.fields;
     });
-    let readyViews = fact_tbl.views;
+    let readyViews = factTbl.views;
     readyViews = readyViews.map(x => x.name);
     groupBys = helper.removeDuplicates(groupBys);
-    groupBys.push(fact_tbl.groupBys.TOP.fields);
+    groupBys.push(factTbl.groupBys.TOP.fields);
     console.log(groupBys);
-    res.render('form',{'template':templ, 'name': fact_tbl.name, 'address': address, 'groupBys':groupBys, 'readyViews': readyViews});
+    res.render('form', {'template':templ, 'name': factTbl.name, 'address': address, 'groupBys':groupBys, 'readyViews': readyViews});
 });
 
 http.listen(3000, () => {
@@ -103,7 +103,7 @@ http.listen(3000, () => {
             console.log('mySQL connected');
         });
     } else {
-        console.log("Config file validations failed");
+        console.log('Config file validations failed');
         console.log(validations);
         // if config validations fail, stop the server
         process.exit(1);
@@ -236,7 +236,7 @@ app.get('/new_contract/:fn', function (req, res) {
     contractGenerator.generateContract(req.params.fn).then(function (result){
         createTable = result.createTable;
         tableName = result.tableName;
-        return res.send({ msg: 'OK', 'filename':result.filename + '.sol', 'template': result.template });
+        return res.send({ msg: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
     } , function (err) {
         console.log(err);
         return res.send({ msg: 'error' });
@@ -248,7 +248,7 @@ app.get('/getFactById/:id', function (req, res) {
         contract.methods.getFact(parseInt(req.params.id, 10)).call(function (err, result) {
             if (!err) {
                 let len = Object.keys(result).length;
-                for (let j = 0; j < len / 2; j ++) {
+                for (let j = 0; j < len / 2; j++) {
                     delete result[j];
                 }
                 res.send(result);
@@ -267,14 +267,14 @@ async function getAllFactsHeavy (factsLength) {
     let allFacts = [];
     await contract.methods.getAllFacts(factsLength).call(function (err, result) {
         if (!err) {
-            let len  = Object.keys(result).length;
+            let len = Object.keys(result).length;
             for (let j = 0; j < len / 2; j++) {
                 delete result[j];
             }
             if ('payloads' in result) {
                 for (let i = 0; i < result['payloads'].length; i++) {
                     let crnLn = JSON.parse(result['payloads'][i]);
-                    crnLn.timestamp =  result['timestamps'][i];
+                    crnLn.timestamp = result['timestamps'][i];
                     allFacts.push(crnLn);
                 }
             }
@@ -290,7 +290,7 @@ async function getAllFacts (factsLength) {
     for (let i = 0; i < factsLength; i++) {
         await contract.methods.facts(i).call(function (err, result2) {
             if (!err) {
-                let len  = Object.keys(result2).length;
+                let len = Object.keys(result2).length;
                 for (let j = 0; j < len / 2; j++) {
                     delete result2[j];
                 }
@@ -312,14 +312,14 @@ async function getFactsFromTo(from, to) {
     let allFacts = [];
     await contract.methods.getFactsFromTo(from, to).call(function (err, result) {
         if (!err) {
-            let len  = Object.keys(result).length;
+            let len = Object.keys(result).length;
             for (let j = 0; j < len / 2; j++) {
                 delete result[j];
             }
             if ('payloadsFromTo' in result) {
                 for (let i = 0; i < result['payloadsFromTo'].length; i++) {
                     let crnLn = JSON.parse(result['payloadsFromTo'][i]);
-                    crnLn.timestamp =  result['timestampsFromTo'][i];
+                    crnLn.timestamp = result['timestampsFromTo'][i];
                     allFacts.push(crnLn);
                 }
             }
@@ -363,7 +363,7 @@ app.get('/allfacts', function (req, res) {
         })
     } else {
         res.status(400);
-        res.send({ status: 'ERROR',options: 'Contract not deployed' });
+        res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
 });
 
@@ -404,7 +404,7 @@ function cacheEvictionCost (groupBys) {
     return groupBys;
 }
 
-function cacheEvictionCostOfficial (groupBys, latestFact) { // the functio we write on paper
+function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
     let a = 10; // factor of deltas
@@ -427,7 +427,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact) { // the functio we wr
     return groupBys;
 }
 
-function containsAllFields(transformedArray, view) {
+function containsAllFields (transformedArray, view) {
     for (let i = 0; i < transformedArray.length; i++) {
         let containsAllFields = true;
         let crnView = transformedArray[i];
@@ -661,7 +661,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
             }
             let op = '';
             if (view.operation === 'SUM' || view.operation === 'COUNT') {
-                op = 'SUM'; //operation is set to 'SUM' both for COUNT and SUM operation
+                op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
             } else if (view.operation === 'MIN') {
                 op = 'MIN'
             } else if (view.operation === 'MAX') {
@@ -842,16 +842,16 @@ function deleteFromCache (evicted, callback) {
 
 app.get('/getViewByName/:viewName', function (req, res) {
     let totalStart = microtime.nowDouble();
-    let fact_tbl = require('./templates/ABCD');
-    // let fact_tbl = require('./templates/new_sales_min');
-    let viewsDefined = fact_tbl.views;
+    let factTbl = require('./templates/ABCD');
+    // let factTbl = require('./templates/new_sales_min');
+    let viewsDefined = factTbl.views;
     console.log(req.params.viewName);
     let found = false;
     let view = {};
     for (let crnView in viewsDefined) {
-        if (fact_tbl.views[crnView].name === req.params.viewName) {
+        if (factTbl.views[crnView].name === req.params.viewName) {
             found = true;
-            view = fact_tbl.views[crnView];
+            view = factTbl.views[crnView];
             break;
         }
     }
@@ -919,8 +919,8 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                     }
 
                                     await contract.methods.dataId().call(function (err, latestId) {
-                                        sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId);
-                                        filteredGBs = cacheEvictionCostOfficial(filteredGBs, latestId);
+                                        sortedByEvictionCost = calculationCostOfficial(sortedByEvictionCost, latestId);
+                                        filteredGBs = calculationCostOfficial(filteredGBs, latestId);
                                     });
                                     console.log('cache eviction costs assigned:');
                                     console.log(sortedByEvictionCost);
@@ -937,12 +937,12 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                     console.log(sortedByEvictionCost); // TS ORDER ascending, the first ones are less 'expensive' than the last ones.
                                     console.log('________________________');
                                     // assign costs
-                                    // filteredGBs = cacheEvictionCostOfficial(filteredGBs, latestId);
+                                    // filteredGBs = calculationCostOfficial(filteredGBs, latestId);
 
                                     // pick the one with the less cost
                                     filteredGBs.sort(function (a, b) {
                                         return parseFloat(a.cost) - parseFloat(b.cost)
-                                    }); //order ascending
+                                    }); // order ascending
                                     let mostEfficient = filteredGBs[0]; // TODO: check what we do in case we have no groub bys that match those criteria
                                     console.log('MOST EFFICIENT IS:');
                                     console.log(mostEfficient);

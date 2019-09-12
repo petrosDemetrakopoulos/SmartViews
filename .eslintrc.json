@@ -1,7 +1,7 @@
 {
     "extends": "standard",
     "rules": {
-        "max-len": [2, 230,
+        "max-len": [2, 285,
             {
                 "ignoreUrls": true,
                 "ignoreComments": true
