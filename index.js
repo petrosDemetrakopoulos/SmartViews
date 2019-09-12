@@ -336,9 +336,9 @@ app.get('/getFactsFromTo/:from/:to', function (req, res) {
         let timeFinish = microtime.nowDouble() - timeStart;
         retval.push({time: timeFinish});
         res.send(retval);
-   }).catch(err => {
-       res.send(err);
-   });
+    }).catch(err => {
+        res.send(err);
+    });
 });
 
 app.get('/allfacts', function (req, res) {
@@ -350,8 +350,8 @@ app.get('/allfacts', function (req, res) {
                 getAllFactsHeavy(result).then(retval => {
                     let timeFinish = microtime.nowDouble() - timeStart;
                     console.log('Get all facts time: ' + timeFinish + ' s');
-                    retval.push({time: timeFinish});
-                    //retval.timeDone = microtime.nowDouble() - timeStart;
+                    retval.push({ time: timeFinish });
+                    // retval.timeDone = microtime.nowDouble() - timeStart;
                     res.send(retval);
                 }).catch(error => {
                     console.log(error);
@@ -363,7 +363,7 @@ app.get('/allfacts', function (req, res) {
         })
     } else {
         res.status(400);
-        res.send({status: 'ERROR',options: 'Contract not deployed' });
+        res.send({ status: 'ERROR',options: 'Contract not deployed' });
     }
 });
 
@@ -379,7 +379,7 @@ app.get('/groupbyId/:id', function (req, res) {
         })
     } else {
         res.status(400);
-        res.send({ status: 'ERROR',options: 'Contract not deployed' });
+        res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
 });
 
@@ -419,7 +419,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact) { // the functio we wr
         sizeCached = Number.parseInt(crnGroupBy.size);
         console.log('sizeCached = ' + sizeCached);
         console.log('sizeDeltas = ' + sizeDeltas);
-        let crnCost =  a * sizeDeltas + sizeCached;
+        let crnCost = a * sizeDeltas + sizeCached;
         console.log('final cost = ' + crnCost);
         crnGroupBy.cacheEvictionCost = crnCost;
         groupBys[i] = crnGroupBy;
@@ -466,7 +466,7 @@ function saveOnCache (gbResult, operation, latestId) {
             for (const key of Object.keys(gbResult)) {
                 if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
                     console.log(key);
-                    crnSlice.push({[key]: gbResult[key]});
+                    crnSlice.push({ [key]: gbResult[key] });
                     if (crnSlice.length >= config.cacheSlice) {
                         slicedGbResult.push(crnSlice);
                         crnSlice = [];
@@ -484,9 +484,8 @@ function saveOnCache (gbResult, operation, latestId) {
         let mb512InBytes = 512 * 1024 * 1024;
         let maxGbSize = config.maxGbSize;
         console.log('GB RESULT SIZE in bytes = ' + gbResultSize * maxGbSize);
-        console.log('size a cache position can hold in bytes: ' +  mb512InBytes);
+        console.log('size a cache position can hold in bytes: ' + mb512InBytes);
         if ((gbResultSize * maxGbSize) > mb512InBytes) {
-            //  let cacheSlice = mb512InBytes / config.maxGbSize;
             let crnSlice = [];
             let metaKeys = {
                 operation: gbResult['operation'],
@@ -498,7 +497,7 @@ function saveOnCache (gbResult, operation, latestId) {
             for (const key of Object.keys(gbResult)) {
                 if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
                     console.log(key);
-                    crnSlice.push({[key]: gbResult[key]});
+                    crnSlice.push({ [key]: gbResult[key] });
                     rowsAddedInslice++;
                     crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
                     console.log('Rows added in slice:');
@@ -518,7 +517,7 @@ function saveOnCache (gbResult, operation, latestId) {
         }
     }
     let colSize = gbResult.groupByFields.length;
-    let columns = JSON.stringify({fields: gbResult.groupByFields});
+    let columns = JSON.stringify({ fields: gbResult.groupByFields });
     let num = 0;
     let crnHash = '';
     if (slicedGbResult.length > 0) {
@@ -547,7 +546,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                 callback(null, error);
             }
             if (facts.length === 0) {
-                callback(null, {error: 'No facts'});
+                callback(null, { error: 'No facts' });
             }
             let sql = jsonSql.build({
                 type: 'insert',
@@ -557,7 +556,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
 
             let editedQuery = sql.query.replace(/"/g, '');
             editedQuery = editedQuery.replace(/''/g, 'null');
-            connection.query(editedQuery, function (error, results2, fields) { //insert facts
+            connection.query(editedQuery, function (error, results2, fields) { // insert facts
                 if (error) {
                     console.log(error);
                     callback(null, error);
@@ -616,7 +615,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
     });
 }
 
-function calculateReducedGroupBy(cachedGroupBy,view, gbFields, callback) {
+function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
     // this means we want to calculate a different group by than the stored one
     // but however it can be calculated just from redis cache
     // calculating the reduced Group By in SQL
@@ -676,7 +675,7 @@ function calculateReducedGroupBy(cachedGroupBy,view, gbFields, callback) {
                     {
                         func: {
                             name: op,
-                            args: [{field: lastCol}]
+                            args: [{ field: lastCol }]
                         }
                     }]
             });
@@ -1706,7 +1705,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                             return res.send(JSON.stringify({ error: 'No facts exist in blockchain' }));
                         }
                         let facts = helper.removeTimestamps(retval);
-                        console.log('CALCULATING NEW GB FROM BEGGINING');
+                        console.log('CALCULATING NEW GB FROM BEGINING');
                         let sqlTimeStart = microtime.nowDouble();
                         calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                             let sqlTimeEnd = microtime.nowDouble();

@@ -16,11 +16,11 @@ async function generateContract (templateFileName) {
         '\tuint public lastMin;\n' +
         '\tuint public lastMax;\n' +
         '\tuint public lastAverage;\n' +
-        "\tbytes32 MIN_LITERAL = \"MIN\";\n" +
-        "\tbytes32 MAX_LITERAL = \"MAX\";\n" +
-        "\tbytes32 AVERAGE_LITERAL = \"AVERAGE\";\n" +
-        "\tbytes32 COUNT_LITERAL = \"COUNT\";\n" +
-        "\tbytes32 SUM_LITERAL = \"SUM\";\n";
+        '\tbytes32 MIN_LITERAL = "MIN";\n' +
+        '\tbytes32 MAX_LITERAL = "MAX";\n' +
+        '\tbytes32 AVERAGE_LITERAL = "AVERAGE";\n' +
+        '\tbytes32 COUNT_LITERAL = "COUNT";\n' +
+        '\tbytes32 SUM_LITERAL = "SUM";\n';
     let constr = '\tconstructor() {\n' +
         '\t\tdataId = 0;\n' +
         '\t\tgroupId = 0;\n' +
@@ -46,7 +46,6 @@ async function generateContract (templateFileName) {
     let mapping = '\tmapping(uint =>' + fact_tbl.struct_Name + ') public facts;\n\n';
     let addParams = '';
     let addFact = '\tfunction addFact(';
-
 
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
@@ -151,7 +150,7 @@ async function generateContract (templateFileName) {
         '\t\t\t}\n' +
         '\t\t}\n' +
         "\t\treturn (\"\",0,0,0,\"\");\n" +
-        "\t}\n\n";
+        '\t}\n\n';
 
     let retValsLatest = '';
     let getParamsLatest = '';
@@ -162,7 +161,7 @@ async function generateContract (templateFileName) {
             retValsLatest += 'facts[dataId-1].' + crnProp.key + ');\n\t';
         } else {
             getParamsLatest += crnProp.data_type + ' ' + crnProp.key + ',';
-            retValsLatest += "facts[dataId-1]." + crnProp.key + ',';
+            retValsLatest += 'facts[dataId-1].' + crnProp.key + ',';
         }
     }
     let retFactLatest = '\t\t\treturn (' + retValsLatest;
@@ -174,7 +173,7 @@ async function generateContract (templateFileName) {
             if (crnProp.data_type === 'string') {
                 emptyRetFactLatest += "\"\"" + ");\n\t";
             } else {
-                emptyRetFactLatest += "0" + ");\n\t";
+                emptyRetFactLatest += '0' + ');\n\t';
             }
         } else {
             if (crnProp.data_type === 'string') {
@@ -185,7 +184,7 @@ async function generateContract (templateFileName) {
         }
     }
 
-    let getLatestFact = "\tfunction getLatestFact() public constant returns (" + getParamsLatest +
+    let getLatestFact = '\tfunction getLatestFact() public constant returns (' + getParamsLatest +
         '\t\tif(dataId > 0){\n' + retFactLatest +
         '\t} else {\n' +
         '\t\t\treturn (' + emptyRetFactLatest +
@@ -224,7 +223,7 @@ async function generateContract (templateFileName) {
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
         if (i === (fact_tbl.properties.length-1)) {
-            getParamsAll += crnProp.data_type + '[] ' + crnProp.key +'s, uint[] timestamps' + '){\n';
+            getParamsAll += crnProp.data_type + '[] ' + crnProp.key + 's, uint[] timestamps' + '){\n';
             retValsAll += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](id);\n';
             retValsAll += '\t\tuint[] memory timestampss = new uint[](id);\n';
             assignements += '\t\t\t' + crnProp.key + 'ss[i] = fact.' + crnProp.key+';\n';
@@ -258,7 +257,7 @@ async function generateContract (templateFileName) {
 
     for (let i = 0; i < fact_tbl.properties.length; i++) {
         let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length-1)) {
+        if (i === (fact_tbl.properties.length - 1)) {
             getParamsFromTo += crnProp.data_type + '[] ' + crnProp.key +'sFromTo, uint[] timestampsFromTo' + '){\n';
             retValsFromTo += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](to - from);\n';
             retValsFromTo += '\t\tuint[] memory timestampss = new uint[](to - from);\n';

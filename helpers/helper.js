@@ -70,7 +70,6 @@ function averageObjects (ob1, ob2) {
 
 function flatten (items) {
     const flat = [];
-
     items.forEach(item => {
         flat.push(item);
         if (Array.isArray(item.children) && item.children.length > 0) {
@@ -79,7 +78,6 @@ function flatten (items) {
         }
         delete item.children
     });
-
     return flat;
 }
 
