@@ -36,7 +36,7 @@ async function generateContract (templateFileName) {
         let crnProp = fact_tbl.properties[i];
         properties += '\t\t' + crnProp.data_type + ' ' + crnProp.key + ';\n';
     }
-    let groupStruct = '\tstruct groupBy{ \n  \t\tstring hash;\n' + '  \t\tuint latestFact;\n'  + '        uint size;\n\t' + '\t\tuint colSize;\n' +
+    let groupStruct = '\tstruct groupBy{ \n  \t\tstring hash;\n' + '  \t\tuint latestFact;\n' + '        uint size;\n\t' + '\t\tuint colSize;\n' +
         '  \t\tstring columns;\n' + '        uint timestamp;\n\t}\n';
     let gbView = '\tstruct gbView{ \n  \t\tstring viewDef;\n\t}\n'; // viewDef is a strigifiedJSON defining a view
     let viewMapping = '\tmapping(uint => gbView) public gbViews;\n\n';
@@ -201,8 +201,8 @@ async function generateContract (templateFileName) {
         '\t}\n';
 
     let getAllGBs = '\tfunction getAllGroupBys(uint groupById) public returns (string[] hashes, uint[] latFacts, uint[] columnSize, uint[] size,  string[] columns, uint[] gbTimestamp){\n';
-    let getAllGBsDec = '\t\tstring[] memory allHashes = new string[](groupById);\n' + '\t\tuint[] memory allLatFact = new uint[](groupById);\n' + '\t\tuint[] memory allColSize = new uint[](groupById);\n' + '\t\tuint[] memory allSize = new uint[](groupById);\n' + '\t\tuint[] memory allTs = new uint[](groupById);\n'
-        + '\t\tstring[] memory allColumns = new string[](groupById);\n';
+    let getAllGBsDec = '\t\tstring[] memory allHashes = new string[](groupById);\n' + '\t\tuint[] memory allLatFact = new uint[](groupById);\n' + '\t\tuint[] memory allColSize = new uint[](groupById);\n' + '\t\tuint[] memory allSize = new uint[](groupById);\n' + '\t\tuint[] memory allTs = new uint[](groupById);\n' +
+        '\t\tstring[] memory allColumns = new string[](groupById);\n';
     let getGBsLoop = '\t\tfor(uint i =0; i < groupById; i++){\n' +
         '\t\t groupBy storage crnGb = groupBys[i];\n' +
         '\t\t allHashes[i] = crnGb.hash;\n' +
@@ -234,7 +234,7 @@ async function generateContract (templateFileName) {
         } else {
             getParamsAll += crnProp.data_type + '[] ' + crnProp.key + 's,';
             retValsAll += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](id);\n';
-            assignements += '\t\t\t' +  crnProp.key + 'ss[i] = fact.' + crnProp.key+';\n';
+            assignements += '\t\t\t' + crnProp.key + 'ss[i] = fact.' + crnProp.key+';\n';
             retStmtAll += crnProp.key + 'ss,';
         }
     }
@@ -270,7 +270,7 @@ async function generateContract (templateFileName) {
         } else {
             getParamsFromTo += crnProp.data_type + '[] ' + crnProp.key + 's,';
             retValsFromTo += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](to - from);\n';
-            assignementsFromTo += '\t\t\t' +  crnProp.key + 'ss[j] = fact.' + crnProp.key+';\n';
+            assignementsFromTo += '\t\t\t' + crnProp.key + 'ss[j] = fact.' + crnProp.key+';\n';
             assignementsFromTo += counterIncr;
             retStmtFromTo += crnProp.key + 'ss,';
         }

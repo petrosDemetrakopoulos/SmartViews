@@ -17,7 +17,7 @@ let running = false;
 let gbRunning = false;
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
-app.set('views', path.join( __dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 const microtime = require('microtime');
 let http = require('http').Server(app);
@@ -85,7 +85,7 @@ app.get('/form/:contract', function (req, res) {
     groupBys = helper.removeDuplicates(groupBys);
     groupBys.push(factTbl.groupBys.TOP.fields);
     console.log(groupBys);
-    res.render('form', {'template':templ, 'name': factTbl.name, 'address': address, 'groupBys':groupBys, 'readyViews': readyViews});
+    res.render('form', {'template': templ, 'name': factTbl.name, 'address': address, 'groupBys': groupBys, 'readyViews': readyViews});
 });
 
 http.listen(3000, () => {
@@ -110,7 +110,7 @@ http.listen(3000, () => {
     }
 });
 
-async function deploy(account, contractPath) {
+async function deploy (account, contractPath) {
     const input = fs.readFileSync(contractPath);
     const output = solc.compile(input.toString(), 1);
     console.log(output);
@@ -118,7 +118,7 @@ async function deploy(account, contractPath) {
     const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
 
     contract = new web3.eth.Contract(abi);
-    let contractInstance =  await contract.deploy({data: '0x' + bytecode})
+    let contractInstance = await contract.deploy({data: '0x' + bytecode})
         .send({
             from: account,
             gas: 150000000,
@@ -154,12 +154,12 @@ app.get('/deployContract/:fn', function (req, res) {
             deploy(accounts[0], './contracts/' + req.params.fn)
                 .then(options => {
                     console.log('Success');
-                    res.send({ status:'OK', options: options });
+                    res.send({ status: 'OK', options: options });
                 })
                 .catch(err => {
                     console.log('error on deploy ' + err);
                     res.status(400);
-                    res.send({ status:'ERROR', options: 'Deployment failed' });
+                    res.send({ status: 'ERROR', options: 'Deployment failed' });
                 })
         }
     });
@@ -172,7 +172,6 @@ async function addManyFacts(facts, sliceSize) {
         let slices = [];
         let slicesNum = Math.ceil(facts.length / sliceSize);
         console.log('*will add ' + slicesNum + ' slices*');
-
         for (let j = 0; j < slicesNum; j++) {
             if (j === 0) {
                 slices[j] = facts.filter((fct, idx) => idx < sliceSize);
@@ -193,7 +192,7 @@ async function addManyFacts(facts, sliceSize) {
     }
 
     let i = 1;
-    for (const slc of allSlicesReady){
+    for (const slc of allSlicesReady) {
         await contract.methods.addFacts(slc).send(mainTransactionObject, (err, txHash) => {
         }).on('error', (err) => {
             console.log('error:', err);
@@ -206,10 +205,9 @@ async function addManyFacts(facts, sliceSize) {
     return Promise.resolve(true);
 }
 
-
 app.get('/load_dataset/:dt', function (req, res) {
     let dt = require('./test_data/' + req.params.dt);
-    console.log("ENDPOINT HIT AGAIN");
+    console.log('ENDPOINT HIT AGAIN');
     console.log(running);
     if (contract) {
         if (!running) {
@@ -233,7 +231,7 @@ app.get('/load_dataset/:dt', function (req, res) {
 });
 
 app.get('/new_contract/:fn', function (req, res) {
-    contractGenerator.generateContract(req.params.fn).then(function (result){
+    contractGenerator.generateContract(req.params.fn).then(function (result) {
         createTable = result.createTable;
         tableName = result.tableName;
         return res.send({ msg: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
