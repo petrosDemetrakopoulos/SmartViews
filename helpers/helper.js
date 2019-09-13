@@ -160,6 +160,15 @@ function printTimes (resultObject) {
     console.log('all total time = ' + resultObject.allTotal);
 }
 
+function getRandomInt (min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function getRandomFloat (min, max) {
+    return (Math.random() * (max - min + 1) + min).toFixed(2);
+}
+
 module.exports = {
     sumObjects: sumObjects,
     maxObjects: maxObjects,
@@ -169,5 +178,7 @@ module.exports = {
     removeDuplicates: removeDuplicates,
     configFileValidations: configFileValidations,
     removeTimestamps: removeTimestamps,
-    printTimes: printTimes
+    printTimes: printTimes,
+    getRandomInt: getRandomInt,
+    getRandomFloat: getRandomFloat
 };

@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_scripts/exp1.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -244,14 +249,8 @@
       <workItem from="1568211216651" duration="1615000" />
       <workItem from="1568220662242" duration="5363000" />
       <workItem from="1568243859644" duration="3226000" />
-      <workItem from="1568284567225" duration="1169000" />
-    </task>
-    <task id="LOCAL-00081" summary="calculate gb for deltas and merge with the one already existed in cache">
-      <created>1558541321474</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1558541321474</updated>
+      <workItem from="1568284567225" duration="2137000" />
+      <workItem from="1568367333544" duration="1019000" />
     </task>
     <task id="LOCAL-00082" summary="created micro function for removing timestamps from records">
       <created>1558541584382</created>
@@ -589,7 +588,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568285435137</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="fixed some lintering issues">
+      <created>1568285857011</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1568285857011</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

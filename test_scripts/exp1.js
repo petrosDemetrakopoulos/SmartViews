@@ -2,25 +2,19 @@ const fs = require('fs');
 const request = require('request');
 let numberOfFacts = 100;
 let fileToSaveTestData = 'testData_';
-function getRandomInt (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-function getRandomFloat (min, max) {
-    return (Math.random() * (max - min + 1) + min).toFixed(2);
-}
+const helper = require('../helpers/helper');
+
 let all = [];
 let allSecondRun = [];
 for (let j = 0; j < numberOfFacts; j++) {
-    let A = getRandomInt(0, 100);
-    let Asec = getRandomInt(0, 100);
-    let B = getRandomInt(0, 100);
-    let Bsec = getRandomInt(0, 100);
-    let C = getRandomInt(0, 100);
-    let Csec = getRandomInt(0, 100);
-    let D = getRandomFloat(0, 100);
-    let Dsec = getRandomInt(0, 100);
+    let A = helper.getRandomInt(0, 100);
+    let Asec = helper.getRandomInt(0, 100);
+    let B = helper.getRandomInt(0, 100);
+    let Bsec = helper.getRandomInt(0, 100);
+    let C = helper.getRandomInt(0, 100);
+    let Csec = helper.getRandomInt(0, 100);
+    let D = helper.getRandomFloat(0, 100);
+    let Dsec = helper.getRandomInt(0, 100);
     let newObj = { pk: j, A: A, B: B, C: C, D: D };
     let newObjSec = { pk: j + numberOfFacts, A: Asec, B: Bsec, C: Csec, D: Dsec };
     all.push(newObj);

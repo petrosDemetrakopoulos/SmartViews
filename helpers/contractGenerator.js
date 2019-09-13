@@ -1,13 +1,13 @@
 const fs = require('fs');
 
 async function generateContract (templateFileName) {
-    let fact_tbl = require('../templates/' + templateFileName);
-    console.log(fact_tbl);
-    let createTable = fact_tbl.template.create_table;
-    let tableName = fact_tbl.template.table_name;
+    let factTbl = require('../templates/' + templateFileName);
+    console.log(factTbl);
+    let createTable = factTbl.template.create_table;
+    let tableName = factTbl.template.table_name;
     let contrPayload = '';
     let firstLine = 'pragma solidity ^0.4.24;\npragma experimental ABIEncoderV2;\n';
-    let secondLine = 'contract ' + fact_tbl.name + ' { \n';
+    let secondLine = 'contract ' + factTbl.name + ' { \n';
     let thirdLine = '\tuint public dataId;\n';
     let fourthLine = '\tuint public groupId;\n\n';
     let sixthLine = '\tuint public viewId;\n\n';
@@ -31,9 +31,9 @@ async function generateContract (templateFileName) {
         '\t\tlastAverage = 0;\n' +
         '\t}\n';
     let properties = '';
-    let struct = '\tstruct ' + fact_tbl.struct_Name + '{ \n';
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
+    let struct = '\tstruct ' + factTbl.struct_Name + '{ \n';
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
         properties += '\t\t' + crnProp.data_type + ' ' + crnProp.key + ';\n';
     }
     let groupStruct = '\tstruct groupBy{ \n  \t\tstring hash;\n' + '  \t\tuint latestFact;\n' + '        uint size;\n\t' + '\t\tuint colSize;\n' +
@@ -43,22 +43,22 @@ async function generateContract (templateFileName) {
     let groupMapping = '\tmapping(uint => groupBy) public groupBys;\n\n';
     properties += '\t\tuint timestamp;\n';
     let closeStruct = '\t}\n';
-    let mapping = '\tmapping(uint =>' + fact_tbl.struct_Name + ') public facts;\n\n';
+    let mapping = '\tmapping(uint =>' + factTbl.struct_Name + ') public facts;\n\n';
     let addParams = '';
     let addFact = '\tfunction addFact(';
 
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length - 1)) {
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
+        if (i === (factTbl.properties.length - 1)) {
             addParams += crnProp.data_type + ' ' + crnProp.key + ') ';
         } else {
             addParams += crnProp.data_type + ' ' + crnProp.key + ',';
         }
     }
     let retParams = 'public returns (';
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length - 1)) {
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
+        if (i === (factTbl.properties.length - 1)) {
             retParams += crnProp.data_type + ' ' + ', uint ID){\n';
         } else {
             retParams += crnProp.data_type + ' ' + ',';
@@ -66,14 +66,14 @@ async function generateContract (templateFileName) {
     }
     addFact = addFact + addParams + retParams;
     let setters = '';
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
         setters += '\t\tfacts[dataId].' + crnProp.key + '= ' + crnProp.key + ';\n';
     }
     setters += '\t\tfacts[dataId].timestamp = now;\n \t\tdataId += 1;\n';
     let retStmt = '\t\treturn (';
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
         retStmt += 'facts[dataId-1].' + crnProp.key + ',';
     }
     retStmt += 'dataId -1);\n\t}\n\n';
@@ -81,9 +81,9 @@ async function generateContract (templateFileName) {
     let getParams = '';
     let getFact = '\tfunction getFact(uint id) public constant returns (';
     let retVals = '';
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length - 1)) {
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
+        if (i === (factTbl.properties.length - 1)) {
             getParams += crnProp.data_type + ' ' + crnProp.key + ', uint timestamp' + '){\n';
             retVals += 'facts[id].' + crnProp.key + ', facts[id].timestamp' + ');\n\t}\n\n';
         } else {
@@ -154,9 +154,9 @@ async function generateContract (templateFileName) {
 
     let retValsLatest = '';
     let getParamsLatest = '';
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length - 1)) {
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
+        if (i === (factTbl.properties.length - 1)) {
             getParamsLatest += crnProp.data_type + ' ' + crnProp.key + '){\n';
             retValsLatest += 'facts[dataId-1].' + crnProp.key + ');\n\t';
         } else {
@@ -167,9 +167,9 @@ async function generateContract (templateFileName) {
     let retFactLatest = '\t\t\treturn (' + retValsLatest;
     let emptyRetFactLatest = '';
 
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length - 1)) {
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
+        if (i === (factTbl.properties.length - 1)) {
             if (crnProp.data_type === 'string') {
                 emptyRetFactLatest += "\"\"" + ");\n\t";
             } else {
@@ -220,13 +220,13 @@ async function generateContract (templateFileName) {
     let retValsAll = '';
     let assignements = '';
     let retStmtAll = '';
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length-1)) {
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
+        if (i === (factTbl.properties.length - 1)) {
             getParamsAll += crnProp.data_type + '[] ' + crnProp.key + 's, uint[] timestamps' + '){\n';
             retValsAll += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](id);\n';
             retValsAll += '\t\tuint[] memory timestampss = new uint[](id);\n';
-            assignements += '\t\t\t' + crnProp.key + 'ss[i] = fact.' + crnProp.key+';\n';
+            assignements += '\t\t\t' + crnProp.key + 'ss[i] = fact.' + crnProp.key + ';\n';
             assignements += '\t\t\t' + 'timestampss[i] = fact.timestamp;\n';
             assignements += '\t\t}\n';
             retStmtAll += crnProp.key + 'ss,';
@@ -234,12 +234,12 @@ async function generateContract (templateFileName) {
         } else {
             getParamsAll += crnProp.data_type + '[] ' + crnProp.key + 's,';
             retValsAll += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](id);\n';
-            assignements += '\t\t\t' + crnProp.key + 'ss[i] = fact.' + crnProp.key+';\n';
+            assignements += '\t\t\t' + crnProp.key + 'ss[i] = fact.' + crnProp.key + ';\n';
             retStmtAll += crnProp.key + 'ss,';
         }
     }
     let loopLine = '\t\tfor(uint i =0; i < id; i++){\n';
-    let firstLoopLine = '\t\t\t' + fact_tbl.struct_Name + ' storage fact = facts[i];\n';
+    let firstLoopLine = '\t\t\t' + factTbl.struct_Name + ' storage fact = facts[i];\n';
 
     let getAllRet = '\t\treturn (';
     getAllRet += retStmtAll;
@@ -255,13 +255,13 @@ async function generateContract (templateFileName) {
     let arrCounter = '\t\tuint j = 0;\n';
     let counterIncr = '\t\t\tj++;\n';
 
-    for (let i = 0; i < fact_tbl.properties.length; i++) {
-        let crnProp = fact_tbl.properties[i];
-        if (i === (fact_tbl.properties.length - 1)) {
-            getParamsFromTo += crnProp.data_type + '[] ' + crnProp.key +'sFromTo, uint[] timestampsFromTo' + '){\n';
+    for (let i = 0; i < factTbl.properties.length; i++) {
+        let crnProp = factTbl.properties[i];
+        if (i === (factTbl.properties.length - 1)) {
+            getParamsFromTo += crnProp.data_type + '[] ' + crnProp.key + 'sFromTo, uint[] timestampsFromTo' + '){\n';
             retValsFromTo += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](to - from);\n';
             retValsFromTo += '\t\tuint[] memory timestampss = new uint[](to - from);\n';
-            assignementsFromTo += '\t\t\t' + crnProp.key + 'ss[j] = fact.' + crnProp.key+';\n';
+            assignementsFromTo += '\t\t\t' + crnProp.key + 'ss[j] = fact.' + crnProp.key + ';\n';
             assignementsFromTo += '\t\t\t' + 'timestampss[j] = fact.timestamp;\n';
             assignementsFromTo += counterIncr;
             assignementsFromTo += '\t\t}\n';
@@ -270,14 +270,14 @@ async function generateContract (templateFileName) {
         } else {
             getParamsFromTo += crnProp.data_type + '[] ' + crnProp.key + 's,';
             retValsFromTo += '\t\t' + crnProp.data_type + '[] memory ' + crnProp.key + 'ss = new ' + crnProp.data_type + '[](to - from);\n';
-            assignementsFromTo += '\t\t\t' + crnProp.key + 'ss[j] = fact.' + crnProp.key+';\n';
+            assignementsFromTo += '\t\t\t' + crnProp.key + 'ss[j] = fact.' + crnProp.key + ';\n';
             assignementsFromTo += counterIncr;
             retStmtFromTo += crnProp.key + 'ss,';
         }
     }
 
     let loopLineFromTo = '\t\tfor(uint i = from; i < to; i++){\n';
-    let firstLoopLineFromTo = '\t\t\t' + fact_tbl.struct_Name + ' storage fact = facts[j];\n';
+    let firstLoopLineFromTo = '\t\t\t' + factTbl.struct_Name + ' storage fact = facts[j];\n';
 
     let getRetFromTo = '\t\treturn (';
     getRetFromTo += retStmtFromTo;
@@ -302,25 +302,25 @@ async function generateContract (templateFileName) {
     deleteGBById += '\t}\n';
 
     contrPayload = firstLine + secondLine + thirdLine + fourthLine + sixthLine + fifthLine +
-        constr + struct + properties + closeStruct + groupStruct + groupMapping +  mapping + gbView +
+        constr + struct + properties + closeStruct + groupStruct + groupMapping + mapping + gbView +
         viewMapping + addFact + setters + retStmt + getFact + getParams + retFact + addView + addGroupBy +
         getGroupBy + getLatestGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +
         getGBsLoop + getAllFacts + getFactFromTo + addManyFacts + deleteGBById + '\n}';
-    return new Promise( function (resolve , reject) {
-        fs.writeFile('contracts/' + fact_tbl.name + '.sol', contrPayload, function (err) {
+    return new Promise( function (resolve, reject) {
+        fs.writeFile('contracts/' + factTbl.name + '.sol', contrPayload, function (err) {
             if (err) {
                 console.log(err);
-                return reject({msg: 'error'});
+                return reject({ msg: 'error' });
             }
             console.log('The file was saved!');
             let templ = {};
-            if ('template' in fact_tbl) {
-                templ = fact_tbl['template'];
+            if ('template' in factTbl) {
+                templ = factTbl['template'];
             } else {
-                templ = fact_tbl;
+                templ = factTbl;
             }
             console.log(templ);
-            return resolve({msg: 'OK', filename: fact_tbl.name, template: templ, createTable: createTable,tableName: tableName });
+            return resolve({ msg: 'OK', filename: factTbl.name, template: templ, createTable: createTable, tableName: tableName });
         });
     });
 }

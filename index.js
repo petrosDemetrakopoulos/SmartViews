@@ -85,7 +85,7 @@ app.get('/form/:contract', function (req, res) {
     groupBys = helper.removeDuplicates(groupBys);
     groupBys.push(factTbl.groupBys.TOP.fields);
     console.log(groupBys);
-    res.render('form', {'template': templ, 'name': factTbl.name, 'address': address, 'groupBys': groupBys, 'readyViews': readyViews});
+    res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'groupBys': groupBys, 'readyViews': readyViews });
 });
 
 http.listen(3000, () => {
@@ -118,7 +118,7 @@ async function deploy (account, contractPath) {
     const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
 
     contract = new web3.eth.Contract(abi);
-    let contractInstance = await contract.deploy({data: '0x' + bytecode})
+    let contractInstance = await contract.deploy({ data: '0x' + bytecode })
         .send({
             from: account,
             gas: 150000000,
@@ -135,7 +135,7 @@ async function deploy (account, contractPath) {
         .on('receipt', (receipt) => {
             console.log('receipt:', receipt);
             contract.options.address = receipt.contractAddress;
-            contractsDeployed.push({contractName: Object.keys(output.contracts)[0].slice(1), address: receipt.contractAddress});
+            contractsDeployed.push({ contractName: Object.keys(output.contracts)[0].slice(1), address: receipt.contractAddress });
             console.log(contractsDeployed);
         });
     return contractInstance.options;
@@ -165,7 +165,7 @@ app.get('/deployContract/:fn', function (req, res) {
     });
 });
 
-async function addManyFacts(facts, sliceSize) {
+async function addManyFacts (facts, sliceSize) {
     console.log('length = ' + facts.length);
     let allSlicesReady = [];
     if (sliceSize > 1) {
@@ -292,7 +292,7 @@ async function getAllFacts (factsLength) {
                 for (let j = 0; j < len / 2; j++) {
                     delete result2[j];
                 }
-                console.log("got fact " + i);
+                console.log('got fact ' + i);
                 if ('payload' in result2) {
                     let crnLn = JSON.parse(result2['payload']);
                     crnLn.timestamp = result2['timestamp'];
@@ -332,7 +332,7 @@ app.get('/getFactsFromTo/:from/:to', function (req, res) {
     let timeStart = microtime.nowDouble();
     getFactsFromTo(parseInt(req.params.from), parseInt(req.params.to)).then(retval => {
         let timeFinish = microtime.nowDouble() - timeStart;
-        retval.push({time: timeFinish});
+        retval.push({ time: timeFinish });
         res.send(retval);
     }).catch(err => {
         res.send(err);
@@ -400,6 +400,10 @@ function cacheEvictionCost (groupBys) {
         groupBys[i] = crnGroupBy;
     }
     return groupBys;
+}
+
+function cacheEvictionCostOfficial () { // the one written on paper , write one with only time or size
+
 }
 
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
@@ -917,6 +921,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                     }
 
                                     await contract.methods.dataId().call(function (err, latestId) {
+                                        if (err) throw err;
                                         sortedByEvictionCost = calculationCostOfficial(sortedByEvictionCost, latestId);
                                         filteredGBs = calculationCostOfficial(filteredGBs, latestId);
                                     });
