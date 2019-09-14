@@ -156,6 +156,12 @@ function printTimes (resultObject) {
     if (resultObject.cacheRetrieveTime) {
         console.log('cache retrieve time = ' + resultObject.cacheRetrieveTime);
     }
+    if(resultObject.obj1Time){
+        console.log("->     obj1 server time = " + resultObject.obj1Time);
+    }
+    if(resultObject.obj2Time){
+        console.log("->     obj2 server time = " + resultObject.obj2Time);
+    }
     console.log('total time = ' + resultObject.totalTime);
     console.log('all total time = ' + resultObject.allTotal);
 }

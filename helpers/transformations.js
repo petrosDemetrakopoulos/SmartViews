@@ -1,9 +1,5 @@
+const stringify = require('fast-stringify');
 function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) {
-    console.log('***');
-    console.log(groupByResult);
-    console.log('***');
-    console.log(gbField);
-    console.log('***');
     let transformed = {};
     if (operation === 'COUNT') {
         console.log('OPERATION = COUNT');
@@ -11,7 +7,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
             let filtered = groupByResult[i];
-            transformed[JSON.stringify(filtered)] = crnCount;
+            transformed[stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'COUNT';
     } else if (operation === 'SUM') {
@@ -20,7 +16,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let crnCount = groupByResult[i]['SUM(' + aggregateField + ')'];
             delete groupByResult[i]['SUM(' + aggregateField + ')'];
             let filtered = groupByResult[i];
-            transformed[JSON.stringify(filtered)] = crnCount;
+            transformed[stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'SUM';
     } else if (operation === 'MIN') {
@@ -29,7 +25,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let crnCount = groupByResult[i]['MIN(' + aggregateField + ')'];
             delete groupByResult[i]['MIN(' + aggregateField + ')'];
             let filtered = groupByResult[i];
-            transformed[JSON.stringify(filtered)] = crnCount;
+            transformed[stringify(filtered)] = crnCount;
         }
         transformed['operation'] = 'MIN';
     } else if (operation === 'MAX') {
@@ -50,7 +46,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             delete groupByResult[i]['COUNT(' + aggregateField + ')'];
             delete groupByResult[i]['SUM(' + aggregateField + ')'];
             let filtered = groupByResult[i];
-            transformed[JSON.stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
+            transformed[stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
         }
 
         transformed['operation'] = 'AVERAGE';
@@ -71,7 +67,7 @@ function transformReadyAverage (groupByResult, gbField, aggregateField) {
         delete groupByResult[i][sumOfCountsField];
         delete groupByResult[i][sumOfSumsField];
         let filtered = groupByResult[i];
-        transformed[JSON.stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
+        transformed[stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
     }
     transformed['operation'] = 'AVERAGE';
     transformed['groupByFields'] = gbField;
@@ -163,7 +159,7 @@ function calculateReducedGB (operation, aggregateField, cachedGroupBy, gbFields)
                 if (gbFields.indexOf(key2) <= -1) {
                     delete crnUniqueVal[key2];
                 }
-                transformedArray[i] = JSON.stringify(crnUniqueVal);
+                transformedArray[i] = stringify(crnUniqueVal);
             });
             console.log('crnuniqueVal AFTER');
             console.log(crnUniqueVal);
@@ -225,7 +221,7 @@ function calculateReducedGB (operation, aggregateField, cachedGroupBy, gbFields)
     } else { // AVERAGE
         let avgPerKey = [];
         for (let j = 0; j < uniqueKeysArray.length; j++) {
-            avgPerKey[j] = JSON.stringify({ count: 0, sum: 0, average: 0 });
+            avgPerKey[j] = stringify({ count: 0, sum: 0, average: 0 });
         }
         for (let j = 0; j < transformedArray.length; j++) {
             let crnObj = transformedArray[j];
