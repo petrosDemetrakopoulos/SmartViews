@@ -1541,9 +1541,6 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                             let rowsDelta = [];
                                                                             let lastCol = '';
                                                                             let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-                                                                            let objForKeyOneTimeStart = microtime.nowDouble();
-                                                                            let objForKeyOneTime = 0;
-                                                                            let objForKeyTwoTime = 0;
                                                                             let gbValsCached = Object.values(cachedGroupBy);
                                                                             lastCol = view.SQLTable.split(' ');
                                                                             prelastCol = lastCol[lastCol.length - 4];
@@ -1561,26 +1558,20 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                     }
                                                                                     rows.push(crnRow);
                                                                                 }
-                                                                                if(i === (keys.length - 1)){
-                                                                                    objForKeyOneTime = microtime.nowDouble() - objForKeyOneTimeStart;
-                                                                                }
                                                                             }
 
-                                                                            let objForKeyTwoTimeStart = microtime.nowDouble();
+                                                                            let gbSqlVals = Object.values(groupBySqlResult);
                                                                             for (let i = 0, keys = Object.keys(groupBySqlResult); i < keys.length; i++) {
                                                                                 let key = keys[i];
                                                                                 if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable') {
                                                                                     let crnRow = JSON.parse(key);
                                                                                     if (view.operation === 'AVERAGE') {
-                                                                                        crnRow[prelastCol] = gbValsCached[i]['sum'];
-                                                                                        crnRow[lastCol] = gbValsCached[i]['count'];
+                                                                                        crnRow[prelastCol] = gbSqlVals[i]['sum'];
+                                                                                        crnRow[lastCol] = gbSqlVals[i]['count'];
                                                                                     } else {
-                                                                                        crnRow[lastCol] = gbValsCached[i];
+                                                                                        crnRow[lastCol] = gbSqlVals[i];
                                                                                     }
                                                                                     rowsDelta.push(crnRow);
-                                                                                }
-                                                                                if(i === (keys.length - 1)){
-                                                                                    objForKeyTwoTime = microtime.nowDouble() - objForKeyTwoTimeStart;
                                                                                 }
                                                                             }
                                                                             let mergeTimeStart = microtime.nowDouble();
@@ -1634,8 +1625,6 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                         mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                         mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
                                                                                         mergeResult.allTotal = totalEnd - totalStart;
-                                                                                        mergeResult.obj1Time = objForKeyOneTime;
-                                                                                        mergeResult.obj2Time = objForKeyTwoTime;
                                                                                         helper.printTimes(mergeResult);
                                                                                         console.log('receipt:', receipt);
                                                                                         io.emit('view_results', mergeResult);

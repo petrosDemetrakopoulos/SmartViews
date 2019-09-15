@@ -3,11 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/transformations.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/transformations.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_scripts/exp1.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -255,14 +252,10 @@
       <workItem from="1568390048318" duration="4247000" />
       <workItem from="1568461355805" duration="16000" />
       <workItem from="1568461384707" duration="5002000" />
-      <workItem from="1568479303539" duration="5064000" />
-    </task>
-    <task id="LOCAL-00083" summary="fixed issue on delta gb calculation">
-      <created>1558615198997</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1558615198998</updated>
+      <workItem from="1568479303539" duration="5445000" />
+      <workItem from="1568539768885" duration="8582000" />
+      <workItem from="1568552415338" duration="4256000" />
+      <workItem from="1568558189138" duration="2111000" />
     </task>
     <task id="LOCAL-00084" summary="new feature: cache slicing&#10;created: config file">
       <created>1561403206681</created>
@@ -600,7 +593,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568368553311</updated>
     </task>
-    <option name="localTasksCounter" value="132" />
+    <task id="LOCAL-00132" summary="performance improvements">
+      <created>1568485057486</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1568485057486</updated>
+    </task>
+    <option name="localTasksCounter" value="133" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -634,7 +634,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;" />
     <MESSAGE value="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)" />
     <MESSAGE value="code cleanup" />
     <MESSAGE value="fixed minor formating issue in view output" />
@@ -659,6 +658,7 @@
     <MESSAGE value="fixes in readme" />
     <MESSAGE value="fixes in front end" />
     <MESSAGE value="fixed some lintering issues" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed some lintering issues" />
+    <MESSAGE value="performance improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="performance improvements" />
   </component>
 </project>
