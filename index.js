@@ -5,7 +5,7 @@ const fs = require('fs');
 const stringify = require('fast-stringify');
 const config = require('./config_private');
 const crypto = require('crypto');
-var path = require('path');
+const path = require('path');
 let md5sum = crypto.createHash('md5');
 abiDecoder = require('abi-decoder');
 const app = express();
@@ -24,7 +24,6 @@ const microtime = require('microtime');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 const jsonSql = require('json-sql')({ separatedValues: false });
-
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
 const redis = require('redis');
@@ -75,17 +74,9 @@ app.get('/form/:contract', function (req, res) {
             break;
         }
     }
-    let fbsField = factTbl.groupBys.TOP.children;
 
-    let groupBys = helper.flatten(fbsField);
-    groupBys = groupBys.map(function (obj) {
-        return obj.fields;
-    });
     let readyViews = factTbl.views;
     readyViews = readyViews.map(x => x.name);
-    groupBys = helper.removeDuplicates(groupBys);
-    groupBys.push(factTbl.groupBys.TOP.fields);
-    console.log(groupBys);
     res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'groupBys': groupBys, 'readyViews': readyViews });
 });
 
@@ -536,12 +527,12 @@ function saveOnCache (gbResult, operation, latestId) {
 }
 
 function calculateNewGroupBy (facts, operation, gbFields, aggregationField, callback) {
-    connection.query('DROP TABLE IF EXISTS ' + tableName, function (err, resultDrop) {
+    connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
         if (err) {
             console.log(err);
             callback(null, err);
         }
-        connection.query(createTable, function (error, results, fields) { // creating the SQL table for 'Fact Table'
+        connection.query(createTable, function (error, results) { // creating the SQL table for 'Fact Table'
             if (error) {
                 console.log(error);
                 callback(null, error);
@@ -557,7 +548,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
 
             let editedQuery = sql.query.replace(/"/g, '');
             editedQuery = editedQuery.replace(/''/g, 'null');
-            connection.query(editedQuery, function (error, results2, fields) { // insert facts
+            connection.query(editedQuery, function (error, results2) { // insert facts
                 if (error) {
                     console.log(error);
                     callback(null, error);
@@ -596,7 +587,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                     });
                 }
                 let editedGB = gbQuery.query.replace(/"/g, '');
-                connection.query(editedGB, function (error, results3, fields) {
+                connection.query(editedGB, function (error, results3) {
                     if (error) {
                         console.log(error);
                         callback(null, error);
@@ -624,7 +615,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
     tableName = tableName[3];
     tableName = tableName.split('(')[0];
     console.log('TABLE NAME = ' + tableName);
-    connection.query(cachedGroupBy.gbCreateTable, async function (error, results, fields) {
+    connection.query(cachedGroupBy.gbCreateTable, async function (error) {
         if (error) {
             callback(null, error);
         }
@@ -703,12 +694,12 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
             }
             let editedGBQuery = gbQuery.query.replace(/"/g, '');
             editedGBQuery = editedGBQuery.replace(/''/g, 'null');
-            connection.query(editedGBQuery, function (error, results, fields) {
+            connection.query(editedGBQuery, function (error, results) {
                 if (error) {
                     console.log(error);
                     callback(null, error);
                 }
-                connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                connection.query('DROP TABLE ' + tableName, function (err) {
                     if (err) {
                         console.log(err);
                         callback(null, err);
@@ -1662,7 +1653,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                         return res.send(stringify({ error: 'No facts exist in blockchain' }));
                                     }
                                     let facts = helper.removeTimestamps(retval);
-                                    console.log('CALCULATING NEW GB FROM BEGGINING');
+                                    console.log('CALCULATING NEW GB FROM BEGINING');
                                     let sqlTimeStart = microtime.nowDouble();
                                     calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                         let sqlTimeEnd = microtime.nowDouble();

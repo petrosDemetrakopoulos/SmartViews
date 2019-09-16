@@ -24,31 +24,6 @@
     "create_table": "CREATE TEMPORARY TABLE ABCD(\n\tpk int not null\n\t\tprimary key,\n\tA int,\n\tB int,\n\tC int,\n\tD FLOAT(2));\n\n",
     "table_name": "ABCD"
   },
-  "groupBys": {
-    "TOP": {
-      "fields": "pk | A | B | C | D",
-      "children": [
-        {"fields": "A | B",
-          "children": [
-            {"fields": "A"},
-            {"fields": "B"}
-          ]
-        },
-        {"fields": "A | C",
-          "children": [
-            {"fields": "A"},
-            {"fields": "C"}
-          ]
-        },
-        {"fields": "A | D",
-          "children": [
-            {"fields": "A"},
-            {"fields": "D"}
-          ]
-        }
-      ]
-    }
-  },
   "views" : [{ "name": "A|B(COUNT)",
     "gbFields": "A | B",
     "operation":  "COUNT", "aggregationField":  "pk",
@@ -58,7 +33,7 @@
       "operation":  "COUNT", "aggregationField":  "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, COUNTpk int)"},
     { "name": "A|B|C|D(COUNT)",
-      "gbFields": "A | B | C",
+      "gbFields": "A | B | C | D",
       "operation":  "COUNT", "aggregationField":  "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, D int, COUNTpk int)"},
     { "name": "A|B(SUM D)",
