@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_scripts/exp1.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
     </list>
@@ -255,14 +257,8 @@
       <workItem from="1568479303539" duration="5445000" />
       <workItem from="1568539768885" duration="8582000" />
       <workItem from="1568552415338" duration="4256000" />
-      <workItem from="1568558189138" duration="2111000" />
-    </task>
-    <task id="LOCAL-00084" summary="new feature: cache slicing&#10;created: config file">
-      <created>1561403206681</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1561403206683</updated>
+      <workItem from="1568558189138" duration="11370000" />
+      <workItem from="1568644902468" duration="573000" />
     </task>
     <task id="LOCAL-00085" summary="fixed buf on cache slicing">
       <created>1561486262077</created>
@@ -600,7 +596,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568485057486</updated>
     </task>
-    <option name="localTasksCounter" value="133" />
+    <task id="LOCAL-00133" summary="various fixes">
+      <created>1568560893808</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1568560893809</updated>
+    </task>
+    <option name="localTasksCounter" value="134" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -634,7 +637,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)" />
     <MESSAGE value="code cleanup" />
     <MESSAGE value="fixed minor formating issue in view output" />
     <MESSAGE value="presentation in front end as a table" />
@@ -659,6 +661,7 @@
     <MESSAGE value="fixes in front end" />
     <MESSAGE value="fixed some lintering issues" />
     <MESSAGE value="performance improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="performance improvements" />
+    <MESSAGE value="various fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="various fixes" />
   </component>
 </project>

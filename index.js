@@ -209,7 +209,6 @@ async function addManyFacts (facts, sliceSize) {
 app.get('/load_dataset/:dt', function (req, res) {
     let dt = require('./test_data/' + req.params.dt);
     console.log('ENDPOINT HIT AGAIN');
-    console.log(running);
     if (contract) {
         if (!running) {
             running = true;
@@ -236,7 +235,7 @@ app.get('/new_contract/:fn', function (req, res) {
         createTable = result.createTable;
         tableName = result.tableName;
         return res.send({ msg: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
-    } , function (err) {
+    }, function (err) {
         console.log(err);
         return res.send({ msg: 'error' });
     });
@@ -452,7 +451,6 @@ function containsAllFields (transformedArray, view) {
 }
 
 function saveOnCache (gbResult, operation, latestId) {
-    console.log('SAVE ON CACHE BEGUN');
     md5sum = crypto.createHash('md5');
     md5sum.update(stringify(gbResult));
     let hash = md5sum.digest('hex');
@@ -603,7 +601,6 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                         console.log(error);
                         callback(null, error);
                     }
-                    console.log('DROP TABLE ' + tableName);
                     connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
                         if (err) {
                             console.log(err);
@@ -712,6 +709,10 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
                     callback(null, error);
                 }
                 connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                    if (err) {
+                        console.log(err);
+                        callback(null, err);
+                    }
                     callback(results);
                 });
             });
@@ -866,7 +867,6 @@ app.get('/getViewByName/:viewName', function (req, res) {
     }
 
     console.log('VIEW BY NAME ENDPOINT HIT AGAIN');
-    console.log(gbRunning);
     if (!gbRunning && !running) {
         gbRunning = true;
         let gbFields = [];
@@ -966,7 +966,6 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                             return res.send(err);
                                         }
                                         if (mostEfficient.gbTimestamp > 0) {
-                                            console.log('MOST EFF > 0');
                                             let getLatestFactTimeStart = microtime.nowDouble();
                                             contract.methods.getFact(latestId - 1).call(function (err, latestFact) {
                                                 let getLatestFactTimeEnd = microtime.nowDouble();

@@ -306,11 +306,11 @@ async function generateContract (templateFileName) {
         viewMapping + addFact + setters + retStmt + getFact + getParams + retFact + addView + addGroupBy +
         getGroupBy + getLatestGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +
         getGBsLoop + getAllFacts + getFactFromTo + addManyFacts + deleteGBById + '\n}';
-    return new Promise( function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         fs.writeFile('contracts/' + factTbl.name + '.sol', contrPayload, function (err) {
             if (err) {
                 console.log(err);
-                return reject({ msg: 'error' });
+                return reject(new Error('error'));
             }
             console.log('The file was saved!');
             let templ = {};
