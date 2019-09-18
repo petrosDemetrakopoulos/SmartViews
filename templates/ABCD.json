@@ -31,19 +31,26 @@
   "views": [
     {
       "name": "A|B(COUNT)",
-      "gbFields": "A | B",
+      "gbFields": [
+        "A",
+        "B"
+      ],
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 1
+      "frequency": 133
     },
     {
       "name": "A|B|C(COUNT)",
-      "gbFields": "A | B | C",
+      "gbFields": [
+        "A",
+        "B",
+        "C"
+      ],
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, COUNTpk int)",
-      "frequency": 0
+      "frequency": 4
     },
     {
       "name": "A|B|C|D(COUNT)",
