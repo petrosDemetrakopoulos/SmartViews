@@ -1,8 +1,12 @@
 {
   "name": "ABCD",
   "struct_Name": "Abcd",
-  "properties":[
-    {"key": "payload", "data_type": "string"}],
+  "properties": [
+    {
+      "key": "payload",
+      "data_type": "string"
+    }
+  ],
   "template": {
     "properties": [
       {
@@ -24,24 +28,46 @@
     "create_table": "CREATE TEMPORARY TABLE ABCD(\n\tpk int not null\n\t\tprimary key,\n\tA int,\n\tB int,\n\tC int,\n\tD FLOAT(2));\n\n",
     "table_name": "ABCD"
   },
-  "views" : [{ "name": "A|B(COUNT)",
-    "gbFields": "A | B",
-    "operation":  "COUNT", "aggregationField":  "pk",
-    "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)"},
-    { "name": "A|B|C(COUNT)",
-      "gbFields": "A | B | C",
-      "operation":  "COUNT", "aggregationField":  "pk",
-      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, COUNTpk int)"},
-    { "name": "A|B|C|D(COUNT)",
-      "gbFields": "A | B | C | D",
-      "operation":  "COUNT", "aggregationField":  "pk",
-      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, D int, COUNTpk int)"},
-    { "name": "A|B(SUM D)",
+  "views": [
+    {
+      "name": "A|B(COUNT)",
       "gbFields": "A | B",
-      "operation":  "SUM", "aggregationField":  "D",
-      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, SUMD int)"},
-    { "name": "A(COUNT)",
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
+      "frequency": 1
+    },
+    {
+      "name": "A|B|C(COUNT)",
+      "gbFields": "A | B | C",
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, COUNTpk int)",
+      "frequency": 0
+    },
+    {
+      "name": "A|B|C|D(COUNT)",
+      "gbFields": "A | B | C | D",
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, D int, COUNTpk int)",
+      "frequency": 0
+    },
+    {
+      "name": "A|B(SUM D)",
+      "gbFields": "A | B",
+      "operation": "SUM",
+      "aggregationField": "D",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, SUMD int)",
+      "frequency": 0
+    },
+    {
+      "name": "A(COUNT)",
       "gbFields": "A",
-      "operation":  "COUNT", "aggregationField":  "pk",
-      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)"}
-]}
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
+      "frequency": 0
+    }
+  ]
+}

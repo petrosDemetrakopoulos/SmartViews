@@ -77,7 +77,7 @@ app.get('/form/:contract', function (req, res) {
 
     let readyViews = factTbl.views;
     readyViews = readyViews.map(x => x.name);
-    res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'groupBys': groupBys, 'readyViews': readyViews });
+    res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'readyViews': readyViews });
 });
 
 http.listen(3000, () => {
@@ -840,6 +840,7 @@ function deleteFromCache (evicted, callback) {
 app.get('/getViewByName/:viewName', function (req, res) {
     let totalStart = microtime.nowDouble();
     let factTbl = require('./templates/ABCD');
+
     // let factTbl = require('./templates/new_sales_min');
     let viewsDefined = factTbl.views;
     console.log(req.params.viewName);
@@ -849,6 +850,11 @@ app.get('/getViewByName/:viewName', function (req, res) {
         if (factTbl.views[crnView].name === req.params.viewName) {
             found = true;
             view = factTbl.views[crnView];
+            factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
+            fs.writeFile('./templates/ABCD.json', JSON.stringify(factTbl,null, 2), function (err) {
+                if (err) return console.log(err);
+                console.log('updated frequency');
+            });
             break;
         }
     }
