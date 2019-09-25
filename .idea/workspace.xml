@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" afterDir="false" />
@@ -263,14 +263,13 @@
       <workItem from="1568644902468" duration="3777000" />
       <workItem from="1568674108711" duration="1811000" />
       <workItem from="1568709692939" duration="4232000" />
-      <workItem from="1568791446758" duration="21019000" />
-    </task>
-    <task id="LOCAL-00088" summary="- some minor bug fixes regarding discrepancies in fields names&#10;- added fifo eviction policy &#10;- deleted some unnedede contracts and templates">
-      <created>1562157523126</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1562157523127</updated>
+      <workItem from="1568791446758" duration="34169000" />
+      <workItem from="1568841953378" duration="2895000" />
+      <workItem from="1568876791205" duration="1235000" />
+      <workItem from="1568884701172" duration="76000" />
+      <workItem from="1569055958022" duration="4367000" />
+      <workItem from="1569075796329" duration="1073000" />
+      <workItem from="1569445979542" duration="247000" />
     </task>
     <task id="LOCAL-00089" summary="fixed issue in unique fact insertion">
       <created>1562159323068</created>
@@ -608,7 +607,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568792279838</updated>
     </task>
-    <option name="localTasksCounter" value="137" />
+    <task id="LOCAL-00137" summary="various fixes">
+      <created>1568814115964</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1568814115964</updated>
+    </task>
+    <option name="localTasksCounter" value="138" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -665,8 +671,8 @@
     <MESSAGE value="fixes in front end" />
     <MESSAGE value="fixed some lintering issues" />
     <MESSAGE value="performance improvements" />
-    <MESSAGE value="various fixes" />
     <MESSAGE value="Added feature to count frquencies of each view in template" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added feature to count frquencies of each view in template" />
+    <MESSAGE value="various fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="various fixes" />
   </component>
 </project>

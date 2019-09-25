@@ -1,7 +1,7 @@
 {
   "recordsSlice": 1000,
   "cacheEvictionPolicy": "FIFO",
-  "maxCacheSize": 3,
+  "maxCacheSize": 20,
   "cacheSlice": 400,
   "autoCacheSlice": "auto",
   "maxGbSize": 100,
@@ -10,8 +10,8 @@
   "blockchainIP": "http://localhost:8545",
   "sql":  {
     "host": "localhost",
-    "user": "sqlUser",
-    "password": "yourPassword",
-    "database": "yourDatabaseName"},
+    "user": "root",
+    "password": "Iwanttobelive1!",
+    "database": "Ptychiaki"},
   "cacheEnabled": false
 }
