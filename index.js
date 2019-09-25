@@ -90,9 +90,6 @@ http.listen(3000, () => {
     }
     if (validations.passed) {
         mysqlConfig = config.sql;
-        console.log("mysql config = ");
-        console.log(mysqlConfig);
-        console.log(config);
         connection = mysql.createConnection(mysqlConfig);
         connection.connect(function (err) {
             if (err) {
