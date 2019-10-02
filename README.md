@@ -116,8 +116,9 @@ mySQL connected
 The server structure is shown in the diagram below.
 The server communicates with the Ethereum blockchain via the "Blockchain controller". 
 The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
-
+<p style="text-align: center;">
 <img src="structure.png" width="580" align="center">
+</p>
 
 # The Code
 The back-end code is separated in 3 main categories.
