@@ -270,21 +270,8 @@
       <workItem from="1570017254658" duration="2425000" />
       <workItem from="1570019834763" duration="3133000" />
       <workItem from="1570024436893" duration="765000" />
-      <workItem from="1570035243685" duration="1271000" />
-    </task>
-    <task id="LOCAL-00105" summary="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation">
-      <created>1562584844011</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1562584844012</updated>
-    </task>
-    <task id="LOCAL-00106" summary="- some error handling&#10;- add time counts where missing">
-      <created>1562709198904</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1562709198905</updated>
+      <workItem from="1570035243685" duration="1627000" />
+      <workItem from="1570055847397" duration="656000" />
     </task>
     <task id="LOCAL-00107" summary="-added official cost function logic mentioned in paper">
       <created>1566582503407</created>
@@ -615,7 +602,21 @@
       <option name="project" value="LOCAL" />
       <updated>1570036403267</updated>
     </task>
-    <option name="localTasksCounter" value="154" />
+    <task id="LOCAL-00154" summary="- added content in readme">
+      <created>1570036529342</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1570036529342</updated>
+    </task>
+    <task id="LOCAL-00155" summary="- added content in readme">
+      <created>1570036570682</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1570036570682</updated>
+    </task>
+    <option name="localTasksCounter" value="156" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

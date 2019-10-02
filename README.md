@@ -116,7 +116,13 @@ Redis  connected
 mySQL connected
 ``` 
 
-# The server structure
+# The project structure
+The structure of the whole project is presented in the diagram below.
+<div ALIGN="center">
+<img src="architecture.png" width="520" align="center">
+</div>
+
+# The application server structure
 The server structure is shown in the diagram below.
 The server communicates with the Ethereum blockchain via the "Blockchain controller". 
 The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
