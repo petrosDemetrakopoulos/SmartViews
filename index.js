@@ -14,6 +14,7 @@ const helper = require('./helpers/helper');
 const contractGenerator = require('./helpers/contractGenerator');
 const transformations = require('./helpers/transformations');
 const contractDeployer = require('./helpers/contractDeployer');
+const contractController = require('./helpers/contractController');
 app.use(jsonParser);
 let running = false;
 let gbRunning = false;
@@ -128,6 +129,7 @@ app.get('/deployContract/:fn', function (req, res) {
                     console.log('Success');
                     contractsDeployed.push(options.contractDeployed);
                     contract = options.contractObject;
+                    contractController.setContract(contract, acc);
                     res.send({ status: 'OK', options: options.options });
                 })
                 .catch(err => {
@@ -139,46 +141,6 @@ app.get('/deployContract/:fn', function (req, res) {
     });
 });
 
-async function addManyFacts (facts, sliceSize) {
-    console.log('length = ' + facts.length);
-    let allSlicesReady = [];
-    if (sliceSize > 1) {
-        let slices = [];
-        let slicesNum = Math.ceil(facts.length / sliceSize);
-        console.log('*will add ' + slicesNum + ' slices*');
-        for (let j = 0; j < slicesNum; j++) {
-            if (j === 0) {
-                slices[j] = facts.filter((fct, idx) => idx < sliceSize);
-            } else {
-                slices[j] = facts.filter((fct, idx) => idx > j * sliceSize && idx < (j + 1) * sliceSize);
-            }
-        }
-
-        allSlicesReady = slices.map(slc => {
-            return slc.map(fct => {
-                return stringify(fct);
-            });
-        });
-    } else {
-        allSlicesReady = facts.map(fact => {
-            return [stringify(fact)];
-        });
-    }
-
-    let i = 1;
-    for (const slc of allSlicesReady) {
-        await contract.methods.addFacts(slc).send(mainTransactionObject, (err, txHash) => {
-        }).on('error', (err) => {
-            console.log('error:', err);
-        }).on('transactionHash', (hash) => {
-            console.log(i);
-            io.emit('progress', i / allSlicesReady.length);
-            i++;
-        });
-    }
-    return Promise.resolve(true);
-}
-
 app.get('/load_dataset/:dt', function (req, res) {
     let dt = require('./test_data/' + req.params.dt);
     console.log('ENDPOINT HIT AGAIN');
@@ -186,7 +148,7 @@ app.get('/load_dataset/:dt', function (req, res) {
         if (!running) {
             running = true;
             let startTime = microtime.nowDouble();
-            addManyFacts(dt, config.recordsSlice).then(retval => {
+            contractController.addManyFacts(dt, config.recordsSlice).then(retval => {
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
                 running = false;
@@ -234,76 +196,9 @@ app.get('/getFactById/:id', function (req, res) {
     }
 });
 
-async function getAllFactsHeavy (factsLength) {
-    let allFacts = [];
-    await contract.methods.getAllFacts(factsLength).call(function (err, result) {
-        if (!err) {
-            let len = Object.keys(result).length;
-            for (let j = 0; j < len / 2; j++) {
-                delete result[j];
-            }
-            if ('payloads' in result) {
-                for (let i = 0; i < result['payloads'].length; i++) {
-                    let crnLn = JSON.parse(result['payloads'][i]);
-                    crnLn.timestamp = result['timestamps'][i];
-                    allFacts.push(crnLn);
-                }
-            }
-        } else {
-            console.log(err);
-        }
-    });
-    return allFacts;
-}
-
-async function getAllFacts (factsLength) {
-    let allFacts = [];
-    for (let i = 0; i < factsLength; i++) {
-        await contract.methods.facts(i).call(function (err, result2) {
-            if (!err) {
-                let len = Object.keys(result2).length;
-                for (let j = 0; j < len / 2; j++) {
-                    delete result2[j];
-                }
-               // console.log('got fact ' + i);
-                if ('payload' in result2) {
-                    let crnLn = JSON.parse(result2['payload']);
-                    crnLn.timestamp = result2['timestamp'];
-                    allFacts.push(crnLn);
-                }
-            } else {
-                console.log(err);
-            }
-        })
-    }
-    return allFacts;
-}
-
-async function getFactsFromTo (from, to) {
-    let allFacts = [];
-    await contract.methods.getFactsFromTo(from, to).call(function (err, result) {
-        if (!err) {
-            let len = Object.keys(result).length;
-            for (let j = 0; j < len / 2; j++) {
-                delete result[j];
-            }
-            if ('payloadsFromTo' in result) {
-                for (let i = 0; i < result['payloadsFromTo'].length; i++) {
-                    let crnLn = JSON.parse(result['payloadsFromTo'][i]);
-                    crnLn.timestamp = result['timestampsFromTo'][i];
-                    allFacts.push(crnLn);
-                }
-            }
-        } else {
-            console.log(err);
-        }
-    });
-    return allFacts;
-}
-
 app.get('/getFactsFromTo/:from/:to', function (req, res) {
     let timeStart = microtime.nowDouble();
-    getFactsFromTo(parseInt(req.params.from), parseInt(req.params.to)).then(retval => {
+    contractController.getFactsFromTo(parseInt(req.params.from), parseInt(req.params.to)).then(retval => {
         let timeFinish = microtime.nowDouble() - timeStart;
         retval.push({ time: timeFinish });
         res.send(retval);
@@ -318,7 +213,7 @@ app.get('/allfacts', function (req, res) {
             if (!err) {
                 // async loop waiting to get all the facts separately
                 let timeStart = microtime.nowDouble();
-                getAllFactsHeavy(result).then(retval => {
+                contractController.getAllFactsHeavy(result).then(retval => {
                     let timeFinish = microtime.nowDouble() - timeStart;
                     console.log('Get all facts time: ' + timeFinish + ' s');
                     retval.push({ time: timeFinish });
@@ -527,27 +422,6 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
         groupBys[i] = crnGroupBy;
     }
     return groupBys;
-}
-
-function containsAllFields (transformedArray, view) {
-    for (let i = 0; i < transformedArray.length; i++) {
-        let containsAllFields = true;
-        let crnView = transformedArray[i];
-
-        let cachedGBFields = JSON.parse(crnView.columns);
-        for (let index in cachedGBFields.fields) {
-            cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
-        }
-        console.log(cachedGBFields);
-        for (let j = 0; j < view.gbFields.length; j++) {
-            console.log(view.gbFields[j]);
-            if (!cachedGBFields.fields.includes(view.gbFields[j])) {
-                containsAllFields = false
-            }
-        }
-        transformedArray[i].containsAllFields = containsAllFields;
-    }
-    return transformedArray;
 }
 
 function saveOnCache (gbResult, operation, latestId) {
@@ -1022,7 +896,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                         };
                                     }
 
-                                    transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
+                                    transformedArray = helper.containsAllFields(transformedArray, view); // assigns the containsAllFields value
                                     let filteredGBs = [];
                                     let sortedByEvictionCost = [];
                                     for (let i = 0; i < transformedArray.length; i++) { // filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
@@ -1303,7 +1177,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                     // some fields contained in a Group by but operation and aggregation fields differ
                                                                     // this means we should proceed to new group by calculation from the begining
                                                                     let bcTimeStart = microtime.nowDouble();
-                                                                    getAllFactsHeavy(latestId).then(retval => {
+                                                                    contractController.getAllFactsHeavy(latestId).then(retval => {
                                                                         let bcTimeEnd = microtime.nowDouble();
                                                                         for (let i = 0; i < retval.length; i++) {
                                                                             delete retval[i].timestamp;
@@ -1382,7 +1256,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                     // same fields but different operation or different aggregate field
                                                                     // this means we should proceed to new group by calculation from the begining
                                                                     let bcTimeStart = microtime.nowDouble();
-                                                                    getAllFactsHeavy(latestId).then(retval => {
+                                                                    contractController.getAllFactsHeavy(latestId).then(retval => {
                                                                         let bcTimeEnd = microtime.nowDouble();
                                                                         for (let i = 0; i < retval.length; i++) {
                                                                             delete retval[i].timestamp;
@@ -1454,7 +1328,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                         // THEN MERGE IT WITH THE ONES IN CACHE
                                                         // THEN SAVE BACK IN CACHE
                                                         let bcTimeStart = microtime.nowDouble();
-                                                        getFactsFromTo(mostEfficient.latestFact, latestId - 1).then(deltas => {
+                                                        contractController.getFactsFromTo(mostEfficient.latestFact, latestId - 1).then(deltas => {
                                                             let bcTimeEnd = microtime.nowDouble();
                                                             connection.query(createTable, function (error, results, fields) {
                                                                 if (error) throw error;
@@ -1775,7 +1649,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                 return res.send(err);
                                             }
                                             let bcTimeStart = microtime.nowDouble();
-                                            getAllFactsHeavy(latestId).then(retval => {
+                                            contractController.getAllFactsHeavy(latestId).then(retval => {
                                                 let bcTimeEnd = microtime.nowDouble();
                                                 for (let i = 0; i < retval.length; i++) {
                                                     delete retval[i].timestamp;
@@ -1851,7 +1725,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                             let bcTimeStart = microtime.nowDouble();
                             contract.methods.dataId().call(function (err, latestId) {
                                 if (err) throw err;
-                                getAllFactsHeavy(latestId).then(retval => {
+                                contractController.getAllFactsHeavy(latestId).then(retval => {
                                     let bcTimeEnd = microtime.nowDouble();
                                     if (retval.length === 0) {
                                         gbRunning = false;
@@ -1908,7 +1782,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                 let bcTimeStart = microtime.nowDouble();
                 contract.methods.dataId().call(function (err, latestId) {
                     if (err) throw err;
-                    getAllFacts(latestId).then(retval => {
+                    contractController.getAllFacts(latestId).then(retval => {
                         let bcTimeEnd = microtime.nowDouble();
                         if (retval.length === 0) {
                             gbRunning = false;
@@ -1948,14 +1822,13 @@ app.get('/getViewByName/:viewName', function (req, res) {
 
 app.get('/getcount', function (req, res) {
     if (contract) {
-        contract.methods.dataId().call(function (err, result) {
-            if (!err) {
-                res.send(result);
+        contractController.getFactsCount().then(result => {
+            if(result === -1){
+                res.send({ status: 'ERROR', options: 'Error getting count' });
             } else {
-                console.log(err);
-                res.send(err);
+                res.send(result);
             }
-        })
+        });
     } else {
         res.status(400);
         res.send({ status: 'ERROR', options: 'Contract not deployed' });

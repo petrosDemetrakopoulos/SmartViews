@@ -165,6 +165,26 @@ function printTimes (resultObject) {
     console.log('total time = ' + resultObject.totalTime);
     console.log('all total time = ' + resultObject.allTotal);
 }
+function containsAllFields (transformedArray, view) {
+    for (let i = 0; i < transformedArray.length; i++) {
+        let containsAllFields = true;
+        let crnView = transformedArray[i];
+
+        let cachedGBFields = JSON.parse(crnView.columns);
+        for (let index in cachedGBFields.fields) {
+            cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
+        }
+        console.log(cachedGBFields);
+        for (let j = 0; j < view.gbFields.length; j++) {
+            console.log(view.gbFields[j]);
+            if (!cachedGBFields.fields.includes(view.gbFields[j])) {
+                containsAllFields = false
+            }
+        }
+        transformedArray[i].containsAllFields = containsAllFields;
+    }
+    return transformedArray;
+}
 
 function getRandomInt (min, max) {
     min = Math.ceil(min);
@@ -180,6 +200,7 @@ module.exports = {
     maxObjects: maxObjects,
     minObjects: minObjects,
     averageObjects: averageObjects,
+    containsAllFields, containsAllFields,
     flatten: flatten,
     removeDuplicates: removeDuplicates,
     configFileValidations: configFileValidations,
