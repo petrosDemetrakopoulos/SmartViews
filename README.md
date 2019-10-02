@@ -121,7 +121,7 @@ The server structure is shown in the diagram below.
 The server communicates with the Ethereum blockchain via the "Blockchain controller". 
 The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
 <div ALIGN="center">
-<img src="structure.png" width="580" align="center">
+<img src="structure.png" width="520" align="center">
 </div>
 
 # The Code
