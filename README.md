@@ -131,6 +131,9 @@ It works as described below:
 <img src="architecture.png" width="520" align="center">
 </div>
 
+The application server tries to materialize each smart view incrementally by using older cached versions of the same or other views.
+In that way it avoids fetching many facts from the blockchain (which is the most time-intensive resource).
+
 # The application server structure
 The server structure is shown in the diagram below.
 The server communicates with the Ethereum blockchain via the "Blockchain controller". 
