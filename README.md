@@ -19,6 +19,7 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 │   ├── sales_json.sol
 │   └── sales_new.sol
 ├── helpers
+│   ├── contractController.js
 │   ├── contractDeployer.js
 │   ├── contractGenerator.js
 │   ├── helper.js
@@ -26,6 +27,7 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 ├── index.js
 ├── package-lock.json
 ├── package.json
+├── structure.png
 ├── templates
 │   ├── ABCD.json
 │   ├── cars.json
@@ -52,6 +54,8 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 │   │   └── 1kfourcol_b.json
 │   ├── 1M
 │   │   └── 1Mfourcol.json
+│   ├── 1kfourcol.json
+│   ├── 1kfourcol_b.json
 │   ├── 200
 │   │   └── 200fourcol.json
 │   ├── 200K
@@ -116,7 +120,7 @@ mySQL connected
 The server structure is shown in the diagram below.
 The server communicates with the Ethereum blockchain via the "Blockchain controller". 
 The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
-<div style="text-align:center">
+<div ALIGN="center">
 <img src="structure.png" width="580" align="center">
 </div>
 

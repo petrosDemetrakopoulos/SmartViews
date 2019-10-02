@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -269,14 +270,7 @@
       <workItem from="1570017254658" duration="2425000" />
       <workItem from="1570019834763" duration="3133000" />
       <workItem from="1570024436893" duration="765000" />
-      <workItem from="1570035243685" duration="1151000" />
-    </task>
-    <task id="LOCAL-00104" summary="added cache eviction policy">
-      <created>1562437883400</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1562437883401</updated>
+      <workItem from="1570035243685" duration="1271000" />
     </task>
     <task id="LOCAL-00105" summary="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation">
       <created>1562584844011</created>
@@ -614,7 +608,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570036328170</updated>
     </task>
-    <option name="localTasksCounter" value="153" />
+    <task id="LOCAL-00153" summary="- added content in readme">
+      <created>1570036403267</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1570036403267</updated>
+    </task>
+    <option name="localTasksCounter" value="154" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
