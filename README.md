@@ -150,6 +150,6 @@ The back-end code is separated in 3 main categories.
 3) **The API** (in "index.js" file) that we use to call smart contract methods.
 
 The front-end code is much simpler and it is located under "views" directory. 
-It contains the .ejs templates for the pages we use to call the API functions.
+It contains the .ejs templates for the pages we use to call the API functions in a more user-friendly way.
 
 
