@@ -117,12 +117,16 @@ mySQL connected
 ``` 
 
 # The project structure
-The structure of the whole project is presented in the diagram below.
+The structure of the whole project is presented in the diagram.
 
-The main point is that **blockchain** stores the raw data or what we call in data warehouses the "fact table".
-**View cache** is an in-memory data store (often key-value based) that holds recently computed results of the smart views.
-**SQL Database** is used to execute the calculations and update the smart views.
-**Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components.
+It works as described below:
+* **Blockchain** stores the raw data or what we call in data warehouses the "fact table".
+
+* **View cache** is an in-memory data store (often key-value based) that holds recently computed results of the smart views.
+
+* **SQL Database** is used to execute the calculations and update the smart views.
+
+* **Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components.
 <div ALIGN="center">
 <img src="architecture.png" width="520" align="center">
 </div>

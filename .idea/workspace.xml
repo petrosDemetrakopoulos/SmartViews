@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -271,14 +270,7 @@
       <workItem from="1570019834763" duration="3133000" />
       <workItem from="1570024436893" duration="765000" />
       <workItem from="1570035243685" duration="1627000" />
-      <workItem from="1570055847397" duration="1130000" />
-    </task>
-    <task id="LOCAL-00108" summary="fixes in exp script">
-      <created>1567676909589</created>
-      <option name="number" value="00108" />
-      <option name="presentableId" value="LOCAL-00108" />
-      <option name="project" value="LOCAL" />
-      <updated>1567676909590</updated>
+      <workItem from="1570055847397" duration="1319000" />
     </task>
     <task id="LOCAL-00109" summary="mechanism to auto slice group bys for cache">
       <created>1568113356214</created>
@@ -616,7 +608,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570057198296</updated>
     </task>
-    <option name="localTasksCounter" value="157" />
+    <task id="LOCAL-00157" summary="- added content in readme">
+      <created>1570057664344</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1570057664344</updated>
+    </task>
+    <option name="localTasksCounter" value="158" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
