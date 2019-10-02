@@ -13,5 +13,5 @@
     "user": "sqlUser",
     "password": "yourPassword",
     "database": "yourDatabaseName"},
-  "cacheEnabled": false
+  "cacheEnabled": true
 }

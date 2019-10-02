@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const solc = require('solc');
 const fs = require('fs');
 const stringify = require('fast-stringify');
 let config = require('./config_private');
@@ -14,6 +13,7 @@ const jsonParser = bodyParser.json();
 const helper = require('./helpers/helper');
 const contractGenerator = require('./helpers/contractGenerator');
 const transformations = require('./helpers/transformations');
+const contractDeployer = require('./helpers/contractDeployer');
 app.use(jsonParser);
 let running = false;
 let gbRunning = false;
@@ -106,37 +106,6 @@ http.listen(3000, () => {
     }
 });
 
-async function deploy (account, contractPath) {
-    const input = fs.readFileSync(contractPath);
-    const output = solc.compile(input.toString(), 1);
-    console.log(output);
-    const bytecode = output.contracts[Object.keys(output.contracts)[0]].bytecode;
-    const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
-
-    contract = new web3.eth.Contract(abi);
-    let contractInstance = await contract.deploy({ data: '0x' + bytecode })
-        .send({
-            from: account,
-            gas: 150000000,
-            gasPrice: '30000000000000'
-        }, (err, txHash) => {
-            console.log('send:', err, txHash);
-        })
-        .on('error', (err) => {
-            console.log('error:', err);
-        })
-        .on('transactionHash', (err) => {
-            console.log('transactionHash:', err);
-        })
-        .on('receipt', (receipt) => {
-            console.log('receipt:', receipt);
-            contract.options.address = receipt.contractAddress;
-            contractsDeployed.push({ contractName: Object.keys(output.contracts)[0].slice(1), address: receipt.contractAddress });
-            console.log(contractsDeployed);
-        });
-    return contractInstance.options;
-}
-
 app.get('/deployContract/:fn', function (req, res) {
     web3.eth.getAccounts(function (err, accounts) {
         if (!err) {
@@ -146,10 +115,12 @@ app.get('/deployContract/:fn', function (req, res) {
                 gas: 1500000000000,
                 gasPrice: '30000000000000'
             };
-            deploy(accounts[0], './contracts/' + req.params.fn)
+            contractDeployer.deployContract(accounts[0], './contracts/' + req.params.fn, contract)
                 .then(options => {
                     console.log('Success');
-                    res.send({ status: 'OK', options: options });
+                    contractsDeployed.push(options.contractDeployed);
+                    contract = options.contractObject;
+                    res.send({ status: 'OK', options: options.options });
                 })
                 .catch(err => {
                     console.log('error on deploy ' + err);
@@ -947,7 +918,6 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
 }
 
 function deleteFromCache (evicted, callback) {
-    console.log("CAAAAAAACHEEEEEE DEEELEEEETEEEEEE");
     let keysToDelete = [];
     let gbIdsToDelete = [];
     if (config.cacheEvictionPolicy === 'FIFO') {

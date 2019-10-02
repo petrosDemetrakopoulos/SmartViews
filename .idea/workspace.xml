@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -264,14 +268,9 @@
       <workItem from="1568884701172" duration="76000" />
       <workItem from="1569055958022" duration="4367000" />
       <workItem from="1569075796329" duration="1073000" />
-      <workItem from="1569445979542" duration="1714000" />
-    </task>
-    <task id="LOCAL-00092" summary="- Some proper error handling&#10;- Moved removeTimestamps to &quot;helper.js&quot;">
-      <created>1562162154798</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1562162154804</updated>
+      <workItem from="1569445979542" duration="2121000" />
+      <workItem from="1569448526646" duration="18000" />
+      <workItem from="1570017254658" duration="2205000" />
     </task>
     <task id="LOCAL-00093" summary="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)">
       <created>1562162321350</created>
@@ -609,7 +608,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569447882898</updated>
     </task>
-    <option name="localTasksCounter" value="141" />
+    <task id="LOCAL-00141" summary="various fixes">
+      <created>1569448083475</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1569448083475</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -7,6 +7,8 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 ```
 ├── README.md
 ├── config.json
+├── config_lab.json
+├── config_private.json
 ├── contracts
 │   ├── ABCD.sol
 │   ├── Cars.sol
@@ -17,6 +19,7 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 │   ├── sales_json.sol
 │   └── sales_new.sol
 ├── helpers
+│   ├── contractDeployer.js
 │   ├── contractGenerator.js
 │   ├── helper.js
 │   └── transformations.js
@@ -44,6 +47,7 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 │   ├── 1Mfourcol.json
 │   ├── 1kfourcol.json
 │   ├── 1kfourcol_b.json
+│   ├── 200fourcol.json
 │   ├── 200k
 │   │   └── 200kfourcol.json
 │   ├── 20k
@@ -51,8 +55,10 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 │   ├── 20kfourcol.json
 │   ├── 250k
 │   │   └── 250kfourcol.json
+│   ├── 30Kfourcol.json
 │   ├── testData_1.json
-│   └── testData_2.json
+│   ├── testData_2.json
+│   └── testData_3.json
 ├── test_scripts
 │   ├── exp1.js
 │   └── testDataGenerator.js
@@ -102,4 +108,12 @@ Smart-Views listening on http://localhost:3000/dashboard
 Redis  connected
 mySQL connected
 ``` 
+
+# The Code
+The back-end code is separated in 3 main categories.
+1) Helper functions (in "helpers" directory)
+2) Smart contracts, which are the Solidity contracts running over Ethereum blockchain (in "contracts" directory) and they are auto generated from the server.
+3) The API (in "index.js" file) that we use to call smart contract methods.
+
+The front-end code is much simpler and it is located under "views" directory.
 
