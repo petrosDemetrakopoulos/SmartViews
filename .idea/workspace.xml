@@ -270,14 +270,7 @@
       <workItem from="1570019834763" duration="3133000" />
       <workItem from="1570024436893" duration="765000" />
       <workItem from="1570035243685" duration="1627000" />
-      <workItem from="1570055847397" duration="1931000" />
-    </task>
-    <task id="LOCAL-00111" summary="Polishing the directory structure and readme.">
-      <created>1568147424760</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1568147424760</updated>
+      <workItem from="1570055847397" duration="1966000" />
     </task>
     <task id="LOCAL-00112" summary="Polishing the directory structure and readme.">
       <created>1568147607220</created>
@@ -615,7 +608,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570058141216</updated>
     </task>
-    <option name="localTasksCounter" value="160" />
+    <task id="LOCAL-00160" summary="- added content in readme">
+      <created>1570058485104</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1570058485104</updated>
+    </task>
+    <option name="localTasksCounter" value="161" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
