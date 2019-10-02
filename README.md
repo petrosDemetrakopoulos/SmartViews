@@ -112,6 +112,14 @@ Redis  connected
 mySQL connected
 ``` 
 
+#The server structure
+The server structure is shown in the diagram below.
+The server communicates with the Ethereum blockchain via the "Blockchain controller". 
+The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
+
+
+![](structure.png)
+
 # The Code
 The back-end code is separated in 3 main categories.
 1) **Helper functions** (in "helpers" directory)
@@ -120,4 +128,5 @@ The back-end code is separated in 3 main categories.
 
 The front-end code is much simpler and it is located under "views" directory. 
 It contains the .ejs templates for the pages we use to call the API functions.
+
 
