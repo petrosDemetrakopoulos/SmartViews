@@ -120,13 +120,13 @@ mySQL connected
 The structure of the whole project is presented in the diagram.
 
 It works as described below:
-* **Blockchain** stores the raw data or what we call in data warehouses the "fact table".
+* **Blockchain** stores the raw data or what we call in data warehouses the "fact table". In our case we use Ethereum blockchain.
 
-* **View cache** is an in-memory data store (often key-value based) that holds recently computed results of the smart views.
+* **View cache** is an in-memory data store (often key-value based) that holds recently computed results of the smart views. In our case we use Redis cache
 
-* **SQL Database** is used to execute the calculations and update the smart views.
+* **SQL Database** is used to execute the calculations and update the smart views. In our case we use mySQL server.
 
-* **Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components.
+* **Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components. 
 <div ALIGN="center">
 <img src="architecture.png" width="520" align="center">
 </div>
