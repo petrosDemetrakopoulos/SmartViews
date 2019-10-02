@@ -114,9 +114,10 @@ mySQL connected
 
 # The Code
 The back-end code is separated in 3 main categories.
-1) Helper functions (in "helpers" directory)
-2) Smart contracts, which are the Solidity contracts running over Ethereum blockchain (in "contracts" directory) and they are auto generated from the server.
-3) The API (in "index.js" file) that we use to call smart contract methods.
+1) **Helper functions** (in "helpers" directory)
+2) **Smart contracts**, which are the Solidity contracts running over Ethereum blockchain (in "contracts" directory) and they are auto generated from the server.
+3) **The API** (in "index.js" file) that we use to call smart contract methods.
 
-The front-end code is much simpler and it is located under "views" directory.
+The front-end code is much simpler and it is located under "views" directory. 
+It contains the .ejs templates for the pages we use to call the API functions.
 

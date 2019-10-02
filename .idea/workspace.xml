@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-    </list>
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -268,14 +265,7 @@
       <workItem from="1569445979542" duration="2121000" />
       <workItem from="1569448526646" duration="18000" />
       <workItem from="1570017254658" duration="2425000" />
-      <workItem from="1570019834763" duration="11000" />
-    </task>
-    <task id="LOCAL-00094" summary="code cleanup">
-      <created>1562162483401</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1562162483401</updated>
+      <workItem from="1570019834763" duration="257000" />
     </task>
     <task id="LOCAL-00095" summary="fixed minor formating issue in view output">
       <created>1562163158141</created>
@@ -613,7 +603,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570019646469</updated>
     </task>
-    <option name="localTasksCounter" value="143" />
+    <task id="LOCAL-00143" summary="- updated readme&#10;- fixed test-data structure">
+      <created>1570019969961</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1570019969961</updated>
+    </task>
+    <option name="localTasksCounter" value="144" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -647,7 +644,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="presentation in front end as a table" />
     <MESSAGE value="- fixed an issue in incremental query processing with reduction in previous cache saved result&#10;- added some more time counts" />
     <MESSAGE value="added time counts everywhere" />
     <MESSAGE value="minor fix regarding progress report in fact insertion" />
@@ -672,6 +668,7 @@
     <MESSAGE value="Added feature to count frquencies of each view in template" />
     <MESSAGE value="various fixes" />
     <MESSAGE value="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there" />
-    <option name="LAST_COMMIT_MESSAGE" value="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there" />
+    <MESSAGE value="- updated readme&#10;- fixed test-data structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="- updated readme&#10;- fixed test-data structure" />
   </component>
 </project>
