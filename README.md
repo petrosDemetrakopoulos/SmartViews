@@ -34,31 +34,34 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 │   ├── new_sales_min.json
 │   └── sales.json
 ├── test_data
+│   ├── 10
+│   │   ├── 10fourcol.json
+│   │   └── 10fourcol_b.json
+│   ├── 100
+│   │   ├── 100fourcol.json
+│   │   └── 100fourcol_b.json
 │   ├── 100K
 │   │   └── 100kfourcol.json
-│   ├── 100fourcol.json
-│   ├── 100fourcol_b.json
-│   ├── 10fourcol.json
-│   ├── 10fourcol_b.json
-│   ├── 10kfourcol.json
-│   ├── 10kfourcol_b.json
+│   ├── 10K
+│   │   ├── 10kfourcol.json
+│   │   └── 10kfourcol_b.json
 │   ├── 150k
 │   │   └── 150kfourcol.json
-│   ├── 1Mfourcol.json
-│   ├── 1kfourcol.json
-│   ├── 1kfourcol_b.json
-│   ├── 200fourcol.json
-│   ├── 200k
+│   ├── 1K
+│   │   ├── 1kfourcol.json
+│   │   └── 1kfourcol_b.json
+│   ├── 1M
+│   │   └── 1Mfourcol.json
+│   ├── 200
+│   │   └── 200fourcol.json
+│   ├── 200K
 │   │   └── 200kfourcol.json
-│   ├── 20k
+│   ├── 20K
 │   │   └── 20kfourcol.json
-│   ├── 20kfourcol.json
-│   ├── 250k
+│   ├── 250K
 │   │   └── 250kfourcol.json
-│   ├── 30Kfourcol.json
-│   ├── testData_1.json
-│   ├── testData_2.json
-│   └── testData_3.json
+│   └── 30K
+│       └── 30Kfourcol.json
 ├── test_scripts
 │   ├── exp1.js
 │   └── testDataGenerator.js

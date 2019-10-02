@@ -4,9 +4,6 @@
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -270,14 +267,8 @@
       <workItem from="1569075796329" duration="1073000" />
       <workItem from="1569445979542" duration="2121000" />
       <workItem from="1569448526646" duration="18000" />
-      <workItem from="1570017254658" duration="2205000" />
-    </task>
-    <task id="LOCAL-00093" summary="removed an obsolete function for batch facts addition, replaced witH &quot;addManyFacts&quot; (old &quot;addManyFactsNew&quot;)">
-      <created>1562162321350</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1562162321350</updated>
+      <workItem from="1570017254658" duration="2425000" />
+      <workItem from="1570019834763" duration="11000" />
     </task>
     <task id="LOCAL-00094" summary="code cleanup">
       <created>1562162483401</created>
@@ -615,7 +606,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569448083475</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there">
+      <created>1570019646468</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1570019646469</updated>
+    </task>
+    <option name="localTasksCounter" value="143" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -649,7 +647,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixed minor formating issue in view output" />
     <MESSAGE value="presentation in front end as a table" />
     <MESSAGE value="- fixed an issue in incremental query processing with reduction in previous cache saved result&#10;- added some more time counts" />
     <MESSAGE value="added time counts everywhere" />
@@ -674,6 +671,7 @@
     <MESSAGE value="performance improvements" />
     <MESSAGE value="Added feature to count frquencies of each view in template" />
     <MESSAGE value="various fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="various fixes" />
+    <MESSAGE value="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there" />
+    <option name="LAST_COMMIT_MESSAGE" value="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there" />
   </component>
 </project>
