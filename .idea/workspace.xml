@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -270,21 +269,7 @@
       <workItem from="1570017254658" duration="2425000" />
       <workItem from="1570019834763" duration="3133000" />
       <workItem from="1570024436893" duration="765000" />
-      <workItem from="1570035243685" duration="614000" />
-    </task>
-    <task id="LOCAL-00098" summary="- fixed an issue in incremental query processing with reduction in previous cache saved result&#10;- added some more time counts">
-      <created>1562321839742</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1562321839743</updated>
-    </task>
-    <task id="LOCAL-00099" summary="added time counts everywhere">
-      <created>1562328655611</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1562328655611</updated>
+      <workItem from="1570035243685" duration="858000" />
     </task>
     <task id="LOCAL-00100" summary="minor fix regarding progress report in fact insertion">
       <created>1562328931862</created>
@@ -615,7 +600,21 @@
       <option name="project" value="LOCAL" />
       <updated>1570025048989</updated>
     </task>
-    <option name="localTasksCounter" value="147" />
+    <task id="LOCAL-00147" summary="- added content in readme">
+      <created>1570035877414</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1570035877414</updated>
+    </task>
+    <task id="LOCAL-00148" summary="- added content in readme">
+      <created>1570035938656</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1570035938656</updated>
+    </task>
+    <option name="localTasksCounter" value="149" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -649,7 +648,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="minor ui fixes" />
     <MESSAGE value="added some missing time counts" />
     <MESSAGE value="added cache eviction policy" />
     <MESSAGE value="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation" />
@@ -674,6 +672,7 @@
     <MESSAGE value="- updated readme" />
     <MESSAGE value="- various fixes" />
     <MESSAGE value="- created and moved functionality to contractController" />
-    <option name="LAST_COMMIT_MESSAGE" value="- created and moved functionality to contractController" />
+    <MESSAGE value="- added content in readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="- added content in readme" />
   </component>
 </project>
