@@ -31,7 +31,7 @@ const redis = require('redis');
 const client = redis.createClient(config.redisPort, config.redisIP);
 client.on('connect', function () {
     console.log('Redis connected');
-});
+ });
 client.on('error', function (err) {
     console.log('Something went wrong ' + err);
 });
@@ -48,12 +48,20 @@ let acc = null;
 let mainTransactionObject = {};
 app.get('/', function (req, res) {
     fs.readdir('./templates', function (err, items) {
+        if (err) {
+            console.error('error reading templates directory: ' + err.stack);
+            return;
+        }
         res.render('index', { 'templates': items });
     })
 });
 
 app.get('/dashboard', function (req, res) {
     fs.readdir('./templates', function (err, items) {
+        if (err) {
+            console.error('error reading templates directory: ' + err.stack);
+            return;
+        }
         web3.eth.getBlockNumber().then(blockNum => {
             res.render('dashboard', { 'templates': items, 'blockNum': blockNum });
         });
@@ -85,7 +93,7 @@ http.listen(3000, () => {
     console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
     let mysqlConfig = {};
     let validations = helper.configFileValidations();
-    if(process.env.ENVIRONMENT === 'LAB'){
+    if (process.env.ENVIRONMENT === 'LAB') {
         config = configLab;
     }
     if (validations.passed) {
@@ -187,7 +195,7 @@ app.get('/load_dataset/:dt', function (req, res) {
                 return res.send('DONE');
             }).catch(error => {
                 console.log(error);
-            })
+            });
         }
     } else {
         res.status(400);
@@ -242,7 +250,6 @@ async function getAllFactsHeavy (factsLength) {
                 }
             }
         } else {
-            console.log("BIG TIME ERROR");
             console.log(err);
         }
     });
@@ -383,15 +390,15 @@ function myFunc(allGroupBys, latestFact, viewName) {
     let AllGbCalculationCosts = calculationCostOfficial(allGroupBys, latestFact);
     let cachedViewsWithoutCurrentVC = [];
     let crnViewMinus = [];
-    for(let i = 0; i < allGroupBys.length; i++){
-        for(let j = 0; j < allGroupBys.length; j++){
-            if(j !== i){ // we add all cached view EXCEPT the current one
+    for (let i = 0; i < allGroupBys.length; i++){
+        for (let j = 0; j < allGroupBys.length; j++){
+            if (j !== i) { // we add all cached view EXCEPT the current one
                 crnViewMinus.push(allGroupBys[j]);
             }
         }
         cachedViewsWithoutCurrentVC.push(crnViewMinus);
     }
-    for(let j = 0; j < allGroupBys.length - 1; j++){
+    for (let j = 0; j < allGroupBys.length - 1; j++){
         cachedViewsWithoutCurrentVC[j] = calculationCostOfficial(cachedViewsWithoutCurrentVC[j], latestFact);
     }
 
@@ -405,7 +412,7 @@ function myFunc(allGroupBys, latestFact, viewName) {
     //         }
     //     }
     // }
-    for(let k = 1; k < allGroupBys.length; k++){
+    for (let k = 1; k < allGroupBys.length; k++){
         console.log("cost k = " + allGroupBys[k].calculationCost);
         console.log("cost 0 = " + allGroupBys[0].calculationCost);
         allGroupBys[k].cacheEvictionCost = frequency*(allGroupBys[0].calculationCost - allGroupBys[k].calculationCost);
@@ -430,7 +437,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName) { // the one
     }
     client.mget(allHashes, function (error, allCached) {
         let freq = 0;
-        if(allHashes.length > 1) {
+        if (allHashes.length > 1) {
             for (let j = 0; j < allCached.length; j++) {
                 let crnGb = JSON.parse(allCached[j]);
                 let factTbl = require('./templates/ABCD');
@@ -464,7 +471,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName) { // the one
                // console.log(" i = " + i);
               //  console.log(calcCostVfromVCacheMinusCrnView);
                 let cost = 0;
-                if(i > 0) {
+                if (i > 0) {
                     let crnGB = calcCostVfromVCache[i];
                     for (let k = 0; k < calcCostVfromVCacheMinusCrnView.length; k++) {
                         let crnMinus = calcCostVfromVCacheMinusCrnView[k];
@@ -499,7 +506,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName) { // the one
             allGroupBys[0].cacheEvictionCost = 1000;
         }
     });
-    if(allGroupBys.length === 1){
+    if (allGroupBys.length === 1) {
         allGroupBys[0].cacheEvictionCost = 1000;
     }
     return allGroupBys;
@@ -559,7 +566,7 @@ function saveOnCache (gbResult, operation, latestId) {
                 viewName: gbResult['viewName']
             };
             for (const key of Object.keys(gbResult)) {
-                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field'  && key !== 'viewName') {
+                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'viewName') {
                     console.log(key);
                     crnSlice.push({ [key]: gbResult[key] });
                     if (crnSlice.length >= config.cacheSlice) {
@@ -1030,7 +1037,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                         console.log("_________________________________");
                                         sortedByEvictionCost = myFunc(sortedByEvictionCost,latestId, req.params.viewName);
                                         console.log(sortedByEvictionCost);
-                                      //  sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId);
+                                        //  sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId);
                                         console.log('cache eviction costs assigned:');
                                         console.log(sortedByEvictionCost);
                                         filteredGBs = calculationCostOfficial(filteredGBs, latestId); // the cost to materialize the view from each view cached
@@ -1040,7 +1047,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                         if (config.cacheEvictionPolicy === 'FIFO') {
                                             return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
                                         } else if (config.cacheEvictionPolicy === 'COST FUNCTION') {
-                                            console.log("SORT WITH COST FUNCTION");
+                                            console.log('SORT WITH COST FUNCTION');
                                             return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
                                         }
                                     });
