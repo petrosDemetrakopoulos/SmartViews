@@ -271,14 +271,7 @@
       <workItem from="1570019834763" duration="3133000" />
       <workItem from="1570024436893" duration="765000" />
       <workItem from="1570035243685" duration="1627000" />
-      <workItem from="1570055847397" duration="656000" />
-    </task>
-    <task id="LOCAL-00107" summary="-added official cost function logic mentioned in paper">
-      <created>1566582503407</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
-      <option name="project" value="LOCAL" />
-      <updated>1566582503407</updated>
+      <workItem from="1570055847397" duration="1130000" />
     </task>
     <task id="LOCAL-00108" summary="fixes in exp script">
       <created>1567676909589</created>
@@ -616,7 +609,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570036570682</updated>
     </task>
-    <option name="localTasksCounter" value="156" />
+    <task id="LOCAL-00156" summary="- added content in readme">
+      <created>1570057198295</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1570057198296</updated>
+    </task>
+    <option name="localTasksCounter" value="157" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
