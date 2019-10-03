@@ -230,7 +230,7 @@ If the template has the correct format and the smart contract generation do not 
 The whole process is described in the diagram below.
 
 <div ALIGN="center">
-<img src="deployment.png" width="520" align="center">
+<img src="deployment.png" width="480" align="center">
 </div>
 
 

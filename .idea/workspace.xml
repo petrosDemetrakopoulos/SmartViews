@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -272,14 +271,7 @@
       <workItem from="1570024436893" duration="765000" />
       <workItem from="1570035243685" duration="1627000" />
       <workItem from="1570055847397" duration="2222000" />
-      <workItem from="1570100608507" duration="1684000" />
-    </task>
-    <task id="LOCAL-00115" summary="Added more info in README&#10;Minor issues fixes">
-      <created>1568199674214</created>
-      <option name="number" value="00115" />
-      <option name="presentableId" value="LOCAL-00115" />
-      <option name="project" value="LOCAL" />
-      <updated>1568199674214</updated>
+      <workItem from="1570100608507" duration="1728000" />
     </task>
     <task id="LOCAL-00116" summary="Minor fixes and optimizations">
       <created>1568209921615</created>
@@ -617,7 +609,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570058699433</updated>
     </task>
-    <option name="localTasksCounter" value="164" />
+    <task id="LOCAL-00164" summary="- added content in readme">
+      <created>1570102932891</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1570102932891</updated>
+    </task>
+    <option name="localTasksCounter" value="165" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
