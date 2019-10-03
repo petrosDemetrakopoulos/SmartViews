@@ -143,6 +143,97 @@ The blockchain controller contains the functions that call the methods of a depl
 <img src="structure.png" width="520" align="center">
 </div>
 
+# Templates
+Templates are a key concept in the implementation of Smart views.
+Templates are .json files describing each smart view. These files hold the metadata such as:
+* the name of the structure / smart view
+* the properties / columns of the fact table
+* the necessary SQL queries for the computations
+* the views that we want to define in the fact table and how frequently they have been materialized in the past
+
+An example of a smart view template is shown below.
+
+```
+{
+  "name": "CARS",
+  "struct_Name": "Cars",
+  "properties": [
+    {
+      "key": "payload",
+      "data_type": "string"
+    }
+  ],
+  "template": {
+    "properties": [
+      {
+        "key": "pk"
+      },
+      {
+        "key": "brand"
+      },
+      {
+        "key": "model"
+      },
+      {
+        "key": "year"
+      },
+      {
+        "key": "category"
+      },
+      {
+        "key": "cylinders"
+      }
+    ],
+    "create_table": "CREATE TEMPORARY TABLE CARS(\n\tpk int not null\n\t\tprimary key,\n\tbrand varchar(25),\n\tmodel varchar(25),\n\tyear int,\n\tcategory varchar(25),\n\tcylinders int);\n\n",
+    "table_name": "CARS"
+  },
+  "views": [
+    {
+      "name": "brand|category(COUNT)",
+      "gbFields": [
+        "brand",
+        "category"
+      ],
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(brand varchar(25), cateogry varchar(25), COUNTpk int)",
+      "frequency": 200
+    },
+    {
+      "name": "brand|category|cylinders(COUNT)",
+      "gbFields": [
+        "brand",
+        "category",
+        "cylinders"
+      ],
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(brand varchar(25), cateogry varchar(25), cylinders int, COUNTpk int)",
+      "frequency": 26
+    },
+    {
+      "name": "brand(COUNT)",
+      "gbFields": [
+        "brand"
+      ],
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(brand varchar(25), COUNTpk int)",
+      "frequency": 19
+    }
+  ]
+}
+``` 
+
+Once the ```deploy``` method of the API is called for a template, the application server automatically generates a Solidity smart contract (saved under "contracts" directory).
+If the template has the correct format and the smart contract generation do not throw an error, the application server continues by deploying the generated smart contract to the Ethereum blockchain.
+The whole process is described in the diagram below.
+
+<div ALIGN="center">
+<img src="deployment.png" width="520" align="center">
+</div>
+
+
 # The Code
 The back-end code is separated in 3 main categories.
 1) **Helper functions** (in "helpers" directory)
