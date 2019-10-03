@@ -3,7 +3,7 @@ This repository hosts the application server of Smart-Views.
  
 The directory structure of the project is shown below.
 
-The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.JS library.
+The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using the **Web3.JS** library.
 ```
 ├── README.md
 ├── config.json
