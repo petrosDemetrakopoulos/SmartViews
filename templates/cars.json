@@ -1,11 +1,69 @@
 {
-  "name": "Cars",
-  "struct_Name": "Car",
-  "properties":[
-    {"key": "brand", "data_type": "string"},
-    {"key": "model", "data_type": "string"},
-    {"key": "year", "data_type": "string"},
-    {"key": "category", "data_type": "string"},
-    {"key": "cylinders", "data_type": "uint"}
+  "name": "CARS",
+  "struct_Name": "Cars",
+  "properties": [
+    {
+      "key": "payload",
+      "data_type": "string"
+    }
+  ],
+  "template": {
+    "properties": [
+      {
+        "key": "pk"
+      },
+      {
+        "key": "brand"
+      },
+      {
+        "key": "model"
+      },
+      {
+        "key": "year"
+      },
+      {
+        "key": "category"
+      },
+      {
+        "key": "cylinders"
+      }
+    ],
+    "create_table": "CREATE TEMPORARY TABLE CARS(\n\tpk int not null\n\t\tprimary key,\n\tbrand varchar(25),\n\tmodel varchar(25),\n\tyear int,\n\tcategory varchar(25),\n\tcylinders int);\n\n",
+    "table_name": "CARS"
+  },
+  "views": [
+    {
+      "name": "brand|category(COUNT)",
+      "gbFields": [
+        "brand",
+        "category"
+      ],
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(brand varchar(25), cateogry varchar(25), COUNTpk int)",
+      "frequency": 200
+    },
+    {
+      "name": "brand|category|cylinders(COUNT)",
+      "gbFields": [
+        "brand",
+        "category",
+        "cylinders"
+      ],
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(brand varchar(25), cateogry varchar(25), cylinders int, COUNTpk int)",
+      "frequency": 26
+    },
+    {
+      "name": "brand(COUNT)",
+      "gbFields": [
+        "brand"
+      ],
+      "operation": "COUNT",
+      "aggregationField": "pk",
+      "SQLTable": "CREATE TEMPORARY TABLE tempTbl(brand varchar(25), COUNTpk int)",
+      "frequency": 19
+    }
   ]
 }

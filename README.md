@@ -11,13 +11,7 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 ├── config_private.json
 ├── contracts
 │   ├── ABCD.sol
-│   ├── Cars.sol
-│   ├── DataHandler.sol
-│   ├── FactTable.sol
-│   ├── Sales.sol
-│   ├── SalesMin.sol
-│   ├── sales_json.sol
-│   └── sales_new.sol
+│   └── Cars.sol
 ├── helpers
 │   ├── contractController.js
 │   ├── contractDeployer.js
@@ -27,14 +21,13 @@ The project is coded in Node.JS and uses the Ethereum Blockchain using the Web3.
 ├── index.js
 ├── package-lock.json
 ├── package.json
-├── structure.png
+├── schematics
+│   ├── architecture.png
+│   ├── deployment.png
+│   └── structure.png
 ├── templates
 │   ├── ABCD.json
-│   ├── cars.json
-│   ├── fact_tbl.json
-│   ├── new_sales.json
-│   ├── new_sales_min.json
-│   └── sales.json
+│   └── cars.json
 ├── test_data
 │   ├── 10
 │   │   ├── 10fourcol.json
@@ -128,7 +121,7 @@ It works as described below:
 
 * **Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components. 
 <div ALIGN="center">
-<img src="architecture.png" width="520" align="center">
+<img src="schematics/architecture.png" width="520" align="center">
 </div>
 
 
@@ -140,7 +133,7 @@ The server structure is shown in the diagram below.
 The server communicates with the Ethereum blockchain via the "Blockchain controller". 
 The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
 <div ALIGN="center">
-<img src="structure.png" width="520" align="center">
+<img src="schematics/structure.png" width="520" align="center">
 </div>
 
 # Templates
@@ -230,7 +223,7 @@ If the template has the correct format and the smart contract generation do not 
 The whole process is described in the diagram below.
 
 <div ALIGN="center">
-<img src="deployment.png" width="480" align="center">
+<img src="schematics/deployment.png" width="480" align="center">
 </div>
 
 
