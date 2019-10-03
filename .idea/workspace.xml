@@ -2,22 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/architecture.png" beforeDir="false" afterPath="$PROJECT_DIR$/schematics/architecture.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/DataHandler.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/FactTable.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/Sales.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/SalesMin.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/sales_json.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/sales_new.sol" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deployment.png" beforeDir="false" afterPath="$PROJECT_DIR$/schematics/deployment.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/structure.png" beforeDir="false" afterPath="$PROJECT_DIR$/schematics/structure.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cars.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cars.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/fact_tbl.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/new_sales.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/new_sales_min.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sales.json" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -286,14 +271,7 @@
       <workItem from="1570024436893" duration="765000" />
       <workItem from="1570035243685" duration="1627000" />
       <workItem from="1570055847397" duration="2222000" />
-      <workItem from="1570100608507" duration="1987000" />
-    </task>
-    <task id="LOCAL-00117" summary="Minor fixes and optimizations&#10;Removed unnneded packages">
-      <created>1568210886262</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1568210886262</updated>
+      <workItem from="1570100608507" duration="2146000" />
     </task>
     <task id="LOCAL-00118" summary="Changed Project Name">
       <created>1568211376684</created>
@@ -631,7 +609,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570102967822</updated>
     </task>
-    <option name="localTasksCounter" value="166" />
+    <task id="LOCAL-00166" summary="- added content in readme">
+      <created>1570103245872</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1570103245872</updated>
+    </task>
+    <option name="localTasksCounter" value="167" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

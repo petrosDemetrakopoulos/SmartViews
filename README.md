@@ -136,13 +136,15 @@ The blockchain controller contains the functions that call the methods of a depl
 <img src="schematics/structure.png" width="520" align="center">
 </div>
 
-# Templates
+# Templates, smart contracts generation and deployment
 Templates are a key concept in the implementation of Smart views.
 Templates are .json files describing each smart view. These files hold the metadata such as:
 * the name of the structure / smart view
 * the properties / columns of the fact table
 * the necessary SQL queries for the computations
 * the views that we want to define in the fact table and how frequently they have been materialized in the past
+
+**We could say that templates are the Data Description Language (DDL) equivalent of our system.**
 
 An example of a smart view template is shown below.
 
