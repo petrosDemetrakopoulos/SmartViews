@@ -2,7 +2,6 @@ const fs = require('fs');
 
 async function generateContract (templateFileName) {
     let factTbl = require('../templates/' + templateFileName);
-    console.log(factTbl);
     let createTable = factTbl.template.create_table;
     let tableName = factTbl.template.table_name;
     let contrPayload = '';

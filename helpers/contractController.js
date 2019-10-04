@@ -29,6 +29,21 @@ async function addFact(fact){
     })
 }
 
+async function getFactById(id){
+    return await contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
+        if (!err) {
+            let len = Object.keys(result).length;
+            for (let j = 0; j < len / 2; j++) {
+                delete result[j];
+            }
+            Promise.resolve(result);
+        } else {
+            console.log(err);
+            Promise.reject(err);
+        }
+    });
+}
+
 async function addManyFacts (facts, sliceSize) {
     console.log('length = ' + facts.length);
     let allSlicesReady = [];
@@ -155,5 +170,6 @@ module.exports = {
     getFactsFromTo: getFactsFromTo,
     getFactsCount: getFactsCount,
     setContract: setContract,
-    addFact:addFact
+    addFact:addFact,
+    getFactById:getFactById
 };

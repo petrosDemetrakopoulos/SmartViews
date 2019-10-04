@@ -175,18 +175,12 @@ app.get('/new_contract/:fn', function (req, res) {
 
 app.get('/getFactById/:id', function (req, res) {
     if (contract) {
-        contract.methods.getFact(parseInt(req.params.id, 10)).call(function (err, result) {
-            if (!err) {
-                let len = Object.keys(result).length;
-                for (let j = 0; j < len / 2; j++) {
-                    delete result[j];
-                }
-                res.send(result);
-            } else {
-                console.log(err);
-                res.send(err);
-            }
-        })
+        contractController.getFactById(req.params.id).then(result => {
+            res.send(JSON.stringify(result).replace('\\',''));
+        }).catch(error => {
+            console.log(error);
+            res.send(error);
+        });
     } else {
         res.status(400);
         res.send({ status: 'ERROR', options: 'Contract not deployed' });

@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/helpers/cacheController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/testDataGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -282,14 +278,7 @@
       <workItem from="1570100608507" duration="2432000" />
       <workItem from="1570107627850" duration="6358000" />
       <workItem from="1570176864801" duration="2390000" />
-      <workItem from="1570185765008" duration="952000" />
-    </task>
-    <task id="LOCAL-00121" summary="fixes in front end">
-      <created>1568212407196</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1568212407196</updated>
+      <workItem from="1570185765008" duration="2822000" />
     </task>
     <task id="LOCAL-00122" summary="fixed some lintering issues">
       <created>1568225458388</created>
@@ -627,7 +616,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570103670962</updated>
     </task>
-    <option name="localTasksCounter" value="170" />
+    <task id="LOCAL-00170" summary="- moved all cache-related functionality to cacheController.js">
+      <created>1570186836473</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1570186836473</updated>
+    </task>
+    <option name="localTasksCounter" value="171" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -661,7 +657,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added some missing time counts" />
     <MESSAGE value="added cache eviction policy" />
     <MESSAGE value="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation" />
     <MESSAGE value="- some error handling&#10;- add time counts where missing" />
@@ -686,6 +681,7 @@
     <MESSAGE value="- various fixes" />
     <MESSAGE value="- created and moved functionality to contractController" />
     <MESSAGE value="- added content in readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="- added content in readme" />
+    <MESSAGE value="- moved all cache-related functionality to cacheController.js" />
+    <option name="LAST_COMMIT_MESSAGE" value="- moved all cache-related functionality to cacheController.js" />
   </component>
 </project>
