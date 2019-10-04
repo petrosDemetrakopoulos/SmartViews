@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -278,14 +275,7 @@
       <workItem from="1570100608507" duration="2432000" />
       <workItem from="1570107627850" duration="6358000" />
       <workItem from="1570176864801" duration="2390000" />
-      <workItem from="1570185765008" duration="2822000" />
-    </task>
-    <task id="LOCAL-00122" summary="fixed some lintering issues">
-      <created>1568225458388</created>
-      <option name="number" value="00122" />
-      <option name="presentableId" value="LOCAL-00122" />
-      <option name="project" value="LOCAL" />
-      <updated>1568225458388</updated>
+      <workItem from="1570185765008" duration="3052000" />
     </task>
     <task id="LOCAL-00123" summary="fixed some lintering issues">
       <created>1568225739562</created>
@@ -623,7 +613,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570186836473</updated>
     </task>
-    <option name="localTasksCounter" value="171" />
+    <task id="LOCAL-00171" summary="- various fixes">
+      <created>1570188669728</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1570188669728</updated>
+    </task>
+    <option name="localTasksCounter" value="172" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -678,10 +675,10 @@
     <MESSAGE value="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there" />
     <MESSAGE value="- updated readme&#10;- fixed test-data structure" />
     <MESSAGE value="- updated readme" />
-    <MESSAGE value="- various fixes" />
     <MESSAGE value="- created and moved functionality to contractController" />
     <MESSAGE value="- added content in readme" />
     <MESSAGE value="- moved all cache-related functionality to cacheController.js" />
-    <option name="LAST_COMMIT_MESSAGE" value="- moved all cache-related functionality to cacheController.js" />
+    <MESSAGE value="- various fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="- various fixes" />
   </component>
 </project>

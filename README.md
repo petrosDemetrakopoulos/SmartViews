@@ -219,10 +219,11 @@ An example of a smart view template is shown below.
   ]
 }
 ``` 
-
+<div style="text-align: justify">
 Once the ```deploy``` method of the API is called for a template, the application server automatically generates a Solidity smart contract (saved under "contracts" directory).
 If the template has the correct format and the smart contract generation do not throw an error, the application server continues by deploying the generated smart contract to the Ethereum blockchain.
 The whole process is described in the diagram below.
+</div>
 
 <div ALIGN="center">
 <img src="schematics/deployment.png" width="480" align="center">
