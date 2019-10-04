@@ -30,7 +30,7 @@ async function deploy (account, contractPath, contract) {
             contract.options.address = receipt.contractAddress;
             rec = receipt;
         });
-    return {contractDeployed:{ contractName: Object.keys(output.contracts)[0].slice(1), address: rec.contractAddress }, options: contractInstance.options, contractObject: contract};
+    return { contractDeployed: { contractName: Object.keys(output.contracts)[0].slice(1), address: rec.contractAddress }, options: contractInstance.options, contractObject: contract };
 }
 
 module.exports = {

@@ -148,7 +148,7 @@ async function generateContract (templateFileName) {
         '\t\t\t\t}\n' +
         '\t\t\t}\n' +
         '\t\t}\n' +
-        "\t\treturn (\"\",0,0,0,\"\");\n" +
+        '\t\treturn ("",0,0,0,"");\n' +
         '\t}\n\n';
 
     let retValsLatest = '';
@@ -170,13 +170,13 @@ async function generateContract (templateFileName) {
         let crnProp = factTbl.properties[i];
         if (i === (factTbl.properties.length - 1)) {
             if (crnProp.data_type === 'string') {
-                emptyRetFactLatest += "\"\"" + ");\n\t";
+                emptyRetFactLatest += '""' + ');\n\t';
             } else {
                 emptyRetFactLatest += '0' + ');\n\t';
             }
         } else {
             if (crnProp.data_type === 'string') {
-                emptyRetFactLatest += "\"\"" + ', ';
+                emptyRetFactLatest += '""' + ', ';
             } else {
                 emptyRetFactLatest += '0, ';
             }
@@ -311,9 +311,9 @@ async function generateContract (templateFileName) {
                 console.log(err);
                 return reject(new Error('error'));
             }
-            console.log("******************");
+            console.log('******************');
             console.log('Contract generated!');
-            console.log("******************");
+            console.log('******************');
             let templ = {};
             if ('template' in factTbl) {
                 templ = factTbl['template'];

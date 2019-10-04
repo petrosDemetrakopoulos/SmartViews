@@ -9,7 +9,7 @@ let contract = null;
 let mainTransactionObject = {};
 let redisConnected = false;
 
-function setContract(contractObject, account){
+function setContract (contractObject, account) {
     contract = contractObject;
     mainTransactionObject = {
         from: account,
@@ -62,7 +62,7 @@ function saveOnCache (gbResult, operation, latestId) {
         // maxGbSize is the max number of bytes in a row of the result
         let mb512InBytes = 512 * 1024 * 1024;
         let maxGbSize = config.maxGbSize;
-        console.log('GB RESULT SIZE in bytes = ' + gbResultSize * maxGbSize);
+        console.log('Group-By result size in bytes = ' + gbResultSize * maxGbSize);
         console.log('size a cache position can hold in bytes: ' + mb512InBytes);
         if ((gbResultSize * maxGbSize) > mb512InBytes) {
             let crnSlice = [];
@@ -137,9 +137,9 @@ function deleteFromCache (evicted, callback) {
     callback(gbIdsToDelete);
 }
 
-function getManyCachedResults(allHashes, callback){
+function getManyCachedResults (allHashes, callback) {
     client.mget(allHashes, function (error, allCached) {
-        if(error){
+        if (error) {
             callback(error);
         } else {
             callback(null, allCached);
@@ -147,14 +147,14 @@ function getManyCachedResults(allHashes, callback){
     })
 }
 
-function getRedisStatus() {
+function getRedisStatus () {
     return redisConnected;
 }
 
 module.exports = {
     setContract: setContract,
     saveOnCache: saveOnCache,
-    deleteFromCache:deleteFromCache,
+    deleteFromCache: deleteFromCache,
     getManyCachedResults: getManyCachedResults,
     getRedisStatus: getRedisStatus
 };

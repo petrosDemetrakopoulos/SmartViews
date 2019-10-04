@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/costFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/costFunctions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -277,14 +281,7 @@
       <workItem from="1570100608507" duration="2432000" />
       <workItem from="1570107627850" duration="6358000" />
       <workItem from="1570176864801" duration="2390000" />
-      <workItem from="1570185765008" duration="8481000" />
-    </task>
-    <task id="LOCAL-00128" summary="fixed some lintering issues">
-      <created>1568247014182</created>
-      <option name="number" value="00128" />
-      <option name="presentableId" value="LOCAL-00128" />
-      <option name="project" value="LOCAL" />
-      <updated>1568247014182</updated>
+      <workItem from="1570185765008" duration="10125000" />
     </task>
     <task id="LOCAL-00129" summary="fixed some lintering issues">
       <created>1568285435135</created>
@@ -622,7 +619,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570194901970</updated>
     </task>
-    <option name="localTasksCounter" value="177" />
+    <task id="LOCAL-00177" summary="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project">
+      <created>1570195435614</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1570195435614</updated>
+    </task>
+    <option name="localTasksCounter" value="178" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

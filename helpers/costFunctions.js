@@ -20,10 +20,10 @@ function cacheEvictionCost (groupBys) {
 
 function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { // the one written on paper , write one with only time or size
     let allHashes = [];
-    let allGroupBys =[];
+    let allGroupBys = [];
     let allGroupBys2 = [];
     let allMinus = [];
-    for (let i = 0; i < groupBys.length; i++){
+    for (let i = 0; i < groupBys.length; i++) {
         allGroupBys.push(groupBys[i]);
         allGroupBys2.push(groupBys[i]);
     }
@@ -32,16 +32,17 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
         allHashes.push(crnGroupBy.hash);
     }
     cacheController.getManyCachedResults(allHashes, function (error, allCached) {
+        if (error) {
+            console.log(error);
+            return;
+        }
         let freq = 0;
         if (allHashes.length > 1) {
             for (let j = 0; j < allCached.length; j++) {
                 let crnGb = JSON.parse(allCached[j]);
                 let viewsDefined = factTbl.views;
-                let found = false;
                 for (let crnView in viewsDefined) {
                     if (factTbl.views[crnView].name === crnGb.viewName) {
-                        found = true;
-                        console.log("FOUND = TRUE");
                         freq = factTbl.views[crnView].frequency;
                         break;
                     }
@@ -50,15 +51,15 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
 
             for (let i = 0; i < allGroupBys.length; i++) {
                 allGroupBys2 = [];
-                for (let j = 0; j < groupBys.length; j++){
+                for (let j = 0; j < groupBys.length; j++) {
                     allGroupBys2.push(groupBys[j]);
                 }
-                let groupBysCachedExceptCrnOne = allGroupBys2.splice(1,i);
+                let groupBysCachedExceptCrnOne = allGroupBys2.splice(1, i);
                 let calcCostVfromVCache = calculationCostOfficial(allGroupBys, latestFact);
                 let calcCostVfromVCacheMinusCrnView = calculationCostOfficial(groupBysCachedExceptCrnOne, latestFact);
-                console.log("ALL: ");
+                console.log('ALL: ');
                 console.log(calcCostVfromVCache);
-                console.log("WITHOUT: ");
+                console.log('WITHOUT: ');
                 console.log(calcCostVfromVCacheMinusCrnView);
                 allMinus.push(calcCostVfromVCacheMinusCrnView);
                 let cost = 0;
@@ -69,7 +70,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
                         if (crnGB.id === crnMinus.id) {
                             cost = freq * (crnGB.calculationCost - crnMinus.calculationCost);
                             allGroupBys[i].cacheEvictionCost = cost;
-                            console.log("cost = " + cost);
+                            console.log('cost = ' + cost);
                         }
                     }
                 } else {
@@ -97,7 +98,7 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
         let crnGroupBy = groupBys[i];
         sizeDeltas = latestFact - Number.parseInt(crnGroupBy.latestFact); // latestFact is the latest fact written in bc
         sizeCached = Number.parseInt(crnGroupBy.size);
-        crnGroupBy.calculationCost =  a * sizeDeltas + sizeCached;
+        crnGroupBy.calculationCost = a * sizeDeltas + sizeCached;
         groupBys[i] = crnGroupBy;
     }
     return groupBys;
@@ -107,5 +108,5 @@ module.exports = {
     calculationCost: calculationCost,
     cacheEvictionCost: cacheEvictionCost,
     cacheEvictionCostOfficial: cacheEvictionCostOfficial,
-    calculationCostOfficial: calculationCostOfficial,
+    calculationCostOfficial: calculationCostOfficial
 };

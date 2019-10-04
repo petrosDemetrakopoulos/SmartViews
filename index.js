@@ -5,7 +5,6 @@ const stringify = require('fast-stringify');
 let config = require('./config_private');
 const configLab = require('./config_lab');
 const path = require('path');
-abiDecoder = require('abi-decoder');
 const app = express();
 const jsonParser = bodyParser.json();
 const helper = require('./helpers/helper');
@@ -60,9 +59,9 @@ app.get('/dashboard', function (req, res) {
             console.error('error reading templates directory: ' + err.stack);
             return;
         }
-        let suffix = ".json";
+        let suffix = '.json';
         let jsonFiles = items.filter(file => {
-            return file.indexOf(suffix) !== -1; //filtering out non-json files
+            return file.indexOf(suffix) !== -1; // filtering out non-json files
         });
         web3.eth.getBlockNumber().then(blockNum => {
             res.render('dashboard', { 'templates': jsonFiles, 'blockNum': blockNum });
@@ -180,7 +179,7 @@ app.get('/new_contract/:fn', function (req, res) {
 app.get('/getFactById/:id', function (req, res) {
     if (contract) {
         contractController.getFactById(req.params.id).then(result => {
-            res.send(JSON.stringify(result).replace('\\',''));
+            res.send(JSON.stringify(result).replace('\\', ''));
         }).catch(error => {
             console.log(error);
             res.send(error);
@@ -544,7 +543,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
             found = true;
             view = factTbl.views[crnView];
             factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
-            fs.writeFile('./templates/' + req.params.contract + '.json', JSON.stringify(factTbl,null, 2), function (err) {
+            fs.writeFile('./templates/' + req.params.contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
                 if (err) return console.log(err);
                 console.log('updated frequency');
             });
@@ -617,8 +616,8 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
 
                                     await contract.methods.dataId().call(function (err, latestId) {
                                         if (err) throw err;
-                                        console.log("_________________________________");
-                                        sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost,latestId, req.params.viewName, factTbl);
+                                        console.log('_________________________________');
+                                        sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost, latestId, req.params.viewName, factTbl);
                                         console.log(sortedByEvictionCost);
                                         console.log('cache eviction costs assigned:');
                                         console.log(sortedByEvictionCost);
@@ -645,8 +644,6 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                             return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
                                         }); // order ascending
                                         let mostEfficient = filteredGBs[0]; // TODO: check what we do in case we have no groub bys that match those criteria
-                                   //     console.log('MOST EFFICIENT IS:');
-                                   //     console.log(mostEfficient);
                                         let getLatestFactIdTimeStart = microtime.nowDouble();
                                         contract.methods.dataId().call(function (err, latestId) {
                                             console.log('LATEST ID IS:');
@@ -700,7 +697,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                             mergedArray.push(crnSubArray[kv]);
                                                                         } else {
                                                                             for (const meta in crnSubArray) {
-                                                                                mergedArray.push({[meta]: crnSubArray[meta]});
+                                                                                mergedArray.push({ [meta]: crnSubArray[meta] });
                                                                             }
                                                                             break;
                                                                         }
@@ -785,7 +782,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                                     {
                                                                                         func: {
                                                                                             name: op,
-                                                                                            args: [{field: lastCol}]
+                                                                                            args: [{ field: lastCol }]
                                                                                         }
                                                                                     }]
                                                                             });
@@ -798,13 +795,13 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                                         {
                                                                                             func: {
                                                                                                 name: 'SUM',
-                                                                                                args: [{field: prelastCol}]
+                                                                                                args: [{ field: prelastCol }]
                                                                                             }
                                                                                         },
                                                                                         {
                                                                                             func: {
                                                                                                 name: 'SUM',
-                                                                                                args: [{field: lastCol}]
+                                                                                                args: [{ field: lastCol }]
                                                                                             }
                                                                                         }]
                                                                                 });
@@ -1080,7 +1077,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                                         mergedArray.push(crnSubArray[kv]);
                                                                                     } else {
                                                                                         for (const meta in crnSubArray) {
-                                                                                            mergedArray.push({[meta]: crnSubArray[meta]});
+                                                                                            mergedArray.push({ [meta]: crnSubArray[meta] });
                                                                                         }
                                                                                         break;
                                                                                     }
@@ -1388,7 +1385,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                     let totalEnd = microtime.nowDouble();
                                                                     if (!err) {
                                                                         groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
+                                                                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getGroupIdTime + getAllGBsTime;
                                                                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                         groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                                                         groupBySqlResult.allTotal = totalEnd - totalStart;
@@ -1405,7 +1402,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                         } else {
                                                             let totalEnd = microtime.nowDouble();
                                                             groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                            groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
+                                                            groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getGroupIdTime + getAllGBsTime;
                                                             groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                             groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                                             groupBySqlResult.allTotal = totalEnd - totalStart;
@@ -1530,7 +1527,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
 app.get('/getcount', function (req, res) {
     if (contract) {
         contractController.getFactsCount().then(result => {
-            if(result === -1){
+            if (result === -1) {
                 res.send({ status: 'ERROR', options: 'Error getting count' });
             } else {
                 res.send(result);

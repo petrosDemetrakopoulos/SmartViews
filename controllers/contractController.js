@@ -5,7 +5,7 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let contract = null;
 let mainTransactionObject = {};
-function setContract(contractObject, account){
+function setContract (contractObject, account) {
     contract = contractObject;
     mainTransactionObject = {
         from: account,
@@ -14,7 +14,7 @@ function setContract(contractObject, account){
     };
 }
 
-async function addFact(fact){
+async function addFact (fact) {
     let addFactPromise = contract.methods.addFact(stringify(fact));
     return addFactPromise.send(mainTransactionObject, (err, txHash) => {
         console.log('send:', err, txHash);
@@ -29,8 +29,8 @@ async function addFact(fact){
     })
 }
 
-async function getFactById(id){
-    return await contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
+async function getFactById (id) {
+    return contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
         if (!err) {
             let len = Object.keys(result).length;
             for (let j = 0; j < len / 2; j++) {
@@ -72,7 +72,7 @@ async function addManyFacts (facts, sliceSize) {
 
     let i = 1;
     for (const slc of allSlicesReady) {
-        await contract.methods.addFacts(slc).send(mainTransactionObject, (err, txHash) => {
+        await contract.methods.addFacts(slc).send(mainTransactionObject, () => {
         }).on('error', (err) => {
             console.log('error:', err);
         }).on('transactionHash', (hash) => {
@@ -165,11 +165,11 @@ async function getFactsCount () {
 
 module.exports = {
     addManyFacts: addManyFacts,
-    getAllFacts:getAllFacts,
+    getAllFacts: getAllFacts,
     getAllFactsHeavy: getAllFactsHeavy,
     getFactsFromTo: getFactsFromTo,
     getFactsCount: getFactsCount,
     setContract: setContract,
-    addFact:addFact,
-    getFactById:getFactById
+    addFact: addFact,
+    getFactById: getFactById
 };
