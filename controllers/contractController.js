@@ -1,8 +1,4 @@
-const express = require('express');
 const stringify = require('fast-stringify');
-const app = express();
-let http = require('http').Server(app);
-let io = require('socket.io')(http);
 let contract = null;
 let mainTransactionObject = {};
 function setContract (contractObject, account) {
@@ -44,7 +40,7 @@ async function getFactById (id) {
     });
 }
 
-async function addManyFacts (facts, sliceSize) {
+async function addManyFacts (facts, sliceSize, io) {
     console.log('length = ' + facts.length);
     let allSlicesReady = [];
     if (sliceSize > 1) {

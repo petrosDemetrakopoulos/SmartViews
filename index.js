@@ -8,13 +8,6 @@ const path = require('path');
 const app = express();
 const jsonParser = bodyParser.json();
 const helper = require('./helpers/helper');
-const contractGenerator = require('./helpers/contractGenerator');
-const transformations = require('./helpers/transformations');
-const contractDeployer = require('./helpers/contractDeployer');
-const contractController = require('./controllers/contractController');
-const cacheController = require('./controllers/cacheController');
-const costFunctions = require('./helpers/costFunctions');
-const computationsController = require('./controllers/computationsController');
 app.use(jsonParser);
 let running = false;
 let gbRunning = false;
@@ -27,6 +20,13 @@ app.use(express.static('public'));
 const microtime = require('microtime');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+const contractGenerator = require('./helpers/contractGenerator');
+const transformations = require('./helpers/transformations');
+const contractDeployer = require('./helpers/contractDeployer');
+const contractController = require('./controllers/contractController');
+const cacheController = require('./controllers/cacheController');
+const costFunctions = require('./helpers/costFunctions');
+const computationsController = require('./controllers/computationsController');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
 let createTable = '';
@@ -144,7 +144,7 @@ app.get('/load_dataset/:dt', function (req, res) {
         if (!running) {
             running = true;
             let startTime = microtime.nowDouble();
-            contractController.addManyFacts(dt, config.recordsSlice).then(retval => {
+            contractController.addManyFacts(dt, config.recordsSlice, io).then(retval => {
                 let endTime = microtime.nowDouble();
                 let timeDiff = endTime - startTime;
                 running = false;
