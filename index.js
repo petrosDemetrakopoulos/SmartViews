@@ -27,7 +27,6 @@ app.use(express.static('public'));
 const microtime = require('microtime');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
-const jsonSql = require('json-sql')({ separatedValues: false });
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
 let createTable = '';
@@ -345,7 +344,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                         }
                                     });
 
-                                    console.log('SORTED GBs by eviction cost:');
+                                    console.log('SORTED Group Bys by eviction cost:');
                                     console.log(sortedByEvictionCost); // TS ORDER ascending, the first ones are less 'expensive' than the last ones.
                                     console.log('________________________');
                                     // assign costs
@@ -442,11 +441,6 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                             return res.send(error);
                                                                         }
 
-                                                                        let viewNameSQL = view.SQLTable.split(' ');
-                                                                        viewNameSQL = viewNameSQL[3];
-                                                                        viewNameSQL = viewNameSQL.split('(')[0];
-
-                                                                        let rows = [];
                                                                         let lastCol = '';
                                                                         let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                                         lastCol = view.SQLTable.split(' ');
@@ -470,7 +464,6 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                         reducedResult.field = view.aggregationField;
                                                                         reducedResult.viewName = req.params.viewName;
                                                                         reducedResult.operation = view.operation;
-
 
                                                                         let cacheSaveTimeStart = microtime.nowDouble();
                                                                         return cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
@@ -524,7 +517,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                         for (let i = 0; i < retval.length; i++) {
                                                                             delete retval[i].timestamp;
                                                                         }
-                                                                        console.log('CALCULATING NEW GB FROM BEGINING');
+                                                                        console.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                                                                         let sqlTimeStart = microtime.nowDouble();
                                                                         computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                             let sqlTimeEnd = microtime.nowDouble();
@@ -603,7 +596,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                         for (let i = 0; i < retval.length; i++) {
                                                                             delete retval[i].timestamp;
                                                                         }
-                                                                        console.log('CALCULATING NEW GB FROM BEGGINING');
+                                                                        console.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                                                                         let sqlTimeStart = microtime.nowDouble();
                                                                         computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                             let sqlTimeEnd = microtime.nowDouble();
@@ -675,7 +668,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                             computationsController.executeQuery(createTable, function (error, results, fields) {
                                                                 if (error) throw error;
                                                                 deltas = helper.removeTimestamps(deltas);
-                                                                console.log('CALCULATING GB FOR DELTAS:');
+                                                                console.log('CALCULATING GROUP-BY FOR DELTAS:');
                                                                 let sqlTimeStart = microtime.nowDouble();
                                                                 computationsController.calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField, async function (groupBySqlResult, error) {
                                                                     let sqlTimeEnd = microtime.nowDouble();
@@ -862,7 +855,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                                                     });
                                                                                 });
                                                                             } else {
-                                                                                console.log('GB FIELDS OF DELTAS AND CACHED ARE THE SAME');
+                                                                                console.log('GROUP-BY FIELDS OF DELTAS AND CACHED ARE THE SAME');
                                                                                 // group by fields of deltas and cached are the same so
                                                                                 // MERGE cached and groupBySqlResults
                                                                                 let viewNameSQL = view.SQLTable.split(' ');

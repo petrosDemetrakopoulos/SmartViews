@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="updated README">
-      <change afterPath="$PROJECT_DIR$/controllers/computationsController.js" afterDir="false" />
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -279,14 +276,8 @@
       <workItem from="1570107627850" duration="6358000" />
       <workItem from="1570176864801" duration="2390000" />
       <workItem from="1570185765008" duration="10528000" />
-      <workItem from="1570198583099" duration="2940000" />
-    </task>
-    <task id="LOCAL-00132" summary="performance improvements">
-      <created>1568485057486</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1568485057486</updated>
+      <workItem from="1570198583099" duration="4077000" />
+      <workItem from="1570202785375" duration="323000" />
     </task>
     <task id="LOCAL-00133" summary="various fixes">
       <created>1568560893808</created>
@@ -624,7 +615,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570197440815</updated>
     </task>
-    <option name="localTasksCounter" value="181" />
+    <task id="LOCAL-00181" summary=" - moved SQL related functionality to computationsController.js&#10; - fixed issue with duplicate code in the case of reduction query to cached group by without deltas (now correctly done with the calculateReducedGroupBy function of computationsController)">
+      <created>1570201639963</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1570201639964</updated>
+    </task>
+    <option name="localTasksCounter" value="182" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -658,7 +656,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="mechanism to auto slice group bys for cache" />
     <MESSAGE value="Polishing the directory structure and readme." />
     <MESSAGE value="Added more info in README" />
     <MESSAGE value="Added more info in README&#10;Minor issues fixes" />
@@ -683,6 +680,7 @@
     <MESSAGE value="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project" />
     <MESSAGE value="lintering fixes" />
     <MESSAGE value="updated README" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated README" />
+    <MESSAGE value=" - moved SQL related functionality to computationsController.js&#10; - fixed issue with duplicate code in the case of reduction query to cached group by without deltas (now correctly done with the calculateReducedGroupBy function of computationsController)" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - moved SQL related functionality to computationsController.js&#10; - fixed issue with duplicate code in the case of reduction query to cached group by without deltas (now correctly done with the calculateReducedGroupBy function of computationsController)" />
   </component>
 </project>
