@@ -208,7 +208,6 @@ app.get('/allfacts', function (req, res) {
                     let timeFinish = microtime.nowDouble() - timeStart;
                     console.log('Get all facts time: ' + timeFinish + ' s');
                     retval.push({ time: timeFinish });
-                    // retval.timeDone = microtime.nowDouble() - timeStart;
                     res.send(retval);
                 }).catch(error => {
                     console.log(error);
@@ -261,9 +260,8 @@ function cacheEvictionCost (groupBys) {
     return groupBys;
 }
 
-function myFunc(allGroupBys, latestFact, viewName) {
+function myFunc(allGroupBys, latestFact, viewName, factTbl) {
     let frequency = 10;
-    let factTbl = require('./templates/ABCD');
     let viewsDefined = factTbl.views;
     let found = false;
     for (let crnView in viewsDefined) {
@@ -308,7 +306,7 @@ function myFunc(allGroupBys, latestFact, viewName) {
     return allGroupBys;
 }
 
-function cacheEvictionCostOfficial (groupBys, latestFact, viewName) { // the one written on paper , write one with only time or size
+function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { // the one written on paper , write one with only time or size
     let allHashes = [];
     let allGroupBys =[];
     let allGroupBys2 = [];
@@ -326,7 +324,6 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName) { // the one
         if (allHashes.length > 1) {
             for (let j = 0; j < allCached.length; j++) {
                 let crnGb = JSON.parse(allCached[j]);
-                let factTbl = require('./templates/ABCD');
                 let viewsDefined = factTbl.views;
                 let found = false;
                 for (let crnView in viewsDefined) {
@@ -338,7 +335,6 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName) { // the one
                     }
                 }
             }
-
 
             for (let i = 0; i < allGroupBys.length; i++) {
                 allGroupBys2 = [];
@@ -702,9 +698,9 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
     });
 }
 
-app.get('/getViewByName/:viewName', function (req, res) {
+app.get('/getViewByName/:viewName/:contract', function (req, res) {
     let totalStart = microtime.nowDouble();
-    let factTbl = require('./templates/ABCD');
+    let factTbl = require('./templates/' + req.params.contract);
 
     // let factTbl = require('./templates/new_sales_min');
     let viewsDefined = factTbl.views;
@@ -716,7 +712,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
             found = true;
             view = factTbl.views[crnView];
             factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
-            fs.writeFile('./templates/ABCD.json', JSON.stringify(factTbl,null, 2), function (err) {
+            fs.writeFile('./templates/' + req.params.contract +  '.json', JSON.stringify(factTbl,null, 2), function (err) {
                 if (err) return console.log(err);
                 console.log('updated frequency');
             });
@@ -790,9 +786,9 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                     await contract.methods.dataId().call(function (err, latestId) {
                                         if (err) throw err;
                                         console.log("_________________________________");
-                                        sortedByEvictionCost = myFunc(sortedByEvictionCost,latestId, req.params.viewName);
+                                        sortedByEvictionCost = myFunc(sortedByEvictionCost,latestId, req.params.viewName, factTbl);
                                         console.log(sortedByEvictionCost);
-                                        //  sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId);
+                                        //  sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId, factTbl);
                                         console.log('cache eviction costs assigned:');
                                         console.log(sortedByEvictionCost);
                                         filteredGBs = calculationCostOfficial(filteredGBs, latestId); // the cost to materialize the view from each view cached
