@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -275,14 +274,7 @@
       <workItem from="1570100608507" duration="2432000" />
       <workItem from="1570107627850" duration="6358000" />
       <workItem from="1570176864801" duration="2390000" />
-      <workItem from="1570185765008" duration="3052000" />
-    </task>
-    <task id="LOCAL-00123" summary="fixed some lintering issues">
-      <created>1568225739562</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1568225739562</updated>
+      <workItem from="1570185765008" duration="3082000" />
     </task>
     <task id="LOCAL-00124" summary="fixed some lintering issues">
       <created>1568225931229</created>
@@ -620,7 +612,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570188669728</updated>
     </task>
-    <option name="localTasksCounter" value="172" />
+    <task id="LOCAL-00172" summary="- fixes in readme">
+      <created>1570188863597</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1570188863597</updated>
+    </task>
+    <option name="localTasksCounter" value="173" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -654,7 +653,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added cache eviction policy" />
     <MESSAGE value="- some error handling&#10;- added cacheEnabled field in config.json and relative logic in view calculation" />
     <MESSAGE value="- some error handling&#10;- add time counts where missing" />
     <MESSAGE value="-added official cost function logic mentioned in paper" />
@@ -679,6 +677,7 @@
     <MESSAGE value="- added content in readme" />
     <MESSAGE value="- moved all cache-related functionality to cacheController.js" />
     <MESSAGE value="- various fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="- various fixes" />
+    <MESSAGE value="- fixes in readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="- fixes in readme" />
   </component>
 </project>
