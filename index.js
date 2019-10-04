@@ -12,8 +12,9 @@ const helper = require('./helpers/helper');
 const contractGenerator = require('./helpers/contractGenerator');
 const transformations = require('./helpers/transformations');
 const contractDeployer = require('./helpers/contractDeployer');
-const contractController = require('./helpers/contractController');
-const cacheController = require('./helpers/cacheController');
+const contractController = require('./controllers/contractController');
+const cacheController = require('./controllers/cacheController');
+const costFunctions = require('./helpers/costFunctions');
 app.use(jsonParser);
 let running = false;
 let gbRunning = false;
@@ -93,6 +94,7 @@ app.get('/form/:contract', function (req, res) {
 
 http.listen(3000, () => {
     console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
+    console.log(`Visit http://localhost:3000/ to view Blockchain, mySQL and Redis cache status`);
     let mysqlConfig = {};
     let validations = helper.configFileValidations();
     if (process.env.ENVIRONMENT === 'LAB') {
@@ -108,6 +110,7 @@ http.listen(3000, () => {
             }
             mysqlConnected = true;
             console.log('mySQL connected');
+
         });
     } else {
         console.log('Config file validations failed');
@@ -246,178 +249,6 @@ app.get('/groupbyId/:id', function (req, res) {
         res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
 });
-
-// this function  assigns a cost to each group by
-function calculationCost (groupBys) {
-    for (let i = 0; i < groupBys.length; i++) {
-        let crnGroupBy = groupBys[i];
-        let crnCost = (0.5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
-        crnGroupBy.cost = crnCost;
-        groupBys[i] = crnGroupBy;
-    }
-    return groupBys;
-}
-
-function cacheEvictionCost (groupBys) {
-    for (let i = 0; i < groupBys.length; i++) {
-        let crnGroupBy = groupBys[i];
-        let crnCost = (5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
-        crnGroupBy.cacheEvictionCost = crnCost;
-        groupBys[i] = crnGroupBy;
-    }
-    return groupBys;
-}
-
-function myFunc(allGroupBys, latestFact, viewName, factTbl) {
-    let frequency = 10;
-    let viewsDefined = factTbl.views;
-    let found = false;
-    for (let crnView in viewsDefined) {
-        if (factTbl.views[crnView].name === viewName) {
-            found = true;
-            frequency = factTbl.views[crnView].frequency;
-            break;
-        }
-    }
-    let AllGbCalculationCosts = calculationCostOfficial(allGroupBys, latestFact);
-    let cachedViewsWithoutCurrentVC = [];
-    let crnViewMinus = [];
-    for (let i = 0; i < allGroupBys.length; i++){
-        for (let j = 0; j < allGroupBys.length; j++){
-            if (j !== i) { // we add all cached view EXCEPT the current one
-                crnViewMinus.push(allGroupBys[j]);
-            }
-        }
-        cachedViewsWithoutCurrentVC.push(crnViewMinus);
-    }
-    for (let j = 0; j < allGroupBys.length - 1; j++){
-        cachedViewsWithoutCurrentVC[j] = calculationCostOfficial(cachedViewsWithoutCurrentVC[j], latestFact);
-    }
-
-    // for(let i = 0; i < allGroupBys.length; i++) {
-    //     console.log("costs for materialization of view " + i  + ":");
-    //     for(let j = 0; j < allGroupBys.length-1; j++){
-    //         let cost = frequency*(AllGbCalculationCosts[i].calculationCost - cachedViewsWithoutCurrentVC[i][j].calculationCost);
-    //         console.log("   without view " + j  + " = " + cost);
-    //         if(i === j){
-    //             allGroupBys[i].cacheEvictionCost = cost;
-    //         }
-    //     }
-    // }
-    for (let k = 1; k < allGroupBys.length; k++){
-        console.log("cost k = " + allGroupBys[k].calculationCost);
-        console.log("cost 0 = " + allGroupBys[0].calculationCost);
-        allGroupBys[k].cacheEvictionCost = frequency*(allGroupBys[0].calculationCost - allGroupBys[k].calculationCost);
-    }
-
-    allGroupBys[0].cacheEvictionCost = 1000;
-    return allGroupBys;
-}
-
-function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { // the one written on paper , write one with only time or size
-    let allHashes = [];
-    let allGroupBys =[];
-    let allGroupBys2 = [];
-    let allMinus = [];
-    for(let i = 0; i < groupBys.length; i++){
-        allGroupBys.push(groupBys[i]);
-        allGroupBys2.push(groupBys[i]);
-    }
-    for (let i = 0; i < groupBys.length; i++) {
-        let crnGroupBy = groupBys[i];
-        allHashes.push(crnGroupBy.hash);
-    }
-    cacheController.getManyCachedResults(allHashes, function (error, allCached) {
-        let freq = 0;
-        if (allHashes.length > 1) {
-            for (let j = 0; j < allCached.length; j++) {
-                let crnGb = JSON.parse(allCached[j]);
-                let viewsDefined = factTbl.views;
-                let found = false;
-                for (let crnView in viewsDefined) {
-                    if (factTbl.views[crnView].name === crnGb.viewName) {
-                        found = true;
-                        console.log("FOUND = TRUE");
-                        freq = factTbl.views[crnView].frequency;
-                        break;
-                    }
-                }
-            }
-
-            for (let i = 0; i < allGroupBys.length; i++) {
-                allGroupBys2 = [];
-                for(let j = 0; j < groupBys.length; j++){
-                    allGroupBys2.push(groupBys[j]);
-                }
-                let groupBysCachedExceptCrnOne = allGroupBys2.splice(1,i);
-                let calcCostVfromVCache = calculationCostOfficial(allGroupBys, latestFact);
-                let calcCostVfromVCacheMinusCrnView = calculationCostOfficial(groupBysCachedExceptCrnOne, latestFact);
-                console.log("!!!!!!!!");
-                console.log("ALL: ");
-                console.log(calcCostVfromVCache);
-                console.log("WITHOUT: ");
-                console.log(calcCostVfromVCacheMinusCrnView);
-                allMinus.push(calcCostVfromVCacheMinusCrnView);
-               // console.log(" i = " + i);
-              //  console.log(calcCostVfromVCacheMinusCrnView);
-                let cost = 0;
-                if (i > 0) {
-                    let crnGB = calcCostVfromVCache[i];
-                    for (let k = 0; k < calcCostVfromVCacheMinusCrnView.length; k++) {
-                        let crnMinus = calcCostVfromVCacheMinusCrnView[k];
-                        if (crnGB.id === crnMinus.id) {
-                            cost = freq * (crnGB.calculationCost - crnMinus.calculationCost);
-                            allGroupBys[i].cacheEvictionCost = cost;
-                            console.log("cost = " + cost);
-                        }
-                    }
-                } else {
-                    allGroupBys[i].cacheEvictionCost = 1500;
-                }
-              //  allGroupBys[i].cacheEvictionCost = cost;
-                console.log("|||||||||");
-                console.log(allGroupBys[i]);
-            }
-            for(let p = 0; p < allMinus.length; p++){
-                console.log("**** MINUS");
-                let crnMinus = allMinus[p];
-                console.log(crnMinus);
-
-            }
-
-            for(let p = 0; p < allGroupBys.length; p++){
-                let crnGB = allGroupBys[p];
-
-            }
-
-
-            // για καθε ένα array που λείπει ένα cached view πρεπει να βρω ένα που έχει όλα τα άλλα views και να αφαιρέσω
-        } else {
-            allGroupBys[0].cacheEvictionCost = 1000;
-        }
-    });
-    if (allGroupBys.length === 1) {
-        allGroupBys[0].cacheEvictionCost = 1000;
-    }
-    return allGroupBys;
-}
-
-function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
-    // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
-    // which is the cost to materialize view V from view Vi (where V < Vi)
-    let a = 10; // factor of deltas
-    let sizeDeltas = 0;
-    let sizeCached = 0; // crnGroubBy
-    for (let i = 0; i < groupBys.length; i++) {
-        let crnGroupBy = groupBys[i];
-        sizeDeltas = latestFact - Number.parseInt(crnGroupBy.latestFact); // latestFact is the latest fact written in bc
-        sizeCached = Number.parseInt(crnGroupBy.size);
-        let crnCost = a * sizeDeltas + sizeCached;
-        crnGroupBy.calculationCost = crnCost;
-        groupBys[i] = crnGroupBy;
-    }
-    return groupBys;
-}
 
 function calculateNewGroupBy (facts, operation, gbFields, aggregationField, callback) {
     connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
@@ -794,12 +625,11 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                     await contract.methods.dataId().call(function (err, latestId) {
                                         if (err) throw err;
                                         console.log("_________________________________");
-                                        sortedByEvictionCost = myFunc(sortedByEvictionCost,latestId, req.params.viewName, factTbl);
+                                        sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost,latestId, req.params.viewName, factTbl);
                                         console.log(sortedByEvictionCost);
-                                        //  sortedByEvictionCost = cacheEvictionCostOfficial(sortedByEvictionCost, latestId, factTbl);
                                         console.log('cache eviction costs assigned:');
                                         console.log(sortedByEvictionCost);
-                                        filteredGBs = calculationCostOfficial(filteredGBs, latestId); // the cost to materialize the view from each view cached
+                                        filteredGBs = costFunctions.calculationCostOfficial(filteredGBs, latestId); // the cost to materialize the view from each view cached
                                     });
 
                                     await sortedByEvictionCost.sort(function (a, b) {
