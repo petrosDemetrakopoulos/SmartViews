@@ -3,8 +3,7 @@ const cacheController = require('../controllers/cacheController');
 function calculationCost (groupBys) {
     for (let i = 0; i < groupBys.length; i++) {
         let crnGroupBy = groupBys[i];
-        let crnCost = (0.5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
-        crnGroupBy.cost = crnCost;
+        crnGroupBy.cost = (0.5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
         groupBys[i] = crnGroupBy;
     }
     return groupBys;
@@ -13,8 +12,7 @@ function calculationCost (groupBys) {
 function cacheEvictionCost (groupBys) {
     for (let i = 0; i < groupBys.length; i++) {
         let crnGroupBy = groupBys[i];
-        let crnCost = (5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
-        crnGroupBy.cacheEvictionCost = crnCost;
+        crnGroupBy.cacheEvictionCost = (5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
         groupBys[i] = crnGroupBy;
     }
     return groupBys;
@@ -25,7 +23,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
     let allGroupBys =[];
     let allGroupBys2 = [];
     let allMinus = [];
-    for(let i = 0; i < groupBys.length; i++){
+    for (let i = 0; i < groupBys.length; i++){
         allGroupBys.push(groupBys[i]);
         allGroupBys2.push(groupBys[i]);
     }
@@ -52,7 +50,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
 
             for (let i = 0; i < allGroupBys.length; i++) {
                 allGroupBys2 = [];
-                for(let j = 0; j < groupBys.length; j++){
+                for (let j = 0; j < groupBys.length; j++){
                     allGroupBys2.push(groupBys[j]);
                 }
                 let groupBysCachedExceptCrnOne = allGroupBys2.splice(1,i);

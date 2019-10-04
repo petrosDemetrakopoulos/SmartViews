@@ -39,7 +39,6 @@ let contractsDeployed = [];
 web3.eth.defaultAccount = web3.eth.accounts[0];
 let contract = null;
 let acc = null;
-let mainTransactionObject = {};
 app.get('/', function (req, res) {
     fs.readdir('./templates', function (err, items) {
         if (err) {
@@ -47,7 +46,7 @@ app.get('/', function (req, res) {
             return;
         }
         web3.eth.getBlockNumber().then(blockNum => {
-            if(blockNum >= 0){
+            if (blockNum >= 0) {
                 blockchainReady = true;
             }
             res.render('index', { 'templates': items, 'redisStatus': cacheController.getRedisStatus(), 'sqlStatus': mysqlConnected, 'blockchainStatus': blockchainReady });
@@ -110,7 +109,6 @@ http.listen(3000, () => {
             }
             mysqlConnected = true;
             console.log('mySQL connected');
-
         });
     } else {
         console.log('Config file validations failed');
@@ -124,20 +122,15 @@ app.get('/deployContract/:fn', function (req, res) {
     web3.eth.getAccounts(function (err, accounts) {
         if (!err) {
             acc = accounts[1];
-            mainTransactionObject = {
-                from: acc,
-                gas: 1500000000000,
-                gasPrice: '30000000000000'
-            };
             contractDeployer.deployContract(accounts[0], './contracts/' + req.params.fn, contract)
                 .then(options => {
-                    console.log("******************");
+                    console.log('******************');
                     console.log('Contract Deployed!');
-                    console.log("******************");
+                    console.log('******************');
                     contractsDeployed.push(options.contractDeployed);
                     contract = options.contractObject;
                     contractController.setContract(contract, acc);
-                    cacheController.setContract(contract,acc);
+                    cacheController.setContract(contract, acc);
                     res.send({ status: 'OK', options: options.options });
                 })
                 .catch(err => {
@@ -551,7 +544,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
             found = true;
             view = factTbl.views[crnView];
             factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
-            fs.writeFile('./templates/' + req.params.contract +  '.json', JSON.stringify(factTbl,null, 2), function (err) {
+            fs.writeFile('./templates/' + req.params.contract + '.json', JSON.stringify(factTbl,null, 2), function (err) {
                 if (err) return console.log(err);
                 console.log('updated frequency');
             });
@@ -1347,11 +1340,10 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                         });
                                                     }
                                                 });
-                                                // return res.send({allGbs: filteredGBs, mostEfficient: mostEfficient});
                                             }
                                         });
                                     } else {
-                                        // NO FILTERED GBS FOUND, RUNNING GB FROM BEGGINING
+                                        // No filtered group-bys found, proceed to group-by from the beginning
                                         let getLatestFactIdTimeStart = microtime.nowDouble();
                                         contract.methods.dataId().call(function (err, latestId) {
                                             console.log('LATEST ID IS:');
@@ -1369,7 +1361,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                                 for (let i = 0; i < retval.length; i++) {
                                                     delete retval[i].timestamp;
                                                 }
-                                                console.log('CALCULATING NEW GB FROM BEGGINING');
+                                                console.log('CALCULATING NEW GROUP-BY FROM BEGGINING');
                                                 let sqlTimeStart = microtime.nowDouble();
                                                 calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                     let sqlTimeEnd = microtime.nowDouble();
@@ -1447,7 +1439,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                                         return res.send(stringify({ error: 'No facts exist in blockchain' }));
                                     }
                                     let facts = helper.removeTimestamps(retval);
-                                    console.log('CALCULATING NEW GB FROM BEGINING');
+                                    console.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                                     let sqlTimeStart = microtime.nowDouble();
                                     calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                         let sqlTimeEnd = microtime.nowDouble();
@@ -1504,7 +1496,7 @@ app.get('/getViewByName/:viewName/:contract', function (req, res) {
                             return res.send(stringify({ error: 'No facts exist in blockchain' }));
                         }
                         let facts = helper.removeTimestamps(retval);
-                        console.log('CALCULATING NEW GB FROM BEGINING');
+                        console.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                         let sqlTimeStart = microtime.nowDouble();
                         calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                             let sqlTimeEnd = microtime.nowDouble();

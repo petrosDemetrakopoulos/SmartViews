@@ -200,7 +200,7 @@ module.exports = {
     maxObjects: maxObjects,
     minObjects: minObjects,
     averageObjects: averageObjects,
-    containsAllFields, containsAllFields,
+    containsAllFields: containsAllFields,
     flatten: flatten,
     removeDuplicates: removeDuplicates,
     configFileValidations: configFileValidations,
