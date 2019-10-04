@@ -15,7 +15,6 @@ function sumObjects (ob1, ob2) {
 
 function maxObjects (ob1, ob2) {
     let max = {};
-
     Object.keys(ob1).forEach(key => {
         if (key !== 'operation' && key !== 'field' && key !== 'groupByFields') {
             if (ob2.hasOwnProperty(key)) {
@@ -52,7 +51,6 @@ function minObjects (ob1, ob2) {
 
 function averageObjects (ob1, ob2) {
     let avg = {};
-
     Object.keys(ob1).forEach(key => {
         if (key !== 'operation' && key !== 'field' && key !== 'groupByFields') {
             if (ob2.hasOwnProperty(key)) {

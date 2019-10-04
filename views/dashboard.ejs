@@ -127,9 +127,8 @@
     <script src="../dist/js/sb-admin-2.js"></script>
 </body>
 <script>
-    $( ".deploy" ).click(function() {
+    $( '.deploy' ).click(function() {
         deployContract(this.id);
-        console.log("deploy pressed " + this.id)
     });
 
     $.fn.exists = function () {
@@ -137,42 +136,41 @@
     }
 
     function deployContract(contract) {
-        var xhttp = new XMLHttpRequest();
-        let contractStatusSelector = '#'+ contract+"_status";
+        let xhttp = new XMLHttpRequest();
+        let contractStatusSelector = '#'+ contract+'_status';
         console.log(contractStatusSelector);
         xhttp.onreadystatechange = function () {
             if (this.readyState <= 3) {
-                $(contractStatusSelector).html("Creating contract...");
+                $(contractStatusSelector).html('Creating contract...');
             }
             console.log($(contractStatusSelector).exists());
             if (this.readyState === 4 && this.status === 200) {
-                var respObj = JSON.parse(this.responseText);
-                var xhttpDep =  new XMLHttpRequest();
+                let respObj = JSON.parse(this.responseText);
+                let xhttpDep =  new XMLHttpRequest();
                 xhttpDep.onreadystatechange = function() {
                     if (this.readyState <= 3) {
-                        $(contractStatusSelector).html("Deploying contract...");
+                        $(contractStatusSelector).html('Deploying contract...');
                     }
                     if (this.readyState === 4 && this.status === 200) {
                         let respObject = JSON.parse(this.responseText)
                         console.log(respObject);
                         $(contractStatusSelector).html(respObject.options.address);
-                        $(contractStatusSelector).css({"color": 'green', "font-weight": "bold"});
-                        $("#"+contract+"_name").html("<a href='/form/" + contract + "'"+ ">" + contract +  "</a>");
-                        console.log("#"+contract);
-                        $("#"+contract).addClass("disabled");
+                        $(contractStatusSelector).css({'color': 'green', 'font-weight': 'bold'});
+                        $('#'+contract+'_name').html("<a href='/form/" + contract + "'"+ ">" + contract +  "</a>");
+                        $('#'+contract).addClass('disabled');
                     } else if (this.status === 400) {
-                        $(contractStatusSelector).html("Error while deploying contract");
-                        $(contractStatusSelector).css({"color": 'red'});
+                        $(contractStatusSelector).html('Error while deploying contract');
+                        $(contractStatusSelector).css({'color': 'red'});
                     }
                 }
-                xhttpDep.open("GET", "/deployContract/" + respObj.filename, true);
+                xhttpDep.open('GET', '/deployContract/' + respObj.filename, true);
                 xhttpDep.send();
             } else if (this.status === 400) {
-                $(contractStatusSelector).html("Error while creating contract");
-                $(contractStatusSelector).css({"color": 'red'});
+                $(contractStatusSelector).html('Error while creating contract');
+                $(contractStatusSelector).css({'color': 'red'});
             }
         };
-        xhttp.open("GET", "/new_contract/" + contract + ".json", true);
+        xhttp.open('GET', '/new_contract/' + contract + '.json', true);
         xhttp.send();
     }
 </script>

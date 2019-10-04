@@ -244,7 +244,7 @@
         let finished = false;
         if(msg*100 >= 99){
             if(!finished) {
-                $taskComp.html("Completed!");
+                $taskComp.html('Completed!');
                 $.notify({
                     // options
                     message: 'Data import completed!'
@@ -367,7 +367,6 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 let edited = editedResp.replace(/"{/g, "'{").replace(/}"/g, "}'");
                 let splited = edited.split("':")
                 let meta = splited[splited.length - 1].split(",");
-                let usefullMeta = [];
                 let usefullMetaIndex = -1;
                 let sqlTimeIndex = -1;
                 let bcTimeIndex = -1;
@@ -399,9 +398,6 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                     }
 
                 }
-                for(let i = usefullMetaIndex; i < meta.length; i++){
-                    usefullMeta.push(meta[i]);
-                }
                 let cacheRetrieveTime = 0;
                 let totalTime = 0;
                 let bcTime = 0;
@@ -427,7 +423,6 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 if(allTotalTimeIndex > -1){
                     allTotalTime =  parseFloat(meta[allTotalTimeIndex].split(":")[1]);
                 }
-
 
                 $('#total').html(totalTime.toFixed(5));
                 $('#allTotal').html(allTotalTime.toFixed(5));
@@ -461,7 +456,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 }
 
                 let table_body = '<table class="table table-bordered">';
-                table_body += "<tr>";
+                table_body += '<tr>';
                 for(let j=0;j<keys.length ;j++){
                     table_body += '<th style="text-weight: bold; text-align: center;">' + keys[j] + '</th>';
                 }
@@ -484,10 +479,10 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
             }
         };
         gbXhttp.ontimeout = function (e) {
-            console.log("TIMEOUT");
+            console.log('TIMEOUT');
             gbXhttp.abort();
         };
-        gbXhttp.open("GET", "/getViewByName/" + viewName + "/" +"<%= name %>", true);
+        gbXhttp.open('GET', '/getViewByName/' + viewName + '/' +'<%= name %>', true);
         gbXhttp.send();
     }
 
@@ -496,19 +491,19 @@ function getFactById(id) {
     xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             console.log(this.responseText);
-            $("#outputGet").val(this.responseText);
+            $('#outputGet').val(this.responseText);
         }
     };
-    xhttp.open("GET", "/getFactById/" + id, true);
+    xhttp.open('GET', '/getFactById/' + id, true);
     xhttp.send();
 }
     function addFact(factPayload) {
         let xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/addFact", true);
-        xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhttp.open('POST', '/addFact', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
-                $("#output").val(this.responseText);
+                $('#output').val(this.responseText);
             }
         };
         xhttp.send(JSON.stringify(factPayload));
