@@ -4,7 +4,7 @@ const helper = require('../helpers/helper');
 let k = 0;
 let all = [];
 for (let i = 0; i < 100; i++) {
-    for (let j = 0; j < 300; j++) {
+    for (let j = 0; j < 1000; j++) {
         let A = helper.getRandomInt(0, 100);
         let B = helper.getRandomInt(0, 100);
         let C = helper.getRandomInt(0, 100);
@@ -15,7 +15,7 @@ for (let i = 0; i < 100; i++) {
         k++;
     }
 }
-fs.writeFile('test_data/30Kfourcol.json', JSON.stringify(all), function (err) {
+fs.writeFile('test_data/100Kfourcol_c.json', JSON.stringify(all), function (err) {
     if (err) {
         return console.log(err);
     }

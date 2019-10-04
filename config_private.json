@@ -4,7 +4,7 @@
   "maxCacheSize": 20,
   "cacheSlice": 400,
   "autoCacheSlice": "auto",
-  "maxGbSize": 100,
+  "maxGbSize": 10000,
   "redisPort": 6379,
   "redisIP": "127.0.0.1",
   "blockchainIP": "http://localhost:8545",
@@ -13,5 +13,5 @@
     "user": "root",
     "password": "Xonelgataandrou1!",
     "database": "Ptychiaki"},
-  "cacheEnabled": false
+  "cacheEnabled": true
 }

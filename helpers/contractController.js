@@ -14,6 +14,21 @@ function setContract(contractObject, account){
     };
 }
 
+async function addFact(fact){
+    let addFactPromise = contract.methods.addFact(stringify(fact));
+    return addFactPromise.send(mainTransactionObject, (err, txHash) => {
+        console.log('send:', err, txHash);
+    }).on('error', (err) => {
+        console.log('error:', err);
+        Promise.reject(err);
+    }).on('transactionHash', (err) => {
+        console.log('transactionHash:', err);
+    }).on('receipt', (receipt) => {
+        console.log('receipt:', receipt);
+        Promise.resolve(receipt);
+    })
+}
+
 async function addManyFacts (facts, sliceSize) {
     console.log('length = ' + facts.length);
     let allSlicesReady = [];
@@ -139,5 +154,6 @@ module.exports = {
     getAllFactsHeavy: getAllFactsHeavy,
     getFactsFromTo: getFactsFromTo,
     getFactsCount: getFactsCount,
-    setContract: setContract
+    setContract: setContract,
+    addFact:addFact
 };

@@ -7,7 +7,6 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
 async function deploy (account, contractPath, contract) {
     const input = fs.readFileSync(contractPath);
     const output = solc.compile(input.toString(), 1);
-    console.log(output);
     const bytecode = output.contracts[Object.keys(output.contracts)[0]].bytecode;
     const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
     let rec = {};

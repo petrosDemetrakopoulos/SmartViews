@@ -4,9 +4,7 @@ const fs = require('fs');
 const stringify = require('fast-stringify');
 let config = require('./config_private');
 const configLab = require('./config_lab');
-const crypto = require('crypto');
 const path = require('path');
-let md5sum = crypto.createHash('md5');
 abiDecoder = require('abi-decoder');
 const app = express();
 const jsonParser = bodyParser.json();
@@ -15,6 +13,7 @@ const contractGenerator = require('./helpers/contractGenerator');
 const transformations = require('./helpers/transformations');
 const contractDeployer = require('./helpers/contractDeployer');
 const contractController = require('./helpers/contractController');
+const cacheController = require('./helpers/cacheController');
 app.use(jsonParser);
 let running = false;
 let gbRunning = false;
@@ -28,15 +27,6 @@ let io = require('socket.io')(http);
 const jsonSql = require('json-sql')({ separatedValues: false });
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
-const redis = require('redis');
-const client = redis.createClient(config.redisPort, config.redisIP);
-client.on('connect', function () {
-    console.log('Redis connected');
- });
-client.on('error', function (err) {
-    console.log('Something went wrong ' + err);
-});
-
 const mysql = require('mysql');
 let createTable = '';
 let tableName = '';
@@ -63,8 +53,12 @@ app.get('/dashboard', function (req, res) {
             console.error('error reading templates directory: ' + err.stack);
             return;
         }
+        let suffix = ".json";
+        let jsonFiles = items.filter(file => {
+            return file.indexOf(suffix) !== -1; //filtering out non-json files
+        });
         web3.eth.getBlockNumber().then(blockNum => {
-            res.render('dashboard', { 'templates': items, 'blockNum': blockNum });
+            res.render('dashboard', { 'templates': jsonFiles, 'blockNum': blockNum });
         });
     });
 });
@@ -126,10 +120,13 @@ app.get('/deployContract/:fn', function (req, res) {
             };
             contractDeployer.deployContract(accounts[0], './contracts/' + req.params.fn, contract)
                 .then(options => {
-                    console.log('Success');
+                    console.log("******************");
+                    console.log('Contract Deployed!');
+                    console.log("******************");
                     contractsDeployed.push(options.contractDeployed);
                     contract = options.contractObject;
                     contractController.setContract(contract, acc);
+                    cacheController.setContract(contract,acc);
                     res.send({ status: 'OK', options: options.options });
                 })
                 .catch(err => {
@@ -166,11 +163,11 @@ app.get('/load_dataset/:dt', function (req, res) {
 });
 
 app.get('/new_contract/:fn', function (req, res) {
-    contractGenerator.generateContract(req.params.fn).then(function (result) {
+    contractGenerator.generateContract(req.params.fn).then(result => {
         createTable = result.createTable;
         tableName = result.tableName;
         return res.send({ msg: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
-    }, function (err) {
+    }).catch(err => {
         console.log(err);
         return res.send({ msg: 'error' });
     });
@@ -330,7 +327,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName) { // the one
         let crnGroupBy = groupBys[i];
         allHashes.push(crnGroupBy.hash);
     }
-    client.mget(allHashes, function (error, allCached) {
+    cacheController.getManyCachedResults(allHashes, function (error, allCached) {
         let freq = 0;
         if (allHashes.length > 1) {
             for (let j = 0; j < allCached.length; j++) {
@@ -422,93 +419,6 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
         groupBys[i] = crnGroupBy;
     }
     return groupBys;
-}
-
-function saveOnCache (gbResult, operation, latestId) {
-    md5sum = crypto.createHash('md5');
-    md5sum.update(stringify(gbResult));
-    let hash = md5sum.digest('hex');
-    let gbResultSize = Object.keys(gbResult).length;
-    let slicedGbResult = [];
-    if (config.autoCacheSlice === 'manual') {
-        if (gbResultSize > config.cacheSlice) {
-            let crnSlice = [];
-            let metaKeys = {
-                operation: gbResult['operation'],
-                groupByFields: gbResult['groupByFields'],
-                field: gbResult['field'],
-                viewName: gbResult['viewName']
-            };
-            for (const key of Object.keys(gbResult)) {
-                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'viewName') {
-                    console.log(key);
-                    crnSlice.push({ [key]: gbResult[key] });
-                    if (crnSlice.length >= config.cacheSlice) {
-                        slicedGbResult.push(crnSlice);
-                        crnSlice = [];
-                    }
-                }
-            }
-            if (crnSlice.length > 0) {
-                slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
-            }
-            slicedGbResult.push(metaKeys);
-        }
-    } else {
-        // redis allows 512MB per stored string, so we divide the result of our gb with 512MB to find cache slice
-        // maxGbSize is the max number of bytes in a row of the result
-        let mb512InBytes = 512 * 1024 * 1024;
-        let maxGbSize = config.maxGbSize;
-        console.log('GB RESULT SIZE in bytes = ' + gbResultSize * maxGbSize);
-        console.log('size a cache position can hold in bytes: ' + mb512InBytes);
-        if ((gbResultSize * maxGbSize) > mb512InBytes) {
-            let crnSlice = [];
-            let metaKeys = {
-                operation: gbResult['operation'],
-                groupByFields: gbResult['groupByFields'],
-                field: gbResult['field'],
-                viewName: gbResult['viewName']
-            };
-            let rowsAddedInslice = 0;
-            let crnSliceLengthInBytes = 0;
-            for (const key of Object.keys(gbResult)) {
-                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
-                    console.log(key);
-                    crnSlice.push({ [key]: gbResult[key] });
-                    rowsAddedInslice++;
-                    crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
-                    console.log('Rows added in slice:');
-                    console.log(rowsAddedInslice);
-                    if (crnSliceLengthInBytes === (mb512InBytes - 40)) { // for hidden character like backslashes etc
-                        slicedGbResult.push(crnSlice);
-                        crnSlice = [];
-                    }
-                }
-            }
-            if (crnSlice.length > 0) {
-                slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
-            }
-            slicedGbResult.push(metaKeys);
-        } else {
-            console.log('NO SLICING NEEDED');
-        }
-    }
-    let colSize = gbResult.groupByFields.length;
-    let columns = stringify({ fields: gbResult.groupByFields });
-    let num = 0;
-    let crnHash = '';
-    if (slicedGbResult.length > 0) {
-        for (const slice in slicedGbResult) {
-            crnHash = hash + '_' + num;
-            console.log(crnHash);
-            client.set(crnHash, stringify(slicedGbResult[slice]), redis.print);
-            num++;
-        }
-    } else {
-        crnHash = hash + '_0';
-        client.set(crnHash, stringify(gbResult), redis.print);
-    }
-    return contract.methods.addGroupBy(crnHash, Web3.utils.fromAscii(operation), latestId, colSize, gbResultSize, columns).send(mainTransactionObject);
 }
 
 function calculateNewGroupBy (facts, operation, gbFields, aggregationField, callback) {
@@ -798,29 +708,6 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
     });
 }
 
-function deleteFromCache (evicted, callback) {
-    let keysToDelete = [];
-    let gbIdsToDelete = [];
-    if (config.cacheEvictionPolicy === 'FIFO') {
-        for (let i = 0; i < config.maxCacheSize; i++) {
-            keysToDelete.push(evicted[i].hash);
-            let crnHash = evicted[i].hash;
-            let cachedGBSplited = crnHash.split('_');
-            let cachedGBLength = parseInt(cachedGBSplited[1]);
-            if (cachedGBLength > 0) { // reconstructing all the hashes in cache if it is sliced
-                for (let j = 0; j < cachedGBLength; j++) {
-                    keysToDelete.push(cachedGBSplited[0] + '_' + j);
-                }
-            }
-            gbIdsToDelete[i] = evicted[i].id;
-        }
-        console.log('keys to remove from cache are:');
-        console.log(keysToDelete);
-    }
-    client.del(keysToDelete);
-    callback(gbIdsToDelete);
-}
-
 app.get('/getViewByName/:viewName', function (req, res) {
     let totalStart = microtime.nowDouble();
     let factTbl = require('./templates/ABCD');
@@ -964,7 +851,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                     if (mostEfficient.gbTimestamp > latestFact.timestamp) {
                                                         console.log('NO NEW FACTS');
                                                         // NO NEW FACTS after the latest group by
-                                                        // -> incrementaly calculate the groupby requested by summing the one in redis cache
+                                                        // -> incrementally calculate the groupby requested by summing the one in redis cache
                                                         let hashId = mostEfficient.hash.split('_')[1];
                                                         let hashBody = mostEfficient.hash.split('_')[0];
                                                         let allHashes = [];
@@ -972,7 +859,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                             allHashes.push(hashBody + '_' + i);
                                                         }
                                                         let cacheRetrieveTimeStart = microtime.nowDouble();
-                                                        client.mget(allHashes, function (error, allCached) {
+                                                        cacheController.getManyCachedResults(allHashes, function (error, allCached) {
                                                             let cacheRetrieveTimeEnd = microtime.nowDouble();
                                                             if (error) {
                                                                 console.log(error);
@@ -1128,7 +1015,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                     groupBySqlResult.field = view.aggregationField;
                                                                                     groupBySqlResult.viewName = req.params.viewName;
                                                                                     let cacheSaveTimeStart = microtime.nowDouble();
-                                                                                    return saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                                    return cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                                                         console.log('error:', err);
                                                                                         gbRunning = false;
                                                                                         return res.send(err);
@@ -1138,7 +1025,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                         console.log('receipt:', receipt);
                                                                                         let cacheSaveTimeEnd = microtime.nowDouble();
                                                                                         if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                            deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                            cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                                 contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
                                                                                                     let totalEnd = microtime.nowDouble();
                                                                                                     if (!err) {
@@ -1194,7 +1081,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                             groupBySqlResult.field = view.aggregationField;
                                                                             groupBySqlResult.viewName = req.params.viewName;
                                                                             let cacheSaveTimeStart = microtime.nowDouble();
-                                                                            saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                            cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                                                 console.log('error:', err);
                                                                                 gbRunning = false;
                                                                                 return res.send(err);
@@ -1204,7 +1091,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                 let cacheSaveTimeEnd = microtime.nowDouble();
                                                                                 delete groupBySqlResult.gbCreateTable;
                                                                                 if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                    deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                    cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                         contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
                                                                                             let totalEnd = microtime.nowDouble();
                                                                                             if (!err) {
@@ -1273,7 +1160,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                             groupBySqlResult.field = view.aggregationField;
                                                                             groupBySqlResult.viewName = req.params.viewName;
                                                                             let cacheSaveTimeStart = microtime.nowDouble();
-                                                                            saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                            cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                                                 console.log('error:', err);
                                                                                 gbRunning = false;
                                                                                 return res.send(err);
@@ -1283,7 +1170,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                 let cachSaveTimeEnd = microtime.nowDouble();
                                                                                 delete groupBySqlResult.gbCreateTable;
                                                                                 if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                    deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                    cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                         contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
                                                                                             let totalEnd = microtime.nowDouble();
                                                                                             if (!err) {
@@ -1349,7 +1236,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                     }
 
                                                                     let cacheRetrieveTimeStart = microtime.nowDouble();
-                                                                    client.mget(allHashes, async function (error, allCached) {
+                                                                    cacheController.getManyCachedResults(allHashes, async function (error, allCached) {
                                                                         let cacheRetrieveTimeEnd = microtime.nowDouble();
                                                                         if (error) {
                                                                             console.log(error);
@@ -1472,7 +1359,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                         mergeResult.viewName = req.params.viewName;
                                                                                         // save on cache before return
                                                                                         let cacheSaveTimeStart = microtime.nowDouble();
-                                                                                        saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                                        cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
                                                                                             console.log('error:', err);
                                                                                             gbRunning = false;
                                                                                             return res.send(err);
@@ -1482,7 +1369,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                             let cacheSaveTimeEnd = microtime.nowDouble();
                                                                                             delete mergeResult.gbCreateTable;
                                                                                             if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                                deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                                cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                                     contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
                                                                                                         let totalEnd = microtime.nowDouble();
                                                                                                         if (!err) {
@@ -1578,7 +1465,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                     mergeResult.gbCreateTable = view.SQLTable;
                                                                                     mergeResult.viewName = req.params.viewName;
                                                                                     let cacheSaveTimeStart = microtime.nowDouble();
-                                                                                    saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
+                                                                                    cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
                                                                                         console.log('error:', err);
                                                                                         gbRunning = false;
                                                                                         return res.send(err);
@@ -1588,7 +1475,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                                                         let cacheSaveTimeEnd = microtime.nowDouble();
                                                                                         delete mergeResult.gbCreateTable;
                                                                                         if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                            deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                                                            cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                                                 contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
                                                                                                     let totalEnd = microtime.nowDouble();
                                                                                                     if (!err) {
@@ -1666,7 +1553,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                     groupBySqlResult.field = view.aggregationField;
                                                     groupBySqlResult.viewName = req.params.viewName;
                                                     let cacheSaveTimeStart = microtime.nowDouble();
-                                                    saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                                    cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                                         console.log('error:', err);
                                                         gbRunning = false;
                                                         return res.send(err);
@@ -1676,7 +1563,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                                         let cacheSaveTimeEnd = microtime.nowDouble();
                                                         delete groupBySqlResult.gbCreateTable;
                                                         if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                            deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+                                                            cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
                                                                 contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
                                                                     let totalEnd = microtime.nowDouble();
                                                                     if (!err) {
@@ -1744,7 +1631,7 @@ app.get('/getViewByName/:viewName', function (req, res) {
                                         groupBySqlResult.field = view.aggregationField;
                                         groupBySqlResult.viewName = req.params.viewName;
                                         let cacheSaveTimeStart = microtime.nowDouble();
-                                        saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                                        cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                                             console.log('error:', err);
                                             gbRunning = false;
                                             return res.send(err);
@@ -1837,17 +1724,11 @@ app.get('/getcount', function (req, res) {
 
 app.post('/addFact', function (req, res) {
     if (contract) {
-        let addFactPromise = contract.methods.addFact(stringify(req.body));
-        addFactPromise.send(mainTransactionObject, (err, txHash) => {
-            console.log('send:', err, txHash);
-        }).on('error', (err) => {
-            console.log('error:', err);
-            res.send(err);
-        }).on('transactionHash', (err) => {
-            console.log('transactionHash:', err);
-        }).on('receipt', (receipt) => {
-            console.log('receipt:', receipt);
+        contractController.addFact(req.body).then(receipt => {
             res.send(receipt);
+        }).catch(error => {
+            console.log(error);
+            res.send(error);
         })
     } else {
         res.status(400);

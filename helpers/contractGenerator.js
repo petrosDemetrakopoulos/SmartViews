@@ -312,14 +312,15 @@ async function generateContract (templateFileName) {
                 console.log(err);
                 return reject(new Error('error'));
             }
-            console.log('The file was saved!');
+            console.log("******************");
+            console.log('Contract generated!');
+            console.log("******************");
             let templ = {};
             if ('template' in factTbl) {
                 templ = factTbl['template'];
             } else {
                 templ = factTbl;
             }
-            console.log(templ);
             return resolve({ msg: 'OK', filename: factTbl.name, template: templ, createTable: createTable, tableName: tableName });
         });
     });
