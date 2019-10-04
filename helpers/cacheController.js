@@ -7,6 +7,7 @@ const client = redis.createClient(config.redisPort, config.redisIP);
 const Web3 = require('web3');
 let contract = null;
 let mainTransactionObject = {};
+let redisConnected = false;
 
 function setContract(contractObject, account){
     contract = contractObject;
@@ -18,9 +19,11 @@ function setContract(contractObject, account){
 }
 
 client.on('connect', function () {
+    redisConnected = true;
     console.log('Redis connected');
 });
 client.on('error', function (err) {
+    redisConnected = false;
     console.log('Something went wrong ' + err);
 });
 
@@ -144,9 +147,14 @@ function getManyCachedResults(allHashes, callback){
     })
 }
 
+function getRedisStatus() {
+    return redisConnected;
+}
+
 module.exports = {
     setContract: setContract,
     saveOnCache: saveOnCache,
     deleteFromCache:deleteFromCache,
-    getManyCachedResults: getManyCachedResults
+    getManyCachedResults: getManyCachedResults,
+    getRedisStatus: getRedisStatus
 };

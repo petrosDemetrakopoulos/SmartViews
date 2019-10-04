@@ -7,283 +7,51 @@
 </head>
 <body onload="pageLoad()">
     <div class="container">
-        <h1>Fact Table Data Handler</h1>
+        <h1 style="text-align: center; margin-top: 1.5em;">Blockchain data warehouse status</h1>
         <div class="row">
-        <div class="col-3">
-            <div class="form-group">
-                <label for="sel1">Select template:</label>
-                <select class="form-control" id="template">
-                    <%for(var i = 0; i < templates.length; i++){%>
-                    <option><%=templates[i]%></option>
-                    <%}%>
-                </select>
+            <div class="col-lg"></div>
+            <div class="col-lg" style="text-align: center">
+                <br>
+                <br>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Service</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">Blockchain</th>
+                        <% if(blockchainStatus === false) {%>
+                            <td style="color: red">Not running</td>
+                        <%} else {%>
+                        <td style="color: limegreen">OK</td>
+                        <%}%>
+                    </tr>
+                    <tr>
+                        <th scope="row">mySQL</th>
+                        <% if(sqlStatus === false) {%>
+                            <td style="color: red">Not running</td>
+                        <%} else {%>
+                            <td style="color: limegreen">OK</td>
+                        <%}%>
+                    </tr>
+                    <tr>
+                        <th scope="row">Redis cache</th>
+                        <% if(redisStatus === false) {%>
+                            <td style="color: red">Not running</td>
+                        <%} else {%>
+                            <td style="color: limegreen">OK</td>
+                        <%}%>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="/dashboard" target="_blank"> <button class="btn btn-primary">Go to dashboard</button></a>
             </div>
-        </div>
-            <div class="col-3">
-                <button type="button" class="btn btn-primary" id="deployContract" style="margin-top: 2em;">Create and deploy contract</button>
-            </div>
-            <div class="col-3">
-                <button type="button" class="btn btn-primary" id="deployContractSales" style="margin-top: 2em;">Deploy Sales Contract</button>
-            </div>
-
-            <div class="col-3">
-                <button type="button" class="btn btn-primary" id="importSalesDataset" style="margin-top: 2em;">Import sales dataset</button>
-            </div>
-            <br>
-            <p id="status"></p>
-        </div>
-        <div class="col-4">
-            <br><br>
-            <h3>Data input form</h3>
-            <p id="prompt">Create and deploy a contract to add data.</p>
-        </div>
-        <div class="row" style="margin-top: 2em;" id="add_data">
-        </div>
-        <div class="col-4">
-            <h3>Data get form</h3>
-            <br>
-            <p id="prompt">Create and deploy a contract to add data.</p>
-            <br>
-        </div>
-        <div class="col-12" style="margin-top: 2em;" id ="groupBys">
-        </div>
+            <div class="col-lg"></div>
         <br>
         <br>
     </div>
     <script src="js/jquery-3.3.1.min.js"></script>
-<script>
-    let crnContractDeployed;
-    $( "#deployContract" ).click(function() {
-        deployContract()
-    });
-
-
-    $( "#importSalesDataset" ).click(function() {
-        importSalesDataset();
-    });
-
-
-    $( "#deployContractSales" ).click(function() {
-        deployContractSales();
-    });
-
-
-    $(document).on('click', '#buttonGet', function(){
-        getFactById($("#factId").val());
-    });
-
-    $(document).on('click', '#buttonGetAll', function(){
-        getAllFacts();
-    });
-
-    $(document).on('click', '#buttonGroupBy', function(){
-        var selectedKey = $('#fieldSelect').find("option:selected").text();
-        var selectedOp = $('#typeSelect').find("option:selected").text();
-        var aggregateSelected = $('#aggregateFieldSelect').find("option:selected").text();
-        groupBy(selectedKey,selectedOp,aggregateSelected);
-    });
-
-    $(document).on('click', '#buttonGetGroupById', function(){
-        getGroupById($("#groupByID").val());
-    });
-
-    $(document).on('click', '#buttonAdd', function(){
-        let fields = [];
-        let values = [];
-        for(var i = 0; i < crnContractDeployed.properties.length; i++){
-            let crnKey = crnContractDeployed.properties[i];
-            fields.push(crnKey);
-            values.push({key:crnKey.key, value: $("#" + crnKey.key).val(), type: crnKey.data_type});
-        }
-        console.log(values);
-        addFact(values);
-    });
-
-    function pageLoad() {
-        $("#getResponseAdd").val("");
-        $("#getResponse").val("");
-    }
-
-    function getFactById(id) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                $("#getResponse").val(this.responseText);
-            }
-        };
-        xhttp.open("GET", "/getFactById/" + id, true);
-        xhttp.send();
-    }
-
-    function groupBy(field, operatiob, aggregateField) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                $("#getResponse").val(this.responseText);
-            }
-        };
-        xhttp.open("GET", "/groupby/" + field + "/" + operatiob + "/" + aggregateField, true);
-        xhttp.send();
-    }
-
-    function getGroupById(id) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                $("#getResponse").val(this.responseText);
-            }
-        };
-        xhttp.open("GET", "/groupbyId/" + id, true);
-        xhttp.send();
-    }
-
-    function getAllFacts() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                $("#getResponse").val(this.responseText);
-            }
-        };
-        xhttp.open("GET", "/getallfacts/", true);
-        xhttp.send();
-    }
-
-    function addFact(values) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/addFact", true);
-        xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                $("#getResponseAdd").val(this.responseText);
-            }
-        };
-        xhttp.send(JSON.stringify({values: values}));
-    }
-
-    function deployContractSales() {
-        var xhttpDep = new XMLHttpRequest();
-        xhttpDep.onreadystatechange = function () {
-            if (this.readyState <= 3) {
-                $('#status').html("Deploying contract...");
-            }
-            if (this.readyState === 4 && this.status === 200) {
-                var respObject = JSON.parse(this.responseText)
-                console.log(respObject);
-                $('#status').html("Contract address: " + respObject.options.address);
-                $('#status').css({"color": 'green', "font-weight": "bold"});
-                $("#prompt").remove();
-            } else if (this.status === 400) {
-                $('#status').html("Error while deploying contract");
-                $('#status').css({"color": 'red'});
-            }
-        };
-        xhttpDep.open("GET", "/deployContract/sales_json.sol", true);
-        xhttpDep.send();
-    }
-
-    function importSalesDataset() {
-        var xhttpDep = new XMLHttpRequest();
-        xhttpDep.onreadystatechange = function () {
-            if (this.readyState <= 3) {
-                $('#status').html("Importing data...");
-            }
-            if (this.readyState === 4 && this.status === 200) {
-                console.log(this.responseText);
-                $('#status').html("Data imported: " + this.responseText);
-                $('#status').css({"color": 'green', "font-weight": "bold"});
-                $("#prompt").remove();
-            } else if (this.status === 400) {
-                $('#status').html("Error while importing data");
-                $('#status').css({"color": 'red'});
-            }
-        };
-        xhttpDep.open("GET", "/load_dataset", true);
-        xhttpDep.send();
-    }
-
-
-    function deployContract() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if(this.readyState <= 3){
-                $('#status').html("Creating contract...");
-            }
-            if (this.readyState === 4 && this.status === 200) {
-                var respObj = JSON.parse( this.responseText)
-
-                var xhttpDep =  new XMLHttpRequest();
-                xhttpDep.onreadystatechange = function() {
-                    if (this.readyState <= 3) {
-                        $('#status').html("Deploying contract...");
-                    }
-                    if (this.readyState === 4 && this.status === 200) {
-                        var respObject = JSON.parse( this.responseText)
-
-                        $('#status').html("Contract address: " + respObject.options.address);
-                        $('#status').css({"color": 'green', "font-weight":"bold"});
-                        $("#prompt").remove();
-                        crnContractDeployed = respObj.template;
-                        $('#add_data').append("<div class='col-6' id='add_data_col'>");
-                        for(var i = 0; i < respObj.template.properties.length; i++){
-                            var crnProp = respObj.template.properties[i];
-                            $('#add_data_col').append("<div class='row' style='margin-top:1em'>" +
-                                "<label for='" + crnProp.key + "' class='col-lg-6" +" " + "control-label'"+ ">" + crnProp.key + "</label>" +
-                                "<input id='" + crnProp.key +  "' type='text'>" + "</div>" + "<br>");
-                        }
-                        $('#add_data_col').append("<button type=\"button\" class=\"btn btn-primary\" id=\"buttonAdd\">Add fact</button>" +
-                            "<br>" +
-                            "<br>");
-                        $('#add_data').append("<div class='col-6'>" +
-                            "<label for=\"getResponseAdd\" class=\"col-lg-6 control-label\">Transaction receipt</label>" +
-                            "<textarea class=\"form-control\" rows=\"5\" id=\"getResponseAdd\" readonly></textarea>" +
-                            "</div>");
-
-
-                        $('#groupBys').append("<div class='row' id='groupByRow'><div class='col-3'> <label for='fieldSelect'>Select field for GroupBy:</label></div>"+
-                        "<div class='col-2'><select class='form-control' id='fieldSelect'>");
-                        for(var i = 0; i < respObj.template.properties.length; i++) {
-                            var crnProp = respObj.template.properties[i];
-                            $('#fieldSelect').append("<option>" + crnProp.key + "</option>");
-                        }
-                        $('#groupByRow').append("<div class='col-2' style='text-align:center'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGroupBy\" style='width: 65%'>Group By</button></div>")
-                        $('#groupByRow').append("<div class='col-2'><select class='form-control' id='typeSelect'>");
-                        $('#typeSelect').append("<option>COUNT</option><option>SUM</option><option>MIN</option><option>MAX</option><option>AVERAGE</option>");
-                        $('#groupByRow').append("<div class='col-2'><select class='form-control' id='aggregateFieldSelect'>");
-                        for(var i = 0; i < respObj.template.properties.length; i++) {
-                            var crnProp = respObj.template.properties[i];
-                            $('#aggregateFieldSelect').append("<option>" + crnProp.key + "</option>");
-                        }
-                        $('#groupBys').append("<div class=\"row\" style=\"margin-top: 1em\" id='getFactRow'>" +
-                            "<label for=\"factId\" class=\"col-lg-3 control-label\">Fact ID</label>" +
-                            "<div class='col-3'><input id=\"factId\" type=\"text\"></div> " + "<div class='col-3' style='text-align: center'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGet\" style='width: 65%'>Get fact</button>"+
-                            "</div>" + "<div class='col-3' style='text-align: left'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGetAll\" style='width: 65%'>Get all</button></div></div>" +
-                            "<div class=\"row\" style=\"margin-top: 1em\" id='groupByRow'>" +
-                            "<label for=\"groupByID\" class=\"col-lg-3 control-label\">GroupBy ID</label>" +
-                            "<div class='col-3'><input id=\"groupByID\" type=\"text\"></div>" +
-                            "<div class='col-3' style='text-align: center'><button type=\"button\" class=\"btn btn-primary\" id=\"buttonGetGroupById\" style='width: 65%'>Get GroupBy by ID</button></div>" +
-                            "</div><br>");
-                        $('#groupBys').append("<div>" +
-                            "<br>" +
-                            "<label for=\"getResponse\" class=\"col-lg-2 control-label\">Output</label>" +
-                            "<textarea class=\"form-control\" rows=\"5\" id=\"getResponse\" readonly></textarea>" +
-                            "<br>" +
-                            "</div><br><br>")
-                    }
-                    else if(this.status === 400) {
-                        $('#status').html("Error while deploying contract");
-                        $('#status').css({"color": 'red'});
-                    }
-                };
-                xhttpDep.open("GET", "/deployContract/" + respObj.filename, true);
-                xhttpDep.send();
-            } else if(this.status === 400) {
-                $('#status').html("Error while creating contract");
-                $('#status').css({"color": 'red'});
-            }
-        };
-        var selectedText = $('#template').find("option:selected").text();
-        xhttp.open("GET", "/new_contract/" + selectedText, true);
-        xhttp.send();
-    }
-</script>
 </body>

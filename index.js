@@ -17,6 +17,8 @@ const cacheController = require('./helpers/cacheController');
 app.use(jsonParser);
 let running = false;
 let gbRunning = false;
+let mysqlConnected = false;
+let blockchainReady = false;
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -43,7 +45,12 @@ app.get('/', function (req, res) {
             console.error('error reading templates directory: ' + err.stack);
             return;
         }
-        res.render('index', { 'templates': items });
+        web3.eth.getBlockNumber().then(blockNum => {
+            if(blockNum >= 0){
+                blockchainReady = true;
+            }
+            res.render('index', { 'templates': items, 'redisStatus': cacheController.getRedisStatus(), 'sqlStatus': mysqlConnected, 'blockchainStatus': blockchainReady });
+        });
     })
 });
 
@@ -99,6 +106,7 @@ http.listen(3000, () => {
                 console.error('error connecting to mySQL: ' + err.stack);
                 return;
             }
+            mysqlConnected = true;
             console.log('mySQL connected');
         });
     } else {
