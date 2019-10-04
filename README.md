@@ -12,10 +12,14 @@ The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using t
 ├── contracts
 │   ├── ABCD.sol
 │   └── Cars.sol
+├── controllers
+│   ├── cacheController.js
+│   ├── computationsController.js
+│   └── contractController.js
 ├── helpers
-│   ├── contractController.js
 │   ├── contractDeployer.js
 │   ├── contractGenerator.js
+│   ├── costFunctions.js
 │   ├── helper.js
 │   └── transformations.js
 ├── index.js
@@ -37,6 +41,9 @@ The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using t
 │   │   └── 100fourcol_b.json
 │   ├── 100K
 │   │   └── 100kfourcol.json
+│   ├── 100Kfourcol_c.json
+│   ├── 100fourcol.json
+│   ├── 100fourcol_b.json
 │   ├── 10K
 │   │   ├── 10kfourcol.json
 │   │   └── 10kfourcol_b.json
@@ -130,7 +137,7 @@ In that way it avoids fetching many facts from the blockchain (which is the most
 
 # The application server structure
 The server structure is shown in the diagram below.
-The server communicates with the Ethereum blockchain via the "Blockchain controller". 
+The server communicates with the Ethereum blockchain via the "**Blockchain controller**". 
 The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
 <div ALIGN="center">
 <img src="schematics/structure.png" width="520" align="center">
