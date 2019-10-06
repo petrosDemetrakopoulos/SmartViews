@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/transformations.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/transformations.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -283,14 +282,7 @@
       <workItem from="1570354501684" duration="6187000" />
       <workItem from="1570371147820" duration="1291000" />
       <workItem from="1570373508761" duration="5682000" />
-      <workItem from="1570379950065" duration="5242000" />
-    </task>
-    <task id="LOCAL-00138" summary="various fixes">
-      <created>1569446489494</created>
-      <option name="number" value="00138" />
-      <option name="presentableId" value="LOCAL-00138" />
-      <option name="project" value="LOCAL" />
-      <updated>1569446489496</updated>
+      <workItem from="1570379950065" duration="5512000" />
     </task>
     <task id="LOCAL-00139" summary="various fixes">
       <created>1569447644569</created>
@@ -628,7 +620,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570384895379</updated>
     </task>
-    <option name="localTasksCounter" value="187" />
+    <task id="LOCAL-00187" summary="- more tests">
+      <created>1570385430072</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1570385430072</updated>
+    </task>
+    <option name="localTasksCounter" value="188" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -662,7 +661,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Minor fixes and optimizations&#10;Removed unnneded packages" />
     <MESSAGE value="Changed Project Name" />
     <MESSAGE value="fixes in readme" />
     <MESSAGE value="fixes in front end" />
@@ -687,6 +685,7 @@
     <MESSAGE value=" - restored sockets&#10; - removed unnedded front-end imports" />
     <MESSAGE value=" - front-end polishing" />
     <MESSAGE value=" - various fixes&#10; - created the first tests&#10; - removed unneeded functions" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - various fixes&#10; - created the first tests&#10; - removed unneeded functions" />
+    <MESSAGE value="- more tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="- more tests" />
   </component>
 </project>

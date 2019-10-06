@@ -76,74 +76,7 @@ function transformReadyAverage (groupByResult, gbField, aggregateField) {
     return transformed;
 }
 
-function transformGB (groupByResult, operation, aggregateField) {
-    if (operation === 'COUNT') {
-        helper.log('OPERATION = COUNT');
-        for (let key in groupByResult) {
-            let crnGoup = groupByResult[key];
-            let cnt = 0;
-            for (let row in crnGoup) {
-                cnt++;
-            }
-            groupByResult[key] = cnt;
-        }
-        groupByResult['operation'] = 'COUNT'
-    } else if (operation === 'SUM') {
-        for (let key in groupByResult) {
-            let crnGoup = groupByResult[key];
-            let cnt = 0;
-            for (let row in crnGoup) {
-                cnt += Number(crnGoup[row][aggregateField]);
-            }
-            groupByResult[key] = cnt;
-        }
-        groupByResult['operation'] = 'SUM';
-        groupByResult['field'] = aggregateField;
-    } else if (operation === 'MIN') {
-        for (let key in groupByResult) {
-            let crnGoup = groupByResult[key];
-            let min = Number(crnGoup[0][aggregateField]);
-            for (let row in crnGoup) {
-                if (Number(crnGoup[row][aggregateField]) < min) {
-                    min = Number(crnGoup[row][aggregateField])
-                }
-            }
-            groupByResult[key] = min;
-        }
-        groupByResult['operation'] = 'MIN';
-        groupByResult['field'] = aggregateField;
-    } else if (operation === 'MAX') {
-        for (let key in groupByResult) {
-            let crnGoup = groupByResult[key];
-            let max = Number(crnGoup[0][aggregateField]);
-            for (let row in crnGoup) {
-                if (Number(crnGoup[row][aggregateField]) > max) {
-                    max = Number(crnGoup[row][aggregateField])
-                }
-            }
-            groupByResult[key] = max;
-        }
-        groupByResult['operation'] = 'MAX';
-        groupByResult['field'] = aggregateField;
-    } else { // AVERAGE
-        for (let key in groupByResult) {
-            let crnGoup = groupByResult[key];
-            let cnt = 0;
-            let sum = 0;
-            for (let row in crnGoup) {
-                sum += Number(crnGoup[row][aggregateField]);
-                cnt += 1;
-            }
-            groupByResult[key] = { 'average': sum / cnt, 'count': cnt, 'sum': sum };
-        }
-        groupByResult['operation'] = 'AVERAGE';
-        groupByResult['field'] = aggregateField;
-    }
-    return groupByResult;
-}
-
 module.exports = {
     transformGBFromSQL: transformGBFromSQL,
-    transformGB: transformGB,
     transformReadyAverage: transformReadyAverage
 };
