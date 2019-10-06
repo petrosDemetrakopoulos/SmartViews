@@ -329,3 +329,34 @@ describe('testing /getViewByName/:viewName/:contract -- Invalid view name',funct
         expect(resp).to.have.property('error');
     });
 });
+
+describe('testing /groupbyId/:id route', function() {
+    let resp = {};
+    it('should return OK status', function() {
+        return request(app)
+            .get('/groupbyId/0')
+            .then(function(response) {
+                resp = response.text;
+                expect(response.status).to.equal(200);
+            });
+    });
+
+    it('should be a string', function() {
+        expect(resp).to.be.a('string');
+    });
+});
+describe('testing /getcount route', function() {
+    let resp = {};
+    it('should return OK status', function() {
+        return request(app)
+            .get('/getcount')
+            .then(function(response) {
+                resp = response.text;
+                expect(response.status).to.equal(200);
+            });
+    });
+
+    it('should be a string', function() {
+        expect(resp).to.be.a('string');
+    });
+});

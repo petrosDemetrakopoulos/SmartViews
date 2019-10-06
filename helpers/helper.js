@@ -14,12 +14,6 @@ function flatten (items) {
     return flat;
 }
 
-function removeDuplicates (arr) {
-    return arr.filter(function (elem, index, self) {
-        return index === self.indexOf(elem);
-    });
-}
-
 function removeTimestamps (records) {
     for (let i = 0; i < records.length; i++) {
         delete records[i].timestamp;
@@ -141,7 +135,6 @@ function log(logString){
 module.exports = {
     containsAllFields: containsAllFields,
     flatten: flatten,
-    removeDuplicates: removeDuplicates,
     configFileValidations: configFileValidations,
     removeTimestamps: removeTimestamps,
     printTimes: printTimes,
