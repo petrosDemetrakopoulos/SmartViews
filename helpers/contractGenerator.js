@@ -1,4 +1,5 @@
 const fs = require('fs');
+const helper = require('../helpers/helper');
 
 async function generateContract (templateFileName) {
     let factTbl = require('../templates/' + templateFileName);
@@ -308,12 +309,12 @@ async function generateContract (templateFileName) {
     return new Promise(function (resolve, reject) {
         fs.writeFile('contracts/' + factTbl.name + '.sol', contrPayload, function (err) {
             if (err) {
-                console.log(err);
+                helper.log(err);
                 return reject(new Error('error'));
             }
-            console.log('******************');
-            console.log('Contract generated!');
-            console.log('******************');
+            helper.log('******************');
+            helper.log('Contract generated!');
+            helper.log('******************');
             let templ = {};
             if ('template' in factTbl) {
                 templ = factTbl['template'];

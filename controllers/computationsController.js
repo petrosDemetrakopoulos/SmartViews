@@ -6,6 +6,7 @@ const transformations = require('../helpers/transformations');
 const jsonSql = require('json-sql')({ separatedValues: false });
 let createTable = '';
 let tableName = '';
+const helper = require('../helpers/helper');
 
 function setCreateTable (newCreateTable) {
     createTable = newCreateTable;
@@ -30,12 +31,12 @@ function connectToSQL(callback) {
 function calculateNewGroupBy (facts, operation, gbFields, aggregationField, callback) {
     connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
         if (err) {
-            console.log(err);
+            helper.log(err);
             callback(null, err);
         }
         connection.query(createTable, function (error, results) { // creating the SQL table for 'Fact Table'
             if (error) {
-                console.log(error);
+                helper.log(error);
                 callback(null, error);
             }
             if (facts.length === 0) {
@@ -51,7 +52,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
             editedQuery = editedQuery.replace(/''/g, 'null');
             connection.query(editedQuery, function (error, results2) { // insert facts
                 if (error) {
-                    console.log(error);
+                    helper.log(error);
                     callback(null, error);
                 }
 
@@ -90,12 +91,12 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                 let editedGB = gbQuery.query.replace(/"/g, '');
                 connection.query(editedGB, function (error, results3) {
                     if (error) {
-                        console.log(error);
+                        helper.log(error);
                         callback(null, error);
                     }
                     connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
                         if (err) {
-                            console.log(err);
+                            helper.log(err);
                             callback(null, err);
                         }
                         let groupBySqlResult = transformations.transformGBFromSQL(results3, operation, aggregationField, gbFields);
@@ -114,7 +115,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
     let tableName = cachedGroupBy.gbCreateTable.split(' ');
     tableName = tableName[3];
     tableName = tableName.split('(')[0];
-    console.log('TABLE NAME = ' + tableName);
+    helper.log('TABLE NAME = ' + tableName);
     connection.query(cachedGroupBy.gbCreateTable, async function (error) {
         if (error) {
             callback(null, error);
@@ -149,7 +150,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
         editedQuery = editedQuery.replace(/''/g, 'null');
         connection.query(editedQuery, function (error, results, fields) {
             if (error) {
-                console.log(error);
+                helper.log(error);
                 callback(null, error);
             }
             let op = '';
@@ -196,12 +197,12 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
             editedGBQuery = editedGBQuery.replace(/''/g, 'null');
             connection.query(editedGBQuery, function (error, results) {
                 if (error) {
-                    console.log(error);
+                    helper.log(error);
                     callback(null, error);
                 }
                 connection.query('DROP TABLE ' + tableName, function (err) {
                     if (err) {
-                        console.log(err);
+                        helper.log(err);
                         callback(null, err);
                     }
                     callback(results);
@@ -214,7 +215,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
 function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, lastCol, prelastCol, callback) {
     connection.query(gbCreateTable, function (error, results, fields) {
         if (error) {
-            console.log(error);
+            helper.log(error);
             callback(null, error);
         }
 
@@ -238,12 +239,12 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
 
         connection.query(editedQueryA, function (err, results, fields) {
             if (err) {
-                console.log(err);
+                helper.log(err);
                 callback(null, err);
             }
             connection.query(editedQueryB, function (err, results, fields) {
                 if (err) {
-                    console.log(err);
+                    helper.log(err);
                     callback(null, err);
                 }
                 let op = '';
@@ -291,12 +292,12 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                 editedGBQuery = editedGBQuery.replace(/''/g, 'null');
                 connection.query(editedGBQuery, async function (error, results, fields) {
                     if (error) {
-                        console.log(error);
+                        helper.log(error);
                         callback(null, error);
                     }
                     connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
                         if (err) {
-                            console.log(err);
+                            helper.log(err);
                             callback(null, err);
                         }
 

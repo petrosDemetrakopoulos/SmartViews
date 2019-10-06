@@ -3,9 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/computationsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/computationsController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/costFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/costFunctions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/dashboard.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/dashboard.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/form.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/form.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/transformations.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/transformations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -279,14 +289,11 @@
       <workItem from="1570176864801" duration="2390000" />
       <workItem from="1570185765008" duration="10528000" />
       <workItem from="1570198583099" duration="4077000" />
-      <workItem from="1570202785375" duration="1497000" />
-    </task>
-    <task id="LOCAL-00135" summary="various fixes">
-      <created>1568661564488</created>
-      <option name="number" value="00135" />
-      <option name="presentableId" value="LOCAL-00135" />
-      <option name="project" value="LOCAL" />
-      <updated>1568661564488</updated>
+      <workItem from="1570202785375" duration="1547000" />
+      <workItem from="1570354501684" duration="6187000" />
+      <workItem from="1570371147820" duration="1291000" />
+      <workItem from="1570373508761" duration="5682000" />
+      <workItem from="1570379950065" duration="4797000" />
     </task>
     <task id="LOCAL-00136" summary="Added feature to count frquencies of each view in template">
       <created>1568792279838</created>
@@ -624,7 +631,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570203937454</updated>
     </task>
-    <option name="localTasksCounter" value="184" />
+    <task id="LOCAL-00184" summary=" - front-end polishing">
+      <created>1570204463149</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1570204463150</updated>
+    </task>
+    <option name="localTasksCounter" value="185" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -658,7 +672,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added more info in README&#10;Minor issues fixes" />
     <MESSAGE value="Minor fixes and optimizations" />
     <MESSAGE value="Minor fixes and optimizations&#10;Removed unnneded packages" />
     <MESSAGE value="Changed Project Name" />
@@ -683,6 +696,7 @@
     <MESSAGE value=" - moved SQL related functionality to computationsController.js&#10; - fixed issue with duplicate code in the case of reduction query to cached group by without deltas (now correctly done with the calculateReducedGroupBy function of computationsController)" />
     <MESSAGE value=" - removed unneeded code" />
     <MESSAGE value=" - restored sockets&#10; - removed unnedded front-end imports" />
-    <option name="LAST_COMMIT_MESSAGE" value=" - restored sockets&#10; - removed unnedded front-end imports" />
+    <MESSAGE value=" - front-end polishing" />
+    <option name="LAST_COMMIT_MESSAGE" value=" - front-end polishing" />
   </component>
 </project>

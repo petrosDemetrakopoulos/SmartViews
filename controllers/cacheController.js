@@ -8,6 +8,7 @@ const Web3 = require('web3');
 let contract = null;
 let mainTransactionObject = {};
 let redisConnected = false;
+const helper = require('../helpers/helper');
 
 function setContract (contractObject, account) {
     contract = contractObject;
@@ -20,11 +21,11 @@ function setContract (contractObject, account) {
 
 client.on('connect', function () {
     redisConnected = true;
-    console.log('Redis connected');
+    helper.log('Redis connected');
 });
 client.on('error', function (err) {
     redisConnected = false;
-    console.log('Something went wrong ' + err);
+    helper.log('Something went wrong ' + err);
 });
 
 function saveOnCache (gbResult, operation, latestId) {
@@ -44,7 +45,7 @@ function saveOnCache (gbResult, operation, latestId) {
             };
             for (const key of Object.keys(gbResult)) {
                 if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'viewName') {
-                    console.log(key);
+                    helper.log(key);
                     crnSlice.push({ [key]: gbResult[key] });
                     if (crnSlice.length >= config.cacheSlice) {
                         slicedGbResult.push(crnSlice);
@@ -62,8 +63,8 @@ function saveOnCache (gbResult, operation, latestId) {
         // maxGbSize is the max number of bytes in a row of the result
         let mb512InBytes = 512 * 1024 * 1024;
         let maxGbSize = config.maxGbSize;
-        console.log('Group-By result size in bytes = ' + gbResultSize * maxGbSize);
-        console.log('size a cache position can hold in bytes: ' + mb512InBytes);
+        helper.log('Group-By result size in bytes = ' + gbResultSize * maxGbSize);
+        helper.log('size a cache position can hold in bytes: ' + mb512InBytes);
         if ((gbResultSize * maxGbSize) > mb512InBytes) {
             let crnSlice = [];
             let metaKeys = {
@@ -76,12 +77,12 @@ function saveOnCache (gbResult, operation, latestId) {
             let crnSliceLengthInBytes = 0;
             for (const key of Object.keys(gbResult)) {
                 if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
-                    console.log(key);
+                    helper.log(key);
                     crnSlice.push({ [key]: gbResult[key] });
                     rowsAddedInslice++;
                     crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
-                    console.log('Rows added in slice:');
-                    console.log(rowsAddedInslice);
+                    helper.log('Rows added in slice:');
+                    helper.log(rowsAddedInslice);
                     if (crnSliceLengthInBytes === (mb512InBytes - 40)) { // for hidden character like backslashes etc
                         slicedGbResult.push(crnSlice);
                         crnSlice = [];
@@ -93,7 +94,7 @@ function saveOnCache (gbResult, operation, latestId) {
             }
             slicedGbResult.push(metaKeys);
         } else {
-            console.log('NO SLICING NEEDED');
+            helper.log('NO SLICING NEEDED');
         }
     }
     let colSize = gbResult.groupByFields.length;
@@ -103,7 +104,7 @@ function saveOnCache (gbResult, operation, latestId) {
     if (slicedGbResult.length > 0) {
         for (const slice in slicedGbResult) {
             crnHash = hash + '_' + num;
-            console.log(crnHash);
+            helper.log(crnHash);
             client.set(crnHash, stringify(slicedGbResult[slice]), redis.print);
             num++;
         }
@@ -130,8 +131,8 @@ function deleteFromCache (evicted, callback) {
             }
             gbIdsToDelete[i] = evicted[i].id;
         }
-        console.log('keys to remove from cache are:');
-        console.log(keysToDelete);
+        helper.log('keys to remove from cache are:');
+        helper.log(keysToDelete);
     }
     client.del(keysToDelete);
     callback(gbIdsToDelete);

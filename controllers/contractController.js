@@ -1,6 +1,7 @@
 const stringify = require('fast-stringify');
 let contract = null;
 let mainTransactionObject = {};
+const helper = require('../helpers/helper');
 function setContract (contractObject, account) {
     contract = contractObject;
     mainTransactionObject = {
@@ -13,20 +14,44 @@ function setContract (contractObject, account) {
 async function addFact (fact) {
     let addFactPromise = contract.methods.addFact(stringify(fact));
     return addFactPromise.send(mainTransactionObject, (err, txHash) => {
-        console.log('send:', err, txHash);
+        helper.log('send:', err, txHash);
     }).on('error', (err) => {
-        console.log('error:', err);
+        helper.log('error:', err);
         Promise.reject(err);
     }).on('transactionHash', (err) => {
-        console.log('transactionHash:', err);
+        helper.log('transactionHash:', err);
     }).on('receipt', (receipt) => {
-        console.log('receipt:', receipt);
+        helper.log('receipt:', receipt);
         Promise.resolve(receipt);
     })
 }
 
+function contractChecker (req, res, next) {
+    if(contract){
+        next()
+    } else {
+        res.status(400);
+        res.send({ status: 'ERROR', options: 'Contract not deployed' });
+    }
+}
+
 async function getFactById (id) {
     return contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
+        if (!err) {
+            let len = Object.keys(result).length;
+                for (let j = 0; j < len / 2; j++) {
+                    delete result[j];
+                }
+            Promise.resolve(result);
+        } else {
+            helper.log(err);
+            Promise.reject(err);
+        }
+    });
+}
+
+async function getGroupByWithId (id) {
+    return contract.methods.getGroupBy(parseInt(id, 10)).call(function (err, result) {
         if (!err) {
             let len = Object.keys(result).length;
             for (let j = 0; j < len / 2; j++) {
@@ -34,19 +59,19 @@ async function getFactById (id) {
             }
             Promise.resolve(result);
         } else {
-            console.log(err);
+            helper.log(err);
             Promise.reject(err);
         }
     });
 }
 
 async function addManyFacts (facts, sliceSize, io) {
-    console.log('length = ' + facts.length);
+    helper.log('length = ' + facts.length);
     let allSlicesReady = [];
     if (sliceSize > 1) {
         let slices = [];
         let slicesNum = Math.ceil(facts.length / sliceSize);
-        console.log('*will add ' + slicesNum + ' slices*');
+        helper.log('*will add ' + slicesNum + ' slices*');
         for (let j = 0; j < slicesNum; j++) {
             if (j === 0) {
                 slices[j] = facts.filter((fct, idx) => idx < sliceSize);
@@ -70,9 +95,9 @@ async function addManyFacts (facts, sliceSize, io) {
     for (const slc of allSlicesReady) {
         await contract.methods.addFacts(slc).send(mainTransactionObject, () => {
         }).on('error', (err) => {
-            console.log('error:', err);
+            helper.log('error:', err);
         }).on('transactionHash', (hash) => {
-            console.log(i);
+            helper.log(i);
             io.emit('progress', i / allSlicesReady.length);
             i++;
         });
@@ -89,14 +114,14 @@ async function getAllFacts (factsLength) {
                 for (let j = 0; j < len / 2; j++) {
                     delete result2[j];
                 }
-                // console.log('got fact ' + i);
+                // helper.log('got fact ' + i);
                 if ('payload' in result2) {
                     let crnLn = JSON.parse(result2['payload']);
                     crnLn.timestamp = result2['timestamp'];
                     allFacts.push(crnLn);
                 }
             } else {
-                console.log(err);
+                helper.log(err);
             }
         })
     }
@@ -119,7 +144,7 @@ async function getAllFactsHeavy (factsLength) {
                 }
             }
         } else {
-            console.log(err);
+            helper.log(err);
         }
     });
     return allFacts;
@@ -141,7 +166,7 @@ async function getFactsFromTo (from, to) {
                 }
             }
         } else {
-            console.log(err);
+            helper.log(err);
         }
     });
     return allFacts;
@@ -153,7 +178,7 @@ async function getFactsCount () {
         if (!err) {
             id = result;
         } else {
-            console.log(err);
+            helper.log(err);
         }
     });
     return id;
@@ -167,5 +192,7 @@ module.exports = {
     getFactsCount: getFactsCount,
     setContract: setContract,
     addFact: addFact,
-    getFactById: getFactById
+    getFactById: getFactById,
+    getGroupByWithId: getGroupByWithId,
+    contractChecker: contractChecker
 };

@@ -1,70 +1,5 @@
-const config = require('../config');
-function sumObjects (ob1, ob2) {
-    let sum = {};
-    Object.keys(ob1).forEach(key => {
-        if (key !== 'operation' && key !== 'field' && key !== 'groupByFields') {
-            if (ob2.hasOwnProperty(key)) {
-                sum[key] = ob1[key] + ob2[key]
-            }
-        }
-    });
-    sum['operation'] = ob1['operation'];
-    sum['field'] = ob1['field'];
-    return sum;
-}
-
-function maxObjects (ob1, ob2) {
-    let max = {};
-    Object.keys(ob1).forEach(key => {
-        if (key !== 'operation' && key !== 'field' && key !== 'groupByFields') {
-            if (ob2.hasOwnProperty(key)) {
-                if (ob1[key] >= ob2[key]) {
-                    max[key] = ob1[key];
-                } else {
-                    max[key] = ob2[key];
-                }
-            }
-        }
-    });
-    max['operation'] = ob1['operation'];
-    max['field'] = ob1['field'];
-    return max;
-}
-
-function minObjects (ob1, ob2) {
-    let min = {};
-    Object.keys(ob1).forEach(key => {
-        if (key !== 'operation' && key !== 'field' && key !== 'groupByFields') {
-            if (ob2.hasOwnProperty(key)) {
-                if (ob1[key] <= ob2[key]) {
-                    min[key] = ob1[key];
-                } else {
-                    min[key] = ob2[key];
-                }
-            }
-        }
-    });
-    min['operation'] = ob1['operation'];
-    min['field'] = ob1['field'];
-    return min;
-}
-
-function averageObjects (ob1, ob2) {
-    let avg = {};
-    Object.keys(ob1).forEach(key => {
-        if (key !== 'operation' && key !== 'field' && key !== 'groupByFields') {
-            if (ob2.hasOwnProperty(key)) {
-                let sumNew = ob1[key]['sum'] + ob2[key]['sum'];
-                let countNew = ob1[key]['count'] + ob2[key]['count'];
-                let avgNew = sumNew / countNew;
-                avg[key] = { 'average': avgNew, 'count': countNew, 'sum': sumNew };
-            }
-        }
-    });
-    avg['operation'] = ob1['operation'];
-    avg['field'] = ob1['field'];
-    return avg;
-}
+const config = require('../config_private');
+const microtime = require('microtime');
 
 function flatten (items) {
     const flat = [];
@@ -148,20 +83,20 @@ function configFileValidations () {
 }
 
 function printTimes (resultObject) {
-    console.log('sql time = ' + resultObject.sqlTime);
-    console.log('bc time = ' + resultObject.bcTime);
-    console.log('cache save time = ' + resultObject.cacheSaveTime);
+    log('sql time = ' + resultObject.sqlTime);
+    log('bc time = ' + resultObject.bcTime);
+    log('cache save time = ' + resultObject.cacheSaveTime);
     if (resultObject.cacheRetrieveTime) {
-        console.log('cache retrieve time = ' + resultObject.cacheRetrieveTime);
+        log('cache retrieve time = ' + resultObject.cacheRetrieveTime);
     }
     if (resultObject.obj1Time) {
-        console.log('->     obj1 server time = ' + resultObject.obj1Time);
+        log('->     obj1 server time = ' + resultObject.obj1Time);
     }
     if (resultObject.obj2Time) {
-        console.log('->     obj2 server time = ' + resultObject.obj2Time);
+        log('->     obj2 server time = ' + resultObject.obj2Time);
     }
-    console.log('total time = ' + resultObject.totalTime);
-    console.log('all total time = ' + resultObject.allTotal);
+    log('total time = ' + resultObject.totalTime);
+    log('all total time = ' + resultObject.allTotal);
 }
 function containsAllFields (transformedArray, view) {
     for (let i = 0; i < transformedArray.length; i++) {
@@ -172,9 +107,9 @@ function containsAllFields (transformedArray, view) {
         for (let index in cachedGBFields.fields) {
             cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
         }
-        console.log(cachedGBFields);
+        log(cachedGBFields);
         for (let j = 0; j < view.gbFields.length; j++) {
-            console.log(view.gbFields[j]);
+            log(view.gbFields[j]);
             if (!cachedGBFields.fields.includes(view.gbFields[j])) {
                 containsAllFields = false
             }
@@ -193,11 +128,17 @@ function getRandomFloat (min, max) {
     return (Math.random() * (max - min + 1) + min).toFixed(2);
 }
 
+function time(){
+    return microtime.nowDouble();
+}
+
+function log(logString){
+    if(config.logging){
+        console.log(logString);
+    }
+}
+
 module.exports = {
-    sumObjects: sumObjects,
-    maxObjects: maxObjects,
-    minObjects: minObjects,
-    averageObjects: averageObjects,
     containsAllFields: containsAllFields,
     flatten: flatten,
     removeDuplicates: removeDuplicates,
@@ -205,5 +146,7 @@ module.exports = {
     removeTimestamps: removeTimestamps,
     printTimes: printTimes,
     getRandomInt: getRandomInt,
-    getRandomFloat: getRandomFloat
+    getRandomFloat: getRandomFloat,
+    time: time,
+    log:log
 };

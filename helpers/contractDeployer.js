@@ -4,6 +4,7 @@ let config = require('../config_private');
 const configLab = require('../config_lab');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
+const helper = require('../helpers/helper');
 async function deploy (account, contractPath, contract) {
     const input = fs.readFileSync(contractPath);
     const output = solc.compile(input.toString(), 1);
@@ -17,16 +18,16 @@ async function deploy (account, contractPath, contract) {
             gas: 150000000,
             gasPrice: '30000000000000'
         }, (err, txHash) => {
-            console.log('send:', err, txHash);
+            helper.log('send:', err, txHash);
         })
         .on('error', (err) => {
-            console.log('error:', err);
+            helper.log('error:', err);
         })
         .on('transactionHash', (err) => {
-            console.log('transactionHash:', err);
+            helper.log('transactionHash:', err);
         })
         .on('receipt', (receipt) => {
-            console.log('receipt:', receipt);
+            helper.log('receipt:', receipt);
             contract.options.address = receipt.contractAddress;
             rec = receipt;
         });

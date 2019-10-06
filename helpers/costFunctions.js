@@ -1,4 +1,5 @@
 const cacheController = require('../controllers/cacheController');
+const helper = require('../helpers/helper');
 // this function  assigns a cost to each group by
 function calculationCost (groupBys) {
     for (let i = 0; i < groupBys.length; i++) {
@@ -33,7 +34,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
     }
     cacheController.getManyCachedResults(allHashes, function (error, allCached) {
         if (error) {
-            console.log(error);
+            helper.log(error);
             return;
         }
         let freq = 0;
@@ -57,10 +58,10 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
                 let groupBysCachedExceptCrnOne = allGroupBys2.splice(1, i);
                 let calcCostVfromVCache = calculationCostOfficial(allGroupBys, latestFact);
                 let calcCostVfromVCacheMinusCrnView = calculationCostOfficial(groupBysCachedExceptCrnOne, latestFact);
-                console.log('ALL: ');
-                console.log(calcCostVfromVCache);
-                console.log('WITHOUT: ');
-                console.log(calcCostVfromVCacheMinusCrnView);
+                helper.log('ALL: ');
+                helper.log(calcCostVfromVCache);
+                helper.log('WITHOUT: ');
+                helper.log(calcCostVfromVCacheMinusCrnView);
                 allMinus.push(calcCostVfromVCacheMinusCrnView);
                 let cost = 0;
                 if (i > 0) {
@@ -70,7 +71,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
                         if (crnGB.id === crnMinus.id) {
                             cost = freq * (crnGB.calculationCost - crnMinus.calculationCost);
                             allGroupBys[i].cacheEvictionCost = cost;
-                            console.log('cost = ' + cost);
+                            helper.log('cost = ' + cost);
                         }
                     }
                 } else {

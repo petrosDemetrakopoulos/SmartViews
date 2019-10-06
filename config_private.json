@@ -13,5 +13,6 @@
     "user": "root",
     "password": "Xonelgataandrou1!",
     "database": "Ptychiaki"},
-  "cacheEnabled": true
+  "cacheEnabled": true,
+  "logging": true
 }
