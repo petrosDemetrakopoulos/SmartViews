@@ -45,9 +45,9 @@ app.get('/', function (req, res) {
             if (blockNum >= 0) {
                 blockchainReady = true;
             }
-            res.render('index', { 'templates': items, 'redisStatus': cacheController.getRedisStatus(), 'sqlStatus': mysqlConnected, 'blockchainStatus': blockchainReady });
+            return res.render('index', { 'templates': items, 'redisStatus': cacheController.getRedisStatus(), 'sqlStatus': mysqlConnected, 'blockchainStatus': blockchainReady });
         });
-    })
+    });
 });
 
 app.get('/dashboard', function (req, res) {
@@ -90,6 +90,7 @@ app.get('/form/:contract', function (req, res) {
 http.listen(3000, () => {
     console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
     console.log(`Visit http://localhost:3000/ to view Blockchain, mySQL and Redis cache status`);
+ //   config = new SelfReloadJSON('./config_private.json');
     let validations = helper.configFileValidations();
     if (process.env.ENVIRONMENT === 'LAB') {
         config = configLab;
@@ -210,19 +211,19 @@ app.get('/allfacts',contractController.contractChecker, function (req, res) {
 
 app.get('/groupbyId/:id',contractController.contractChecker, function (req, res) {
     contractController.getGroupByWithId(req.params.id).then(result => {
-        res.send(stringify(result).replace('\\', ''));
+        return res.send(stringify(result).replace('\\', ''));
     }).catch(error => {
         helper.log(error);
-        res.send(error);
+        return res.send(error);
     });
 });
 
 app.get('/getViewByName/:viewName/:contract',contractController.contractChecker, function (req, res) {
+    config = helper.requireUncached('../config_private');
     let totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
-
     let viewsDefined = factTbl.views;
-    helper.log(req.params.viewName);
+    //helper.log(req.params.viewName);
     let found = false;
     let view = {};
     for (let crnView in viewsDefined) {
@@ -495,6 +496,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                     computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                         let sqlTimeEnd = helper.time();
                                                                         if (error) {
+                                                                            console.log("ERRRORR 000")
                                                                             gbRunning = false;
                                                                             return res.send(error);
                                                                         }
@@ -576,6 +578,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                     computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                         let sqlTimeEnd = helper.time();
                                                                         if (error) {
+                                                                            console.log("ERRRORR 4444")
                                                                             gbRunning = false;
                                                                             return res.send(error);
                                                                         }
@@ -974,6 +977,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                             computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                 let sqlTimeEnd = helper.time();
                                                 if (error) {
+                                                    console.log("ERRRORR 1111");
                                                     gbRunning = false;
                                                     return res.send(error);
                                                 }
@@ -1098,9 +1102,9 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
             // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
             // just like the case that the cache is originally empty
             let bcTimeStart = helper.time();
-            contract.methods.dataId().call(function (err, latestId) {
+           return contract.methods.dataId().call(function (err, latestId) {
                 if (err) throw err;
-                contractController.getAllFacts(latestId).then(retval => {
+               return contractController.getAllFacts(latestId).then(retval => {
                     let bcTimeEnd = helper.time();
                     if (retval.length === 0) {
                         gbRunning = false;
@@ -1109,7 +1113,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                     let facts = helper.removeTimestamps(retval);
                     helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                     let sqlTimeStart = helper.time();
-                    computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
+                   return computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                         let sqlTimeEnd = helper.time();
                         let totalEnd = helper.time();
                         if (error) {

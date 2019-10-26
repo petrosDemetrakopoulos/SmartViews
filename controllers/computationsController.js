@@ -17,6 +17,7 @@ function setTableName (newTableName) {
 }
 
 function connectToSQL(callback) {
+    config = helper.requireUncached('../config_private');
     mysqlConfig = config.sql;
     connection = mysql.createConnection(mysqlConfig);
     connection.connect(function (err) {

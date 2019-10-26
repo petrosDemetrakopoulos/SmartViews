@@ -132,6 +132,11 @@ function log(logString){
     }
 }
 
+function requireUncached(module){
+    delete require.cache[require.resolve(module)]
+    return require(module)
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     flatten: flatten,
@@ -141,5 +146,6 @@ module.exports = {
     getRandomInt: getRandomInt,
     getRandomFloat: getRandomFloat,
     time: time,
-    log:log
+    log:log,
+    requireUncached: requireUncached
 };

@@ -3,6 +3,7 @@ const expect = require('chai').expect;
 const request = require('supertest');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const fs = require('fs');
 chai.use(chaiHttp);
 let responseBodyContractgeneration = {};
 let responseBodyContractDeployment = {};
@@ -218,15 +219,15 @@ describe('testing /getViewByName/:viewName/:contract -- Initial query',function(
 });
 
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached', function() {
-    freeze(4000);
     let resp = {};
     it('should return OK status', function() {
-            return request(app)
-                .get('/getViewByName/A|B(COUNT)/ABCD')
-                .then(function(response) {
-                    resp = response.text;
-                    expect(response.status).to.equal(200);
-                });
+        freeze(4000);
+        return request(app)
+            .get('/getViewByName/A|B(COUNT)/ABCD')
+            .then(function(response) {
+                resp = response.text;
+                expect(response.status).to.equal(200);
+            });
     });
 
     it('should be a string', function() {
@@ -235,9 +236,9 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
 });
 
 describe('testing /getViewByName/:viewName/:contract -- Reduction from cache without deltas',async function() {
-    freeze(4000);
     let resp = {};
     it('should return OK status', function() {
+        freeze(4000);
         return request(app)
             .get('/getViewByName/A(COUNT)/ABCD')
             .then(function (response) {
@@ -252,11 +253,11 @@ describe('testing /getViewByName/:viewName/:contract -- Reduction from cache wit
 });
 
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas', function() {
-    freeze(4000);
     let resp = {};
     it('should return OK status', function() {
+        freeze(4000);
         return request(app)
-            .get('/load_dataset/10fourcol') // adding deltas
+            .get('/load_dataset/10fourcol_b') // adding deltas
             .then(function (response) {
                 return request(app)
                     .get('/getViewByName/A|B(COUNT)/ABCD')
@@ -273,11 +274,11 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
 });
 
 describe('testing /getViewByName/:viewName/:contract -- Reduction from cache + Deltas',async function() {
-    freeze(4000);
     let resp = {};
     it('should return OK status',async function() {
-            return request(app)
-            .get('/load_dataset/10fourcol_b') // adding deltas
+        freeze(4000);
+        return request(app)
+            .get('/load_dataset/10fourcol_c') // adding deltas
             .then(function(response) {
                 freeze(4000);
                 return request(app)
@@ -313,7 +314,8 @@ describe('testing /getViewByName/:viewName/:contract -- No requested fields belo
 describe('testing /getViewByName/:viewName/:contract -- Invalid view name',function() {
     let resp = {};
     it('should return OK status',async function() {
-            return request(app)
+        freeze(4000);
+        return request(app)
             .get('/getViewByName/notValidViewName/ABCD')
             .then(function(response) {
                 resp = response.body;
@@ -330,9 +332,37 @@ describe('testing /getViewByName/:viewName/:contract -- Invalid view name',funct
     });
 });
 
+describe('testing /getViewByName/:viewName/:contract -- cache disabled',function() {
+    let resp = {};
+    let config = require('../config_private');
+    before(function(done) {
+        config.cacheEnabled = false;
+        fs.writeFile('./config_private.json', JSON.stringify(config, null,4), function (err) {
+            if(err) throw err;
+            done();
+        });
+    });
+
+    it('should return OK status',async function() {
+        freeze(4000);
+        return request(app)
+            .get('/getViewByName/A(COUNT)/ABCD')
+            .then(function(response) {
+                config.cacheEnabled = true;
+                resp = response.text;
+                expect(response.status).to.equal(200);
+            });
+    });
+
+    it('should be a string', function() {
+        expect(resp).to.be.a('string');
+    });
+});
+
 describe('testing /groupbyId/:id route', function() {
     let resp = {};
     it('should return OK status', function() {
+        freeze(4000);
         return request(app)
             .get('/groupbyId/0')
             .then(function(response) {
@@ -345,9 +375,35 @@ describe('testing /groupbyId/:id route', function() {
         expect(resp).to.be.a('string');
     });
 });
+
+// describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique primary key',async function() {
+//     let resp = {};
+//     it('should return OK status',async function() {
+//         freeze(4000);
+//         return request(app)
+//             .get('/load_dataset/10fourcol_c') // adding deltas
+//             .then(function(response) {
+//                 freeze(4000);
+//                 return request(app)
+//                     .get('/getViewByName/A(COUNT)/ABCD')
+//                     .then(function(response) {
+//                         resp = response.text;
+//                         console.log(resp);
+//                         expect(response.status).to.equal(200);
+//                     });
+//             });
+//     });
+//
+//     it('should be a string', function() {
+//         expect(resp).to.be.a('string');
+//     });
+// });
+
 describe('testing /getcount route', function() {
     let resp = {};
+    let config = require('../config_private');
     it('should return OK status', function() {
+        freeze(4000);
         return request(app)
             .get('/getcount')
             .then(function(response) {
@@ -358,5 +414,11 @@ describe('testing /getcount route', function() {
 
     it('should be a string', function() {
         expect(resp).to.be.a('string');
+    });
+    after(function (done) {
+        fs.writeFile('./config_private.json', JSON.stringify(config, null,4), function (err) {
+            if(err) throw err;
+            done();
+        });
     });
 });
