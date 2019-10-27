@@ -235,6 +235,14 @@ The whole process is described in the diagram below.
 <img src="schematics/deployment.png" width="480" align="center">
 </div>
 
+# Smart-View materialization process
+
+The flowchart below presents the materialization process that takes place when the user requests a Smart-View.
+
+<div ALIGN="center">
+<img src="schematics/ptychiaki_flow.png" width="480" align="center">
+</div>
+
 
 # The Code
 The back-end code is separated in 4 main categories.
