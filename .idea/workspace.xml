@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -290,14 +289,7 @@
       <workItem from="1572174274408" duration="3000" />
       <workItem from="1572180480798" duration="787000" />
       <workItem from="1572194014031" duration="95000" />
-      <workItem from="1572194121910" duration="707000" />
-    </task>
-    <task id="LOCAL-00144" summary="- updated readme">
-      <created>1570020174379</created>
-      <option name="number" value="00144" />
-      <option name="presentableId" value="LOCAL-00144" />
-      <option name="project" value="LOCAL" />
-      <updated>1570020174379</updated>
+      <workItem from="1572194121910" duration="791000" />
     </task>
     <task id="LOCAL-00145" summary="- various fixes">
       <created>1570021083490</created>
@@ -635,7 +627,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572194823954</updated>
     </task>
-    <option name="localTasksCounter" value="193" />
+    <task id="LOCAL-00193" summary="- updated README">
+      <created>1572195063558</created>
+      <option name="number" value="00193" />
+      <option name="presentableId" value="LOCAL-00193" />
+      <option name="project" value="LOCAL" />
+      <updated>1572195063558</updated>
+    </task>
+    <option name="localTasksCounter" value="194" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -692,8 +691,8 @@
     <MESSAGE value="- more tests" />
     <MESSAGE value="- removed unneeded code" />
     <MESSAGE value="- fixes in tests" />
-    <MESSAGE value="- updated README" />
     <MESSAGE value="- created run.sh bash script to start the project at once" />
-    <option name="LAST_COMMIT_MESSAGE" value="- created run.sh bash script to start the project at once" />
+    <MESSAGE value="- updated README" />
+    <option name="LAST_COMMIT_MESSAGE" value="- updated README" />
   </component>
 </project>

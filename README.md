@@ -242,7 +242,7 @@ The whole process is described in the diagram below.
 The flowchart below presents the materialization process that takes place when the user requests a Smart-View.
 
 <div ALIGN="center">
-<img src="schematics/ptychiaki_flow.png" width="480" align="center">
+<img src="schematics/ptychiaki_flow.png" width="680" align="center">
 </div>
 
 
