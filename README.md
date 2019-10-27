@@ -115,6 +115,8 @@ Smart-Views listening on http://localhost:3000/dashboard
 Redis  connected
 mySQL connected
 ``` 
+**Alternatively you can simply run the ```run.sh``` script which starts Redis server, the Ethereum blockchain simulator (ganache-cli) and the application server at one.**
+The run.sh script assumes mySQL server is already running, however you can simply add the command that starts mySQL server in th first line and automate that too.
 
 # The project structure
 The structure of the whole project is presented in the diagram.

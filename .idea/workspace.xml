@@ -288,28 +288,9 @@
       <workItem from="1572111477882" duration="1329000" />
       <workItem from="1572171341330" duration="190000" />
       <workItem from="1572174274408" duration="3000" />
-      <workItem from="1572180480798" duration="185000" />
-    </task>
-    <task id="LOCAL-00141" summary="various fixes">
-      <created>1569448083475</created>
-      <option name="number" value="00141" />
-      <option name="presentableId" value="LOCAL-00141" />
-      <option name="project" value="LOCAL" />
-      <updated>1569448083475</updated>
-    </task>
-    <task id="LOCAL-00142" summary="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there">
-      <created>1570019646468</created>
-      <option name="number" value="00142" />
-      <option name="presentableId" value="LOCAL-00142" />
-      <option name="project" value="LOCAL" />
-      <updated>1570019646469</updated>
-    </task>
-    <task id="LOCAL-00143" summary="- updated readme&#10;- fixed test-data structure">
-      <created>1570019969961</created>
-      <option name="number" value="00143" />
-      <option name="presentableId" value="LOCAL-00143" />
-      <option name="project" value="LOCAL" />
-      <updated>1570019969961</updated>
+      <workItem from="1572180480798" duration="787000" />
+      <workItem from="1572194014031" duration="95000" />
+      <workItem from="1572194121910" duration="707000" />
     </task>
     <task id="LOCAL-00144" summary="- updated readme">
       <created>1570020174379</created>
@@ -633,7 +614,28 @@
       <option name="project" value="LOCAL" />
       <updated>1572112256304</updated>
     </task>
-    <option name="localTasksCounter" value="190" />
+    <task id="LOCAL-00190" summary="- updated README">
+      <created>1572180684747</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1572180684747</updated>
+    </task>
+    <task id="LOCAL-00191" summary="- updated README">
+      <created>1572180759664</created>
+      <option name="number" value="00191" />
+      <option name="presentableId" value="LOCAL-00191" />
+      <option name="project" value="LOCAL" />
+      <updated>1572180759664</updated>
+    </task>
+    <task id="LOCAL-00192" summary="- created run.sh bash script to start the project at once">
+      <created>1572194823954</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1572194823954</updated>
+    </task>
+    <option name="localTasksCounter" value="193" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -667,8 +669,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixes in front end" />
-    <MESSAGE value="fixed some lintering issues" />
     <MESSAGE value="performance improvements" />
     <MESSAGE value="Added feature to count frquencies of each view in template" />
     <MESSAGE value="various fixes" />
@@ -692,6 +692,8 @@
     <MESSAGE value="- more tests" />
     <MESSAGE value="- removed unneeded code" />
     <MESSAGE value="- fixes in tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="- fixes in tests" />
+    <MESSAGE value="- updated README" />
+    <MESSAGE value="- created run.sh bash script to start the project at once" />
+    <option name="LAST_COMMIT_MESSAGE" value="- created run.sh bash script to start the project at once" />
   </component>
 </project>
