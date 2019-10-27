@@ -289,14 +289,7 @@
       <workItem from="1572174274408" duration="3000" />
       <workItem from="1572180480798" duration="787000" />
       <workItem from="1572194014031" duration="95000" />
-      <workItem from="1572194121910" duration="791000" />
-    </task>
-    <task id="LOCAL-00145" summary="- various fixes">
-      <created>1570021083490</created>
-      <option name="number" value="00145" />
-      <option name="presentableId" value="LOCAL-00145" />
-      <option name="project" value="LOCAL" />
-      <updated>1570021083490</updated>
+      <workItem from="1572194121910" duration="854000" />
     </task>
     <task id="LOCAL-00146" summary="- created and moved functionality to contractController">
       <created>1570025048988</created>
@@ -634,7 +627,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572195063558</updated>
     </task>
-    <option name="localTasksCounter" value="194" />
+    <task id="LOCAL-00194" summary="- updated README">
+      <created>1572195139315</created>
+      <option name="number" value="00194" />
+      <option name="presentableId" value="LOCAL-00194" />
+      <option name="project" value="LOCAL" />
+      <updated>1572195139315</updated>
+    </task>
+    <option name="localTasksCounter" value="195" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
