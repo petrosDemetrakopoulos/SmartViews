@@ -27,7 +27,7 @@ async function addFact (fact) {
 }
 
 function contractChecker (req, res, next) {
-    if(contract){
+    if (contract) {
         next()
     } else {
         res.status(400);
@@ -39,9 +39,9 @@ async function getFactById (id) {
     return contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
         if (!err) {
             let len = Object.keys(result).length;
-                for (let j = 0; j < len / 2; j++) {
-                    delete result[j];
-                }
+            for (let j = 0; j < len / 2; j++) {
+                delete result[j];
+            }
             Promise.resolve(result);
         } else {
             helper.log(err);

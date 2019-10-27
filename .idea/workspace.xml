@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- updated README">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -289,21 +293,8 @@
       <workItem from="1572174274408" duration="3000" />
       <workItem from="1572180480798" duration="787000" />
       <workItem from="1572194014031" duration="95000" />
-      <workItem from="1572194121910" duration="854000" />
-    </task>
-    <task id="LOCAL-00146" summary="- created and moved functionality to contractController">
-      <created>1570025048988</created>
-      <option name="number" value="00146" />
-      <option name="presentableId" value="LOCAL-00146" />
-      <option name="project" value="LOCAL" />
-      <updated>1570025048989</updated>
-    </task>
-    <task id="LOCAL-00147" summary="- added content in readme">
-      <created>1570035877414</created>
-      <option name="number" value="00147" />
-      <option name="presentableId" value="LOCAL-00147" />
-      <option name="project" value="LOCAL" />
-      <updated>1570035877414</updated>
+      <workItem from="1572194121910" duration="1355000" />
+      <workItem from="1572199611533" duration="480000" />
     </task>
     <task id="LOCAL-00148" summary="- added content in readme">
       <created>1570035938656</created>
@@ -634,7 +625,21 @@
       <option name="project" value="LOCAL" />
       <updated>1572195139315</updated>
     </task>
-    <option name="localTasksCounter" value="195" />
+    <task id="LOCAL-00195" summary="- updated README">
+      <created>1572195213104</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1572195213104</updated>
+    </task>
+    <task id="LOCAL-00196" summary="- updated README">
+      <created>1572195390291</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1572195390291</updated>
+    </task>
+    <option name="localTasksCounter" value="197" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -137,7 +137,7 @@ app.get('/deployContract/:fn', function (req, res) {
     });
 });
 
-app.get('/load_dataset/:dt',contractController.contractChecker, function (req, res) {
+app.get('/load_dataset/:dt', contractController.contractChecker, function (req, res) {
     let dt = require('./test_data/' + req.params.dt);
     if (!running) { // a guard to check that this asynchronous process will not start again if called while loading data
         running = true;
@@ -169,7 +169,7 @@ app.get('/new_contract/:fn', function (req, res) {
     });
 });
 
-app.get('/getFactById/:id',contractController.contractChecker, function (req, res) {
+app.get('/getFactById/:id', contractController.contractChecker, function (req, res) {
     contractController.getFactById(req.params.id).then(result => {
         res.send(result);
     }).catch(error => {
@@ -189,7 +189,7 @@ app.get('/getFactsFromTo/:from/:to', function (req, res) {
     });
 });
 
-app.get('/allfacts',contractController.contractChecker, function (req, res) {
+app.get('/allfacts', contractController.contractChecker, function (req, res) {
     contract.methods.dataId().call(function (err, result) {
         if (!err) {
             // async loop waiting to get all the facts separately
@@ -209,7 +209,7 @@ app.get('/allfacts',contractController.contractChecker, function (req, res) {
     });
 });
 
-app.get('/groupbyId/:id',contractController.contractChecker, function (req, res) {
+app.get('/groupbyId/:id', contractController.contractChecker, function (req, res) {
     contractController.getGroupByWithId(req.params.id).then(result => {
         return res.send(stringify(result).replace('\\', ''));
     }).catch(error => {
@@ -223,7 +223,6 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
     let totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
     let viewsDefined = factTbl.views;
-    //helper.log(req.params.viewName);
     let found = false;
     let view = {};
     for (let crnView in viewsDefined) {
@@ -496,7 +495,6 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                     computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                         let sqlTimeEnd = helper.time();
                                                                         if (error) {
-                                                                            console.log("ERRRORR 000")
                                                                             gbRunning = false;
                                                                             return res.send(error);
                                                                         }
@@ -511,7 +509,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                         }).on('transactionHash', (err) => {
                                                                             helper.log('transactionHash:', err);
                                                                         }).on('receipt', (receipt) => {
-                                                                            let cacheSaveTimeEnd =helper.time();
+                                                                            let cacheSaveTimeEnd = helper.time();
                                                                             delete groupBySqlResult.gbCreateTable;
                                                                             if (sortedByEvictionCost.length >= config.maxCacheSize) {
                                                                                 cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
@@ -578,7 +576,6 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                     computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                                                                         let sqlTimeEnd = helper.time();
                                                                         if (error) {
-                                                                            console.log("ERRRORR 4444")
                                                                             gbRunning = false;
                                                                             return res.send(error);
                                                                         }
