@@ -316,13 +316,13 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
     });
 }
 
-function executeQuery(queryString, callback){
+function executeQuery (queryString, callback) {
     connection.query(queryString, async function (error, results, fields) {
         if (error) {
            callback(error);
         }
         callback(null, results, fields);
-    })
+    });
 }
 
 module.exports = {
