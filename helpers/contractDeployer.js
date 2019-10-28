@@ -18,16 +18,20 @@ async function deploy (account, contractPath, contract) {
             gas: 150000000,
             gasPrice: '30000000000000'
         }, (err, txHash) => {
-            helper.log('send:', err, txHash);
+            if(err) {
+                helper.log('send:' + err);
+            } else {
+                helper.log('send:' + txHash);
+            }
         })
         .on('error', (err) => {
-            helper.log('error:', err);
+            helper.log('error:' + err);
         })
-        .on('transactionHash', (err) => {
-            helper.log('transactionHash:', err);
+        .on('transactionHash', (txHash) => {
+            helper.log('transactionHash:' +  txHash);
         })
         .on('receipt', (receipt) => {
-            helper.log('receipt:', receipt);
+            helper.log('receipt:' + JSON.stringify(receipt));
             contract.options.address = receipt.contractAddress;
             rec = receipt;
         });

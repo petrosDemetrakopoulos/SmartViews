@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- updated README">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -294,28 +293,9 @@
       <workItem from="1572180480798" duration="787000" />
       <workItem from="1572194014031" duration="95000" />
       <workItem from="1572194121910" duration="1355000" />
-      <workItem from="1572199611533" duration="480000" />
-    </task>
-    <task id="LOCAL-00148" summary="- added content in readme">
-      <created>1570035938656</created>
-      <option name="number" value="00148" />
-      <option name="presentableId" value="LOCAL-00148" />
-      <option name="project" value="LOCAL" />
-      <updated>1570035938656</updated>
-    </task>
-    <task id="LOCAL-00149" summary="- added content in readme">
-      <created>1570036157716</created>
-      <option name="number" value="00149" />
-      <option name="presentableId" value="LOCAL-00149" />
-      <option name="project" value="LOCAL" />
-      <updated>1570036157716</updated>
-    </task>
-    <task id="LOCAL-00150" summary="- added content in readme">
-      <created>1570036197241</created>
-      <option name="number" value="00150" />
-      <option name="presentableId" value="LOCAL-00150" />
-      <option name="project" value="LOCAL" />
-      <updated>1570036197241</updated>
+      <workItem from="1572199611533" duration="729000" />
+      <workItem from="1572253489661" duration="3764000" />
+      <workItem from="1572295881894" duration="1930000" />
     </task>
     <task id="LOCAL-00151" summary="- added content in readme">
       <created>1570036230778</created>
@@ -639,7 +619,28 @@
       <option name="project" value="LOCAL" />
       <updated>1572195390291</updated>
     </task>
-    <option name="localTasksCounter" value="197" />
+    <task id="LOCAL-00197" summary="- updated some dependencies with security issues">
+      <created>1572200214315</created>
+      <option name="number" value="00197" />
+      <option name="presentableId" value="LOCAL-00197" />
+      <option name="project" value="LOCAL" />
+      <updated>1572200214315</updated>
+    </task>
+    <task id="LOCAL-00198" summary="- updated some dependencies">
+      <created>1572258609057</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1572258609058</updated>
+    </task>
+    <task id="LOCAL-00199" summary="- updated some dependencies">
+      <created>1572296859783</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1572296859783</updated>
+    </task>
+    <option name="localTasksCounter" value="200" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -673,8 +674,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="performance improvements" />
-    <MESSAGE value="Added feature to count frquencies of each view in template" />
     <MESSAGE value="various fixes" />
     <MESSAGE value="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there" />
     <MESSAGE value="- updated readme&#10;- fixed test-data structure" />
@@ -698,6 +697,8 @@
     <MESSAGE value="- fixes in tests" />
     <MESSAGE value="- created run.sh bash script to start the project at once" />
     <MESSAGE value="- updated README" />
-    <option name="LAST_COMMIT_MESSAGE" value="- updated README" />
+    <MESSAGE value="- updated some dependencies with security issues" />
+    <MESSAGE value="- updated some dependencies" />
+    <option name="LAST_COMMIT_MESSAGE" value="- updated some dependencies" />
   </component>
 </project>
