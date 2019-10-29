@@ -103,7 +103,6 @@ http.listen(3000, () => {
     } else {
         console.log('Config file validations failed');
         console.log(validations);
-        // if config validations fail, stop the server
         process.exit(1);
     }
 });
@@ -237,18 +236,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     helper.log('View by name endpoint hit again');
     if (!gbRunning && !running) {
         gbRunning = true;
-        let gbFields = [];
-        if (view.gbFields.indexOf('|') > -1) {
-            // more than 1 group by fields
-            gbFields = view.gbFields.split('|');
-        } else {
-            if (Array.isArray(view.gbFields)) {
-                gbFields = view.gbFields;
-            } else {
-                gbFields.push(view.gbFields);
-            }
-        }
-        view.gbFields = gbFields;
+        view.gbFields = helper.extractGBFields(view);
         for (let index in view.gbFields) {
             view.gbFields[index] = view.gbFields[index].trim();
         }

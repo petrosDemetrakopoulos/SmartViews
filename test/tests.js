@@ -268,28 +268,6 @@ describe('testing /getViewByName/:viewName/:contract -- MIN', function () {
     });
 });
 
-describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas (MAX operation)', function () {
-    let resp = {};
-    it('should return OK status', function () {
-        freeze(4000);
-        return request(app)
-            .get('/load_dataset/10fourcol_b') // adding deltas
-            .then(function (response) {
-                console.log(response.body);
-                return request(app)
-                    .get('/getViewByName/A|B(MAX-D)/ABCD')
-                    .then(function (response) {
-                        resp = response.text;
-                        expect(response.status).to.equal(200);
-                    });
-            });
-    });
-
-    it('should be a string', function () {
-        expect(resp).to.be.a('string');
-    });
-});
-
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached', function () {
     let resp = {};
     it('should return OK status', function () {

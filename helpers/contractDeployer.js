@@ -1,7 +1,6 @@
 const solc = require('solc');
 const fs = require('fs');
 let config = require('../config_private');
-const configLab = require('../config_lab');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
 const helper = require('../helpers/helper');

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- fixed some lintering issues">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/computationsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/computationsController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -303,14 +304,8 @@
       <workItem from="1572337358771" duration="5094000" />
       <workItem from="1572343094405" duration="1245000" />
       <workItem from="1572347593413" duration="802000" />
-      <workItem from="1572348880056" duration="1878000" />
-    </task>
-    <task id="LOCAL-00161" summary="- added content in readme">
-      <created>1570058522787</created>
-      <option name="number" value="00161" />
-      <option name="presentableId" value="LOCAL-00161" />
-      <option name="project" value="LOCAL" />
-      <updated>1570058522787</updated>
+      <workItem from="1572348880056" duration="2251000" />
+      <workItem from="1572355003561" duration="719000" />
     </task>
     <task id="LOCAL-00162" summary="- added content in readme">
       <created>1570058542520</created>
@@ -648,7 +643,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572349359414</updated>
     </task>
-    <option name="localTasksCounter" value="210" />
+    <task id="LOCAL-00210" summary="- fixed some lintering issues">
+      <created>1572350780558</created>
+      <option name="number" value="00210" />
+      <option name="presentableId" value="LOCAL-00210" />
+      <option name="project" value="LOCAL" />
+      <updated>1572350780558</updated>
+    </task>
+    <option name="localTasksCounter" value="211" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -682,7 +684,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- moved all cache-related functionality to cacheController.js" />
     <MESSAGE value="- fixes in readme" />
     <MESSAGE value="- various fixes" />
     <MESSAGE value="- front-end fixes" />
@@ -707,6 +708,7 @@
     <MESSAGE value="- removed unused flatten function from helpers" />
     <MESSAGE value="- Added some more tests" />
     <MESSAGE value="- minor improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="- minor improvements" />
+    <MESSAGE value="- fixed some lintering issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="- fixed some lintering issues" />
   </component>
 </project>
