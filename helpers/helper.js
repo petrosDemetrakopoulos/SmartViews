@@ -1,5 +1,6 @@
 const config = require('../config_private');
 const microtime = require('microtime');
+const fs = require('fs');
 
 function removeTimestamps (records) {
     for (let i = 0; i < records.length; i++) {
@@ -199,6 +200,14 @@ function transformGBMetadataFromBlockchain(resultGB){
     return transformedArray;
 }
 
+function updateViewFrequency(factTbl, contract, crnView){
+    factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
+    fs.writeFile('./templates/' + contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
+        if (err) return helper.log(err);
+        log('updated view frequency');
+    });
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -212,5 +221,6 @@ module.exports = {
     mergeSlicedCachedResult: mergeSlicedCachedResult,
     extractGBValues: extractGBValues,
     getJSONFiles: getJSONFiles,
-    transformGBMetadataFromBlockchain: transformGBMetadataFromBlockchain
+    transformGBMetadataFromBlockchain: transformGBMetadataFromBlockchain,
+    updateViewFrequency:updateViewFrequency
 };

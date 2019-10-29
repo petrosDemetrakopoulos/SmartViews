@@ -226,11 +226,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
         if (factTbl.views[crnView].name === req.params.viewName) {
             found = true;
             view = factTbl.views[crnView];
-            factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
-            fs.writeFile('./templates/' + req.params.contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
-                if (err) return helper.log(err);
-                helper.log('updated view frequency');
-            });
+            helper.updateViewFrequency(factTbl, req.params.contract, crnView);
             break;
         }
     }
@@ -972,7 +968,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
             let bcTimeStart = helper.time();
            return contract.methods.dataId().call(function (err, latestId) {
                 if (err) throw err;
-               return contractController.getAllFacts(latestId).then(retval => {
+                contractController.getAllFacts(latestId).then(retval => {
                     let bcTimeEnd = helper.time();
                     if (retval.length === 0) {
                         gbRunning = false;
@@ -981,7 +977,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                     let facts = helper.removeTimestamps(retval);
                     helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                     let sqlTimeStart = helper.time();
-                   return computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
+                    computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
                         let sqlTimeEnd = helper.time();
                         let totalEnd = helper.time();
                         if (error) {
@@ -998,7 +994,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                         io.emit('view_results', stringify(groupBySqlResult));
                         gbRunning = false;
                         res.status(200);
-                        return res.send(stringify(groupBySqlResult));
+                        res.send(stringify(groupBySqlResult));
                     });
                 });
             });
