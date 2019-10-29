@@ -56,10 +56,7 @@ app.get('/dashboard', function (req, res) {
             console.error('error reading templates directory: ' + err.stack);
             return;
         }
-        let suffix = '.json';
-        let jsonFiles = items.filter(file => {
-            return file.indexOf(suffix) !== -1; // filtering out non-json files
-        });
+        let jsonFiles = helper.getJSONFiles(items);
         web3.eth.getBlockNumber().then(blockNum => {
             res.render('dashboard', { 'templates': jsonFiles, 'blockNum': blockNum });
         });

@@ -171,6 +171,14 @@ function extractGBValues (reducedResult, view) {
     return rows;
 }
 
+function getJSONFiles(items){
+    let suffix = '.json';
+    let jsonFiles = items.filter(file => {
+        return file.indexOf(suffix) !== -1; // filtering out non-json files
+    });
+    return jsonFiles;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -182,5 +190,6 @@ module.exports = {
     log:log,
     requireUncached: requireUncached,
     mergeSlicedCachedResult: mergeSlicedCachedResult,
-    extractGBValues: extractGBValues
+    extractGBValues: extractGBValues,
+    getJSONFiles: getJSONFiles
 };
