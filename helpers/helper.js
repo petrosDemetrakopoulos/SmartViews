@@ -110,22 +110,22 @@ function getRandomFloat (min, max) {
     return (Math.random() * (max - min + 1) + min).toFixed(2);
 }
 
-function time(){
+function time () {
     return microtime.nowDouble();
 }
 
-function log(logString){
-    if(config.logging){
+function log (logString) {
+    if (config.logging) {
         console.log(logString);
     }
 }
 
-function requireUncached(module){
+function requireUncached (module) {
     delete require.cache[require.resolve(module)];
     return require(module);
 }
 
-function mergeSlicedCachedResult (allCached){
+function mergeSlicedCachedResult (allCached) {
     let mergedArray = [];
     for (const index in allCached) {
         let crnSub = allCached[index];
@@ -172,7 +172,7 @@ function extractGBValues (reducedResult, view) {
     return rows;
 }
 
-function getJSONFiles(items){
+function getJSONFiles (items) {
     let suffix = '.json';
     let jsonFiles = items.filter(file => {
         return file.indexOf(suffix) !== -1; // filtering out non-json files
@@ -180,7 +180,7 @@ function getJSONFiles(items){
     return jsonFiles;
 }
 
-function transformGBMetadataFromBlockchain(resultGB){
+function transformGBMetadataFromBlockchain (resultGB) {
     let len = Object.keys(resultGB).length;
     for (let j = 0; j < len / 2; j++) {
         delete resultGB[j];
@@ -200,10 +200,10 @@ function transformGBMetadataFromBlockchain(resultGB){
     return transformedArray;
 }
 
-function updateViewFrequency(factTbl, contract, crnView){
+function updateViewFrequency (factTbl, contract, crnView) {
     factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
     fs.writeFile('./templates/' + contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
-        if (err) return helper.log(err);
+        if (err) return log(err);
         log('updated view frequency');
     });
 }

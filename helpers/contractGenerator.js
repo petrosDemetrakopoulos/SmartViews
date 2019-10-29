@@ -184,13 +184,6 @@ async function generateContract (templateFileName) {
         }
     }
 
-    let getLatestFact = '\tfunction getLatestFact() public constant returns (' + getParamsLatest +
-        '\t\tif(dataId > 0){\n' + retFactLatest +
-        '\t} else {\n' +
-        '\t\t\treturn (' + emptyRetFactLatest +
-        '\t}\n' +
-        '\t}\n\n';
-
     let getAllViews = '\tfunction getAllViews(uint viewID) public returns (string[] viewDefinitions){\n';
     let getAllViewsDec = '\t\tstring[] memory allViews = new string[](viewID);\n';
     let getViewsLoop = '\t\tfor(uint i =0; i < viewID; i++){\n' +

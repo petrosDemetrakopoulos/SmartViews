@@ -3,10 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/computationsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/computationsController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -301,14 +303,7 @@
       <workItem from="1572337358771" duration="5094000" />
       <workItem from="1572343094405" duration="1245000" />
       <workItem from="1572347593413" duration="802000" />
-      <workItem from="1572348880056" duration="459000" />
-    </task>
-    <task id="LOCAL-00160" summary="- added content in readme">
-      <created>1570058485104</created>
-      <option name="number" value="00160" />
-      <option name="presentableId" value="LOCAL-00160" />
-      <option name="project" value="LOCAL" />
-      <updated>1570058485104</updated>
+      <workItem from="1572348880056" duration="1878000" />
     </task>
     <task id="LOCAL-00161" summary="- added content in readme">
       <created>1570058522787</created>
@@ -646,7 +641,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572348261703</updated>
     </task>
-    <option name="localTasksCounter" value="209" />
+    <task id="LOCAL-00209" summary="- minor improvements">
+      <created>1572349359414</created>
+      <option name="number" value="00209" />
+      <option name="presentableId" value="LOCAL-00209" />
+      <option name="project" value="LOCAL" />
+      <updated>1572349359414</updated>
+    </task>
+    <option name="localTasksCounter" value="210" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -78,7 +78,6 @@ app.get('/form/:contract', function (req, res) {
             break;
         }
     }
-
     let readyViews = factTbl.views;
     readyViews = readyViews.map(x => x.name);
     res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'readyViews': readyViews });
@@ -101,7 +100,6 @@ http.listen(3000, () => {
             mysqlConnected = true;
             console.log('mySQL connected');
         });
-
     } else {
         console.log('Config file validations failed');
         console.log(validations);
@@ -215,7 +213,7 @@ app.get('/groupbyId/:id', contractController.contractChecker, function (req, res
     });
 });
 
-app.get('/getViewByName/:viewName/:contract',contractController.contractChecker, function (req, res) {
+app.get('/getViewByName/:viewName/:contract', contractController.contractChecker, function (req, res) {
     config = helper.requireUncached('../config_private');
     let totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
@@ -476,7 +474,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                             groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                                                                             groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                             helper.printTimes(groupBySqlResult);
-                                                                                            helper.log('receipt:'+ JSON.stringify(receipt));
+                                                                                            helper.log('receipt:' + JSON.stringify(receipt));
                                                                                             io.emit('view_results', stringify(groupBySqlResult));
                                                                                             gbRunning = false;
                                                                                             res.status(200);
@@ -494,7 +492,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                 groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                                                                 groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                 helper.printTimes(groupBySqlResult);
-                                                                                helper.log('receipt:'+ JSON.stringify(receipt));
+                                                                                helper.log('receipt:' + JSON.stringify(receipt));
                                                                                 io.emit('view_results', stringify(groupBySqlResult));
                                                                                 gbRunning = false;
                                                                                 res.status(200);
@@ -555,7 +553,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                             groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
                                                                                             groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                             helper.printTimes(groupBySqlResult);
-                                                                                            helper.log('receipt:'+ JSON.stringify(receipt));
+                                                                                            helper.log('receipt:' + JSON.stringify(receipt));
                                                                                             io.emit('view_results', stringify(groupBySqlResult));
                                                                                             gbRunning = false;
                                                                                             res.status(200);
@@ -573,7 +571,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                 groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
                                                                                 groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                 helper.printTimes(groupBySqlResult);
-                                                                                helper.log('receipt:'+ JSON.stringify(receipt));
+                                                                                helper.log('receipt:' + JSON.stringify(receipt));
                                                                                 io.emit('view_results', stringify(groupBySqlResult));
                                                                                 gbRunning = false;
                                                                                 res.status(200);
@@ -645,10 +643,8 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                 viewNameSQL = viewNameSQL[3];
                                                                                 viewNameSQL = viewNameSQL.split('(')[0];
 
-                                                                                let lastCol = '';
-                                                                                let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-                                                                                lastCol = view.SQLTable.split(' ');
-                                                                                prelastCol = lastCol[lastCol.length - 4];
+                                                                                let lastCol = view.SQLTable.split(' ');
+                                                                                let prelastCol = lastCol[lastCol.length - 4]; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                                                 lastCol = lastCol[lastCol.length - 2];
 
                                                                                 // MERGE reducedResult with groupBySQLResult
@@ -705,7 +701,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                                         mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
                                                                                                         mergeResult.allTotal = totalEnd - totalStart;
                                                                                                         helper.printTimes(mergeResult);
-                                                                                                        helper.log('receipt:'+ JSON.stringify(receipt));
+                                                                                                        helper.log('receipt:' + JSON.stringify(receipt));
                                                                                                         io.emit('view_results', mergeResult);
                                                                                                         gbRunning = false;
                                                                                                         res.status(200);
@@ -994,7 +990,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                         io.emit('view_results', stringify(groupBySqlResult));
                         gbRunning = false;
                         res.status(200);
-                        res.send(stringify(groupBySqlResult));
+                        return res.send(stringify(groupBySqlResult));
                     });
                 });
             });
@@ -1002,7 +998,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
     }
 });
 
-app.get('/getcount',contractController.contractChecker, function (req, res) {
+app.get('/getcount', contractController.contractChecker, function (req, res) {
     contractController.getFactsCount().then(result => {
         if (result === -1) {
             res.send({ status: 'ERROR', options: 'Error getting count' });

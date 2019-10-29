@@ -16,7 +16,7 @@ function setTableName (newTableName) {
     tableName = newTableName;
 }
 
-function connectToSQL(callback) {
+function connectToSQL (callback) {
     config = helper.requireUncached('../config_private');
     mysqlConfig = config.sql;
     connection = mysql.createConnection(mysqlConfig);
@@ -305,7 +305,7 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
 function executeQuery (queryString, callback) {
     connection.query(queryString, async function (error, results, fields) {
         if (error) {
-           callback(error);
+            callback(error);
         }
         callback(null, results, fields);
     });

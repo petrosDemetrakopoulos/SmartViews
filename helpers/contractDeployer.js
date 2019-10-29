@@ -18,7 +18,7 @@ async function deploy (account, contractPath, contract) {
             gas: 150000000,
             gasPrice: '30000000000000'
         }, (err, txHash) => {
-            if(err) {
+            if (err) {
                 helper.log('send:' + err);
             } else {
                 helper.log('send:' + txHash);
@@ -28,7 +28,7 @@ async function deploy (account, contractPath, contract) {
             helper.log('error:' + err);
         })
         .on('transactionHash', (txHash) => {
-            helper.log('transactionHash:' +  txHash);
+            helper.log('transactionHash:' + txHash);
         })
         .on('receipt', (receipt) => {
             helper.log('receipt:' + JSON.stringify(receipt));
