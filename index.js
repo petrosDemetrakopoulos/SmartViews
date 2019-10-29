@@ -447,9 +447,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                 let bcTimeStart = helper.time();
                                                                 contractController.getAllFactsHeavy(latestId).then(retval => {
                                                                     let bcTimeEnd = helper.time();
-                                                                    for (let i = 0; i < retval.length; i++) {
-                                                                        delete retval[i].timestamp;
-                                                                    }
+                                                                    retval = helper.removeTimestamps(retval);
                                                                     helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                                                                     let sqlTimeStart = helper.time();
                                                                     computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
@@ -528,9 +526,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                 let bcTimeStart = helper.time();
                                                                 contractController.getAllFactsHeavy(latestId).then(retval => {
                                                                     let bcTimeEnd = helper.time();
-                                                                    for (let i = 0; i < retval.length; i++) {
-                                                                        delete retval[i].timestamp;
-                                                                    }
+                                                                    retval = helper.removeTimestamps(retval);
                                                                     helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                                                                     let sqlTimeStart = helper.time();
                                                                     computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
@@ -844,9 +840,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                         let bcTimeStart = helper.time();
                                         contractController.getAllFactsHeavy(latestId).then(retval => {
                                             let bcTimeEnd = helper.time();
-                                            for (let i = 0; i < retval.length; i++) {
-                                                delete retval[i].timestamp;
-                                            }
+                                            retval = helper.removeTimestamps(retval);
                                             helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                                             let sqlTimeStart = helper.time();
                                             computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
