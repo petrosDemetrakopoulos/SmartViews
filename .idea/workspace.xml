@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- various fixes and improvements">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
@@ -295,14 +297,9 @@
       <workItem from="1572194121910" duration="1355000" />
       <workItem from="1572199611533" duration="729000" />
       <workItem from="1572253489661" duration="3764000" />
-      <workItem from="1572295881894" duration="1930000" />
-    </task>
-    <task id="LOCAL-00151" summary="- added content in readme">
-      <created>1570036230778</created>
-      <option name="number" value="00151" />
-      <option name="presentableId" value="LOCAL-00151" />
-      <option name="project" value="LOCAL" />
-      <updated>1570036230778</updated>
+      <workItem from="1572295881894" duration="2519000" />
+      <workItem from="1572298603324" duration="261000" />
+      <workItem from="1572337358771" duration="380000" />
     </task>
     <task id="LOCAL-00152" summary="- added content in readme">
       <created>1570036328170</created>
@@ -640,7 +637,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572296859783</updated>
     </task>
-    <option name="localTasksCounter" value="200" />
+    <task id="LOCAL-00200" summary="- various fixes and improvements">
+      <created>1572297946564</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1572297946564</updated>
+    </task>
+    <option name="localTasksCounter" value="201" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -674,7 +678,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="various fixes" />
     <MESSAGE value="- updated readme&#10;- created &quot;contractDeployer.js&quot; and moved contract deploy function there" />
     <MESSAGE value="- updated readme&#10;- fixed test-data structure" />
     <MESSAGE value="- updated readme" />
@@ -699,6 +702,7 @@
     <MESSAGE value="- updated README" />
     <MESSAGE value="- updated some dependencies with security issues" />
     <MESSAGE value="- updated some dependencies" />
-    <option name="LAST_COMMIT_MESSAGE" value="- updated some dependencies" />
+    <MESSAGE value="- various fixes and improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="- various fixes and improvements" />
   </component>
 </project>

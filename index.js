@@ -371,27 +371,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                         if (allCached.length === 1) { // it is <= of slice size, so it is not sliced
                                                             cachedGroupBy = JSON.parse(allCached[0]);
                                                         } else { // it is sliced
-                                                            let mergedArray = [];
-                                                            for (const index in allCached) {
-                                                                let crnSub = allCached[index];
-                                                                let crnSubArray = JSON.parse(crnSub);
-                                                                for (const kv in crnSubArray) {
-                                                                    if (kv !== 'operation' && kv !== 'groupByFields' && kv !== 'field' && kv !== 'viewName') {
-                                                                        mergedArray.push(crnSubArray[kv]);
-                                                                    } else {
-                                                                        for (const meta in crnSubArray) {
-                                                                            mergedArray.push({ [meta]: crnSubArray[meta] });
-                                                                        }
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                            let gbFinal = {};
-                                                            for (const i in mergedArray) {
-                                                                let crnKey = Object.keys(mergedArray[i])[0];
-                                                                gbFinal[crnKey] = Object.values(mergedArray[i])[0];
-                                                            }
-                                                            cachedGroupBy = gbFinal;
+                                                            cachedGroupBy = helper.mergeSlicedCachedResult(allCached);
                                                         }
 
                                                         if (err) {
@@ -675,27 +655,7 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                         cachedGroupBy = JSON.parse(allCached[0]);
                                                                     } else { // it is sliced
                                                                         helper.log('IT IS SLICED');
-                                                                        let mergedArray = [];
-                                                                        for (const index in allCached) {
-                                                                            let crnSub = allCached[index];
-                                                                            let crnSubArray = JSON.parse(crnSub);
-                                                                            for (const kv in crnSubArray) {
-                                                                                if (kv !== 'operation' && kv !== 'groupByFields' && kv !== 'field' && kv !== 'viewName') {
-                                                                                    mergedArray.push(crnSubArray[kv]);
-                                                                                } else {
-                                                                                    for (const meta in crnSubArray) {
-                                                                                        mergedArray.push({ [meta]: crnSubArray[meta] });
-                                                                                    }
-                                                                                    break;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        let gbFinal = {};
-                                                                        for (const i in mergedArray) {
-                                                                            let crnKey = Object.keys(mergedArray[i])[0];
-                                                                            gbFinal[crnKey] = Object.values(mergedArray[i])[0];
-                                                                        }
-                                                                        cachedGroupBy = gbFinal;
+                                                                        cachedGroupBy = helper.mergeSlicedCachedResult(allCached);
                                                                     }
 
                                                                     if (cachedGroupBy.field === view.aggregationField &&

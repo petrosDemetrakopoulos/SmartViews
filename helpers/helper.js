@@ -133,8 +133,32 @@ function log(logString){
 }
 
 function requireUncached(module){
-    delete require.cache[require.resolve(module)]
-    return require(module)
+    delete require.cache[require.resolve(module)];
+    return require(module);
+}
+
+function mergeSlicedCachedResult (allCached){
+    let mergedArray = [];
+    for (const index in allCached) {
+        let crnSub = allCached[index];
+        let crnSubArray = JSON.parse(crnSub);
+        for (const kv in crnSubArray) {
+            if (kv !== 'operation' && kv !== 'groupByFields' && kv !== 'field' && kv !== 'viewName') {
+                mergedArray.push(crnSubArray[kv]);
+            } else {
+                for (const meta in crnSubArray) {
+                    mergedArray.push({ [meta]: crnSubArray[meta] });
+                }
+                break;
+            }
+        }
+    }
+    let gbFinal = {};
+    for (const i in mergedArray) {
+        let crnKey = Object.keys(mergedArray[i])[0];
+        gbFinal[crnKey] = Object.values(mergedArray[i])[0];
+    }
+    return gbFinal;
 }
 
 module.exports = {
@@ -147,5 +171,6 @@ module.exports = {
     getRandomFloat: getRandomFloat,
     time: time,
     log:log,
-    requireUncached: requireUncached
+    requireUncached: requireUncached,
+    mergeSlicedCachedResult: mergeSlicedCachedResult
 };
