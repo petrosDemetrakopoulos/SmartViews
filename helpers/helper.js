@@ -161,6 +161,29 @@ function mergeSlicedCachedResult (allCached){
     return gbFinal;
 }
 
+function extractGBValues (reducedResult, view) {
+    let rows = [];
+    let gbValsReduced = Object.values(reducedResult);
+    let lastCol = view.SQLTable.split(' ');
+    let prelastCol = lastCol[lastCol.length - 4];
+    lastCol = lastCol[lastCol.length - 2];
+
+    for (let i = 0, keys = Object.keys(reducedResult); i < keys.length; i++) {
+        let key = keys[i];
+        if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
+            let crnRow = JSON.parse(key);
+            if (view.operation === 'AVERAGE') {
+                crnRow[prelastCol] = gbValsReduced[i]['sum'];
+                crnRow[lastCol] = gbValsReduced[i]['count'];
+            } else {
+                crnRow[lastCol] = gbValsReduced[i];
+            }
+            rows.push(crnRow);
+        }
+    }
+    return rows;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     flatten: flatten,
@@ -172,5 +195,6 @@ module.exports = {
     time: time,
     log:log,
     requireUncached: requireUncached,
-    mergeSlicedCachedResult: mergeSlicedCachedResult
+    mergeSlicedCachedResult: mergeSlicedCachedResult,
+    extractGBValues: extractGBValues
 };

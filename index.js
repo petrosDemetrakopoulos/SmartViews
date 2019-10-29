@@ -694,42 +694,12 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                 reducedResult = transformations.transformGBFromSQL(reducedResult, op, lastCol, gbFields);
                                                                                 reducedResult.field = view.aggregationField;
                                                                                 reducedResult.viewName = req.params.viewName;
-                                                                                let gbValsReduced = Object.values(reducedResult);
+                                                                                rows = helper.extractGBValues(reducedResult, view);
+                                                                                rowsDelta = helper.extractGBValues(groupBySqlResult, view);
 
-                                                                                for (let i = 0, keys = Object.keys(reducedResult); i < keys.length; i++) {
-                                                                                    let key = keys[i];
-                                                                                    if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
-                                                                                        let crnRow = JSON.parse(key);
-                                                                                        lastCol = view.SQLTable.split(' ');
-                                                                                        prelastCol = lastCol[lastCol.length - 4];
-                                                                                        lastCol = lastCol[lastCol.length - 2];
-                                                                                        if (view.operation === 'AVERAGE') {
-                                                                                            crnRow[prelastCol] = gbValsReduced[i]['sum'];
-                                                                                            crnRow[lastCol] = gbValsReduced[i]['count'];
-                                                                                        } else {
-                                                                                            crnRow[lastCol] = gbValsReduced[i];
-                                                                                        }
-                                                                                        rows.push(crnRow);
-                                                                                    }
-                                                                                }
-
-                                                                                let gbValsSqlRes = Object.values(groupBySqlResult);
-                                                                                for (let i = 0, keys = Object.keys(groupBySqlResult); i < keys.length; i++) {
-                                                                                    let key = keys[i];
-                                                                                    if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
-                                                                                        let crnRow = JSON.parse(key);
-                                                                                        lastCol = view.SQLTable.split(' ');
-                                                                                        prelastCol = lastCol[lastCol.length - 4];
-                                                                                        lastCol = lastCol[lastCol.length - 2];
-                                                                                        if (view.operation === 'AVERAGE') {
-                                                                                            crnRow[prelastCol] = gbValsSqlRes[i]['sum'];
-                                                                                            crnRow[lastCol] = gbValsSqlRes[i]['count'];
-                                                                                        } else {
-                                                                                            crnRow[lastCol] = gbValsSqlRes[i];
-                                                                                        }
-                                                                                        rowsDelta.push(crnRow);
-                                                                                    }
-                                                                                }
+                                                                                lastCol = view.SQLTable.split(' ');
+                                                                                prelastCol = lastCol[lastCol.length - 4];
+                                                                                lastCol = lastCol[lastCol.length - 2];
 
                                                                                 let mergeTimeStart = helper.time();
                                                                                 computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult, error) {

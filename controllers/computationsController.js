@@ -121,26 +121,12 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
         if (error) {
             callback(null, error);
         }
-        let rows = [];
         let lastCol = '';
         let prelastCol = ''; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
         lastCol = cachedGroupBy.gbCreateTable.split(' ');
         prelastCol = lastCol[lastCol.length - 4];
         lastCol = lastCol[lastCol.length - 2];
-        let gbVals = Object.values(cachedGroupBy);
-        for (let i = 0, keys = Object.keys(cachedGroupBy); i < keys.length; i++) {
-            let key = keys[i];
-            if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
-                let crnRow = JSON.parse(key);
-                if (view.operation === 'AVERAGE') {
-                    crnRow[prelastCol] = gbVals[i]['sum'];
-                    crnRow[lastCol] = gbVals[i]['count'];
-                } else {
-                    crnRow[lastCol] = gbVals[i];
-                }
-                rows.push(crnRow);
-            }
-        }
+        let rows = helper.extractGBValues(cachedGroupBy, view);
 
         let sqlInsert = jsonSql.build({
             type: 'insert',
