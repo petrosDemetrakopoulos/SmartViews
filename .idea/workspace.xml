@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -294,14 +295,7 @@
       <workItem from="1572253489661" duration="3764000" />
       <workItem from="1572295881894" duration="2519000" />
       <workItem from="1572298603324" duration="261000" />
-      <workItem from="1572337358771" duration="2132000" />
-    </task>
-    <task id="LOCAL-00154" summary="- added content in readme">
-      <created>1570036529342</created>
-      <option name="number" value="00154" />
-      <option name="presentableId" value="LOCAL-00154" />
-      <option name="project" value="LOCAL" />
-      <updated>1570036529342</updated>
+      <workItem from="1572337358771" duration="2444000" />
     </task>
     <task id="LOCAL-00155" summary="- added content in readme">
       <created>1570036570682</created>
@@ -639,7 +633,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572339410138</updated>
     </task>
-    <option name="localTasksCounter" value="203" />
+    <task id="LOCAL-00203" summary="- removed duplicate code regarding extraction of unique gb result values, moved code to extractGBValues function in helpers">
+      <created>1572339939254</created>
+      <option name="number" value="00203" />
+      <option name="presentableId" value="LOCAL-00203" />
+      <option name="project" value="LOCAL" />
+      <updated>1572339939254</updated>
+    </task>
+    <option name="localTasksCounter" value="204" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

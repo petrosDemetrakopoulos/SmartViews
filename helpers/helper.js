@@ -1,19 +1,6 @@
 const config = require('../config_private');
 const microtime = require('microtime');
 
-function flatten (items) {
-    const flat = [];
-    items.forEach(item => {
-        flat.push(item);
-        if (Array.isArray(item.children) && item.children.length > 0) {
-            flat.push(...flatten(item.children));
-            delete item.children
-        }
-        delete item.children
-    });
-    return flat;
-}
-
 function removeTimestamps (records) {
     for (let i = 0; i < records.length; i++) {
         delete records[i].timestamp;
@@ -186,7 +173,6 @@ function extractGBValues (reducedResult, view) {
 
 module.exports = {
     containsAllFields: containsAllFields,
-    flatten: flatten,
     configFileValidations: configFileValidations,
     removeTimestamps: removeTimestamps,
     printTimes: printTimes,
