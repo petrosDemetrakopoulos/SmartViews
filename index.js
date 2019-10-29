@@ -236,7 +236,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     helper.log('View by name endpoint hit again');
     if (!gbRunning && !running) {
         gbRunning = true;
-        view.gbFields = helper.extractGBFields(view);
+        let gbFields = helper.extractGBFields(view);
+        view.gbFields = gbFields;
         for (let index in view.gbFields) {
             view.gbFields[index] = view.gbFields[index].trim();
         }
