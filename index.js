@@ -393,10 +393,8 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                         return res.send(error);
                                                                     }
 
-                                                                    let lastCol = '';
-                                                                    let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-                                                                    lastCol = view.SQLTable.split(' ');
-                                                                    prelastCol = lastCol[lastCol.length - 4];
+                                                                    let lastCol = view.SQLTable.split(' ');
+                                                                    let prelastCol = lastCol[lastCol.length - 4];  // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                                     lastCol = lastCol[lastCol.length - 2];
 
                                                                     let op = '';
@@ -673,8 +671,6 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                 viewNameSQL = viewNameSQL[3];
                                                                                 viewNameSQL = viewNameSQL.split('(')[0];
 
-                                                                                let rows = [];
-                                                                                let rowsDelta = [];
                                                                                 let lastCol = '';
                                                                                 let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                                                 lastCol = view.SQLTable.split(' ');
@@ -694,8 +690,8 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                                 reducedResult = transformations.transformGBFromSQL(reducedResult, op, lastCol, gbFields);
                                                                                 reducedResult.field = view.aggregationField;
                                                                                 reducedResult.viewName = req.params.viewName;
-                                                                                rows = helper.extractGBValues(reducedResult, view);
-                                                                                rowsDelta = helper.extractGBValues(groupBySqlResult, view);
+                                                                                let rows = helper.extractGBValues(reducedResult, view);
+                                                                                let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
 
                                                                                 lastCol = view.SQLTable.split(' ');
                                                                                 prelastCol = lastCol[lastCol.length - 4];
