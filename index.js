@@ -771,43 +771,13 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                                                                             viewNameSQL = viewNameSQL[3];
                                                                             viewNameSQL = viewNameSQL.split('(')[0];
 
-                                                                            let rows = [];
-                                                                            let rowsDelta = [];
-                                                                            let lastCol = '';
-                                                                            let prelastCol = null; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-                                                                            let gbValsCached = Object.values(cachedGroupBy);
-                                                                            lastCol = view.SQLTable.split(' ');
-                                                                            prelastCol = lastCol[lastCol.length - 4];
+                                                                            let lastCol = view.SQLTable.split(' ');
+                                                                            let prelastCol = lastCol[lastCol.length - 4]; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
                                                                             lastCol = lastCol[lastCol.length - 2];
 
-                                                                            for (let i = 0, keys = Object.keys(cachedGroupBy); i < keys.length; i++) {
-                                                                                let key = keys[i];
-                                                                                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
-                                                                                    let crnRow = JSON.parse(key);
-                                                                                    if (view.operation === 'AVERAGE') {
-                                                                                        crnRow[prelastCol] = gbValsCached[i]['sum'];
-                                                                                        crnRow[lastCol] = gbValsCached[i]['count'];
-                                                                                    } else {
-                                                                                        crnRow[lastCol] = gbValsCached[i];
-                                                                                    }
-                                                                                    rows.push(crnRow);
-                                                                                }
-                                                                            }
+                                                                            let rows = helper.extractGBValues(cachedGroupBy, view);
+                                                                            let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
 
-                                                                            let gbSqlVals = Object.values(groupBySqlResult);
-                                                                            for (let i = 0, keys = Object.keys(groupBySqlResult); i < keys.length; i++) {
-                                                                                let key = keys[i];
-                                                                                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
-                                                                                    let crnRow = JSON.parse(key);
-                                                                                    if (view.operation === 'AVERAGE') {
-                                                                                        crnRow[prelastCol] = gbSqlVals[i]['sum'];
-                                                                                        crnRow[lastCol] = gbSqlVals[i]['count'];
-                                                                                    } else {
-                                                                                        crnRow[lastCol] = gbSqlVals[i];
-                                                                                    }
-                                                                                    rowsDelta.push(crnRow);
-                                                                                }
-                                                                            }
                                                                             let mergeTimeStart = helper.time();
                                                                             computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewNameSQL, view, lastCol, prelastCol, function (mergeResult, error) {
                                                                                 let mergeTimeEnd = helper.time();
