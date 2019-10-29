@@ -268,6 +268,44 @@ describe('testing /getViewByName/:viewName/:contract -- MIN', function () {
     });
 });
 
+describe('testing /getViewByName/:viewName/:contract -- AVERAGE', function () {
+    freeze(4000);
+    let resp = {};
+    it('should return OK status', function () {
+        return request(app)
+            .get('/getViewByName/A|B(ΑVERAGE-D)/ABCD')
+            .then(function (response) {
+                resp = response.text;
+                expect(response.status).to.equal(200);
+            });
+    });
+
+    it('should be a string', function () {
+        expect(resp).to.be.a('string');
+    });
+});
+
+describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas -- AVERAGE', function () {
+    let resp = {};
+    it('should return OK status', function () {
+        freeze(4000);
+        return request(app)
+            .get('/load_dataset/10fourcol_b') // adding deltas
+            .then(function (response) {
+                return request(app)
+                    .get('/getViewByName/A|B(ΑVERAGE-D)/ABCD')
+                    .then(function (response) {
+                        resp = response.text;
+                        expect(response.status).to.equal(200);
+                    });
+            });
+    });
+
+    it('should be a string', function () {
+        expect(resp).to.be.a('string');
+    });
+});
+
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached', function () {
     let resp = {};
     it('should return OK status', function () {
@@ -416,6 +454,7 @@ describe('testing /groupbyId/:id route', function () {
         return request(app)
             .get('/groupbyId/0')
             .then(function (response) {
+                console.log(response.body);
                 resp = response.text;
                 expect(response.status).to.equal(200);
             });

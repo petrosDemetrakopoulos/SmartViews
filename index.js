@@ -385,8 +385,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                         helper.log('error:', err);
                                                                         gbRunning = false;
                                                                         return res.send(err);
-                                                                    }).on('transactionHash', (txHash) => {
-                                                                        helper.log('transactionHash:', txHash);
                                                                     }).on('receipt', (receipt) => {
                                                                         helper.log('receipt:' + JSON.stringify(receipt));
                                                                         let cacheSaveTimeEnd = helper.time();
@@ -447,8 +445,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                             helper.log('error:', err);
                                                                             gbRunning = false;
                                                                             return res.send(err);
-                                                                        }).on('transactionHash', (txHash) => {
-                                                                            helper.log('transactionHash:' + txHash);
                                                                         }).on('receipt', (receipt) => {
                                                                             let cacheSaveTimeEnd = helper.time();
                                                                             delete groupBySqlResult.gbCreateTable;
@@ -464,7 +460,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                             groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                             helper.printTimes(groupBySqlResult);
                                                                                             helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                            io.emit('view_results', stringify(groupBySqlResult));
+                                                                                            io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                                             gbRunning = false;
                                                                                             res.status(200);
                                                                                             return res.send(stringify(groupBySqlResult));
@@ -482,7 +478,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                 helper.printTimes(groupBySqlResult);
                                                                                 helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                io.emit('view_results', stringify(groupBySqlResult));
+                                                                                io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                                 gbRunning = false;
                                                                                 res.status(200);
                                                                                 return res.send(stringify(groupBySqlResult));
@@ -500,7 +496,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                 cachedGroupBy.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                 cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
                                                                 cachedGroupBy.allTotal = totalEnd - totalStart;
-                                                                io.emit('view_results', stringify(cachedGroupBy));
+                                                                io.emit('view_results', stringify(cachedGroupBy).replace('\\', ''));
                                                                 gbRunning = false;
                                                                 return res.send(stringify(cachedGroupBy));
                                                             } else {
@@ -526,8 +522,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                             helper.log('error:' + err);
                                                                             gbRunning = false;
                                                                             return res.send(err);
-                                                                        }).on('transactionHash', (txHash) => {
-                                                                            helper.log('transactionHash:' + txHash);
                                                                         }).on('receipt', (receipt) => {
                                                                             let cachSaveTimeEnd = helper.time();
                                                                             delete groupBySqlResult.gbCreateTable;
@@ -543,7 +537,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                             groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                             helper.printTimes(groupBySqlResult);
                                                                                             helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                            io.emit('view_results', stringify(groupBySqlResult));
+                                                                                            io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                                             gbRunning = false;
                                                                                             res.status(200);
                                                                                             return res.send(stringify(groupBySqlResult));
@@ -561,7 +555,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                                 helper.printTimes(groupBySqlResult);
                                                                                 helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                io.emit('view_results', stringify(groupBySqlResult));
+                                                                                io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                                 gbRunning = false;
                                                                                 res.status(200);
                                                                                 return res.send(stringify(groupBySqlResult));
@@ -673,8 +667,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                         helper.log('error:' + err);
                                                                                         gbRunning = false;
                                                                                         return res.send(err);
-                                                                                    }).on('transactionHash', (txHash) => {
-                                                                                        helper.log('transactionHash:' + txHash);
                                                                                     }).on('receipt', (receipt) => {
                                                                                         let cacheSaveTimeEnd = helper.time();
                                                                                         delete mergeResult.gbCreateTable;
@@ -751,8 +743,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                     helper.log('error:' + err);
                                                                                     gbRunning = false;
                                                                                     return res.send(err);
-                                                                                }).on('transactionHash', (txHash) => {
-                                                                                    helper.log('transactionHash:' + txHash);
                                                                                 }).on('receipt', (receipt) => {
                                                                                     let cacheSaveTimeEnd = helper.time();
                                                                                     delete mergeResult.gbCreateTable;
@@ -838,8 +828,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     helper.log('error:' + err);
                                                     gbRunning = false;
                                                     return res.send(err);
-                                                }).on('transactionHash', (txHash) => {
-                                                    helper.log('transactionHash:' + txHash);
                                                 }).on('receipt', (receipt) => {
                                                     let cacheSaveTimeEnd = helper.time();
                                                     delete groupBySqlResult.gbCreateTable;
@@ -855,7 +843,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                     groupBySqlResult.allTotal = totalEnd - totalStart;
                                                                     helper.printTimes(groupBySqlResult);
                                                                     helper.log('receipt:' + JSON.stringify(receipt));
-                                                                    io.emit('view_results', stringify(groupBySqlResult));
+                                                                    io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                     gbRunning = false;
                                                                     res.status(200);
                                                                     return res.send(stringify(groupBySqlResult));
@@ -873,7 +861,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                         groupBySqlResult.allTotal = totalEnd - totalStart;
                                                         helper.printTimes(groupBySqlResult);
                                                         helper.log('receipt:' + JSON.stringify(receipt));
-                                                        io.emit('view_results', stringify(groupBySqlResult));
+                                                        io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                         gbRunning = false;
                                                         res.status(200);
                                                         return res.send(stringify(groupBySqlResult));
@@ -918,8 +906,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                         helper.log('error:', err);
                                         gbRunning = false;
                                         return res.send(err);
-                                    }).on('transactionHash', (txHash) => {
-                                        helper.log('transactionHash:' + txHash);
                                     }).on('receipt', (receipt) => {
                                         let cacheSaveTimeEnd = helper.time();
                                         delete groupBySqlResult.gbCreateTable;
@@ -931,7 +917,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                         groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
                                         groupBySqlResult.allTotal = totalEnd - totalStart;
                                         helper.printTimes(groupBySqlResult);
-                                        io.emit('view_results', stringify(groupBySqlResult));
+                                        io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                         gbRunning = false;
                                         res.status(200);
                                         return res.send(stringify(groupBySqlResult));
@@ -976,7 +962,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime;
                         groupBySqlResult.allTotal = totalEnd - totalStart;
                         helper.printTimes(groupBySqlResult);
-                        io.emit('view_results', stringify(groupBySqlResult));
+                        io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                         gbRunning = false;
                         res.status(200);
                         return res.send(stringify(groupBySqlResult));

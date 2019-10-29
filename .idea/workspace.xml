@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -301,13 +303,9 @@
       <workItem from="1572347593413" duration="802000" />
       <workItem from="1572348880056" duration="2251000" />
       <workItem from="1572355003561" duration="1210000" />
-    </task>
-    <task id="LOCAL-00163" summary="- added content in readme">
-      <created>1570058699432</created>
-      <option name="number" value="00163" />
-      <option name="presentableId" value="LOCAL-00163" />
-      <option name="project" value="LOCAL" />
-      <updated>1570058699433</updated>
+      <workItem from="1572368809869" duration="85000" />
+      <workItem from="1572376837162" duration="62000" />
+      <workItem from="1572376958078" duration="835000" />
     </task>
     <task id="LOCAL-00164" summary="- added content in readme">
       <created>1570102932891</created>
@@ -645,7 +643,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572368296818</updated>
     </task>
-    <option name="localTasksCounter" value="212" />
+    <task id="LOCAL-00212" summary="- fixed minor bug">
+      <created>1572368828292</created>
+      <option name="number" value="00212" />
+      <option name="presentableId" value="LOCAL-00212" />
+      <option name="project" value="LOCAL" />
+      <updated>1572368828292</updated>
+    </task>
+    <option name="localTasksCounter" value="213" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -679,7 +684,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- various fixes" />
     <MESSAGE value="- front-end fixes" />
     <MESSAGE value="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project" />
     <MESSAGE value="lintering fixes" />
@@ -704,6 +708,7 @@
     <MESSAGE value="- minor improvements" />
     <MESSAGE value="- fixed some lintering issues" />
     <MESSAGE value="- minor fixes and code cleanup&#10;- updated some deps" />
-    <option name="LAST_COMMIT_MESSAGE" value="- minor fixes and code cleanup&#10;- updated some deps" />
+    <MESSAGE value="- fixed minor bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="- fixed minor bug" />
   </component>
 </project>
