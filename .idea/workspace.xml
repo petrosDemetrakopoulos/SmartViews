@@ -297,14 +297,8 @@
       <workItem from="1572295881894" duration="2519000" />
       <workItem from="1572298603324" duration="261000" />
       <workItem from="1572337358771" duration="5094000" />
-      <workItem from="1572343094405" duration="1033000" />
-    </task>
-    <task id="LOCAL-00157" summary="- added content in readme">
-      <created>1570057664344</created>
-      <option name="number" value="00157" />
-      <option name="presentableId" value="LOCAL-00157" />
-      <option name="project" value="LOCAL" />
-      <updated>1570057664344</updated>
+      <workItem from="1572343094405" duration="1245000" />
+      <workItem from="1572347593413" duration="363000" />
     </task>
     <task id="LOCAL-00158" summary="- added content in readme">
       <created>1570057853110</created>
@@ -642,7 +636,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572343397862</updated>
     </task>
-    <option name="localTasksCounter" value="206" />
+    <task id="LOCAL-00206" summary="- minor improvements">
+      <created>1572344232857</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1572344232857</updated>
+    </task>
+    <option name="localTasksCounter" value="207" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -676,7 +677,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- added content in readme" />
     <MESSAGE value="- moved all cache-related functionality to cacheController.js" />
     <MESSAGE value="- fixes in readme" />
     <MESSAGE value="- various fixes" />
@@ -701,6 +701,7 @@
     <MESSAGE value="- removed duplicate code regarding extraction of unique gb result values, moved code to extractGBValues function in helpers" />
     <MESSAGE value="- removed unused flatten function from helpers" />
     <MESSAGE value="- Added some more tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Added some more tests" />
+    <MESSAGE value="- minor improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="- minor improvements" />
   </component>
 </project>

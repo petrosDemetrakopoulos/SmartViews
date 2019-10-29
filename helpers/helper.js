@@ -179,6 +179,26 @@ function getJSONFiles(items){
     return jsonFiles;
 }
 
+function transformGBMetadataFromBlockchain(resultGB){
+    let len = Object.keys(resultGB).length;
+    for (let j = 0; j < len / 2; j++) {
+        delete resultGB[j];
+    }
+    let transformedArray = [];
+    for (let j = 0; j < resultGB.hashes.length; j++) {
+        transformedArray[j] = {
+            hash: resultGB.hashes[j],
+            latestFact: resultGB.latFacts[j],
+            columnSize: resultGB.columnSize[j],
+            columns: resultGB.columns[j],
+            gbTimestamp: resultGB.gbTimestamp[j],
+            size: resultGB.size[j],
+            id: j
+        };
+    }
+    return transformedArray;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -191,5 +211,6 @@ module.exports = {
     requireUncached: requireUncached,
     mergeSlicedCachedResult: mergeSlicedCachedResult,
     extractGBValues: extractGBValues,
-    getJSONFiles: getJSONFiles
+    getJSONFiles: getJSONFiles,
+    transformGBMetadataFromBlockchain: transformGBMetadataFromBlockchain
 };

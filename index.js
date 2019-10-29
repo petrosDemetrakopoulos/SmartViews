@@ -270,23 +270,8 @@ app.get('/getViewByName/:viewName/:contract',contractController.contractChecker,
                         contract.methods.getAllGroupBys(result).call(async function (err, resultGB) {
                             let getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
                             if (!err) {
-                                let len = Object.keys(resultGB).length;
-                                for (let j = 0; j < len / 2; j++) {
-                                    delete resultGB[j];
-                                }
-                                let transformedArray = [];
-                                for (let j = 0; j < resultGB.hashes.length; j++) {
-                                    transformedArray[j] = {
-                                        hash: resultGB.hashes[j],
-                                        latestFact: resultGB.latFacts[j],
-                                        columnSize: resultGB.columnSize[j],
-                                        columns: resultGB.columns[j],
-                                        gbTimestamp: resultGB.gbTimestamp[j],
-                                        size: resultGB.size[j],
-                                        id: j
-                                    };
-                                }
-
+                                // make that a function in transformations
+                                let transformedArray = helper.transformGBMetadataFromBlockchain(resultGB);
                                 transformedArray = helper.containsAllFields(transformedArray, view); // assigns the containsAllFields value
                                 let filteredGBs = [];
                                 let sortedByEvictionCost = [];
