@@ -2,6 +2,8 @@ const stringify = require('fast-stringify');
 let contract = null;
 let mainTransactionObject = {};
 const helper = require('../helpers/helper');
+const cacheController = require('./cacheController');
+
 function setContract (contractObject, account) {
     contract = contractObject;
     mainTransactionObject = {
@@ -9,6 +11,7 @@ function setContract (contractObject, account) {
         gas: 1500000000000,
         gasPrice: '30000000000000'
     };
+    cacheController.setContract(contractObject, account);
 }
 
 async function addFact (fact) {
@@ -179,6 +182,16 @@ function getLatestId (callback) {
     });
 }
 
+function deleteGBsById (gbIdsToDelete, callback) {
+    contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
+        if(err){
+            callback(err, null);
+        } else {
+            callback(null, latestGBDeleted);
+        }
+    });
+}
+
 function removeUnneededFieldsFromBCResponse (bcResponse) {
     // for some unknown reason web3 responses contain all fields twice, therefore we have
     // to remove half of them to proceed, it is just a data preprocessing stage
@@ -187,6 +200,18 @@ function removeUnneededFieldsFromBCResponse (bcResponse) {
         delete bcResponse[j];
     }
     return bcResponse;
+}
+
+function deleteCachedResults (sortedByEvictionCost, callback) {
+    cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+        deleteGBsById(gbIdsToDelete)(function (err, latestGBDeleted) {
+            if(err){
+                callback(err, null);
+            } else {
+                callback(null, latestGBDeleted);
+            }
+        });
+    });
 }
 
 module.exports = {
@@ -200,5 +225,7 @@ module.exports = {
     getFactById: getFactById,
     getGroupByWithId: getGroupByWithId,
     contractChecker: contractChecker,
-    getLatestId: getLatestId
+    getLatestId: getLatestId,
+    deleteGBsById: deleteGBsById,
+    deleteCachedResults: deleteCachedResults
 };

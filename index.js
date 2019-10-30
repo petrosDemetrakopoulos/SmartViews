@@ -389,23 +389,21 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                         helper.log('receipt:' + JSON.stringify(receipt));
                                                                         let cacheSaveTimeEnd = helper.time();
                                                                         if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                            cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-                                                                                contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-                                                                                    let totalEnd = helper.time();
-                                                                                    if (!err) {
-                                                                                        reducedResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                        reducedResult.sqlTime = reductionTimeEnd - reductionTimeStart;
-                                                                                        reducedResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                                        reducedResult.totalTime = reducedResult.cacheSaveTime + reducedResult.sqlTime + reducedResult.cacheRetrieveTime;
-                                                                                        reducedResult.allTotal = totalEnd - totalStart;
-                                                                                        helper.printTimes(reducedResult);
-                                                                                        io.emit('view_results', stringify(reducedResult).replace('\\', ''));
-                                                                                        gbRunning = false;
-                                                                                        return res.send(stringify(reducedResult).replace('\\', ''));
-                                                                                    }
+                                                                            contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                                                                                let totalEnd = helper.time();
+                                                                                if (!err) {
+                                                                                    reducedResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                    reducedResult.sqlTime = reductionTimeEnd - reductionTimeStart;
+                                                                                    reducedResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                    reducedResult.totalTime = reducedResult.cacheSaveTime + reducedResult.sqlTime + reducedResult.cacheRetrieveTime;
+                                                                                    reducedResult.allTotal = totalEnd - totalStart;
+                                                                                    helper.printTimes(reducedResult);
+                                                                                    io.emit('view_results', stringify(reducedResult).replace('\\', ''));
                                                                                     gbRunning = false;
-                                                                                    return res.send(err);
-                                                                                });
+                                                                                    return res.send(stringify(reducedResult).replace('\\', ''));
+                                                                                }
+                                                                                gbRunning = false;
+                                                                                return res.send(err);
                                                                             });
                                                                         } else {
                                                                             let totalEnd = helper.time();
@@ -449,25 +447,23 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                             let cacheSaveTimeEnd = helper.time();
                                                                             delete groupBySqlResult.gbCreateTable;
                                                                             if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-                                                                                    contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-                                                                                        let totalEnd = helper.time();
-                                                                                        if (!err) {
-                                                                                            groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                                            groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
-                                                                                            groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                            groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                                                                            groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                                                            helper.printTimes(groupBySqlResult);
-                                                                                            helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                            io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
-                                                                                            gbRunning = false;
-                                                                                            res.status(200);
-                                                                                            return res.send(stringify(groupBySqlResult));
-                                                                                        }
+                                                                                contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                                                                                    let totalEnd = helper.time();
+                                                                                    if (!err) {
+                                                                                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                                                                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
+                                                                                        groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                        groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                                                                        groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                                        helper.printTimes(groupBySqlResult);
+                                                                                        helper.log('receipt:' + JSON.stringify(receipt));
+                                                                                        io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                                         gbRunning = false;
-                                                                                        return res.send(err);
-                                                                                    });
+                                                                                        res.status(200);
+                                                                                        return res.send(stringify(groupBySqlResult));
+                                                                                    }
+                                                                                    gbRunning = false;
+                                                                                    return res.send(err);
                                                                                 });
                                                                             } else {
                                                                                 let totalEnd = helper.time();
@@ -526,25 +522,23 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                             let cachSaveTimeEnd = helper.time();
                                                                             delete groupBySqlResult.gbCreateTable;
                                                                             if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-                                                                                    contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-                                                                                        let totalEnd = helper.time();
-                                                                                        if (!err) {
-                                                                                            groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
-                                                                                            groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                                            groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
-                                                                                            groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
-                                                                                            groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                                                            helper.printTimes(groupBySqlResult);
-                                                                                            helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                            io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
-                                                                                            gbRunning = false;
-                                                                                            res.status(200);
-                                                                                            return res.send(stringify(groupBySqlResult));
-                                                                                        }
+                                                                                contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                                                                                    let totalEnd = helper.time();
+                                                                                    if (!err) {
+                                                                                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
+                                                                                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                                                                        groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
+                                                                                        groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
+                                                                                        groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                                        helper.printTimes(groupBySqlResult);
+                                                                                        helper.log('receipt:' + JSON.stringify(receipt));
+                                                                                        io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                                         gbRunning = false;
-                                                                                        return res.send(err);
-                                                                                    });
+                                                                                        res.status(200);
+                                                                                        return res.send(stringify(groupBySqlResult));
+                                                                                    }
+                                                                                    gbRunning = false;
+                                                                                    return res.send(err);
                                                                                 });
                                                                             } else {
                                                                                 let totalEnd = helper.time();
@@ -671,26 +665,24 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                         let cacheSaveTimeEnd = helper.time();
                                                                                         delete mergeResult.gbCreateTable;
                                                                                         if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                            cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-                                                                                                contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-                                                                                                    let totalEnd = helper.time();
-                                                                                                    if (!err) {
-                                                                                                        mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
-                                                                                                        mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
-                                                                                                        mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                                        mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                                                        mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-                                                                                                        mergeResult.allTotal = totalEnd - totalStart;
-                                                                                                        helper.printTimes(mergeResult);
-                                                                                                        helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                                        io.emit('view_results', mergeResult);
-                                                                                                        gbRunning = false;
-                                                                                                        res.status(200);
-                                                                                                        return res.send(mergeResult);
-                                                                                                    }
+                                                                                            contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                                                                                                let totalEnd = helper.time();
+                                                                                                if (!err) {
+                                                                                                    mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
+                                                                                                    mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
+                                                                                                    mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                                    mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                                    mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                                    mergeResult.allTotal = totalEnd - totalStart;
+                                                                                                    helper.printTimes(mergeResult);
+                                                                                                    helper.log('receipt:' + JSON.stringify(receipt));
+                                                                                                    io.emit('view_results', mergeResult);
                                                                                                     gbRunning = false;
-                                                                                                    return res.send(err);
-                                                                                                });
+                                                                                                    res.status(200);
+                                                                                                    return res.send(mergeResult);
+                                                                                                }
+                                                                                                gbRunning = false;
+                                                                                                return res.send(err);
                                                                                             });
                                                                                         } else {
                                                                                             let totalEnd = helper.time();
@@ -747,26 +739,24 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                     let cacheSaveTimeEnd = helper.time();
                                                                                     delete mergeResult.gbCreateTable;
                                                                                     if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                        cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-                                                                                            contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-                                                                                                let totalEnd = helper.time();
-                                                                                                if (!err) {
-                                                                                                    mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime + getAllGBsTime + getLatestFactIdTime + getLatestFactTime;
-                                                                                                    mergeResult.sqlTime = (mergeTimeEnd - mergeTimeStart) + (sqlTimeEnd - sqlTimeStart);
-                                                                                                    mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                                    mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                                                    mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-                                                                                                    mergeResult.allTotal = totalEnd - totalStart;
-                                                                                                    helper.printTimes(mergeResult);
-                                                                                                    helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                                    io.emit('view_results', mergeResult);
-                                                                                                    gbRunning = false;
-                                                                                                    res.status(200);
-                                                                                                    return res.send(mergeResult);
-                                                                                                }
+                                                                                        contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                                                                                            let totalEnd = helper.time();
+                                                                                            if (!err) {
+                                                                                                mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime + getAllGBsTime + getLatestFactIdTime + getLatestFactTime;
+                                                                                                mergeResult.sqlTime = (mergeTimeEnd - mergeTimeStart) + (sqlTimeEnd - sqlTimeStart);
+                                                                                                mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                                                mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                                                                mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                                                                mergeResult.allTotal = totalEnd - totalStart;
+                                                                                                helper.printTimes(mergeResult);
+                                                                                                helper.log('receipt:' + JSON.stringify(receipt));
+                                                                                                io.emit('view_results', mergeResult);
                                                                                                 gbRunning = false;
-                                                                                                return res.send(err);
-                                                                                            });
+                                                                                                res.status(200);
+                                                                                                return res.send(mergeResult);
+                                                                                            }
+                                                                                            gbRunning = false;
+                                                                                            return res.send(err);
                                                                                         });
                                                                                     } else {
                                                                                         let totalEnd = helper.time();
@@ -832,25 +822,23 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     let cacheSaveTimeEnd = helper.time();
                                                     delete groupBySqlResult.gbCreateTable;
                                                     if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                        cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-                                                            contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-                                                                let totalEnd = helper.time();
-                                                                if (!err) {
-                                                                    groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                    groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getGroupIdTime + getAllGBsTime;
-                                                                    groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                    groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                                                    groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                                    helper.printTimes(groupBySqlResult);
-                                                                    helper.log('receipt:' + JSON.stringify(receipt));
-                                                                    io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
-                                                                    gbRunning = false;
-                                                                    res.status(200);
-                                                                    return res.send(stringify(groupBySqlResult));
-                                                                }
+                                                        contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                                                            let totalEnd = helper.time();
+                                                            if (!err) {
+                                                                groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                                                groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getGroupIdTime + getAllGBsTime;
+                                                                groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                                groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                                                groupBySqlResult.allTotal = totalEnd - totalStart;
+                                                                helper.printTimes(groupBySqlResult);
+                                                                helper.log('receipt:' + JSON.stringify(receipt));
+                                                                io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
                                                                 gbRunning = false;
-                                                                return res.send(err);
-                                                            });
+                                                                res.status(200);
+                                                                return res.send(stringify(groupBySqlResult));
+                                                            }
+                                                            gbRunning = false;
+                                                            return res.send(err);
                                                         });
                                                     } else {
                                                         let totalEnd = helper.time();
@@ -937,7 +925,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
             // just like the case that the cache is originally empty
             let bcTimeStart = helper.time();
-           contractController.getLatestId(function (err, latestId) {
+            contractController.getLatestId(function (err, latestId) {
                 if (err) throw err;
                 contractController.getAllFacts(latestId).then(retval => {
                     let bcTimeEnd = helper.time();
