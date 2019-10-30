@@ -223,6 +223,27 @@ function extractGBFields (view) {
     return gbFields;
 }
 
+function extractViewMeta(view){
+    let viewNameSQL = view.SQLTable.split(' ');
+    viewNameSQL = viewNameSQL[3];
+    viewNameSQL = viewNameSQL.split('(')[0];
+
+    let lastCol = view.SQLTable.split(' ');
+    let prelastCol = lastCol[lastCol.length - 4]; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
+    lastCol = lastCol[lastCol.length - 2];
+
+    let op = '';
+    if (view.operation === 'SUM' || view.operation === 'COUNT') {
+        op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
+    } else if (view.operation === 'MIN') {
+        op = 'MIN'
+    } else if (view.operation === 'MAX') {
+        op = 'MAX';
+    }
+
+    return {viewNameSQL: viewNameSQL, lastCol: lastCol, prelastCol: prelastCol, op: op};
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -238,5 +259,6 @@ module.exports = {
     getJSONFiles: getJSONFiles,
     transformGBMetadataFromBlockchain: transformGBMetadataFromBlockchain,
     updateViewFrequency:updateViewFrequency,
-    extractGBFields: extractGBFields
+    extractGBFields: extractGBFields,
+    extractViewMeta: extractViewMeta
 };
