@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/controllers/viewMaterializationController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
@@ -308,14 +306,8 @@
       <workItem from="1572376958078" duration="973000" />
       <workItem from="1572444310039" duration="41000" />
       <workItem from="1572444377013" duration="2674000" />
-      <workItem from="1572447100039" duration="7211000" />
-    </task>
-    <task id="LOCAL-00167" summary="- added content in readme">
-      <created>1570103388497</created>
-      <option name="number" value="00167" />
-      <option name="presentableId" value="LOCAL-00167" />
-      <option name="project" value="LOCAL" />
-      <updated>1570103388498</updated>
+      <workItem from="1572447100039" duration="7320000" />
+      <workItem from="1572454796865" duration="483000" />
     </task>
     <task id="LOCAL-00168" summary="- added content in readme">
       <created>1570103623570</created>
@@ -653,7 +645,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572446829014</updated>
     </task>
-    <option name="localTasksCounter" value="216" />
+    <task id="LOCAL-00216" summary="- created ViewMaterializationController&#10;- fixes and code organization improvements">
+      <created>1572454584436</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1572454584437</updated>
+    </task>
+    <option name="localTasksCounter" value="217" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -687,7 +686,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="lintering fixes" />
     <MESSAGE value="updated README" />
     <MESSAGE value=" - moved SQL related functionality to computationsController.js&#10; - fixed issue with duplicate code in the case of reduction query to cached group by without deltas (now correctly done with the calculateReducedGroupBy function of computationsController)" />
     <MESSAGE value=" - removed unneeded code" />
@@ -712,6 +710,7 @@
     <MESSAGE value="- fixed minor bug" />
     <MESSAGE value="- added some more tests" />
     <MESSAGE value="- microoptimizations and fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="- microoptimizations and fixes" />
+    <MESSAGE value="- created ViewMaterializationController&#10;- fixes and code organization improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="- created ViewMaterializationController&#10;- fixes and code organization improvements" />
   </component>
 </project>

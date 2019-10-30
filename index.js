@@ -255,7 +255,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         contract.methods.getAllGroupBys(result).call(async function (err, resultGB) {
                             let getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
                             if (!err) {
-                                // make that a function in transformations
                                 let transformedArray = helper.transformGBMetadataFromBlockchain(resultGB);
                                 transformedArray = helper.containsAllFields(transformedArray, view); // assigns the containsAllFields value
                                 let filteredGBs = [];
@@ -351,7 +350,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             // but however it can be calculated just from redis cache
                                                             if (cachedGroupBy.field === view.aggregationField &&
                                                                 view.operation === cachedGroupBy.operation) {
-
                                                                 let reductionTimeStart = helper.time();
                                                                 computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields, async function (reducedResult, error) {
                                                                     let reductionTimeEnd = helper.time();
@@ -414,64 +412,14 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             } else {
                                                                 // some fields contained in a Group by but operation and aggregation fields differ
                                                                 // this means we should proceed to new group by calculation from the begining
-                                                                let bcTimeStart = helper.time();
-                                                                contractController.getAllFactsHeavy(latestId).then(retval => {
-                                                                    let bcTimeEnd = helper.time();
-                                                                    retval = helper.removeTimestamps(retval);
-                                                                    helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
-                                                                    let sqlTimeStart = helper.time();
-                                                                    computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
-                                                                        let sqlTimeEnd = helper.time();
-                                                                        if (error) {
-                                                                            gbRunning = false;
-                                                                            return res.send(error);
-                                                                        }
-                                                                        groupBySqlResult.gbCreateTable = view.SQLTable;
-                                                                        groupBySqlResult.field = view.aggregationField;
-                                                                        groupBySqlResult.viewName = req.params.viewName;
-                                                                        let cacheSaveTimeStart = helper.time();
-                                                                        cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
-                                                                            helper.log('error:', err);
-                                                                            gbRunning = false;
-                                                                            return res.send(err);
-                                                                        }).on('receipt', (receipt) => {
-                                                                            let cacheSaveTimeEnd = helper.time();
-                                                                            delete groupBySqlResult.gbCreateTable;
-                                                                            if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
-                                                                                    let totalEnd = helper.time();
-                                                                                    if (!err) {
-                                                                                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
-                                                                                        groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                        groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                                                                        groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                                                        helper.printTimes(groupBySqlResult);
-                                                                                        helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                        io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
-                                                                                        gbRunning = false;
-                                                                                        res.status(200);
-                                                                                        return res.send(stringify(groupBySqlResult));
-                                                                                    }
-                                                                                    gbRunning = false;
-                                                                                    return res.send(err);
-                                                                                });
-                                                                            } else {
-                                                                                let totalEnd = helper.time();
-                                                                                groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                                groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
-                                                                                groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                                                                groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                                                helper.printTimes(groupBySqlResult);
-                                                                                helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
-                                                                                gbRunning = false;
-                                                                                res.status(200);
-                                                                                return res.send(stringify(groupBySqlResult));
-                                                                            }
-                                                                        });
-                                                                    });
+                                                                viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                                    if(error){
+                                                                        gbRunning = false;
+                                                                        return res.send(error);
+                                                                    }
+                                                                    io.emit('view_results', stringify(result).replace('\\', ''));
+                                                                    res.status(200);
+                                                                    return res.send(stringify(result));
                                                                 });
                                                             }
                                                         } else {
@@ -489,64 +437,14 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             } else {
                                                                 // same fields but different operation or different aggregate field
                                                                 // this means we should proceed to new group by calculation from the begining
-                                                                let bcTimeStart = helper.time();
-                                                                contractController.getAllFactsHeavy(latestId).then(retval => {
-                                                                    let bcTimeEnd = helper.time();
-                                                                    retval = helper.removeTimestamps(retval);
-                                                                    helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
-                                                                    let sqlTimeStart = helper.time();
-                                                                    computationsController.calculateNewGroupBy(retval, view.operation, view.gbFields, view.aggregationField, function (groupBySqlResult, error) {
-                                                                        let sqlTimeEnd = helper.time();
-                                                                        if (error) {
-                                                                            gbRunning = false;
-                                                                            return res.send(error);
-                                                                        }
-                                                                        groupBySqlResult.gbCreateTable = view.SQLTable;
-                                                                        groupBySqlResult.field = view.aggregationField;
-                                                                        groupBySqlResult.viewName = req.params.viewName;
-                                                                        let cacheSaveTimeStart = helper.time();
-                                                                        cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
-                                                                            helper.log('error:' + err);
-                                                                            gbRunning = false;
-                                                                            return res.send(err);
-                                                                        }).on('receipt', (receipt) => {
-                                                                            let cachSaveTimeEnd = helper.time();
-                                                                            delete groupBySqlResult.gbCreateTable;
-                                                                            if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                                contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
-                                                                                    let totalEnd = helper.time();
-                                                                                    if (!err) {
-                                                                                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
-                                                                                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                                        groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
-                                                                                        groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
-                                                                                        groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                                                        helper.printTimes(groupBySqlResult);
-                                                                                        helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                        io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
-                                                                                        gbRunning = false;
-                                                                                        res.status(200);
-                                                                                        return res.send(stringify(groupBySqlResult));
-                                                                                    }
-                                                                                    gbRunning = false;
-                                                                                    return res.send(err);
-                                                                                });
-                                                                            } else {
-                                                                                let totalEnd = helper.time();
-                                                                                groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + getGroupIdTime + getAllGBsTime;
-                                                                                groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                                                                groupBySqlResult.cacheSaveTime = cachSaveTimeEnd - cacheSaveTimeStart;
-                                                                                groupBySqlResult.totalTime = groupBySqlResult.bcTime + groupBySqlResult.sqlTime + groupBySqlResult.cacheSaveTime;
-                                                                                groupBySqlResult.allTotal = totalEnd - totalStart;
-                                                                                helper.printTimes(groupBySqlResult);
-                                                                                helper.log('receipt:' + JSON.stringify(receipt));
-                                                                                io.emit('view_results', stringify(groupBySqlResult).replace('\\', ''));
-                                                                                gbRunning = false;
-                                                                                res.status(200);
-                                                                                return res.send(stringify(groupBySqlResult));
-                                                                            }
-                                                                        });
-                                                                    });
+                                                                viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                                    if(error){
+                                                                        gbRunning = false;
+                                                                        return res.send(error);
+                                                                    }
+                                                                    io.emit('view_results', stringify(result).replace('\\', ''));
+                                                                    res.status(200);
+                                                                    return res.send(stringify(result));
                                                                 });
                                                             }
                                                         }
