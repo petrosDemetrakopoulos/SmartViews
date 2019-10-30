@@ -38,10 +38,7 @@ function contractChecker (req, res, next) {
 async function getFactById (id) {
     return contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
         if (!err) {
-            let len = Object.keys(result).length;
-            for (let j = 0; j < len / 2; j++) {
-                delete result[j];
-            }
+            result = removeUnneededFieldsFromBCResponse(result);
             Promise.resolve(result);
         } else {
             helper.log(err);
@@ -53,10 +50,7 @@ async function getFactById (id) {
 async function getGroupByWithId (id) {
     return contract.methods.getGroupBy(parseInt(id, 10)).call(function (err, result) {
         if (!err) {
-            let len = Object.keys(result).length;
-            for (let j = 0; j < len / 2; j++) {
-                delete result[j];
-            }
+            result = removeUnneededFieldsFromBCResponse(result);
             Promise.resolve(result);
         } else {
             helper.log(err);
@@ -110,10 +104,7 @@ async function getAllFacts (factsLength) {
     for (let i = 0; i < factsLength; i++) {
         await contract.methods.facts(i).call(function (err, result2) {
             if (!err) {
-                let len = Object.keys(result2).length;
-                for (let j = 0; j < len / 2; j++) {
-                    delete result2[j];
-                }
+                result2 = removeUnneededFieldsFromBCResponse(result2);
                 // helper.log('got fact ' + i);
                 if ('payload' in result2) {
                     let crnLn = JSON.parse(result2['payload']);
@@ -132,10 +123,7 @@ async function getAllFactsHeavy (factsLength) {
     let allFacts = [];
     await contract.methods.getAllFacts(factsLength).call(function (err, result) {
         if (!err) {
-            let len = Object.keys(result).length;
-            for (let j = 0; j < len / 2; j++) {
-                delete result[j];
-            }
+            result = removeUnneededFieldsFromBCResponse(result);
             if ('payloads' in result) {
                 for (let i = 0; i < result['payloads'].length; i++) {
                     let crnLn = JSON.parse(result['payloads'][i]);
@@ -154,10 +142,7 @@ async function getFactsFromTo (from, to) {
     let allFacts = [];
     await contract.methods.getFactsFromTo(from, to).call(function (err, result) {
         if (!err) {
-            let len = Object.keys(result).length;
-            for (let j = 0; j < len / 2; j++) {
-                delete result[j];
-            }
+            result = removeUnneededFieldsFromBCResponse(result);
             if ('payloadsFromTo' in result) {
                 for (let i = 0; i < result['payloadsFromTo'].length; i++) {
                     let crnLn = JSON.parse(result['payloadsFromTo'][i]);
@@ -184,6 +169,26 @@ async function getFactsCount () {
     return id;
 }
 
+function getLatestId (callback) {
+    contract.methods.dataId().call(function (err, latestId) {
+        if(err){
+            callback(err, null);
+        } else {
+            callback(null, latestId);
+        }
+    });
+}
+
+function removeUnneededFieldsFromBCResponse (bcResponse) {
+    // for some unknown reason web3 responses contain all fields twice, therefore we have
+    // to remove half of them to proceed, it is just a data preprocessing stage
+    let len = Object.keys(bcResponse).length;
+    for (let j = 0; j < len / 2; j++) {
+        delete bcResponse[j];
+    }
+    return bcResponse;
+}
+
 module.exports = {
     addManyFacts: addManyFacts,
     getAllFacts: getAllFacts,
@@ -194,5 +199,6 @@ module.exports = {
     addFact: addFact,
     getFactById: getFactById,
     getGroupByWithId: getGroupByWithId,
-    contractChecker: contractChecker
+    contractChecker: contractChecker,
+    getLatestId: getLatestId
 };

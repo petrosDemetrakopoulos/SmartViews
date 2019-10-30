@@ -184,7 +184,7 @@ app.get('/getFactsFromTo/:from/:to', function (req, res) {
 });
 
 app.get('/allfacts', contractController.contractChecker, function (req, res) {
-    contract.methods.dataId().call(function (err, result) {
+    contractController.getLatestId(function (err, result) {
         if (!err) {
             // async loop waiting to get all the facts separately
             let timeStart = helper.time();
@@ -265,7 +265,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                     sortedByEvictionCost.push(transformedArray[i]);
                                 }
 
-                                await contract.methods.dataId().call(function (err, latestId) {
+                                await contractController.getLatestId(function (err, latestId) {
                                     if (err) throw err;
                                     helper.log('_________________________________');
                                     sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost, latestId, req.params.viewName, factTbl);
@@ -296,7 +296,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                     }); // order ascending
                                     let mostEfficient = filteredGBs[0]; // TODO: check what we do in case we have no groub bys that match those criteria
                                     let getLatestFactIdTimeStart = helper.time();
-                                    contract.methods.dataId().call(function (err, latestId) {
+                                    contractController.getLatestId(function (err, latestId) {
                                         helper.log('LATEST ID IS:');
                                         helper.log(latestId);
                                         let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
@@ -798,7 +798,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 } else {
                                     // No filtered group-bys found, proceed to group-by from the beginning
                                     let getLatestFactIdTimeStart = helper.time();
-                                    contract.methods.dataId().call(function (err, latestId) {
+                                    contractController.getLatestId(function (err, latestId) {
                                         helper.log('LATEST ID IS:');
                                         helper.log(latestId);
                                         let getLatestFactIdTimeEnd = helper.time();
@@ -881,7 +881,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         // No group bys exist in cache, we are in the initial state
                         // this means we should proceed to new group by calculation from the begining
                         let bcTimeStart = helper.time();
-                        contract.methods.dataId().call(function (err, latestId) {
+                        contractController.getLatestId(function (err, latestId) {
                             if (err) throw err;
                             contractController.getAllFactsHeavy(latestId).then(retval => {
                                 let bcTimeEnd = helper.time();
@@ -937,7 +937,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
             // just like the case that the cache is originally empty
             let bcTimeStart = helper.time();
-           return contract.methods.dataId().call(function (err, latestId) {
+           contractController.getLatestId(function (err, latestId) {
                 if (err) throw err;
                 contractController.getAllFacts(latestId).then(retval => {
                     let bcTimeEnd = helper.time();
