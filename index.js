@@ -219,21 +219,12 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     let totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
     let viewsDefined = factTbl.views;
-    let found = false;
-    let view = {};
-    for (let crnView in viewsDefined) {
-        if (factTbl.views[crnView].name === req.params.viewName) {
-            found = true;
-            view = factTbl.views[crnView];
-            helper.updateViewFrequency(factTbl, req.params.contract, crnView);
-            break;
-        }
-    }
-
-    if (!found) {
+    let view = helper.checkViewExists(viewsDefined, req.params.viewName, factTbl); // returns an empty object if view not exist, otherwise it returns the view object
+    if (Object.keys(view).length === 0 && view.constructor === Object) {
         res.status(200);
         return res.send({ error: 'view not found' });
     }
+    helper.updateViewFrequency(factTbl, req.params.contract, view.id);
 
     helper.log('View by name endpoint hit again');
     if (!gbRunning && !running) {

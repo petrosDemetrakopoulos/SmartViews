@@ -244,6 +244,18 @@ function extractViewMeta(view){
     return {viewNameSQL: viewNameSQL, lastCol: lastCol, prelastCol: prelastCol, op: op};
 }
 
+function checkViewExists (viewsDefined, viewName, factTbl) {
+    let view = {};
+    for (let crnView in viewsDefined) {
+        if (factTbl.views[crnView].name === viewName) {
+            view = factTbl.views[crnView];
+            view.id = crnView;
+            break;
+        }
+    }
+    return view;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -260,5 +272,6 @@ module.exports = {
     transformGBMetadataFromBlockchain: transformGBMetadataFromBlockchain,
     updateViewFrequency:updateViewFrequency,
     extractGBFields: extractGBFields,
-    extractViewMeta: extractViewMeta
+    extractViewMeta: extractViewMeta,
+    checkViewExists: checkViewExists
 };
