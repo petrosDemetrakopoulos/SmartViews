@@ -585,7 +585,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             helper.log('cache enabled = FALSE');
             // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
             // just like the case that the cache is originally empty
-            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, 0,  null, function (error, result) {
+            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, 0, null, function (error, result) {
                 gbRunning = false;
                 if (error) {
                     return res.send(stringify(error))

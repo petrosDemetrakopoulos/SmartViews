@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -310,14 +310,7 @@
       <workItem from="1572454796865" duration="483000" />
       <workItem from="1572459214676" duration="38000" />
       <workItem from="1572459331470" duration="78000" />
-      <workItem from="1572505826865" duration="2804000" />
-    </task>
-    <task id="LOCAL-00170" summary="- moved all cache-related functionality to cacheController.js">
-      <created>1570186836473</created>
-      <option name="number" value="00170" />
-      <option name="presentableId" value="LOCAL-00170" />
-      <option name="project" value="LOCAL" />
-      <updated>1570186836473</updated>
+      <workItem from="1572505826865" duration="3904000" />
     </task>
     <task id="LOCAL-00171" summary="- various fixes">
       <created>1570188669728</created>
@@ -655,7 +648,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572507581116</updated>
     </task>
-    <option name="localTasksCounter" value="219" />
+    <task id="LOCAL-00219" summary="- microoptimizations and fixes">
+      <created>1572508848317</created>
+      <option name="number" value="00219" />
+      <option name="presentableId" value="LOCAL-00219" />
+      <option name="project" value="LOCAL" />
+      <updated>1572508848317</updated>
+    </task>
+    <option name="localTasksCounter" value="220" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -710,10 +710,10 @@
     <MESSAGE value="- minor fixes and code cleanup&#10;- updated some deps" />
     <MESSAGE value="- fixed minor bug" />
     <MESSAGE value="- added some more tests" />
-    <MESSAGE value="- microoptimizations and fixes" />
     <MESSAGE value="- created ViewMaterializationController&#10;- fixes and code organization improvements" />
     <MESSAGE value="- reduction from cache moved to viewMaterializationController" />
     <MESSAGE value="- created helper function in cacheController that preprocesses cached results" />
-    <option name="LAST_COMMIT_MESSAGE" value="- created helper function in cacheController that preprocesses cached results" />
+    <MESSAGE value="- microoptimizations and fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="- microoptimizations and fixes" />
   </component>
 </project>
