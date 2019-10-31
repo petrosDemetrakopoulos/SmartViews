@@ -350,64 +350,19 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             // but however it can be calculated just from redis cache
                                                             if (cachedGroupBy.field === view.aggregationField &&
                                                                 view.operation === cachedGroupBy.operation) {
-                                                                let reductionTimeStart = helper.time();
-                                                                computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields, async function (reducedResult, error) {
-                                                                    let reductionTimeEnd = helper.time();
+
+                                                                let times = {cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
+                                                                    cacheRetrieveTimeStart: cacheRetrieveTimeStart,
+                                                                    totalStart: totalStart};
+
+                                                                viewMaterializationController.reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId, function (error, results) {
                                                                     if (error) {
                                                                         gbRunning = false;
                                                                         return res.send(error);
                                                                     }
-
-                                                                    let viewMeta = helper.extractViewMeta(view);
-
-                                                                    if (view.operation === 'AVERAGE') {
-                                                                        reducedResult = transformations.transformReadyAverage(reducedResult, view.gbFields, view.aggregationField);
-                                                                    } else {
-                                                                        reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
-                                                                    }
-                                                                    reducedResult.field = view.aggregationField;
-                                                                    reducedResult.viewName = req.params.viewName;
-                                                                    reducedResult.operation = view.operation;
-
-                                                                    let cacheSaveTimeStart = helper.time();
-                                                                    return cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
-                                                                        helper.log('error:', err);
-                                                                        gbRunning = false;
-                                                                        return res.send(err);
-                                                                    }).on('receipt', (receipt) => {
-                                                                        helper.log('receipt:' + JSON.stringify(receipt));
-                                                                        let cacheSaveTimeEnd = helper.time();
-                                                                        if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                            contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
-                                                                                let totalEnd = helper.time();
-                                                                                if (!err) {
-                                                                                    reducedResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                                    reducedResult.sqlTime = reductionTimeEnd - reductionTimeStart;
-                                                                                    reducedResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                                    reducedResult.totalTime = reducedResult.cacheSaveTime + reducedResult.sqlTime + reducedResult.cacheRetrieveTime;
-                                                                                    reducedResult.allTotal = totalEnd - totalStart;
-                                                                                    helper.printTimes(reducedResult);
-                                                                                    io.emit('view_results', stringify(reducedResult).replace('\\', ''));
-                                                                                    gbRunning = false;
-                                                                                    return res.send(stringify(reducedResult).replace('\\', ''));
-                                                                                }
-                                                                                gbRunning = false;
-                                                                                return res.send(err);
-                                                                            });
-                                                                        } else {
-                                                                            let totalEnd = helper.time();
-                                                                            reducedResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                                            reducedResult.sqlTime = reductionTimeEnd - reductionTimeStart;
-                                                                            reducedResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                                            reducedResult.totalTime = reducedResult.cacheSaveTime + reducedResult.sqlTime + reducedResult.cacheRetrieveTime;
-                                                                            reducedResult.allTotal = totalEnd - totalStart;
-                                                                            helper.printTimes(reducedResult);
-                                                                            io.emit('view_results', stringify(reducedResult).replace('\\', ''));
-                                                                            gbRunning = false;
-                                                                            res.status(200);
-                                                                            return res.send(stringify(reducedResult).replace('\\', ''));
-                                                                        }
-                                                                    });
+                                                                    io.emit('view_results', stringify(results).replace('\\', ''));
+                                                                    res.status(200);
+                                                                    return res.send(stringify(results));
                                                                 });
                                                             } else {
                                                                 // some fields contained in a Group by but operation and aggregation fields differ
@@ -507,7 +462,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
 
                                                                                 let viewMeta = helper.extractViewMeta(view);
                                                                                 // MERGE reducedResult with groupBySQLResult
-
                                                                                 reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
                                                                                 reducedResult.field = view.aggregationField;
                                                                                 reducedResult.viewName = req.params.viewName;
@@ -587,7 +541,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
                                                                                 cacheRetrieveTimeStart: cacheRetrieveTimeStart};
 
-                                                                                viewMaterializationController.mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times, function (err, result) {
+                                                                            viewMaterializationController.mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times, function (err, result) {
                                                                                 if(err){
                                                                                     gbRunning = false;
                                                                                     return res.send(err);

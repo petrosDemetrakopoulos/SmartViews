@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- created ViewMaterializationController&#10;- fixes and code organization improvements">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/viewMaterializationController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/viewMaterializationController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
@@ -308,6 +309,9 @@
       <workItem from="1572444377013" duration="2674000" />
       <workItem from="1572447100039" duration="7320000" />
       <workItem from="1572454796865" duration="483000" />
+      <workItem from="1572459214676" duration="38000" />
+      <workItem from="1572459331470" duration="78000" />
+      <workItem from="1572505826865" duration="857000" />
     </task>
     <task id="LOCAL-00168" summary="- added content in readme">
       <created>1570103623570</created>
