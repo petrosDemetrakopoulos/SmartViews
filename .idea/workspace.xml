@@ -3,8 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -310,14 +314,7 @@
       <workItem from="1572454796865" duration="483000" />
       <workItem from="1572459214676" duration="38000" />
       <workItem from="1572459331470" duration="78000" />
-      <workItem from="1572505826865" duration="3904000" />
-    </task>
-    <task id="LOCAL-00171" summary="- various fixes">
-      <created>1570188669728</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1570188669728</updated>
+      <workItem from="1572505826865" duration="9874000" />
     </task>
     <task id="LOCAL-00172" summary="- fixes in readme">
       <created>1570188863597</created>
@@ -655,7 +652,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572508848317</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="- fixed minor bug">
+      <created>1572509831408</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1572509831408</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -708,12 +712,12 @@
     <MESSAGE value="- minor improvements" />
     <MESSAGE value="- fixed some lintering issues" />
     <MESSAGE value="- minor fixes and code cleanup&#10;- updated some deps" />
-    <MESSAGE value="- fixed minor bug" />
     <MESSAGE value="- added some more tests" />
     <MESSAGE value="- created ViewMaterializationController&#10;- fixes and code organization improvements" />
     <MESSAGE value="- reduction from cache moved to viewMaterializationController" />
     <MESSAGE value="- created helper function in cacheController that preprocesses cached results" />
     <MESSAGE value="- microoptimizations and fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="- microoptimizations and fixes" />
+    <MESSAGE value="- fixed minor bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="- fixed minor bug" />
   </component>
 </project>

@@ -214,7 +214,7 @@ app.get('/groupbyId/:id', contractController.contractChecker, function (req, res
     });
 });
 
-app.get('/getViewByName/:viewName/:contract', contractController.contractChecker, function (req, res) {
+app.get('/getViewByName/:viewName/:contract', contractController.contractChecker, async function (req, res) {
     config = helper.requireUncached('../config_private');
     let totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
@@ -224,8 +224,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         res.status(200);
         return res.send({ error: 'view not found' });
     }
-    helper.updateViewFrequency(factTbl, req.params.contract, view.id);
-
+    await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     helper.log('View by name endpoint hit again');
     if (!gbRunning && !running) {
         gbRunning = true;
@@ -324,12 +323,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             gbRunning = false;
                                                             return res.send(error);
                                                         }
-                                                        let cachedGroupBy = {};
-                                                        if (allCached.length === 1) { // it is <= of slice size, so it is not sliced
-                                                            cachedGroupBy = JSON.parse(allCached[0]);
-                                                        } else { // it is sliced
-                                                            cachedGroupBy = helper.mergeSlicedCachedResult(allCached);
-                                                        }
+                                                        let cachedGroupBy = cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
 
                                                         if (err) {
                                                             helper.log(error);
@@ -347,8 +341,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                     totalStart: totalStart};
 
                                                                 viewMaterializationController.reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId, function (error, results) {
+                                                                    gbRunning = false;
                                                                     if (error) {
-                                                                        gbRunning = false;
                                                                         return res.send(error);
                                                                     }
                                                                     io.emit('view_results', stringify(results).replace('\\', ''));
@@ -359,8 +353,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                 // some fields contained in a Group by but operation and aggregation fields differ
                                                                 // this means we should proceed to new group by calculation from the begining
                                                                 viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                                    gbRunning = false;
                                                                     if(error){
-                                                                        gbRunning = false;
                                                                         return res.send(error);
                                                                     }
                                                                     io.emit('view_results', stringify(result).replace('\\', ''));
@@ -384,8 +378,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                 // same fields but different operation or different aggregate field
                                                                 // this means we should proceed to new group by calculation from the begining
                                                                 viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                                    gbRunning = false;
                                                                     if(error){
-                                                                        gbRunning = false;
                                                                         return res.send(error);
                                                                     }
                                                                     io.emit('view_results', stringify(result).replace('\\', ''));
@@ -532,6 +526,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 }
                                                                                 io.emit('view_results', stringify(result).replace('\\', ''));
                                                                                 res.status(200);
+                                                                                gbRunning = false;
                                                                                 return res.send(stringify(result));
                                                                             })
                                                                         }
@@ -546,13 +541,15 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                     });
                                 } else {
                                     // No filtered group-bys found, proceed to group-by from the beginning
-                                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, null, function (error, result) {
+                                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
                                         gbRunning = false;
                                         if (error) {
+                                            gbRunning = false;
                                             return res.send(stringify(error))
                                         }
                                         io.emit('view_results', stringify(result).replace('\\', ''));
                                         res.status(200);
+                                        gbRunning = false;
                                         return res.send(stringify(result));
                                     });
                                 }
@@ -572,7 +569,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                             }
                             io.emit('view_results', stringify(result).replace('\\', ''));
                             res.status(200);
-                            return res.send(stringify(result));
+                            return res.send(stringify(result).replace('\\', ''));
                         });
                     }
                 } else {
@@ -585,14 +582,14 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             helper.log('cache enabled = FALSE');
             // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
             // just like the case that the cache is originally empty
-            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, 0, null, function (error, result) {
+            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, 0, [], function (error, result) {
                 gbRunning = false;
                 if (error) {
                     return res.send(stringify(error))
                 }
                 io.emit('view_results', stringify(result).replace('\\', ''));
                 res.status(200);
-                return res.send(stringify(result));
+                return res.send(stringify(result).replace('\\', ''));
             });
         }
     }

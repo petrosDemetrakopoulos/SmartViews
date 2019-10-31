@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node .",
-    "test": "nyc mocha --timeout 40000 --exit"
+    "test": "nyc mocha --timeout 60000 --exit"
   },
   "author": "",
   "license": "ISC",

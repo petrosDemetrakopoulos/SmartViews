@@ -151,10 +151,8 @@ function getManyCachedResults (allHashes, callback) {
 function preprocessCachedGroupBy(allCached) {
     let cachedGroupBy = {};
     if (allCached.length === 1) { // it is <= of slice size, so it is not sliced
-        helper.log('IT IS NOT SLICED');
         cachedGroupBy = JSON.parse(allCached[0]);
     } else { // it is sliced
-        helper.log('IT IS SLICED');
         cachedGroupBy = helper.mergeSlicedCachedResult(allCached);
     }
     return cachedGroupBy;

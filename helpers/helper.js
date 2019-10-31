@@ -201,10 +201,18 @@ function transformGBMetadataFromBlockchain (resultGB) {
 }
 
 function updateViewFrequency (factTbl, contract, crnView) {
-    factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
-    fs.writeFile('./templates/' + contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
-        if (err) return log(err);
-        log('updated view frequency');
+    return new Promise(function (resolve, reject) {
+        factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
+        delete factTbl.views[crnView].id;
+         fs.writeFile('./templates/' + contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
+            if (err) {
+                log(err);
+                reject(err);
+            } else {
+                log('updated view frequency');
+                resolve();
+            }
+        });
     });
 }
 
