@@ -38,7 +38,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 658
+      "frequency": 711
     },
     {
       "name": "C|D(COUNT)",
@@ -49,7 +49,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(C int, D int, COUNTpk int)",
-      "frequency": 335
+      "frequency": 350
     },
     {
       "name": "A|B|C(COUNT)",
@@ -61,7 +61,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, COUNTpk int)",
-      "frequency": 46
+      "frequency": 49
     },
     {
       "name": "A|B|C|D(COUNT)",
@@ -85,10 +85,10 @@
       "operation": "SUM",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, SUMD int)",
-      "frequency": 51
+      "frequency": 79
     },
     {
-      "name": "A|B(ΑVERAGE-D)",
+      "name": "A|B(AVERAGE-D)",
       "gbFields": [
         "A",
         "B"
@@ -96,7 +96,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTD int, SUMD int)",
-      "frequency": 4
+      "frequency": 18
     },
     {
       "name": "A|B(MAX-D)",
@@ -107,7 +107,7 @@
       "operation": "MAX",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MAXD int)",
-      "frequency": 39
+      "frequency": 56
     },
     {
       "name": "A|B(MIN-D)",
@@ -118,7 +118,7 @@
       "operation": "MIN",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MIND int)",
-      "frequency": 23
+      "frequency": 39
     },
     {
       "name": "A(COUNT)",
@@ -128,7 +128,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
-      "frequency": 263
+      "frequency": 289
     }
   ]
 }

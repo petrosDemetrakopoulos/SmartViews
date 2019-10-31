@@ -15,5 +15,5 @@
         "database": "Ptychiaki"
     },
     "cacheEnabled": true,
-    "logging": true
+    "logging": false
 }

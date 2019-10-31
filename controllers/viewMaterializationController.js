@@ -1,4 +1,3 @@
-const stringify = require('fast-stringify');
 let contract = null;
 let mainTransactionObject = {};
 const helper = require('../helpers/helper');
@@ -30,7 +29,6 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
         }
 
         let viewMeta = helper.extractViewMeta(view);
-
         if (view.operation === 'AVERAGE') {
             reducedResult = transformations.transformReadyAverage(reducedResult, view.gbFields, view.aggregationField);
         } else {
@@ -62,7 +60,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                         callback(null, reducedResult);
                     }
                     gbRunning = false;
-                   callback(err);
+                    return callback(err);
                 });
             } else {
                 let totalEnd = helper.time();
@@ -73,7 +71,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                 reducedResult.allTotal = totalEnd - times.totalStart;
                 helper.printTimes(reducedResult);
                 gbRunning = false;
-                callback(null, reducedResult);
+                return callback(null, reducedResult);
             }
         });
     });
@@ -91,7 +89,7 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
         helper.log('SAVE ON CACHE BEFORE RETURN');
         if (error) {
             gbRunning = false;
-            callback(error);
+            return callback(error);
         }
         mergeResult.operation = view.operation;
         mergeResult.field = view.aggregationField;
@@ -101,7 +99,7 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
         cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
             helper.log('error:' + err);
             gbRunning = false;
-            callback(err);
+            return callback(err);
         }).on('receipt', (receipt) => {
             let cacheSaveTimeEnd = helper.time();
             delete mergeResult.gbCreateTable;
@@ -118,10 +116,10 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
                         helper.printTimes(mergeResult);
                         helper.log('receipt:' + JSON.stringify(receipt));
                         gbRunning = false;
-                       callback(null, mergeResult);
+                        return callback(null, mergeResult);
                     }
                     gbRunning = false;
-                    callback(err);
+                    return callback(err);
                 });
             } else {
                 let totalEnd = helper.time();
@@ -129,7 +127,7 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
                 helper.printTimes(mergeResult);
                 helper.log('receipt:' + JSON.stringify(receipt));
                 gbRunning = false;
-                callback(null, mergeResult);
+                return callback(null, mergeResult);
             }
         });
     });
@@ -143,7 +141,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
             let bcTimeEnd = helper.time();
             if (retval.length === 0) {
                 gbRunning = false;
-               callback({ error: 'No facts exist in blockchain' }, null);
+                return callback({ error: 'No facts exist in blockchain' }, null);
             }
             let facts = helper.removeTimestamps(retval);
             helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
@@ -152,7 +150,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                 let sqlTimeEnd = helper.time();
                 if (error) {
                     gbRunning = false;
-                    callback(error, null);
+                    return callback(error, null);
                 }
                 groupBySqlResult.gbCreateTable = view.SQLTable;
                 groupBySqlResult.field = view.aggregationField;
@@ -162,7 +160,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                     cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                         helper.log('error:', err);
                         gbRunning = false;
-                        callback(err, null);
+                        return callback(err, null);
                     }).on('receipt', (receipt) => {
                         let cacheSaveTimeEnd = helper.time();
                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
@@ -178,9 +176,9 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                                         groupBySqlResult.allTotal = totalEnd - totalStart;
                                         helper.printTimes(groupBySqlResult);
                                         gbRunning = false;
-                                        callback(null, groupBySqlResult);
+                                        return callback(null, groupBySqlResult);
                                     } else {
-                                        callback(err);
+                                        return callback(err);
                                     }
                                 });
                             } else {
@@ -191,7 +189,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                                 groupBySqlResult.allTotal = totalEnd - totalStart;
                                 helper.printTimes(groupBySqlResult);
                                 gbRunning = false;
-                                callback(null, groupBySqlResult);
+                                return callback(null, groupBySqlResult);
                             }
                     });
                 } else {
@@ -202,7 +200,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                     groupBySqlResult.allTotal = totalEnd - totalStart;
                     helper.printTimes(groupBySqlResult);
                     gbRunning = false;
-                    callback(null, groupBySqlResult);
+                    return callback(null, groupBySqlResult);
                 }
             });
         });

@@ -250,7 +250,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 let filteredGBs = [];
                                 let sortedByEvictionCost = [];
                                 for (let i = 0; i < transformedArray.length; i++) { // filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
-                                    if (transformedArray[i].containsAllFields) {
+                                    if (transformedArray[i].containsAllFields) { //BUG THERE: SHOULD CHECK FOT THE OPERATION TOO.
                                         filteredGBs.push(transformedArray[i]);
                                     }
                                     sortedByEvictionCost.push(transformedArray[i]);
@@ -323,7 +323,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             gbRunning = false;
                                                             return res.send(error);
                                                         }
-                                                        let cachedGroupBy = cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
+                                                        let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
 
                                                         if (err) {
                                                             helper.log(error);
@@ -530,6 +530,19 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 return res.send(stringify(result));
                                                                             })
                                                                         }
+                                                                    } else {
+                                                                        // No filtered group-bys found, proceed to group-by from the beginning
+                                                                        viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                                            gbRunning = false;
+                                                                            if (error) {
+                                                                                gbRunning = false;
+                                                                                return res.send(stringify(error))
+                                                                            }
+                                                                            io.emit('view_results', stringify(result).replace('\\', ''));
+                                                                            res.status(200);
+                                                                            gbRunning = false;
+                                                                            return res.send(stringify(result).replace('\\', ''));
+                                                                        });
                                                                     }
                                                                 });
                                                             });
@@ -550,7 +563,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                         io.emit('view_results', stringify(result).replace('\\', ''));
                                         res.status(200);
                                         gbRunning = false;
-                                        return res.send(stringify(result));
+                                        return res.send(stringify(result).replace('\\', ''));
                                     });
                                 }
                             } else {

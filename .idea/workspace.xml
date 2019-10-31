@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- fixed minor bug">
+      <change afterPath="$PROJECT_DIR$/test_data/10fourcol_d.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/computationsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/computationsController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/viewMaterializationController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/viewMaterializationController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
@@ -314,14 +316,8 @@
       <workItem from="1572454796865" duration="483000" />
       <workItem from="1572459214676" duration="38000" />
       <workItem from="1572459331470" duration="78000" />
-      <workItem from="1572505826865" duration="9874000" />
-    </task>
-    <task id="LOCAL-00172" summary="- fixes in readme">
-      <created>1570188863597</created>
-      <option name="number" value="00172" />
-      <option name="presentableId" value="LOCAL-00172" />
-      <option name="project" value="LOCAL" />
-      <updated>1570188863597</updated>
+      <workItem from="1572505826865" duration="14127000" />
+      <workItem from="1572546099978" duration="2629000" />
     </task>
     <task id="LOCAL-00173" summary="- fixes in readme">
       <created>1570188888016</created>
@@ -659,7 +655,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572509831408</updated>
     </task>
-    <option name="localTasksCounter" value="221" />
+    <task id="LOCAL-00221" summary="- fixed minor bug">
+      <created>1572516132479</created>
+      <option name="number" value="00221" />
+      <option name="presentableId" value="LOCAL-00221" />
+      <option name="project" value="LOCAL" />
+      <updated>1572516132479</updated>
+    </task>
+    <option name="localTasksCounter" value="222" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

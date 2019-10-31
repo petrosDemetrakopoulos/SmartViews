@@ -35,7 +35,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
             helper.log(err);
             callback(null, err);
         }
-        connection.query(createTable, function (error, results) { // creating the SQL table for 'Fact Table'
+        connection.query(createTable, function (error) { // creating the SQL table for 'Fact Table'
             if (error) {
                 helper.log(error);
                 callback(null, error);
@@ -49,9 +49,10 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                 values: facts
             });
 
+
             let editedQuery = sql.query.replace(/"/g, '');
             editedQuery = editedQuery.replace(/''/g, 'null');
-            connection.query(editedQuery, function (error, results2) { // insert facts
+            connection.query(editedQuery, function (error) { // insert facts
                 if (error) {
                     helper.log(error);
                     callback(null, error);
@@ -95,7 +96,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                         helper.log(error);
                         callback(null, error);
                     }
-                    connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                    connection.query('DROP TABLE ' + tableName, function (err) {
                         if (err) {
                             helper.log(err);
                             callback(null, err);
