@@ -38,6 +38,10 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
             return;
         }
         let freq = 0;
+
+        allCached = allCached.filter(function (el) { //remove null objects in case they have been deleted
+            return el != null;
+        });
         if (allHashes.length > 1) {
             for (let j = 0; j < allCached.length; j++) {
                 let crnGb = JSON.parse(allCached[j]);

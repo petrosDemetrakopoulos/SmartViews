@@ -71,12 +71,6 @@ function printTimes (resultObject) {
     if (resultObject.cacheRetrieveTime) {
         log('cache retrieve time = ' + resultObject.cacheRetrieveTime);
     }
-    if (resultObject.obj1Time) {
-        log('->     obj1 server time = ' + resultObject.obj1Time);
-    }
-    if (resultObject.obj2Time) {
-        log('->     obj2 server time = ' + resultObject.obj2Time);
-    }
     log('total time = ' + resultObject.totalTime);
     log('all total time = ' + resultObject.allTotal);
 }
@@ -197,6 +191,11 @@ function transformGBMetadataFromBlockchain (resultGB) {
             id: j
         };
     }
+    // then we filter out the empty objects (the ones that are deleted from blockchain, however left with zeroes)
+    //it is enough to check if the hash exists
+    transformedArray = transformedArray.filter(gb => {
+        return gb.hash.length > 0
+    });
     return transformedArray;
 }
 
@@ -231,7 +230,7 @@ function extractGBFields (view) {
     return gbFields;
 }
 
-function extractViewMeta(view){
+function extractViewMeta(view) {
     let viewNameSQL = view.SQLTable.split(' ');
     viewNameSQL = viewNameSQL[3];
     viewNameSQL = viewNameSQL.split('(')[0];

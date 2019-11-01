@@ -9,7 +9,7 @@ async function generateContract (templateFileName) {
     let firstLine = 'pragma solidity ^0.4.24;\npragma experimental ABIEncoderV2;\n';
     let secondLine = 'contract ' + factTbl.name + ' { \n';
     let thirdLine = '\tuint public dataId;\n';
-    let fourthLine = '\tuint public groupId;\n\n';
+    let fourthLine = '\tuint public groupId;\n\n\tevent gbArray(string hash);\n\tevent dataAdded(string dat);\n\t\tevent groupBysDeleted(uint[] deletedIds);\n';
     let sixthLine = '\tuint public viewId;\n\n';
     let fifthLine = '\tuint public lastCount;\n' +
         '\tuint public lastSUM;\n' +
@@ -283,15 +283,20 @@ async function generateContract (templateFileName) {
         '\t\t\tfacts[dataId].timestamp = now;\n' +
         '\t\t\tdataId += 1;\n' +
         '\t\t}\n' +
+        '\t\t emit dataAdded(facts[dataId-1].payload);\n' +
         '\t\treturn (facts[dataId-1].payload,dataId -1);\n' +
         '\t}\n';
 
-    let deleteGBById = '\tfunction deleteGBsById(uint[] gbIds) public returns (uint){\n';
+    let deleteGBById = '\tfunction deleteGBsById(uint[] gbIds) public returns (uint[] deletedIds){\n';
+    deleteGBById += '\t\tuint[] memory deletedIdss = new uint[](gbIds.length);\n';
     deleteGBById += '\t\tfor(uint i=0; i < gbIds.length; i++){\n';
     deleteGBById += '\t\t\tuint crnDelId = gbIds[i];\n';
+    deleteGBById += '\t\t\tdeletedIdss[i] = crnDelId;\n';
     deleteGBById += '\t\t\tdelete groupBys[crnDelId];\n';
+    deleteGBById += '\t\t\temit dataAdded("deleted");\n';
     deleteGBById += '\t\t}\n';
-    deleteGBById += '\t\treturn (gbIds[gbIds.length - 1]);\n';
+    deleteGBById += '\t\temit groupBysDeleted(deletedIdss);\n';
+    deleteGBById += '\t\treturn (deletedIdss);\n';
     deleteGBById += '\t}\n';
 
     contrPayload = firstLine + secondLine + thirdLine + fourthLine + sixthLine + fifthLine +

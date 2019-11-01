@@ -2,13 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- fixed minor bug">
-      <change afterPath="$PROJECT_DIR$/test_data/10fourcol_d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_data/10fourcol_e.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_data/10fourcol_f.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/computationsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/computationsController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/viewMaterializationController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/viewMaterializationController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/costFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/costFunctions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
@@ -317,14 +322,8 @@
       <workItem from="1572459214676" duration="38000" />
       <workItem from="1572459331470" duration="78000" />
       <workItem from="1572505826865" duration="14127000" />
-      <workItem from="1572546099978" duration="2629000" />
-    </task>
-    <task id="LOCAL-00173" summary="- fixes in readme">
-      <created>1570188888016</created>
-      <option name="number" value="00173" />
-      <option name="presentableId" value="LOCAL-00173" />
-      <option name="project" value="LOCAL" />
-      <updated>1570188888016</updated>
+      <workItem from="1572546099978" duration="4318000" />
+      <workItem from="1572592741818" duration="13757000" />
     </task>
     <task id="LOCAL-00174" summary="- various fixes">
       <created>1570190730136</created>
@@ -662,7 +661,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572516132479</updated>
     </task>
-    <option name="localTasksCounter" value="222" />
+    <task id="LOCAL-00222" summary="- minor bug fixes and improvements">
+      <created>1572548827744</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1572548827745</updated>
+    </task>
+    <option name="localTasksCounter" value="223" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -696,7 +702,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" - removed unneeded code" />
     <MESSAGE value=" - restored sockets&#10; - removed unnedded front-end imports" />
     <MESSAGE value=" - front-end polishing" />
     <MESSAGE value=" - various fixes&#10; - created the first tests&#10; - removed unneeded functions" />
@@ -721,6 +726,7 @@
     <MESSAGE value="- created helper function in cacheController that preprocesses cached results" />
     <MESSAGE value="- microoptimizations and fixes" />
     <MESSAGE value="- fixed minor bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="- fixed minor bug" />
+    <MESSAGE value="- minor bug fixes and improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="- minor bug fixes and improvements" />
   </component>
 </project>

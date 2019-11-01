@@ -15,7 +15,6 @@ function setContract (contractObject, account) {
         gas: 1500000000000,
         gasPrice: '30000000000000'
     };
-    contractController.setContract(contractObject, account);
     cacheController.setContract(contractObject, account);
 }
 
@@ -47,7 +46,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
             helper.log('receipt:' + JSON.stringify(receipt));
             let cacheSaveTimeEnd = helper.time();
             if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
                     let totalEnd = helper.time();
                     if (!err) {
                         reducedResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
@@ -109,7 +108,7 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
             mergeResult.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
             mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
             if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
                     let totalEnd = helper.time();
                     if (!err) {
                         mergeResult.allTotal = totalEnd - times.totalStart;
@@ -167,7 +166,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                         delete groupBySqlResult.gbCreateTable;
                         helper.log('receipt:' + JSON.stringify(receipt));
                             if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
-                                contractController.deleteCachedResults(sortedByEvictionCost, function (err, latestGBDeleted) {
+                                contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
                                     let totalEnd = helper.time();
                                     if (!err) {
                                         groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;

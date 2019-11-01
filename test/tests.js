@@ -252,7 +252,7 @@ describe('testing /getViewByName/:viewName/:contract -- MAX', function () {
 });
 
 describe('testing /getViewByName/:viewName/:contract -- MIN', function () {
-    freeze(2000);
+    freeze(1500);
     let resp = {};
     it('should return OK status', function () {
         return request(app)
@@ -269,7 +269,7 @@ describe('testing /getViewByName/:viewName/:contract -- MIN', function () {
 });
 
 describe('testing /getViewByName/:viewName/:contract -- AVERAGE', function () {
-    freeze(2000);
+    freeze(1500);
     let resp = {};
     it('should return OK status', function () {
         return request(app)
@@ -288,7 +288,7 @@ describe('testing /getViewByName/:viewName/:contract -- AVERAGE', function () {
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas -- SUM', function () {
     let resp = {};
     it('should return OK status', function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/load_dataset/10fourcol_b') // adding deltas
             .then(function (response) {
@@ -306,10 +306,52 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
     });
 });
 
+describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas -- AVERAGE', function () {
+    let resp = {};
+    it('should return OK status', function () {
+        freeze(1500);
+        return request(app)
+            .get('/load_dataset/10fourcol_e') // adding deltas
+            .then(function (response) {
+                return request(app)
+                    .get('/getViewByName/A|B(AVERAGE-D))/ABCD')
+                    .then(function (response) {
+                        resp = response.text;
+                        expect(response.status).to.equal(200);
+                    });
+            });
+    });
+
+    it('should be a string', function () {
+        expect(resp).to.be.a('string');
+    });
+});
+
+describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas -- MIN', function () {
+    let resp = {};
+    it('should return OK status', function () {
+        freeze(1500);
+        return request(app)
+            .get('/load_dataset/10fourcol_f') // adding deltas
+            .then(function (response) {
+                return request(app)
+                    .get('/getViewByName/A|B(MIN-D))/ABCD')
+                    .then(function (response) {
+                        resp = response.text;
+                        expect(response.status).to.equal(200);
+                    });
+            });
+    });
+
+    it('should be a string', function () {
+        expect(resp).to.be.a('string');
+    });
+});
+
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached', function () {
     let resp = {};
     it('should return OK status', function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/getViewByName/A|B(COUNT)/ABCD')
             .then(function (response) {
@@ -326,7 +368,7 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
 describe('testing /getViewByName/:viewName/:contract -- Reduction from cache without deltas', async function () {
     let resp = {};
     it('should return OK status', function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/getViewByName/A(COUNT)/ABCD')
             .then(function (response) {
@@ -343,7 +385,7 @@ describe('testing /getViewByName/:viewName/:contract -- Reduction from cache wit
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas', function () {
     let resp = {};
     it('should return OK status', function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/load_dataset/10fourcol_c') // adding deltas
             .then(function (response) {
@@ -364,11 +406,11 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
 describe('testing /getViewByName/:viewName/:contract -- Reduction from cache + Deltas', async function () {
     let resp = {};
     it('should return OK status', async function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/load_dataset/10fourcol_d') // adding deltas
             .then(function (response) {
-                freeze(2000);
+                freeze(1500);
                 return request(app)
                     .get('/getViewByName/A(COUNT)/ABCD')
                     .then(function (response) {
@@ -386,7 +428,7 @@ describe('testing /getViewByName/:viewName/:contract -- Reduction from cache + D
 describe('testing /getViewByName/:viewName/:contract -- No requested fields belong to some cached', function () {
     let resp = {};
     it('should return OK status', function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/getViewByName/C|D(COUNT)/ABCD')
             .then(function (response) {
@@ -403,7 +445,7 @@ describe('testing /getViewByName/:viewName/:contract -- No requested fields belo
 describe('testing /getViewByName/:viewName/:contract -- Invalid view name', function () {
     let resp = {};
     it('should return OK status', async function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/getViewByName/notValidViewName/ABCD')
             .then(function (response) {
@@ -432,7 +474,7 @@ describe('testing /getViewByName/:viewName/:contract -- cache disabled', functio
     });
 
     it('should return OK status', async function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/getViewByName/A(COUNT)/ABCD')
             .then(function (response) {
@@ -450,7 +492,7 @@ describe('testing /getViewByName/:viewName/:contract -- cache disabled', functio
 describe('testing /groupbyId/:id route', function () {
     let resp = {};
     it('should return OK status', function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/groupbyId/0')
             .then(function (response) {
@@ -491,7 +533,7 @@ describe('testing /getcount route', function () {
     let resp = {};
     let config = require('../config_private');
     it('should return OK status', function () {
-        freeze(2000);
+        freeze(1500);
         return request(app)
             .get('/getcount')
             .then(function (response) {

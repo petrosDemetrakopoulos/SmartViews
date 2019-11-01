@@ -3,6 +3,7 @@ let contract = null;
 let mainTransactionObject = {};
 const helper = require('../helpers/helper');
 const cacheController = require('./cacheController');
+const delay = require('delay');
 
 function setContract (contractObject, account) {
     contract = contractObject;
@@ -58,6 +59,25 @@ async function getGroupByWithId (id) {
         } else {
             helper.log(err);
             Promise.reject(err);
+        }
+    });
+}
+
+function getAllGroupbys (callback){
+    contract.methods.groupId().call(function (err, result) {
+        if(!err) {
+            contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
+                if (!err) {
+                    resultGB = removeUnneededFieldsFromBCResponse(resultGB);
+                    callback(null, resultGB);
+                } else {
+                    helper.log(err);
+                    callback(err);
+                }
+            });
+        } else {
+            helper.log(err);
+            callback(err);
         }
     });
 }
@@ -183,12 +203,18 @@ function getLatestId (callback) {
 }
 
 function deleteGBsById (gbIdsToDelete, callback) {
-    contract.methods.deleteGBsById(gbIdsToDelete).call(function (err, latestGBDeleted) {
-        if(err){
-            callback(err, null);
-        } else {
-            callback(null, latestGBDeleted);
-        }
+
+    let deleteGBsByIdPromise =  contract.methods.deleteGBsById(gbIdsToDelete);
+    return deleteGBsByIdPromise.send(mainTransactionObject, (err, txHash) => {
+        helper.log('send:', err, txHash);
+    }).on('error', (err) => {
+        helper.log('error:', err);
+        Promise.reject(err);
+    }).on('transactionHash', (err) => {
+        helper.log('transactionHash:', err);
+    }).on('receipt', (receipt) => {
+        helper.log('receipt:', receipt);
+        Promise.resolve(receipt);
     });
 }
 
@@ -204,12 +230,11 @@ function removeUnneededFieldsFromBCResponse (bcResponse) {
 
 function deleteCachedResults (sortedByEvictionCost, callback) {
     cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-        deleteGBsById(gbIdsToDelete)(function (err, latestGBDeleted) {
-            if(err){
-                callback(err, null);
-            } else {
-                callback(null, latestGBDeleted);
-            }
+        deleteGBsById(gbIdsToDelete).then(receipt => {
+            callback(null, receipt);
+        }).catch(error => {
+            helper.log(error);
+            callback(error);
         });
     });
 }
@@ -227,5 +252,6 @@ module.exports = {
     contractChecker: contractChecker,
     getLatestId: getLatestId,
     deleteGBsById: deleteGBsById,
-    deleteCachedResults: deleteCachedResults
+    deleteCachedResults: deleteCachedResults,
+    getAllGroupbys: getAllGroupbys
 };

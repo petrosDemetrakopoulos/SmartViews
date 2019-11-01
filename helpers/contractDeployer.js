@@ -2,7 +2,7 @@ const solc = require('solc');
 const fs = require('fs');
 let config = require('../config_private');
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider(config.blockchainIP));
+const web3 = new Web3(new Web3.providers.WebsocketProvider(config.blockchainIP));
 const helper = require('../helpers/helper');
 async function deploy (account, contractPath, contract) {
     const input = fs.readFileSync(contractPath);

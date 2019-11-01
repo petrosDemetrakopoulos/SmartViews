@@ -1,7 +1,7 @@
 {
     "recordsSlice": 1000,
     "cacheEvictionPolicy": "FIFO",
-    "maxCacheSize": 20,
+    "maxCacheSize": 2,
     "cacheSlice": 400,
     "autoCacheSlice": "auto",
     "maxGbSize": 10000,
