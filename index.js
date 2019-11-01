@@ -24,7 +24,6 @@ const transformations = require('./helpers/transformations');
 const contractDeployer = require('./helpers/contractDeployer');
 const contractController = require('./controllers/contractController');
 const cacheController = require('./controllers/cacheController');
-const costFunctions = require('./helpers/costFunctions');
 const computationsController = require('./controllers/computationsController');
 const viewMaterializationController = require('./controllers/viewMaterializationController');
 const Web3 = require('web3');
@@ -88,7 +87,7 @@ app.get('/form/:contract', function (req, res) {
 http.listen(3000, () => {
     console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
     console.log(`Visit http://localhost:3000/ to view Blockchain, mySQL and Redis cache status`);
- //   config = new SelfReloadJSON('./config_private.json');
+    //   config = new SelfReloadJSON('./config_private.json');
     let validations = helper.configFileValidations();
     if (process.env.ENVIRONMENT === 'LAB') {
         config = configLab;
@@ -229,7 +228,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     helper.log('View by name endpoint hit again');
     if (!gbRunning && !running) {
-        gbRunning = true;
+        gbRunning = true; // a flag to handle retries of the request from the front-end
         let gbFields = helper.extractGBFields(view);
         view.gbFields = gbFields;
         for (let index in view.gbFields) {
@@ -245,51 +244,13 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                     return res.send(err);
                 }
                 if (resultGB) {
-                    let transformedArray = helper.transformGBMetadataFromBlockchain(resultGB);
-                    transformedArray = helper.containsAllFields(transformedArray, view); // assigns the containsAllFields value
-                    console.log("RESULTS GB TRANSFORMED:");
-                    console.log(resultGB);
-                    let filteredGBs = [];
-                    let sortedByEvictionCost = [];
-                    for (let i = 0; i < transformedArray.length; i++) { // filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
-                        if (transformedArray[i].containsAllFields) { // BUG THERE: SHOULD CHECK FOR THE OPERATION TOO.
-                            filteredGBs.push(transformedArray[i]);
-                        }
-                        sortedByEvictionCost.push(transformedArray[i]);
-                    }
-
-                    await contractController.getLatestId(function (err, latestId) {
-                        if (err) throw err;
-                        helper.log('_________________________________');
-                        sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost, latestId, req.params.viewName, factTbl);
-                        helper.log(sortedByEvictionCost);
-                        helper.log('cache eviction costs assigned:');
-                        helper.log(sortedByEvictionCost);
-                        filteredGBs = costFunctions.calculationCostOfficial(filteredGBs, latestId); // the cost to materialize the view from each view cached
-                    });
-
-                    await sortedByEvictionCost.sort(function (a, b) {
-                        if (config.cacheEvictionPolicy === 'FIFO') {
-                            return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
-                        } else if (config.cacheEvictionPolicy === 'COST FUNCTION') {
-                            helper.log('SORT WITH COST FUNCTION');
-                            return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
-                        }
-                    });
-
-                    helper.log('SORTED Group Bys by eviction cost:');
-                    helper.log(sortedByEvictionCost); // TS ORDER ascending, the first ones are less 'expensive' than the last ones.
-                    helper.log('________________________');
-                    // assign costs
-                    // filteredGBs = calculationCostOfficial(filteredGBs, latestId);
+                    let filteredGBs = helper.filterGBs(resultGB, view);
                     if (filteredGBs.length > 0) {
-                        // pick the one with the less cost
-                        filteredGBs.sort(function (a, b) {
-                            return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
-                        }); // order ascending
-                        let mostEfficient = filteredGBs[0];
                         let getLatestFactIdTimeStart = helper.time();
-                        contractController.getLatestId(function (err, latestId) {
+                        contractController.getLatestId(async function (err, latestId) {
+                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId);
+                            let mostEfficient = sortedByCalculationCost[0];
                             helper.log('LATEST ID IS:');
                             helper.log(latestId);
                             let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
@@ -343,7 +304,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                 } else {
                                                     // some fields contained in a Group by but operation and aggregation fields differ
                                                     // this means we should proceed to new group by calculation from the begining
-                                                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
                                                         gbRunning = false;
                                                         if (error) {
                                                             return res.send(error);
@@ -368,7 +329,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                 } else {
                                                     // same fields but different operation or different aggregate field
                                                     // this means we should proceed to new group by calculation from the begining
-                                                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
                                                         gbRunning = false;
                                                         if (error) {
                                                             return res.send(error);
@@ -383,7 +344,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                             // for some reason cachedGroupBy returned null, this means we have some discrepancy issue between the cache
                                             // and blockchain saved hashes, the hashes of the cached results saved in blockchain do not exist in cache
                                             // therefore we proceed to a new materialization
-                                            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
                                                 gbRunning = false;
                                                 if (error) {
                                                     return res.send(error);
@@ -538,7 +499,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                         }
                                                     } else {
                                                         // No filtered group-bys found, proceed to group-by from the beginning
-                                                        viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                                        viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
                                                             gbRunning = false;
                                                             if (error) {
                                                                 gbRunning = false;
@@ -558,7 +519,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         });
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
-                        viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                        viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
                             gbRunning = false;
                             if (error) {
                                 gbRunning = false;

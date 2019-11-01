@@ -74,6 +74,7 @@ function printTimes (resultObject) {
     log('total time = ' + resultObject.totalTime);
     log('all total time = ' + resultObject.allTotal);
 }
+
 function containsAllFields (transformedArray, view) {
     for (let i = 0; i < transformedArray.length; i++) {
         let containsAllFields = true;
@@ -193,7 +194,7 @@ function transformGBMetadataFromBlockchain (resultGB) {
     // then we filter out the empty objects (the ones that are deleted from blockchain, however left with zeroes)
     //it is enough to check if the hash exists
     transformedArray = transformedArray.filter(gb => {
-        return gb.hash.length > 0
+        return gb.hash.length > 0;
     });
     return transformedArray;
 }
@@ -229,7 +230,7 @@ function extractGBFields (view) {
     return gbFields;
 }
 
-function extractViewMeta(view) {
+function extractViewMeta (view) {
     let viewNameSQL = view.SQLTable.split(' ');
     viewNameSQL = viewNameSQL[3];
     viewNameSQL = viewNameSQL.split('(')[0];
@@ -268,6 +269,47 @@ function sanitizeSQLQuery(gbQuery){
     return query;
 }
 
+function filterGBs (resultGB, view) {
+    let transformedArray = transformGBMetadataFromBlockchain(resultGB);
+    transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
+    let filteredGBs = [];
+    for (let i = 0; i < transformedArray.length; i++) { // filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
+        if (transformedArray[i].containsAllFields) { // BUG THERE: SHOULD CHECK FOR THE OPERATION TOO.
+            filteredGBs.push(transformedArray[i]);
+        }
+    }
+    return filteredGBs;
+}
+
+async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
+    let transformedArray = transformGBMetadataFromBlockchain(resultGB);
+    transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
+    let sortedByEvictionCost = Array.from(transformedArray);
+
+    log('_________________________________');
+    sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost, latestId, view.name, factTbl);
+    log(sortedByEvictionCost);
+    log('cache eviction costs assigned:');
+    log(sortedByEvictionCost);
+    await sortedByEvictionCost.sort(function (a, b) {
+        if (config.cacheEvictionPolicy === 'FIFO') {
+            return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+        } else if (config.cacheEvictionPolicy === 'COST FUNCTION') {
+            helper.log('SORT WITH COST FUNCTION');
+            return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
+        }
+    });
+    return sortedByEvictionCost;
+}
+
+async function sortByCalculationCost(resultGBs, latestId) {
+    resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
+    await resultGBs.sort(function (a, b) {
+        return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
+    }); // order ascending
+    return resultGBs;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -276,15 +318,18 @@ module.exports = {
     getRandomInt: getRandomInt,
     getRandomFloat: getRandomFloat,
     time: time,
-    log:log,
+    log: log,
     requireUncached: requireUncached,
     mergeSlicedCachedResult: mergeSlicedCachedResult,
     extractGBValues: extractGBValues,
     getJSONFiles: getJSONFiles,
-    transformGBMetadataFromBlockchain: transformGBMetadataFromBlockchain,
     updateViewFrequency:updateViewFrequency,
     extractGBFields: extractGBFields,
     extractViewMeta: extractViewMeta,
     checkViewExists: checkViewExists,
-    sanitizeSQLQuery: sanitizeSQLQuery
+    sanitizeSQLQuery: sanitizeSQLQuery,
+    filterGBs: filterGBs,
+    sortByEvictionCost: sortByEvictionCost,
+    sortByCalculationCost: sortByCalculationCost
 };
+const costFunctions = require('./costFunctions');

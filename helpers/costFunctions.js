@@ -109,6 +109,7 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
     return groupBys;
 }
 
+
 module.exports = {
     calculationCost: calculationCost,
     cacheEvictionCost: cacheEvictionCost,

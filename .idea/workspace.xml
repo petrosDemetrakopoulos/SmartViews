@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/costFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/costFunctions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
@@ -315,14 +315,7 @@
       <workItem from="1572505826865" duration="14127000" />
       <workItem from="1572546099978" duration="4318000" />
       <workItem from="1572592741818" duration="14030000" />
-      <workItem from="1572607970260" duration="7226000" />
-    </task>
-    <task id="LOCAL-00177" summary="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project">
-      <created>1570195435614</created>
-      <option name="number" value="00177" />
-      <option name="presentableId" value="LOCAL-00177" />
-      <option name="project" value="LOCAL" />
-      <updated>1570195435614</updated>
+      <workItem from="1572607970260" duration="10600000" />
     </task>
     <task id="LOCAL-00178" summary="lintering fixes">
       <created>1570197175451</created>
@@ -660,7 +653,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572615570588</updated>
     </task>
-    <option name="localTasksCounter" value="226" />
+    <task id="LOCAL-00226" summary="- fixed minor issue">
+      <created>1572617133019</created>
+      <option name="number" value="00226" />
+      <option name="presentableId" value="LOCAL-00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1572617133019</updated>
+    </task>
+    <option name="localTasksCounter" value="227" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -694,7 +694,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- more tests" />
     <MESSAGE value="- removed unneeded code" />
     <MESSAGE value="- fixes in tests" />
     <MESSAGE value="- created run.sh bash script to start the project at once" />
@@ -719,6 +718,7 @@
     <MESSAGE value="- fixed major bug causing hashes not to delete from the blockchain under circumstances&#10;- more tests, got almost 75% coverage" />
     <MESSAGE value="- code optimizations and beautification" />
     <MESSAGE value="- created getAllGroupBys function in contracyController&#10;- decreased nesting rate in viewByname endpoint&#10;- fixed identation" />
-    <option name="LAST_COMMIT_MESSAGE" value="- created getAllGroupBys function in contracyController&#10;- decreased nesting rate in viewByname endpoint&#10;- fixed identation" />
+    <MESSAGE value="- fixed minor issue" />
+    <option name="LAST_COMMIT_MESSAGE" value="- fixed minor issue" />
   </component>
 </project>
