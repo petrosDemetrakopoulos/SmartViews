@@ -9,7 +9,7 @@ async function generateContract (templateFileName) {
     let firstLine = 'pragma solidity ^0.4.24;\npragma experimental ABIEncoderV2;\n';
     let secondLine = 'contract ' + factTbl.name + ' { \n';
     let thirdLine = '\tuint public dataId;\n';
-    let fourthLine = '\tuint public groupId;\n\n\tevent gbArray(string hash);\n\tevent dataAdded(string dat);\n\t\tevent groupBysDeleted(uint[] deletedIds);\n';
+    let fourthLine = '\tuint public groupId;\n\n\tevent gbArray(string hash);\n\tevent dataAdded(string dat);\n\tevent groupBysDeleted(uint[] deletedIds);\n';
     let sixthLine = '\tuint public viewId;\n\n';
     let fifthLine = '\tuint public lastCount;\n' +
         '\tuint public lastSUM;\n' +
@@ -164,7 +164,6 @@ async function generateContract (templateFileName) {
             retValsLatest += 'facts[dataId-1].' + crnProp.key + ',';
         }
     }
-    let retFactLatest = '\t\t\treturn (' + retValsLatest;
     let emptyRetFactLatest = '';
 
     for (let i = 0; i < factTbl.properties.length; i++) {

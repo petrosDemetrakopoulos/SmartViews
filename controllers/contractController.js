@@ -64,17 +64,27 @@ async function getGroupByWithId (id) {
 }
 
 function getAllGroupbys (callback){
+    let getGroupIdTimeStart = helper.time();
     contract.methods.groupId().call(function (err, result) {
+        let getGroupIdTime = helper.time() - getGroupIdTimeStart;
         if(!err) {
-            contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
-                if (!err) {
-                    resultGB = removeUnneededFieldsFromBCResponse(resultGB);
-                    callback(null, resultGB);
-                } else {
-                    helper.log(err);
-                    callback(err);
-                }
-            });
+            if (result > 0) {
+                let getAllGBsFromBCTimeStart = helper.time();
+                contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
+                    let getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
+                    let times = {getAllGBsTime: getAllGBsTime, getGroupIdTime: getGroupIdTime};
+                    if (!err) {
+                        resultGB = removeUnneededFieldsFromBCResponse(resultGB);
+                        callback(null, resultGB, times);
+                    } else {
+                        helper.log(err);
+                        callback(err);
+                    }
+                });
+            } else {
+                let times = {getGroupIdTime: getGroupIdTime};
+                callback(null, [], times);
+            }
         } else {
             helper.log(err);
             callback(err);

@@ -2,20 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- fixed minor bug">
-      <change afterPath="$PROJECT_DIR$/test_data/10fourcol_e.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_data/10fourcol_f.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/viewMaterializationController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/viewMaterializationController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractDeployer.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractDeployer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/costFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/costFunctions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -323,21 +315,8 @@
       <workItem from="1572459331470" duration="78000" />
       <workItem from="1572505826865" duration="14127000" />
       <workItem from="1572546099978" duration="4318000" />
-      <workItem from="1572592741818" duration="13757000" />
-    </task>
-    <task id="LOCAL-00174" summary="- various fixes">
-      <created>1570190730136</created>
-      <option name="number" value="00174" />
-      <option name="presentableId" value="LOCAL-00174" />
-      <option name="project" value="LOCAL" />
-      <updated>1570190730136</updated>
-    </task>
-    <task id="LOCAL-00175" summary="- front-end fixes">
-      <created>1570192781932</created>
-      <option name="number" value="00175" />
-      <option name="presentableId" value="LOCAL-00175" />
-      <option name="project" value="LOCAL" />
-      <updated>1570192781933</updated>
+      <workItem from="1572592741818" duration="14030000" />
+      <workItem from="1572607970260" duration="5488000" />
     </task>
     <task id="LOCAL-00176" summary="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project">
       <created>1570194901970</created>
@@ -668,7 +647,21 @@
       <option name="project" value="LOCAL" />
       <updated>1572548827745</updated>
     </task>
-    <option name="localTasksCounter" value="223" />
+    <task id="LOCAL-00223" summary="- fixed major bug causing hashes not to delete from the blockchain under circumstances&#10;- more tests, got almost 75% coverage">
+      <created>1572607466615</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1572607466615</updated>
+    </task>
+    <task id="LOCAL-00224" summary="- code optimizations and beautification">
+      <created>1572609759454</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1572609759454</updated>
+    </task>
+    <option name="localTasksCounter" value="225" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -702,8 +695,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" - restored sockets&#10; - removed unnedded front-end imports" />
-    <MESSAGE value=" - front-end polishing" />
     <MESSAGE value=" - various fixes&#10; - created the first tests&#10; - removed unneeded functions" />
     <MESSAGE value="- more tests" />
     <MESSAGE value="- removed unneeded code" />
@@ -727,6 +718,8 @@
     <MESSAGE value="- microoptimizations and fixes" />
     <MESSAGE value="- fixed minor bug" />
     <MESSAGE value="- minor bug fixes and improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="- minor bug fixes and improvements" />
+    <MESSAGE value="- fixed major bug causing hashes not to delete from the blockchain under circumstances&#10;- more tests, got almost 75% coverage" />
+    <MESSAGE value="- code optimizations and beautification" />
+    <option name="LAST_COMMIT_MESSAGE" value="- code optimizations and beautification" />
   </component>
 </project>

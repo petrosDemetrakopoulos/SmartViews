@@ -168,10 +168,9 @@ function extractGBValues (reducedResult, view) {
 
 function getJSONFiles (items) {
     let suffix = '.json';
-    let jsonFiles = items.filter(file => {
+    return items.filter(file => {
         return file.indexOf(suffix) !== -1; // filtering out non-json files
     });
-    return jsonFiles;
 }
 
 function transformGBMetadataFromBlockchain (resultGB) {
