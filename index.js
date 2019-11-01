@@ -226,7 +226,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         return res.send({ error: 'view not found' });
     }
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
-    helper.log('View by name endpoint hit again');
     if (!gbRunning && !running) {
         gbRunning = true; // a flag to handle retries of the request from the front-end
         let gbFields = helper.extractGBFields(view);
@@ -251,8 +250,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId);
                             let mostEfficient = sortedByCalculationCost[0];
-                            helper.log('LATEST ID IS:');
-                            helper.log(latestId);
                             let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
                             if (err) {
                                 helper.log(err);
@@ -263,12 +260,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                     helper.log('NO NEW FACTS');
                                     // NO NEW FACTS after the latest group by
                                     // -> incrementally calculate the groupby requested by summing the one in redis cache
-                                    let hashId = mostEfficient.hash.split('_')[1];
-                                    let hashBody = mostEfficient.hash.split('_')[0];
-                                    let allHashes = [];
-                                    for (let i = 0; i <= hashId; i++) {
-                                        allHashes.push(hashBody + '_' + i);
-                                    }
+                                    let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
                                     let cacheRetrieveTimeStart = helper.time();
                                     cacheController.getManyCachedResults(allHashes, function (error, allCached) {
                                         let cacheRetrieveTimeEnd = helper.time();
@@ -375,13 +367,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     gbRunning = false;
                                                     return res.send(error);
                                                 }
-                                                let hashId = mostEfficient.hash.split('_')[1];
-                                                let hashBody = mostEfficient.hash.split('_')[0];
-                                                let allHashes = [];
-                                                for (let i = 0; i <= hashId; i++) {
-                                                    allHashes.push(hashBody + '_' + i);
-                                                }
-
+                                                let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
                                                 let cacheRetrieveTimeStart = helper.time();
                                                 cacheController.getManyCachedResults(allHashes, async function (error, allCached) {
                                                     let cacheRetrieveTimeEnd = helper.time();
@@ -392,8 +378,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     }
 
                                                     let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
-                                                    // after eviction cachedGroupBy is FUCKING NULL
-                                                    // discrepancy with the blockchain
 
                                                     if (cachedGroupBy.field === view.aggregationField &&
                                                         view.operation === cachedGroupBy.operation) {
@@ -519,16 +503,23 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         });
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
-                        viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
-                            gbRunning = false;
-                            if (error) {
-                                gbRunning = false;
+                        contractController.getLatestId(async function (err, latestId) {
+                            if (!err) {
+                                let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                                viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                    gbRunning = false;
+                                    if (error) {
+                                        gbRunning = false;
+                                        return res.send(stringify(error))
+                                    }
+                                    io.emit('view_results', stringify(result).replace('\\', ''));
+                                    res.status(200);
+                                    gbRunning = false;
+                                    return res.send(stringify(result).replace('\\', ''));
+                                });
+                            } else {
                                 return res.send(stringify(error))
                             }
-                            io.emit('view_results', stringify(result).replace('\\', ''));
-                            res.status(200);
-                            gbRunning = false;
-                            return res.send(stringify(result).replace('\\', ''));
                         });
                     }
                 } else {

@@ -310,6 +310,16 @@ async function sortByCalculationCost(resultGBs, latestId) {
     return resultGBs;
 }
 
+function reconstructSlicedCachedResult (cachedGB) {
+    let hashId = cachedGB.hash.split('_')[1];
+    let hashBody = cachedGB.hash.split('_')[0];
+    let allHashes = [];
+    for (let i = 0; i <= hashId; i++) {
+        allHashes.push(hashBody + '_' + i);
+    }
+    return allHashes;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -330,6 +340,7 @@ module.exports = {
     sanitizeSQLQuery: sanitizeSQLQuery,
     filterGBs: filterGBs,
     sortByEvictionCost: sortByEvictionCost,
-    sortByCalculationCost: sortByCalculationCost
+    sortByCalculationCost: sortByCalculationCost,
+    reconstructSlicedCachedResult: reconstructSlicedCachedResult
 };
 const costFunctions = require('./costFunctions');
