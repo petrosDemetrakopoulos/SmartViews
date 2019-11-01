@@ -244,9 +244,11 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                     gbRunning = false;
                     return res.send(err);
                 }
-                if (resultGB.length > 0) {
+                if (resultGB) {
                     let transformedArray = helper.transformGBMetadataFromBlockchain(resultGB);
                     transformedArray = helper.containsAllFields(transformedArray, view); // assigns the containsAllFields value
+                    console.log("RESULTS GB TRANSFORMED:");
+                    console.log(resultGB);
                     let filteredGBs = [];
                     let sortedByEvictionCost = [];
                     for (let i = 0; i < transformedArray.length; i++) { // filter out the group bys that DO NOT CONTAIN all the fields we need -> aka containsAllFields = false
@@ -296,14 +298,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 gbRunning = false;
                                 return res.send(err);
                             }
-                            let getLatestFactTimeStart = helper.time();
-                            contract.methods.getFact(latestId - 1).call(function (err, latestFact) {
-                                let getLatestFactTime = helper.time() - getLatestFactTimeStart;
-                                if (err) {
-                                    helper.log(err);
-                                    gbRunning = false;
-                                    return res.send(err);
-                                }
                                 if (mostEfficient.latestFact >= (latestId - 1)) {
                                     helper.log('NO NEW FACTS');
                                     // NO NEW FACTS after the latest group by
@@ -484,7 +478,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 let totalEnd = helper.time();
                                                                                 if (!err) {
                                                                                     mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
-                                                                                    mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + allGroupBysTime.getGroupIdTime + allGroupBysTime.getAllGBsTime;
+                                                                                    mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + allGroupBysTime.getGroupIdTime + allGroupBysTime.getAllGBsTime;
                                                                                     mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                     mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                     mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
@@ -502,7 +496,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                         } else {
                                                                             let totalEnd = helper.time();
                                                                             mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
-                                                                            mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + getLatestFactTime + allGroupBysTime.getGroupIdTime + allGroupBysTime.getAllGBsTime;
+                                                                            mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + allGroupBysTime.getGroupIdTime + allGroupBysTime.getAllGBsTime;
                                                                             mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                             mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                             mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
@@ -526,7 +520,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                 getGroupIdTime: allGroupBysTime.getGroupIdTime,
                                                                 getAllGBsTime: allGroupBysTime.getAllGBsTime,
                                                                 getLatestFactIdTime: getLatestFactIdTime,
-                                                                getLatestFactTime: getLatestFactTime,
                                                                 sqlTimeEnd: sqlTimeEnd,
                                                                 sqlTimeStart: sqlTimeStart,
                                                                 cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
@@ -562,7 +555,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                         });
                                     });
                                 }
-                            });
                         });
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
@@ -581,7 +573,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 } else {
                     // No group bys exist in cache, we are in the initial state
                     // this means we should proceed to new group by calculation from the begining
-                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, getGroupIdTime, [], function (error, result) {
+                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, [], function (error, result) {
                         gbRunning = false;
                         if (error) {
                             return res.send(stringify(error))

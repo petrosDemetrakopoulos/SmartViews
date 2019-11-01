@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="- fixed minor bug">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/contractGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/contractGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
     </list>
@@ -316,14 +315,7 @@
       <workItem from="1572505826865" duration="14127000" />
       <workItem from="1572546099978" duration="4318000" />
       <workItem from="1572592741818" duration="14030000" />
-      <workItem from="1572607970260" duration="5488000" />
-    </task>
-    <task id="LOCAL-00176" summary="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project">
-      <created>1570194901970</created>
-      <option name="number" value="00176" />
-      <option name="presentableId" value="LOCAL-00176" />
-      <option name="project" value="LOCAL" />
-      <updated>1570194901970</updated>
+      <workItem from="1572607970260" duration="7226000" />
     </task>
     <task id="LOCAL-00177" summary="- moved controllers to new directory&#10;- created costFunctions.js for all the cost functions of the project">
       <created>1570195435614</created>
@@ -661,7 +653,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572609759454</updated>
     </task>
-    <option name="localTasksCounter" value="225" />
+    <task id="LOCAL-00225" summary="- created getAllGroupBys function in contracyController&#10;- decreased nesting rate in viewByname endpoint&#10;- fixed identation">
+      <created>1572615570588</created>
+      <option name="number" value="00225" />
+      <option name="presentableId" value="LOCAL-00225" />
+      <option name="project" value="LOCAL" />
+      <updated>1572615570588</updated>
+    </task>
+    <option name="localTasksCounter" value="226" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -695,7 +694,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" - various fixes&#10; - created the first tests&#10; - removed unneeded functions" />
     <MESSAGE value="- more tests" />
     <MESSAGE value="- removed unneeded code" />
     <MESSAGE value="- fixes in tests" />
@@ -720,6 +718,7 @@
     <MESSAGE value="- minor bug fixes and improvements" />
     <MESSAGE value="- fixed major bug causing hashes not to delete from the blockchain under circumstances&#10;- more tests, got almost 75% coverage" />
     <MESSAGE value="- code optimizations and beautification" />
-    <option name="LAST_COMMIT_MESSAGE" value="- code optimizations and beautification" />
+    <MESSAGE value="- created getAllGroupBys function in contracyController&#10;- decreased nesting rate in viewByname endpoint&#10;- fixed identation" />
+    <option name="LAST_COMMIT_MESSAGE" value="- created getAllGroupBys function in contracyController&#10;- decreased nesting rate in viewByname endpoint&#10;- fixed identation" />
   </component>
 </project>

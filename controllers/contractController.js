@@ -83,7 +83,7 @@ function getAllGroupbys (callback){
                 });
             } else {
                 let times = {getGroupIdTime: getGroupIdTime};
-                callback(null, [], times);
+                callback(null, null, times);
             }
         } else {
             helper.log(err);
