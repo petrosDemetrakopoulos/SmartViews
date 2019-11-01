@@ -49,9 +49,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                 values: facts
             });
 
-
-            let editedQuery = sql.query.replace(/"/g, '');
-            editedQuery = editedQuery.replace(/''/g, 'null');
+            let editedQuery = helper.sanitizeSQLQuery(sql);
             connection.query(editedQuery, function (error) { // insert facts
                 if (error) {
                     helper.log(error);
@@ -90,7 +88,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                             }]
                     });
                 }
-                let editedGB = gbQuery.query.replace(/"/g, '');
+                let editedGB = helper.sanitizeSQLQuery(gbQuery);
                 connection.query(editedGB, function (error, results3) {
                     if (error) {
                         helper.log(error);
@@ -117,7 +115,6 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
     let tableName = cachedGroupBy.gbCreateTable.split(' ');
     tableName = tableName[3];
     tableName = tableName.split('(')[0];
-    helper.log('TABLE NAME = ' + tableName);
     connection.query(cachedGroupBy.gbCreateTable, async function (error) {
         if (error) {
             callback(null, error);
@@ -127,6 +124,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
         lastCol = cachedGroupBy.gbCreateTable.split(' ');
         prelastCol = lastCol[lastCol.length - 4];
         lastCol = lastCol[lastCol.length - 2];
+
         let rows = helper.extractGBValues(cachedGroupBy, view);
 
         let sqlInsert = jsonSql.build({
@@ -134,8 +132,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
             table: tableName,
             values: rows
         });
-        let editedQuery = sqlInsert.query.replace(/"/g, '');
-        editedQuery = editedQuery.replace(/''/g, 'null');
+        let editedQuery = helper.sanitizeSQLQuery(sqlInsert);
         connection.query(editedQuery, function (error, results, fields) {
             if (error) {
                 helper.log(error);
@@ -181,8 +178,8 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
                         }]
                 });
             }
-            let editedGBQuery = gbQuery.query.replace(/"/g, '');
-            editedGBQuery = editedGBQuery.replace(/''/g, 'null');
+
+            let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
             connection.query(editedGBQuery, function (error, results) {
                 if (error) {
                     helper.log(error);

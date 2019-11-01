@@ -263,6 +263,12 @@ function checkViewExists (viewsDefined, viewName, factTbl) {
     return view;
 }
 
+function sanitizeSQLQuery(gbQuery){
+    let query = gbQuery.query.replace(/"/g, '');
+    query = query.replace(/''/g, 'null');
+    return query;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -280,5 +286,6 @@ module.exports = {
     updateViewFrequency:updateViewFrequency,
     extractGBFields: extractGBFields,
     extractViewMeta: extractViewMeta,
-    checkViewExists: checkViewExists
+    checkViewExists: checkViewExists,
+    sanitizeSQLQuery: sanitizeSQLQuery
 };

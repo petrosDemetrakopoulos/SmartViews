@@ -126,7 +126,6 @@ function deleteFromCache (evicted, callback) {
             let cachedGBLength = parseInt(cachedGBSplited[1]);
             if (cachedGBLength > 0) { // reconstructing all the hashes in cache if it is sliced
                 for (let j = 0; j < cachedGBLength; j++) {
-                    console.log("key to delete: " + cachedGBSplited[0] + '_' + j);
                     keysToDelete.push(cachedGBSplited[0] + '_' + j);
                 }
             }

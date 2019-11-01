@@ -159,7 +159,7 @@ describe('testing /load_dataset/:dt route', function () {
 });
 
 describe('testing /allfacts', function () {
-    setTimeout(function () { console.log('waiting...'); }, 4000);
+    setTimeout(function () { console.log('waiting...'); }, 1500);
     // wait so that latest fact should not have the same timetamp with the group by that will be cached
     let resp = {};
     it('should return OK status', function () {
@@ -201,7 +201,7 @@ describe('testing /getFactsFromTo/:from/:to', function () {
 });
 
 describe('testing /getViewByName/:viewName/:contract -- Initial query', function () {
-    freeze(2000);
+    freeze(1500);
     let resp = {};
     it('should return OK status', function () {
         return request(app)
@@ -218,7 +218,7 @@ describe('testing /getViewByName/:viewName/:contract -- Initial query', function
 });
 
 describe('testing /getViewByName/:viewName/:contract -- SUM', function () {
-    freeze(2000);
+    freeze(1500);
     let resp = {};
     it('should return OK status', function () {
         return request(app)
@@ -235,7 +235,7 @@ describe('testing /getViewByName/:viewName/:contract -- SUM', function () {
 });
 
 describe('testing /getViewByName/:viewName/:contract -- MAX', function () {
-    freeze(2000);
+    freeze(1500);
     let resp = {};
     it('should return OK status', function () {
         return request(app)
@@ -509,11 +509,11 @@ describe('testing /groupbyId/:id route', function () {
 describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique primary key',async function() {
     let resp = {};
     it('should return OK status', async function() {
-        freeze(4000);
+        freeze(1500);
         return request(app)
             .get('/load_dataset/10fourcol_c') // adding deltas
             .then(function(response) {
-                freeze(4000);
+                freeze(1500);
                 return request(app)
                     .get('/getViewByName/A(COUNT)/ABCD')
                     .then(function(response) {

@@ -128,7 +128,6 @@ async function getAllFacts (factsLength) {
         await contract.methods.facts(i).call(function (err, result2) {
             if (!err) {
                 result2 = removeUnneededFieldsFromBCResponse(result2);
-                // helper.log('got fact ' + i);
                 if ('payload' in result2) {
                     let crnLn = JSON.parse(result2['payload']);
                     crnLn.timestamp = result2['timestamp'];
