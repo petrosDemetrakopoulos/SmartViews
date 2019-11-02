@@ -66,11 +66,10 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
     });
 }
 
-function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times,  callback) {
+function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times, callback) {
     let viewMeta = helper.extractViewMeta(view);
     let rows = helper.extractGBValues(cachedGroupBy, view);
     let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
-
     let mergeTimeStart = helper.time();
     computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewMeta.viewNameSQL, view, viewMeta.lastCol, viewMeta.prelastCol, function (mergeResult, error) {
         let mergeTimeEnd = helper.time();
@@ -137,7 +136,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                 groupBySqlResult.gbCreateTable = view.SQLTable;
                 groupBySqlResult.field = view.aggregationField;
                 groupBySqlResult.viewName = view.name;
-                if(config.cacheEnabled) {
+                if (config.cacheEnabled) {
                     let cacheSaveTimeStart = helper.time();
                     cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                         helper.log('error:', err);
@@ -147,29 +146,29 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                         delete groupBySqlResult.gbCreateTable;
                         helper.log('receipt:' + JSON.stringify(receipt));
-                            if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
-                                contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
-                                    let totalEnd = helper.time();
-                                    if (!err) {
-                                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime;
-                                        groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                        groupBySqlResult.allTotal = totalEnd - totalStart;
-                                        helper.printTimes(groupBySqlResult);
-                                        return callback(null, groupBySqlResult);
-                                    } else {
-                                        return callback(err);
-                                    }
-                                });
-                            } else {
+                        if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
+                            contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
                                 let totalEnd = helper.time();
-                                groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                                groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime;
-                                groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                                groupBySqlResult.allTotal = totalEnd - totalStart;
-                                helper.printTimes(groupBySqlResult);
-                                return callback(null, groupBySqlResult);
-                            }
+                                if (!err) {
+                                    groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                                    groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime;
+                                    groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                                    groupBySqlResult.allTotal = totalEnd - totalStart;
+                                    helper.printTimes(groupBySqlResult);
+                                    return callback(null, groupBySqlResult);
+                                } else {
+                                    return callback(err);
+                                }
+                            });
+                        } else {
+                            let totalEnd = helper.time();
+                            groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                            groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime;
+                            groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
+                            groupBySqlResult.allTotal = totalEnd - totalStart;
+                            helper.printTimes(groupBySqlResult);
+                            return callback(null, groupBySqlResult);
+                        }
                     });
                 } else {
                     let totalEnd = helper.time();

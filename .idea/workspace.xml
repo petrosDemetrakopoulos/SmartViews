@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
+    <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="updated README">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/viewMaterializationController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/viewMaterializationController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/costFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/costFunctions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_scripts/exp1.js" beforeDir="false" afterPath="$PROJECT_DIR$/test_scripts/exp1.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -314,14 +320,7 @@
       <workItem from="1572592741818" duration="14030000" />
       <workItem from="1572607970260" duration="14539000" />
       <workItem from="1572685856054" duration="4434000" />
-      <workItem from="1572690672074" duration="414000" />
-    </task>
-    <task id="LOCAL-00181" summary=" - moved SQL related functionality to computationsController.js&#10; - fixed issue with duplicate code in the case of reduction query to cached group by without deltas (now correctly done with the calculateReducedGroupBy function of computationsController)">
-      <created>1570201639963</created>
-      <option name="number" value="00181" />
-      <option name="presentableId" value="LOCAL-00181" />
-      <option name="project" value="LOCAL" />
-      <updated>1570201639964</updated>
+      <workItem from="1572690672074" duration="1724000" />
     </task>
     <task id="LOCAL-00182" summary=" - removed unneeded code">
       <created>1570203137125</created>
@@ -659,7 +658,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572690360287</updated>
     </task>
-    <option name="localTasksCounter" value="230" />
+    <task id="LOCAL-00230" summary="updated README">
+      <created>1572691382771</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1572691382772</updated>
+    </task>
+    <option name="localTasksCounter" value="231" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -693,7 +699,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- updated README" />
     <MESSAGE value="- updated some dependencies with security issues" />
     <MESSAGE value="- updated some dependencies" />
     <MESSAGE value="- various fixes and improvements" />
@@ -718,6 +723,7 @@
     <MESSAGE value="- moved sort related functionality to helpers" />
     <MESSAGE value="- fixed minor issue&#10;- moved cached result reconstruction function to helpers" />
     <MESSAGE value="- fixed minor bugs&#10;- code optimizations an beautification" />
-    <option name="LAST_COMMIT_MESSAGE" value="- fixed minor bugs&#10;- code optimizations an beautification" />
+    <MESSAGE value="updated README" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated README" />
   </component>
 </project>

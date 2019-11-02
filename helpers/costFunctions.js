@@ -39,7 +39,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
         }
         let freq = 0;
 
-        allCached = allCached.filter(function (el) { //remove null objects in case they have been deleted
+        allCached = allCached.filter(function (el) { // remove null objects in case they have been deleted
             return el != null;
         });
         if (allHashes.length > 1) {
@@ -108,7 +108,6 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
     }
     return groupBys;
 }
-
 
 module.exports = {
     calculationCost: calculationCost,

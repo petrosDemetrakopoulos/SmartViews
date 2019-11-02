@@ -92,7 +92,7 @@ fs.writeFile('test_data/' + fileToSaveTestData + '1' + '.json', JSON.stringify(a
                         console.log('added second records');
                         // 4) We request group by A|B(COUNT) again
                         await request({ url: urlgbCountAB, method: 'GET', headers: {
-                            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0', 'Connection': 'keep-alive'
+                                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0', 'Connection': 'keep-alive'
                             }, timeout: 150000000}, async function (error, httpResponse, body2) {
                             if (error) {
                                 return console.log(error);

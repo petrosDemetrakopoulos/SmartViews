@@ -144,7 +144,7 @@ function getManyCachedResults (allHashes, callback) {
     })
 }
 
-function preprocessCachedGroupBy(allCached) {
+function preprocessCachedGroupBy (allCached) {
     let cachedGroupBy = {};
     if (allCached.length === 1) { // it is <= of slice size, so it is not sliced
         cachedGroupBy = JSON.parse(allCached[0]);

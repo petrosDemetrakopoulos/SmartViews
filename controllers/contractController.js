@@ -48,16 +48,16 @@ async function getGroupByWithId (id) {
     });
 }
 
-function getAllGroupbys (callback){
+function getAllGroupbys (callback) {
     let getGroupIdTimeStart = helper.time();
     contract.methods.groupId().call(function (err, result) {
         let getGroupIdTime = helper.time() - getGroupIdTimeStart;
-        if(!err) {
+        if (!err) {
             if (result > 0) {
                 let getAllGBsFromBCTimeStart = helper.time();
                 contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
                     let getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
-                    let times = {getAllGBsTime: getAllGBsTime, getGroupIdTime: getGroupIdTime};
+                    let times = { getAllGBsTime: getAllGBsTime, getGroupIdTime: getGroupIdTime };
                     if (!err) {
                         resultGB = removeUnneededFieldsFromBCResponse(resultGB);
                         callback(null, resultGB, times);
@@ -67,7 +67,7 @@ function getAllGroupbys (callback){
                     }
                 });
             } else {
-                let times = {getGroupIdTime: getGroupIdTime};
+                let times = { getGroupIdTime: getGroupIdTime };
                 callback(null, null, times);
             }
         } else {
@@ -188,7 +188,7 @@ async function getFactsCount () {
 
 function getLatestId (callback) {
     contract.methods.dataId().call(function (err, latestId) {
-        if(err){
+        if (err) {
             callback(err, null);
         } else {
             callback(null, latestId);
@@ -197,7 +197,7 @@ function getLatestId (callback) {
 }
 
 function deleteGBsById (gbIdsToDelete) {
-    let deleteGBsByIdPromise =  contract.methods.deleteGBsById(gbIdsToDelete);
+    let deleteGBsByIdPromise = contract.methods.deleteGBsById(gbIdsToDelete);
     return sendTransactionWithContractMethod(deleteGBsByIdPromise);
 }
 

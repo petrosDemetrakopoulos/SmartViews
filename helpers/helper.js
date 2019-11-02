@@ -192,7 +192,7 @@ function transformGBMetadataFromBlockchain (resultGB) {
         };
     }
     // then we filter out the empty objects (the ones that are deleted from blockchain, however left with zeroes)
-    //it is enough to check if the hash exists
+    // it is enough to check if the hash exists
     transformedArray = transformedArray.filter(gb => {
         return gb.hash.length > 0;
     });
@@ -203,7 +203,7 @@ function updateViewFrequency (factTbl, contract, crnView) {
     return new Promise(function (resolve, reject) {
         factTbl.views[crnView].frequency = factTbl.views[crnView].frequency + 1;
         delete factTbl.views[crnView].id;
-         fs.writeFile('./templates/' + contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
+        fs.writeFile('./templates/' + contract + '.json', JSON.stringify(factTbl, null, 2), function (err) {
             if (err) {
                 log(err);
                 reject(err);
@@ -249,7 +249,7 @@ function extractViewMeta (view) {
         op = view.operation;
     }
 
-    return {viewNameSQL: viewNameSQL, lastCol: lastCol, prelastCol: prelastCol, op: op};
+    return { viewNameSQL: viewNameSQL, lastCol: lastCol, prelastCol: prelastCol, op: op };
 }
 
 function checkViewExists (viewsDefined, viewName, factTbl) {
@@ -264,7 +264,7 @@ function checkViewExists (viewsDefined, viewName, factTbl) {
     return view;
 }
 
-function sanitizeSQLQuery(gbQuery){
+function sanitizeSQLQuery (gbQuery) {
     let query = gbQuery.query.replace(/"/g, '');
     query = query.replace(/''/g, 'null');
     return query;
@@ -296,14 +296,14 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
         if (config.cacheEvictionPolicy === 'FIFO') {
             return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
         } else if (config.cacheEvictionPolicy === 'COST FUNCTION') {
-            helper.log('SORT WITH COST FUNCTION');
+            log('SORT WITH COST FUNCTION');
             return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
         }
     });
     return sortedByEvictionCost;
 }
 
-async function sortByCalculationCost(resultGBs, latestId) {
+async function sortByCalculationCost (resultGBs, latestId) {
     resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
     await resultGBs.sort(function (a, b) {
         return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
@@ -321,8 +321,8 @@ function reconstructSlicedCachedResult (cachedGB) {
     return allHashes;
 }
 
-function getMainTransactionObject (account){
-    return  {
+function getMainTransactionObject (account) {
+    return {
         from: account,
         gas: 1500000000000,
         gasPrice: '30000000000000'
@@ -342,7 +342,7 @@ module.exports = {
     mergeSlicedCachedResult: mergeSlicedCachedResult,
     extractGBValues: extractGBValues,
     getJSONFiles: getJSONFiles,
-    updateViewFrequency:updateViewFrequency,
+    updateViewFrequency: updateViewFrequency,
     extractGBFields: extractGBFields,
     extractViewMeta: extractViewMeta,
     checkViewExists: checkViewExists,
