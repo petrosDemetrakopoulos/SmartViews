@@ -1,8 +1,8 @@
 {
     "recordsSlice": 1000,
     "cacheEvictionPolicy": "FIFO",
-    "maxCacheSize": 10000,
-    "cacheSlice": 10000,
+    "maxCacheSize": 2,
+    "cacheSlice": 2,
     "autoCacheSlice": "auto",
     "maxGbSize": 10000,
     "redisPort": 6379,
@@ -15,5 +15,5 @@
         "database": "Ptychiaki"
     },
     "cacheEnabled": true,
-    "logging": true
+    "logging": false
 }

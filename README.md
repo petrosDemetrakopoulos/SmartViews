@@ -1,6 +1,7 @@
 # Smart-Views: A blockchain enabled OLAP Data Warehouse
 This repository hosts the application server of Smart-Views.
-It is the implementation / application part of my thesis as an undergraduate Computer Science student of Athens University of Economics and Business ([aueb.gr](https://aueb.gr/)).
+It is the implementation / application part of my thesis as an undergraduate Computer Science student of Athens University of Economics and Business ([aueb.gr](https://aueb.gr/))
+under the supervision of Professor Yannis Kotidis.
  
 The directory structure of the project is shown below.
 
