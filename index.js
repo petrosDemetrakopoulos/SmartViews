@@ -283,7 +283,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     }
                                                     io.emit('view_results', stringify(results).replace('\\', ''));
                                                     res.status(200);
-                                                    return res.send(stringify(results));
+                                                    return res.send(stringify(results).replace('\\', ''));
                                                 });
                                             } else {
                                                 // some fields contained in a Group by but operation and aggregation fields differ
@@ -295,7 +295,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     }
                                                     io.emit('view_results', stringify(result).replace('\\', ''));
                                                     res.status(200);
-                                                    return res.send(stringify(result));
+                                                    return res.send(stringify(result).replace('\\', ''));
                                                 });
                                             }
                                         } else {
@@ -309,7 +309,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                 cachedGroupBy.allTotal = totalEnd - totalStart;
                                                 io.emit('view_results', stringify(cachedGroupBy).replace('\\', ''));
                                                 gbRunning = false;
-                                                return res.send(stringify(cachedGroupBy));
+                                                return res.send(stringify(cachedGroupBy).replace('\\', ''));
                                             } else {
                                                 // same fields but different operation or different aggregate field
                                                 // this means we should proceed to new group by calculation from the begining
@@ -320,7 +320,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     }
                                                     io.emit('view_results', stringify(result).replace('\\', ''));
                                                     res.status(200);
-                                                    return res.send(stringify(result));
+                                                    return res.send(stringify(result).replace('\\', ''));
                                                 });
                                             }
                                         }
@@ -335,7 +335,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                             }
                                             io.emit('view_results', stringify(result).replace('\\', ''));
                                             res.status(200);
-                                            return res.send(stringify(result));
+                                            return res.send(stringify(result).replace('\\', ''));
                                         });
                                     }
                                 });
@@ -425,7 +425,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 io.emit('view_results', mergeResult);
                                                                                 gbRunning = false;
                                                                                 res.status(200);
-                                                                                return res.send(stringify(mergeResult));
+                                                                                return res.send(stringify(mergeResult).replace('\\', ''));
                                                                             }
                                                                             gbRunning = false;
                                                                             return res.send(err);
@@ -443,7 +443,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                         io.emit('view_results', mergeResult);
                                                                         gbRunning = false;
                                                                         res.status(200);
-                                                                        return res.send(stringify(mergeResult));
+                                                                        return res.send(stringify(mergeResult).replace('\\', ''));
                                                                     }
                                                                 });
                                                             });
@@ -471,7 +471,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             io.emit('view_results', stringify(result).replace('\\', ''));
                                                             res.status(200);
                                                             gbRunning = false;
-                                                            return res.send(stringify(result));
+                                                            return res.send(stringify(result).replace('\\', ''));
                                                         })
                                                     }
                                                 } else {
