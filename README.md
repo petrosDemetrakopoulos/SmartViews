@@ -16,7 +16,8 @@ The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using t
 ├── controllers
 │   ├── cacheController.js
 │   ├── computationsController.js
-│   └── contractController.js
+│   ├── contractController.js
+│   └── viewMaterializationController.js
 ├── helpers
 │   ├── contractDeployer.js
 │   ├── contractGenerator.js
@@ -26,47 +27,17 @@ The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using t
 ├── index.js
 ├── package-lock.json
 ├── package.json
+├── run.sh
 ├── schematics
 │   ├── architecture.png
 │   ├── deployment.png
+│   ├── ptychiaki_flow.png
 │   └── structure.png
 ├── templates
 │   ├── ABCD.json
 │   └── cars.json
-├── test_data
-│   ├── 10
-│   │   ├── 10fourcol.json
-│   │   └── 10fourcol_b.json
-│   ├── 100
-│   │   ├── 100fourcol.json
-│   │   └── 100fourcol_b.json
-│   ├── 100K
-│   │   └── 100kfourcol.json
-│   ├── 100Kfourcol_c.json
-│   ├── 100fourcol.json
-│   ├── 100fourcol_b.json
-│   ├── 10K
-│   │   ├── 10kfourcol.json
-│   │   └── 10kfourcol_b.json
-│   ├── 150k
-│   │   └── 150kfourcol.json
-│   ├── 1K
-│   │   ├── 1kfourcol.json
-│   │   └── 1kfourcol_b.json
-│   ├── 1M
-│   │   └── 1Mfourcol.json
-│   ├── 1kfourcol.json
-│   ├── 1kfourcol_b.json
-│   ├── 200
-│   │   └── 200fourcol.json
-│   ├── 200K
-│   │   └── 200kfourcol.json
-│   ├── 20K
-│   │   └── 20kfourcol.json
-│   ├── 250K
-│   │   └── 250kfourcol.json
-│   └── 30K
-│       └── 30Kfourcol.json
+├── test
+│   └── tests.js
 ├── test_scripts
 │   ├── exp1.js
 │   └── testDataGenerator.js
@@ -74,6 +45,7 @@ The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using t
     ├── dashboard.ejs
     ├── form.ejs
     └── index.ejs
+
 ```
 ## Run instructions
 After you clone the repo type ```npm install``` in the directory project and wait until all dependencies are installed. Then update th ```config.json``` file with the correct values for the fields ```redisPort```, ```redisIP```, ```blockchainIP``` and ```sql``` which are the most important ones in order to start the server.
