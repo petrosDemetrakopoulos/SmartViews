@@ -3,31 +3,16 @@ let contract = null;
 let mainTransactionObject = {};
 const helper = require('../helpers/helper');
 const cacheController = require('./cacheController');
-const delay = require('delay');
 
 function setContract (contractObject, account) {
     contract = contractObject;
-    mainTransactionObject = {
-        from: account,
-        gas: 1500000000000,
-        gasPrice: '30000000000000'
-    };
+    mainTransactionObject = helper.getMainTransactionObject(account);
     cacheController.setContract(contractObject, account);
 }
 
 async function addFact (fact) {
     let addFactPromise = contract.methods.addFact(stringify(fact));
-    return addFactPromise.send(mainTransactionObject, (err, txHash) => {
-        helper.log('send:', err, txHash);
-    }).on('error', (err) => {
-        helper.log('error:', err);
-        Promise.reject(err);
-    }).on('transactionHash', (err) => {
-        helper.log('transactionHash:', err);
-    }).on('receipt', (receipt) => {
-        helper.log('receipt:', receipt);
-        Promise.resolve(receipt);
-    })
+    return sendTransactionWithContractMethod(addFactPromise);
 }
 
 function contractChecker (req, res, next) {
@@ -146,7 +131,7 @@ async function getAllFacts (factsLength) {
             } else {
                 helper.log(err);
             }
-        })
+        });
     }
     return allFacts;
 }
@@ -211,20 +196,9 @@ function getLatestId (callback) {
     });
 }
 
-function deleteGBsById (gbIdsToDelete, callback) {
-
+function deleteGBsById (gbIdsToDelete) {
     let deleteGBsByIdPromise =  contract.methods.deleteGBsById(gbIdsToDelete);
-    return deleteGBsByIdPromise.send(mainTransactionObject, (err, txHash) => {
-        helper.log('send:', err, txHash);
-    }).on('error', (err) => {
-        helper.log('error:', err);
-        Promise.reject(err);
-    }).on('transactionHash', (err) => {
-        helper.log('transactionHash:', err);
-    }).on('receipt', (receipt) => {
-        helper.log('receipt:', receipt);
-        Promise.resolve(receipt);
-    });
+    return sendTransactionWithContractMethod(deleteGBsByIdPromise);
 }
 
 function removeUnneededFieldsFromBCResponse (bcResponse) {
@@ -245,6 +219,20 @@ function deleteCachedResults (sortedByEvictionCost, callback) {
             helper.log(error);
             callback(error);
         });
+    });
+}
+
+function sendTransactionWithContractMethod (contractMethod) {
+    return contractMethod.send(mainTransactionObject, (err, txHash) => {
+        helper.log('send:', err, txHash);
+    }).on('error', (err) => {
+        helper.log('error:', err);
+        Promise.reject(err);
+    }).on('transactionHash', (err) => {
+        helper.log('transactionHash:', err);
+    }).on('receipt', (receipt) => {
+        helper.log('receipt:', receipt);
+        Promise.resolve(receipt);
     });
 }
 

@@ -12,11 +12,7 @@ const helper = require('../helpers/helper');
 
 function setContract (contractObject, account) {
     contract = contractObject;
-    mainTransactionObject = {
-        from: account,
-        gas: 1500000000000,
-        gasPrice: '30000000000000'
-    };
+    mainTransactionObject = helper.getMainTransactionObject(account);
 }
 
 client.on('connect', function () {

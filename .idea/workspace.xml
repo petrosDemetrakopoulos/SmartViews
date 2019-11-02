@@ -3,9 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="a41e5d5a-dabf-4e45-a109-a3df9a308bcb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_private.json" beforeDir="false" afterPath="$PROJECT_DIR$/config_private.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/cacheController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/cacheController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/computationsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/computationsController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/contractController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/contractController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/viewMaterializationController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/viewMaterializationController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helpers/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/helper.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/ABCD.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ABCD.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/tests.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -314,14 +320,8 @@
       <workItem from="1572505826865" duration="14127000" />
       <workItem from="1572546099978" duration="4318000" />
       <workItem from="1572592741818" duration="14030000" />
-      <workItem from="1572607970260" duration="12612000" />
-    </task>
-    <task id="LOCAL-00179" summary="updated README">
-      <created>1570197410754</created>
-      <option name="number" value="00179" />
-      <option name="presentableId" value="LOCAL-00179" />
-      <option name="project" value="LOCAL" />
-      <updated>1570197410754</updated>
+      <workItem from="1572607970260" duration="14539000" />
+      <workItem from="1572685856054" duration="4384000" />
     </task>
     <task id="LOCAL-00180" summary="updated README">
       <created>1570197440815</created>
@@ -659,7 +659,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572620920342</updated>
     </task>
-    <option name="localTasksCounter" value="228" />
+    <task id="LOCAL-00228" summary="- fixed minor issue&#10;- moved cached result reconstruction function to helpers">
+      <created>1572623284714</created>
+      <option name="number" value="00228" />
+      <option name="presentableId" value="LOCAL-00228" />
+      <option name="project" value="LOCAL" />
+      <updated>1572623284714</updated>
+    </task>
+    <option name="localTasksCounter" value="229" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -693,7 +700,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- fixes in tests" />
     <MESSAGE value="- created run.sh bash script to start the project at once" />
     <MESSAGE value="- updated README" />
     <MESSAGE value="- updated some dependencies with security issues" />
@@ -718,6 +724,7 @@
     <MESSAGE value="- created getAllGroupBys function in contracyController&#10;- decreased nesting rate in viewByname endpoint&#10;- fixed identation" />
     <MESSAGE value="- fixed minor issue" />
     <MESSAGE value="- moved sort related functionality to helpers" />
-    <option name="LAST_COMMIT_MESSAGE" value="- moved sort related functionality to helpers" />
+    <MESSAGE value="- fixed minor issue&#10;- moved cached result reconstruction function to helpers" />
+    <option name="LAST_COMMIT_MESSAGE" value="- fixed minor issue&#10;- moved cached result reconstruction function to helpers" />
   </component>
 </project>

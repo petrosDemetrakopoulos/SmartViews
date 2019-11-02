@@ -227,6 +227,9 @@ function extractGBFields (view) {
             gbFields.push(view.gbFields);
         }
     }
+    for (let index in gbFields) {
+        gbFields[index] = gbFields[index].trim();
+    }
     return gbFields;
 }
 
@@ -242,10 +245,8 @@ function extractViewMeta (view) {
     let op = '';
     if (view.operation === 'SUM' || view.operation === 'COUNT') {
         op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
-    } else if (view.operation === 'MIN') {
-        op = 'MIN'
-    } else if (view.operation === 'MAX') {
-        op = 'MAX';
+    } else {
+        op = view.operation;
     }
 
     return {viewNameSQL: viewNameSQL, lastCol: lastCol, prelastCol: prelastCol, op: op};
@@ -320,6 +321,14 @@ function reconstructSlicedCachedResult (cachedGB) {
     return allHashes;
 }
 
+function getMainTransactionObject (account){
+    return  {
+        from: account,
+        gas: 1500000000000,
+        gasPrice: '30000000000000'
+    };
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -341,6 +350,7 @@ module.exports = {
     filterGBs: filterGBs,
     sortByEvictionCost: sortByEvictionCost,
     sortByCalculationCost: sortByCalculationCost,
-    reconstructSlicedCachedResult: reconstructSlicedCachedResult
+    reconstructSlicedCachedResult: reconstructSlicedCachedResult,
+    getMainTransactionObject: getMainTransactionObject
 };
 const costFunctions = require('./costFunctions');

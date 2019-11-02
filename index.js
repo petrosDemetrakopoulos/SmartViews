@@ -230,9 +230,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         gbRunning = true; // a flag to handle retries of the request from the front-end
         let gbFields = helper.extractGBFields(view);
         view.gbFields = gbFields;
-        for (let index in view.gbFields) {
-            view.gbFields[index] = view.gbFields[index].trim();
-        }
 
         if (config.cacheEnabled) {
             helper.log('cache enabled = TRUE');
@@ -468,10 +465,11 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                 sqlTimeEnd: sqlTimeEnd,
                                                                 sqlTimeStart: sqlTimeStart,
                                                                 cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
-                                                                cacheRetrieveTimeStart: cacheRetrieveTimeStart};
+                                                                cacheRetrieveTimeStart: cacheRetrieveTimeStart,
+                                                                totalStart: totalStart};
 
                                                             viewMaterializationController.mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times, function (err, result) {
-                                                                if(err){
+                                                                if(err) {
                                                                     gbRunning = false;
                                                                     return res.send(err);
                                                                 }
@@ -518,7 +516,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                     return res.send(stringify(result).replace('\\', ''));
                                 });
                             } else {
-                                return res.send(stringify(error))
+                                return res.send(stringify(err))
                             }
                         });
                     }
@@ -556,9 +554,10 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
 app.get('/getcount', contractController.contractChecker, function (req, res) {
     contractController.getFactsCount().then(result => {
         if (result === -1) {
-            res.send({ status: 'ERROR', options: 'Error getting count' });
+            return res.send({ status: 'ERROR', options: 'Error getting count' });
         } else {
-            res.send(result);
+            res.status(200);
+            return res.send(result);
         }
     });
 });

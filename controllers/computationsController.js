@@ -141,11 +141,10 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
             let op = '';
             if (view.operation === 'SUM' || view.operation === 'COUNT') {
                 op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
-            } else if (view.operation === 'MIN') {
-                op = 'MIN'
-            } else if (view.operation === 'MAX') {
-                op = 'MAX';
+            } else {
+                op = view.operation;
             }
+
             let gbQuery = jsonSql.build({
                 type: 'select',
                 table: tableName,
