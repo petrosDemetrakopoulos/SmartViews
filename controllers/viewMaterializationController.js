@@ -30,38 +30,25 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
         reducedResult.field = view.aggregationField;
         reducedResult.viewName = view.name;
         reducedResult.operation = view.operation;
-
         let cacheSaveTimeStart = helper.time();
-        return cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
+        cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
             helper.log('error:', err);
             return callback(err);
         }).on('receipt', (receipt) => {
             helper.log('receipt:' + JSON.stringify(receipt));
             let cacheSaveTimeEnd = helper.time();
-            if (sortedByEvictionCost.length >= config.maxCacheSize) { // CALL clearCacheIfNeeded function, does exactly the same thing
-                contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
-                    let totalEnd = helper.time();
-                    if (!err) {
-                        reducedResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                        reducedResult.sqlTime = reductionTimeEnd - reductionTimeStart;
-                        reducedResult.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
-                        reducedResult.totalTime = reducedResult.cacheSaveTime + reducedResult.sqlTime + reducedResult.cacheRetrieveTime;
-                        reducedResult.allTotal = totalEnd - times.totalStart;
-                        helper.printTimes(reducedResult);
-                        callback(null, reducedResult);
-                    }
-                    return callback(err);
-                });
-            } else {
-                let totalEnd = helper.time();
-                reducedResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                reducedResult.sqlTime = reductionTimeEnd - reductionTimeStart;
-                reducedResult.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
-                reducedResult.totalTime = reducedResult.cacheSaveTime + reducedResult.sqlTime + reducedResult.cacheRetrieveTime;
-                reducedResult.allTotal = totalEnd - times.totalStart;
-                helper.printTimes(reducedResult);
-                return callback(null, reducedResult);
-            }
+            let times2 = { sqlTimeEnd: reductionTimeEnd, sqlTimeStart: reductionTimeStart,
+                totalStart: times.totalStart, cacheSaveTimeStart: cacheSaveTimeStart,
+                cacheSaveTimeEnd: cacheSaveTimeEnd, cacheRetrieveTimeStart: times.cacheRetrieveTimeStart,
+                cacheRetrieveTimeEnd: times.cacheRetrieveTimeEnd };
+            clearCacheIfNeeded(sortedByEvictionCost, reducedResult, times2, function (err, results) {
+                if (!err) {
+                    helper.printTimes(results);
+                    return callback(null, results);
+                }
+                console.log(err);
+                return callback(err);
+            });
         });
     });
 }
@@ -96,9 +83,7 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
             mergeResult.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
             mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
             clearCacheIfNeeded(sortedByEvictionCost, mergeResult, null, function (err, results) {
-                let totalEnd = helper.time();
                 if (!err) {
-                    mergeResult.allTotal = totalEnd - times.totalStart;
                     helper.printTimes(mergeResult);
                     return callback(null, results);
                 }
@@ -145,6 +130,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                             if(err){
                                 return callback(err);
                             }
+                            helper.printTimes(results);
                             return callback(null, results);
                         });
                     });
@@ -165,14 +151,10 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
 function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times, callback) {
     if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
         contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
-            let totalEnd = helper.time();
+            times.totalEnd = helper.time();
             if (!err) {
                 if (times) {
-                    groupBySqlResult.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
-                    groupBySqlResult.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime;
-                    groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-                    groupBySqlResult.allTotal = totalEnd - times.totalStart;
-                    helper.printTimes(groupBySqlResult);
+                    groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                 }
                 return callback(null, groupBySqlResult);
             } else {
@@ -181,12 +163,8 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times, call
         });
     } else {
         if (times) {
-            let totalEnd = helper.time();
-            groupBySqlResult.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
-            groupBySqlResult.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime;
-            groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime + groupBySqlResult.cacheSaveTime;
-            groupBySqlResult.allTotal = totalEnd - times.totalStart;
-            helper.printTimes(groupBySqlResult);
+            times.totalEnd = helper.time();
+            groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
         }
         return callback(null, groupBySqlResult);
     }

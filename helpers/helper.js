@@ -329,6 +329,25 @@ function getMainTransactionObject (account) {
     };
 }
 
+function assignTimes (result, times) {
+    result.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
+    result.totalTime = result.sqlTime;
+    if(times.bcTimeEnd && times.bcTimeStart && times.getGroupIdTime) {
+        result.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime;
+        result.totalTime += result.bcTime;
+    }
+    if(times.cacheSaveTimeStart && times.cacheSaveTimeEnd){
+        result.cacheSaveTime = times.cacheSaveTimeEnd - times.cacheSaveTimeStart;
+        result.totalTime += result.cacheSaveTime;
+    }
+    if(times.cacheRetrieveTimeStart && times.cacheRetrieveTimeEnd){
+        result.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
+        result.totalTime += result.cacheRetrieveTime;
+    }
+    result.allTotal = times.totalEnd - times.totalStart;
+    return result;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -351,6 +370,7 @@ module.exports = {
     sortByEvictionCost: sortByEvictionCost,
     sortByCalculationCost: sortByCalculationCost,
     reconstructSlicedCachedResult: reconstructSlicedCachedResult,
-    getMainTransactionObject: getMainTransactionObject
+    getMainTransactionObject: getMainTransactionObject,
+    assignTimes: assignTimes
 };
 const costFunctions = require('./costFunctions');
