@@ -82,8 +82,7 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
             timesReady.sqlTime = (mergeTimeEnd - mergeTimeStart) + (times.sqlTimeEnd - times.sqlTimeStart);
             timesReady.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
             timesReady.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
-            timesReady.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-
+            timesReady.totalTime = timesReady.bcTime + timesReady.sqlTime + timesReady.cacheSaveTime + timesReady.cacheRetrieveTime;
             clearCacheIfNeeded(sortedByEvictionCost, mergeResult, timesReady, function (err, results) {
                 if (!err) {
                     helper.printTimes(mergeResult);
