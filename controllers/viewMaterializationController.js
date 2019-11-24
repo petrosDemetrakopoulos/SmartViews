@@ -76,13 +76,15 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
         }).on('receipt', (receipt) => {
             let cacheSaveTimeEnd = helper.time();
             delete mergeResult.gbCreateTable;
+            let timesReady = {};
             helper.log('receipt:' + JSON.stringify(receipt));
-            mergeResult.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime + times.getAllGBsTime + times.getLatestFactIdTime;
-            mergeResult.sqlTime = (mergeTimeEnd - mergeTimeStart) + (times.sqlTimeEnd - times.sqlTimeStart);
-            mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-            mergeResult.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
-            mergeResult.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-            clearCacheIfNeeded(sortedByEvictionCost, mergeResult, null, function (err, results) {
+            timesReady.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime + times.getAllGBsTime + times.getLatestFactIdTime;
+            timesReady.sqlTime = (mergeTimeEnd - mergeTimeStart) + (times.sqlTimeEnd - times.sqlTimeStart);
+            timesReady.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+            timesReady.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
+            timesReady.totalTime = mergeResult.bcTime + mergeResult.sqlTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+
+            clearCacheIfNeeded(sortedByEvictionCost, mergeResult, timesReady, function (err, results) {
                 if (!err) {
                     helper.printTimes(mergeResult);
                     return callback(null, results);
@@ -123,7 +125,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                         groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                         delete groupBySqlResult.gbCreateTable;
                         helper.log('receipt:' + JSON.stringify(receipt));
-                        let times = {sqlTimeEnd: sqlTimeEnd, sqlTimeStart: sqlTimeStart,
+                        let times = { sqlTimeEnd: sqlTimeEnd, sqlTimeStart: sqlTimeStart,
                             bcTimeStart: bcTimeStart, bcTimeEnd: bcTimeEnd,
                             getGroupIdTime: getGroupIdTime, totalStart: totalStart };
                         clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, times, function (err, results) {

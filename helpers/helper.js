@@ -330,6 +330,14 @@ function getMainTransactionObject (account) {
 }
 
 function assignTimes (result, times) {
+    if (times.bcTime && times.sqlTime && times.cacheRetrieveTime && times.cacheSaveTime && times.totalTime) { //means we have already calculated times in previous step
+        result.bcTime = times.bcTime;
+        result.sqlTime = times.sqlTime;
+        result.cacheRetrieveTime = times.cacheRetrieveTime;
+        result.cacheSaveTime = times.cacheSaveTime;
+        result.totalTime = times.totalTime;
+        return result;
+    }
     result.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
     result.totalTime = result.sqlTime;
     if(times.bcTimeEnd && times.bcTimeStart && times.getGroupIdTime) {
