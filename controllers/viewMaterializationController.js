@@ -1,5 +1,4 @@
 let contract = null;
-let mainTransactionObject = {};
 const helper = require('../helpers/helper');
 const cacheController = require('./cacheController');
 const contractController = require('./contractController');
@@ -8,8 +7,6 @@ const transformations = require('../helpers/transformations');
 let config = require('../config_private');
 
 function setContract (contractObject, account) {
-    contract = contractObject;
-    mainTransactionObject = helper.getMainTransactionObject(account);
     cacheController.setContract(contractObject, account);
 }
 

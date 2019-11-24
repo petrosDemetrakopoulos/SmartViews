@@ -1,5 +1,7 @@
 const app = require('../index');
 const expect = require('chai').expect;
+const describe = require('mocha').describe;
+const it = require('mocha').it;
 const request = require('supertest');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
@@ -9,10 +11,10 @@ let responseBodyContractgeneration = {};
 let responseBodyContractDeployment = {};
 function freeze (time) {
     const stop = new Date().getTime() + time;
-    while(new Date().getTime() < stop);
+    while (new Date().getTime() < stop);
 }
 before(function(done) {
-    console.log("Waiting for services to start...");
+    console.log('Waiting for services to start...');
     setTimeout(done, 3000);
 });
 describe('testing default route', function () {
@@ -485,7 +487,7 @@ describe('testing /getViewByName/:viewName/:contract -- manual slicing', functio
     let resp = {};
     let config = require('../config_private');
     before(function () {
-        config.autoCacheSlice = "manual";
+        config.autoCacheSlice = 'manual';
         fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
             if (err) throw err;
         });
@@ -593,7 +595,7 @@ describe('testing /getcount route', function () {
     });
     after(function (done) {
         config.cacheEnabled = true;
-        config.autoCacheSlice = "auto";
+        config.autoCacheSlice = 'auto';
         fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
             if (err) throw err;
             done();

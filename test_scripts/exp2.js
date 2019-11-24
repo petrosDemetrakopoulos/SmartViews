@@ -37,7 +37,7 @@ load_files = (directory, valid, error) => {
 };
 
 const load_data = async (fileno, queries) => {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         let file = fileno;
 
         let url = 'http://localhost:3000/load_dataset/' + fileno;
@@ -66,9 +66,8 @@ const load_data = async (fileno, queries) => {
         rp(options)
             .then(function () {
                 rp(options2)
-                    .then((res)=>handleResponse(res).then(
+                    .then((res) => handleResponse(res).then(
                         ()=>{
-                            console.log('request handled');
                             resolve()
                         }
                     ))
@@ -85,7 +84,7 @@ const load_data = async (fileno, queries) => {
 };
 
 handleResponse = async(body) => {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
      //   console.log(JSON.stringify(body));
         let f = body.toString().substr(String(body).indexOf('operation').toString());
         console.log(f);

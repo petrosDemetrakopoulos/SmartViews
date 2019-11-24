@@ -340,15 +340,15 @@ function assignTimes (result, times) {
     }
     result.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
     result.totalTime = result.sqlTime;
-    if(times.bcTimeEnd && times.bcTimeStart && times.getGroupIdTime) {
+    if (times.bcTimeEnd && times.bcTimeStart && times.getGroupIdTime) {
         result.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime;
         result.totalTime += result.bcTime;
     }
-    if(times.cacheSaveTimeStart && times.cacheSaveTimeEnd){
+    if (times.cacheSaveTimeStart && times.cacheSaveTimeEnd) {
         result.cacheSaveTime = times.cacheSaveTimeEnd - times.cacheSaveTimeStart;
         result.totalTime += result.cacheSaveTime;
     }
-    if(times.cacheRetrieveTimeStart && times.cacheRetrieveTimeEnd){
+    if (times.cacheRetrieveTimeStart && times.cacheRetrieveTimeEnd) {
         result.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
         result.totalTime += result.cacheRetrieveTime;
     }
