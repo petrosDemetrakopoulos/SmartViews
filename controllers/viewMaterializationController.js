@@ -171,9 +171,54 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times, call
     }
 }
 
+function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times, callback) {
+    if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
+        // this means we want to calculate a different group by than the stored one
+        // but however it can be calculated just from redis cache
+        if (cachedGroupBy.field === view.aggregationField &&
+            view.operation === cachedGroupBy.operation) {
+            reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId, function (error, results) {
+                if (error) {
+                    return callback(error);
+                }
+                return callback(null, results);
+            });
+        } else {
+            // some fields contained in a Group by but operation and aggregation fields differ
+            // this means we should proceed to new group by calculation from the begining
+            calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                if (error) {
+                    return callback(error);
+                }
+                return callback(null, result);
+            });
+        }
+    } else {
+        if (cachedGroupBy.field === view.aggregationField &&
+            view.operation === cachedGroupBy.operation) {
+            let totalEnd = helper.time();
+            // this means we just have to return the group by stored in cache
+            // field, operation are same and no new records written
+            cachedGroupBy.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
+            cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
+            cachedGroupBy.allTotal = totalEnd - times.totalStart;
+            return callback(null, cachedGroupBy);
+        } else {
+            // same fields but different operation or different aggregate field
+            // this means we should proceed to new group by calculation from the begining
+            calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                if (error) {
+                    return callback(error);
+                }
+                return callback(null, result);
+            });
+        }
+    }
+}
+
 module.exports = {
     setContract: setContract,
     calculateNewGroupByFromBeginning: calculateNewGroupByFromBeginning,
     mergeCachedWithDeltasResultsSameFields: mergeCachedWithDeltasResultsSameFields,
-    reduceGroupByFromCache: reduceGroupByFromCache
+    calculateFromCache: calculateFromCache
 };

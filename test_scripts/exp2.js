@@ -98,7 +98,7 @@ handleResponse = async(body) => {
 };
 
 const writeToFile = async(data, filepath) => {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         let write = Promise.denodeify(fs.appendFile);
         const res = String(data+',\n');
         console.log("result: " + res);
@@ -107,7 +107,7 @@ const writeToFile = async(data, filepath) => {
     });
 };
 
-const saveFile = (dataToWrite, outComeFilePath)=> {
+const saveFile = (dataToWrite, outComeFilePath) => {
     writeToFile(dataToWrite, outComeFilePath)
     .then(()=>console.log ("file"+outComeFilePath + "saved successfully"))
     .catch((err)=> console.log(err));

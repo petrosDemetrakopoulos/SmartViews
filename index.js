@@ -266,64 +266,21 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                     }
                                     let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
                                     if (cachedGroupBy) {
-                                        if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
-                                            // this means we want to calculate a different group by than the stored one
-                                            // but however it can be calculated just from redis cache
-                                            if (cachedGroupBy.field === view.aggregationField &&
-                                                view.operation === cachedGroupBy.operation) {
-                                                let times = {
-                                                    cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
-                                                    cacheRetrieveTimeStart: cacheRetrieveTimeStart,
-                                                    totalStart: totalStart
-                                                };
-                                                viewMaterializationController.reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId, function (error, results) {
-                                                    gbRunning = false;
-                                                    if (error) {
-                                                        return res.send(error);
-                                                    }
-                                                    io.emit('view_results', stringify(results).replace('\\', ''));
-                                                    res.status(200);
-                                                    return res.send(stringify(results).replace('\\', ''));
-                                                });
-                                            } else {
-                                                // some fields contained in a Group by but operation and aggregation fields differ
-                                                // this means we should proceed to new group by calculation from the begining
-                                                viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
-                                                    gbRunning = false;
-                                                    if (error) {
-                                                        return res.send(error);
-                                                    }
-                                                    io.emit('view_results', stringify(result).replace('\\', ''));
-                                                    res.status(200);
-                                                    return res.send(stringify(result).replace('\\', ''));
-                                                });
+                                        let times = {
+                                            cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
+                                            cacheRetrieveTimeStart: cacheRetrieveTimeStart,
+                                            totalStart: totalStart,
+                                            getGroupIdTime: allGroupBysTime.getGroupIdTime
+                                        };
+                                        viewMaterializationController.calculateFromCache(cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times, function (error, result) {
+                                            gbRunning = false;
+                                            if (error) {
+                                                return res.send(error);
                                             }
-                                        } else {
-                                            if (cachedGroupBy.field === view.aggregationField &&
-                                                view.operation === cachedGroupBy.operation) {
-                                                let totalEnd = helper.time();
-                                                // this means we just have to return the group by stored in cache
-                                                // field, operation are same and no new records written
-                                                cachedGroupBy.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
-                                                cachedGroupBy.allTotal = totalEnd - totalStart;
-                                                io.emit('view_results', stringify(cachedGroupBy).replace('\\', ''));
-                                                gbRunning = false;
-                                                return res.send(stringify(cachedGroupBy).replace('\\', ''));
-                                            } else {
-                                                // same fields but different operation or different aggregate field
-                                                // this means we should proceed to new group by calculation from the begining
-                                                viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
-                                                    gbRunning = false;
-                                                    if (error) {
-                                                        return res.send(error);
-                                                    }
-                                                    io.emit('view_results', stringify(result).replace('\\', ''));
-                                                    res.status(200);
-                                                    return res.send(stringify(result).replace('\\', ''));
-                                                });
-                                            }
-                                        }
+                                            io.emit('view_results', stringify(result).replace('\\', ''));
+                                            res.status(200);
+                                            return res.send(stringify(result).replace('\\', ''));
+                                        });
                                     } else {
                                         // for some reason cachedGroupBy returned null, this means we have some discrepancy issue between the cache
                                         // and blockchain saved hashes, the hashes of the cached results saved in blockchain do not exist in cache

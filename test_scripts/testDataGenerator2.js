@@ -29,7 +29,6 @@ const generate = async function(a,b) {
         if (err) {
             return console.log(err);
         }
-        console.log('The file was saved!');
     });
     return low + p3;
 };
