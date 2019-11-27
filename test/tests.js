@@ -1,6 +1,8 @@
 const app = require('../index');
 const expect = require('chai').expect;
 const describe = require('mocha').describe;
+const after = require('mocha').after;
+const before = require('mocha').before;
 const it = require('mocha').it;
 const request = require('supertest');
 const chai = require('chai');
@@ -13,7 +15,7 @@ function freeze (time) {
     const stop = new Date().getTime() + time;
     while (new Date().getTime() < stop);
 }
-before(function(done) {
+before(function (done) {
     console.log('Waiting for services to start...');
     setTimeout(done, 3000);
 });
@@ -38,7 +40,7 @@ describe('testing /dashboard route', function () {
     it('should return OK status', function () {
         return request(app)
             .get('/dashboard')
-            .then(function(response) {
+            .then(function (response) {
                 expect(response.status).to.equal(200);
             });
     });
@@ -55,7 +57,7 @@ describe('testing /new_contract/:fn route', function () {
     it('should return OK status', function () {
         return request(app)
             .get('/new_contract/ABCD.json')
-            .then(function(response) {
+            .then(function (response) {
                 responseBodyContractgeneration = response.body;
                 expect(response.status).to.equal(200);
             });
@@ -482,7 +484,6 @@ describe('testing /getViewByName/:viewName/:contract -- Invalid view name', func
     });
 });
 
-
 describe('testing /getViewByName/:viewName/:contract -- manual slicing', function () {
     let resp = {};
     let config = require('../config_private');
@@ -529,17 +530,17 @@ describe('testing /groupbyId/:id route', function () {
     });
 });
 
-describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique primary key', async function() {
+describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique primary key', async function () {
     let resp = {};
-    it('should return OK status', async function() {
+    it('should return OK status', async function () {
         freeze(1000);
         return request(app)
             .get('/load_dataset/10fourcol_c') // adding deltas
-            .then(function(response) {
+            .then(function (response) {
                 freeze(1000);
                 return request(app)
                     .get('/getViewByName/A(COUNT)/ABCD')
-                    .then(function(response) {
+                    .then(function (response) {
                         resp = response.text;
                         console.log(resp);
                         expect(response.status).to.equal(200);
@@ -547,7 +548,7 @@ describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique pr
             });
     });
 
-    it('should be a string', function() {
+    it('should be a string', function () {
         expect(resp).to.be.a('string');
     });
 });
@@ -555,7 +556,7 @@ describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique pr
 describe('testing /getViewByName/:viewName/:contract -- cache disabled', function () {
     let resp = {};
     let config = require('../config_private');
-    before(function() {
+    before(function () {
         config.cacheEnabled = false;
         fs.writeFile('./config_private.json', JSON.stringify(config, null,4), function (err) {
             if (err) throw err;

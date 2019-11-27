@@ -406,7 +406,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             });
                                                         });
                                                     } else {
-                                                        helper.log('GROUP-BY FIELDS OF DELTAS AND CACHED ARE THE SAME');
+                                                        console.log('GROUP-BY FIELDS OF DELTAS AND CACHED ARE THE SAME');
                                                         // group by fields of deltas and cached are the same so
                                                         // MERGE cached and groupBySqlResults
                                                         let times = { bcTimeEnd: bcTimeEnd,

@@ -10,7 +10,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let filtered = groupByResult[i];
             transformed[stringify(filtered)] = crnCount;
         }
-        transformed['operation'] = 'COUNT';
+        transformed.operation = 'COUNT';
     } else if (operation === 'SUM') {
         helper.log('OPERATION = SUM');
         for (let i = 0; i < groupByResult.length; i++) {
@@ -19,7 +19,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let filtered = groupByResult[i];
             transformed[stringify(filtered)] = crnCount;
         }
-        transformed['operation'] = 'SUM';
+        transformed.operation = 'SUM';
     } else if (operation === 'MIN') {
         helper.log('OPERATION = MIN');
         for (let i = 0; i < groupByResult.length; i++) {
@@ -28,7 +28,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let filtered = groupByResult[i];
             transformed[stringify(filtered)] = crnCount;
         }
-        transformed['operation'] = 'MIN';
+        transformed.operation = 'MIN';
     } else if (operation === 'MAX') {
         helper.log('OPERATION = MAX');
         for (let i = 0; i < groupByResult.length; i++) {
@@ -37,7 +37,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let filtered = groupByResult[i];
             transformed[JSON.stringify(filtered)] = crnCount;
         }
-        transformed['operation'] = 'MAX';
+        transformed.operation = 'MAX';
     } else { // AVERAGE
         helper.log('OPERATION = AVERAGE');
 
@@ -49,11 +49,10 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
             let filtered = groupByResult[i];
             transformed[stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
         }
-
-        transformed['operation'] = 'AVERAGE';
+        transformed.operation = 'AVERAGE';
     }
-    transformed['groupByFields'] = gbField;
-    transformed['field'] = aggregateField;
+    transformed.groupByFields = gbField;
+    transformed.field = aggregateField;
     return transformed;
 }
 
@@ -70,9 +69,9 @@ function transformReadyAverage (groupByResult, gbField, aggregateField) {
         let filtered = groupByResult[i];
         transformed[stringify(filtered)] = { count: crnCount, sum: crnSum, average: crnSum / crnCount };
     }
-    transformed['operation'] = 'AVERAGE';
-    transformed['groupByFields'] = gbField;
-    transformed['field'] = aggregateField;
+    transformed.operation = 'AVERAGE';
+    transformed.groupByFields = gbField;
+    transformed.field = aggregateField;
     return transformed;
 }
 

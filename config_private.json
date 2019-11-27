@@ -14,6 +14,6 @@
         "password": "Xonelgataandrou1!",
         "database": "Ptychiaki"
     },
-    "cacheEnabled": false,
-    "logging": false
+    "cacheEnabled": true,
+    "logging": true
 }

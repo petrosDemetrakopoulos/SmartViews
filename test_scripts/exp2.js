@@ -1,15 +1,13 @@
-const fs =require('fs');
-const request =require('request');
-path = require('path');
-let numberofFacts = 100;
+const fs = require('fs');
+const request = require('request');
+let path = require('path');
 let fileToSaveTestData = 'testData_';
-const helper = require('../helpers/helper');
 const filename = './queriesEXP1.txt';
 const generator = require('./testDataGenerator2');
 const dir = '../test_data/';
 const dreq = '100dir';
 const Promise = require('promise');
-const ResultsFile = "resultsEXP1_100A.txt";
+const ResultsFile = 'resultsEXP1_100A.txt';
 const rp = require('request-promise');
 
 
@@ -19,7 +17,7 @@ const load =  (file) => {
 };
 
 load_files = (directory, valid, error) => {
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) => {
         let result = '';
         fs.readdir(path.resolve(__dirname, directory),function(error, items){
             if (error) {
@@ -41,10 +39,10 @@ const load_data = async (fileno, queries) => {
         let file = fileno;
 
         let url = 'http://localhost:3000/load_dataset/' + fileno;
-        let urlGB='http://localhost:3000/getViewByName/' +queries+ '(COUNT)/'+'ABCD';
+        let urlGB = 'http://localhost:3000/getViewByName/' + queries + '(COUNT)/' + 'ABCD';
         console.log(queries[0]);
-        console.log('urlGB: '+urlGB);
-        console.log("url: "+url);
+        console.log('urlGB: ' + urlGB);
+        console.log('url: ' + url);
         let t = 12000*60*10;
 
         let options = {
@@ -67,8 +65,8 @@ const load_data = async (fileno, queries) => {
             .then(function () {
                 rp(options2)
                     .then((res) => handleResponse(res).then(
-                        ()=>{
-                            resolve()
+                        () =>{
+                            resolve();
                         }
                     ))
                     .catch(function (err) {
@@ -88,7 +86,7 @@ handleResponse = async(body) => {
      //   console.log(JSON.stringify(body));
         let f = body.toString().substr(String(body).indexOf('operation').toString());
         console.log(f);
-        let JSONresp = JSON.parse(('{"'+f).toString());
+        let JSONresp = JSON.parse(('{"' + f).toString());
         writeToFile(JSON.stringify(JSONresp),ResultsFile).then(()=>{
             console.log(JSONresp);
             resolve()
@@ -99,8 +97,8 @@ handleResponse = async(body) => {
 const writeToFile = async(data, filepath) => {
     return new Promise((resolve, reject) => {
         let write = Promise.denodeify(fs.appendFile);
-        const res = String(data+',\n');
-        console.log("result: " + res);
+        const res = String(data + ',\n');
+        console.log('result: ' + res);
         let writeFile = write(filepath, res);
         resolve(writeFile);
     });
@@ -108,7 +106,7 @@ const writeToFile = async(data, filepath) => {
 
 const saveFile = (dataToWrite, outComeFilePath) => {
     writeToFile(dataToWrite, outComeFilePath)
-    .then(()=>console.log ("file"+outComeFilePath + "saved successfully"))
+    .then(()=>console.log ('file' + outComeFilePath + 'saved successfully'))
     .catch((err)=> console.log(err));
 };
 
@@ -118,7 +116,7 @@ const jparse = function(filename, error) {
             throw err;
         }
         let res = data;
-        res = '['+String(res)+']';
+        res = '[' + String(res) + ']';
 
         res = res.replace('},]','}]');
         let j_file = JSON.parse(res);
@@ -130,7 +128,7 @@ const jparse = function(filename, error) {
         let all_total_array = [];
         let sql_array = [];
 
-        for(let i = 0; i < j_file.length; i++){
+        for (let i = 0; i < j_file.length; i++) {
             let jObject = j_file[i];
             blockchain_array.push(jObject.bcTime);
             cache_retrieve_array.push(jObject.cacheRetrieveTime);
@@ -139,13 +137,11 @@ const jparse = function(filename, error) {
             total_array.push(jObject.totalTime);
         }
 
-        for(let i = 0;i < total_array.length; i++){
-            console.log("i: "+i+" "+total_array[i]);
+        for (let i = 0;i < total_array.length; i++) {
+            console.log('i: ' + i + ' ' + total_array[i]);
         }
     });
 };
-
-
 
 main = async() => {
     //jparse(ResultsFile);
@@ -153,19 +149,16 @@ main = async() => {
         .then(async(res)=> {
             let fns = [];
             const queries = res.split(',');
-            for(let i = 1; i <= 100; i++) {
+            for (let i = 1; i <= 100; i++) {
                let crnFN =  await generator.generate(100*(i-1),100*i);
                fns.push(crnFN);
                 // return array with filenames, then filter the ones read from the directory
             }
             load_files(dir, fns)
                 .then(async(files) => {
-                    //console.log(queries)
-                    //fileToArray => queries
-                    //fileNames
-                    for(let i = 0; i < queries.length; i++){
-                        await load_data(files[i],queries[i]).then(()=>{
-                            console.log("file " + i +" loaded");
+                    for (let i = 0; i < queries.length; i++) {
+                        await load_data(files[i],queries[i]).then(()=> {
+                            console.log('file ' + i +' loaded');
                         });
                     }
                 });
@@ -173,8 +166,5 @@ main = async() => {
         .catch((err)=> {
             console.log(err);
         })
-
 };
 main();
-
-

@@ -336,6 +336,7 @@ function assignTimes (result, times) {
         result.cacheRetrieveTime = times.cacheRetrieveTime;
         result.cacheSaveTime = times.cacheSaveTime;
         result.totalTime = times.totalTime;
+        result.allTotal = times.totalEnd - times.totalStart;
         return result;
     }
     result.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
@@ -352,6 +353,7 @@ function assignTimes (result, times) {
         result.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
         result.totalTime += result.cacheRetrieveTime;
     }
+    console.log(times);
     result.allTotal = times.totalEnd - times.totalStart;
     return result;
 }
