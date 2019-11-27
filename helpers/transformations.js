@@ -56,7 +56,7 @@ function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) 
     return transformed;
 }
 
-function transformReadyAverage (groupByResult, gbField, aggregateField) {
+function transformAverage (groupByResult, gbField, aggregateField) {
     let transformed = {};
     for (let i = 0; i < groupByResult.length; i++) {
         let crnRes = groupByResult[i];
@@ -77,5 +77,5 @@ function transformReadyAverage (groupByResult, gbField, aggregateField) {
 
 module.exports = {
     transformGBFromSQL: transformGBFromSQL,
-    transformReadyAverage: transformReadyAverage
+    transformAverage: transformAverage
 };

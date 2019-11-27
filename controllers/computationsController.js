@@ -29,6 +29,24 @@ function connectToSQL (callback) {
     });
 }
 
+// It is a very common pattern to run a query to make a view materialization
+// and then drop the temporary table we used to do it.
+function queryAndDropTable(query, tableName, callback) {
+    connection.query(query, function (error, results) {
+        if (error) {
+            helper.log(error);
+            callback(null, error);
+        }
+        connection.query('DROP TABLE ' + tableName, function (err) {
+            if (err) {
+                helper.log(err);
+                callback(error);
+            }
+            callback(null, results);
+        });
+    });
+}
+
 function calculateNewGroupBy (facts, operation, gbFields, aggregationField, callback) {
     connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
         if (err) {
@@ -56,7 +74,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                     callback(null, error);
                 }
 
-                let gbQuery = null;
+                let gbQuery = {};
                 if (operation === 'AVERAGE') {
                     gbQuery = jsonSql.build({
                         type: 'select',
@@ -88,20 +106,15 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField, call
                             }]
                     });
                 }
+
                 let editedGB = helper.sanitizeSQLQuery(gbQuery);
-                connection.query(editedGB, function (error, results3) {
-                    if (error) {
-                        helper.log(error);
-                        callback(null, error);
+                queryAndDropTable(editedGB, tableName, function (error, results) {
+                    if (err) {
+                        helper.log(err);
+                        callback(null, err);
                     }
-                    connection.query('DROP TABLE ' + tableName, function (err) {
-                        if (err) {
-                            helper.log(err);
-                            callback(null, err);
-                        }
-                        let groupBySqlResult = transformations.transformGBFromSQL(results3, operation, aggregationField, gbFields);
-                        callback(groupBySqlResult, null);
-                    });
+                    let groupBySqlResult = transformations.transformGBFromSQL(results, operation, aggregationField, gbFields);
+                    callback(groupBySqlResult, null);
                 });
             });
         });
@@ -179,18 +192,12 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
             }
 
             let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
-            connection.query(editedGBQuery, function (error, results) {
+            queryAndDropTable(editedGBQuery, tableName, function (error, results) {
                 if (error) {
                     helper.log(error);
                     callback(null, error);
                 }
-                connection.query('DROP TABLE ' + tableName, function (err) {
-                    if (err) {
-                        helper.log(err);
-                        callback(null, err);
-                    }
-                    callback(results);
-                });
+                callback(results);
             });
         });
     });
@@ -268,25 +275,18 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                 }
 
                 let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
-                connection.query(editedGBQuery, async function (error, results, fields) {
+                queryAndDropTable(editedGBQuery, tableName, function (error, results) {
                     if (error) {
                         helper.log(error);
                         callback(null, error);
                     }
-                    connection.query('DROP TABLE ' + tableName, function (err) {
-                        if (err) {
-                            helper.log(err);
-                            callback(null, err);
-                        }
-
-                        let groupBySqlResult = {};
-                        if (view.operation === 'AVERAGE') {
-                            groupBySqlResult = transformations.transformReadyAverage(results, view.gbFields, view.aggregationField);
-                        } else {
-                            groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.gbFields);
-                        }
-                        callback(groupBySqlResult);
-                    });
+                    let groupBySqlResult = {};
+                    if (view.operation === 'AVERAGE') {
+                        groupBySqlResult = transformations.transformAverage(results, view.gbFields, view.aggregationField);
+                    } else {
+                        groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.gbFields);
+                    }
+                    callback(groupBySqlResult);
                 });
             });
         });

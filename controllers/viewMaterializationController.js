@@ -20,7 +20,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
 
         let viewMeta = helper.extractViewMeta(view);
         if (view.operation === 'AVERAGE') {
-            reducedResult = transformations.transformReadyAverage(reducedResult, view.gbFields, view.aggregationField);
+            reducedResult = transformations.transformAverage(reducedResult, view.gbFields, view.aggregationField);
         } else {
             reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
         }
