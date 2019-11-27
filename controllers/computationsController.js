@@ -197,7 +197,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
 }
 
 function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, lastCol, prelastCol, callback) {
-    connection.query(gbCreateTable, function (error, results, fields) {
+    connection.query(gbCreateTable, function (error) {
         if (error) {
             helper.log(error);
             callback(null, error);
@@ -215,11 +215,8 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
             values: groupByB
         });
 
-        let editedQueryA = sqlInsertA.query.replace(/"/g, '');
-        editedQueryA = editedQueryA.replace(/''/g, 'null');
-
-        let editedQueryB = sqlInsertB.query.replace(/"/g, '');
-        editedQueryB = editedQueryB.replace(/''/g, 'null');
+        let editedQueryA = helper.sanitizeSQLQuery(sqlInsertA);
+        let editedQueryB = helper.sanitizeSQLQuery(sqlInsertB);
 
         connection.query(editedQueryA, function (err, results, fields) {
             if (err) {
@@ -234,10 +231,8 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                 let op = '';
                 if (view.operation === 'SUM' || view.operation === 'COUNT') {
                     op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
-                } else if (view.operation === 'MIN') {
-                    op = 'MIN'
-                } else if (view.operation === 'MAX') {
-                    op = 'MAX';
+                } else {
+                    op = view.operation;
                 }
                 let gbQuery = jsonSql.build({
                     type: 'select',
@@ -272,14 +267,13 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                     });
                 }
 
-                let editedGBQuery = gbQuery.query.replace(/"/g, '');
-                editedGBQuery = editedGBQuery.replace(/''/g, 'null');
+                let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
                 connection.query(editedGBQuery, async function (error, results, fields) {
                     if (error) {
                         helper.log(error);
                         callback(null, error);
                     }
-                    connection.query('DROP TABLE ' + tableName, function (err, resultDrop) {
+                    connection.query('DROP TABLE ' + tableName, function (err) {
                         if (err) {
                             helper.log(err);
                             callback(null, err);
