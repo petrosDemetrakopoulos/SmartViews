@@ -272,7 +272,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                             sortedByEvictionCost, view, gbFields, latestId, times).then(result =>  {
                                             gbRunning = false;
                                             materializationDone = true;
-                                            console.log("calculate from cache end");
                                             io.emit('view_results', stringify(result).replace('\\', ''));
                                             res.status(200);
                                             return res.send(stringify(result).replace('\\', ''));

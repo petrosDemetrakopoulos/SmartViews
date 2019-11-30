@@ -185,13 +185,15 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
     });
 }
 
-function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times) {
+function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult,
+                                                latestId, sortedByEvictionCost, times) {
     return new Promise((resolve, reject) => {
         let viewMeta = helper.extractViewMeta(view);
         let rows = helper.extractGBValues(cachedGroupBy, view);
         let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
         let mergeTimeStart = helper.time();
-        computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewMeta.viewNameSQL, view, viewMeta.lastCol, viewMeta.prelastCol).then(mergeResult => {
+        computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewMeta.viewNameSQL,
+            view, viewMeta.lastCol, viewMeta.prelastCol).then(mergeResult => {
             let mergeTimeEnd = helper.time();
             // SAVE ON CACHE BEFORE RETURN
             helper.log('SAVE ON CACHE BEFORE RETURN');
@@ -239,7 +241,8 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                 let facts = helper.removeTimestamps(retval);
                 helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                 let sqlTimeStart = helper.time();
-                computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField).then(groupBySqlResult  => {
+                computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields,
+                    view.aggregationField).then(groupBySqlResult  => {
                     let sqlTimeEnd = helper.time();
                     groupBySqlResult.gbCreateTable = view.SQLTable;
                     groupBySqlResult.field = view.aggregationField;
@@ -307,13 +310,13 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times) {
 
 function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times) {
     return new Promise(async (resolve, reject) => {
-        console.log("calculate from cache start");
         if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
             // this means we want to calculate a different group by than the stored one
             // but however it can be calculated just from redis cache
             if (cachedGroupBy.field === view.aggregationField &&
                 view.operation === cachedGroupBy.operation) {
-                return await reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId).then(results => {
+                return await reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost,
+                    times, latestId).then(results => {
                     return resolve(results);
                 }).catch(err => {
                     return reject(err);
@@ -331,7 +334,6 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
                 return resolve(cachedGroupBy);
             }
         }
-        console.log("fucking calculating new gb!!!!");
         calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost).then(result => {
             return resolve(result);
         }).catch(err => {
