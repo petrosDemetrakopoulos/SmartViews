@@ -69,7 +69,7 @@ async function getAllGroupbys () { // promisify it to await where we call it
                         }
                     });
                 } else {
-                    let times = {times: { getGroupIdTime: getGroupIdTime, getAllGBsTime: 0 }};
+                    let times = { times: { getGroupIdTime: getGroupIdTime, getAllGBsTime: 0 } };
                     resolve(times);
                 }
             } else {
@@ -193,7 +193,7 @@ async function getLatestId () {
     return new Promise((resolve, reject) => {
         contract.methods.dataId().call(function (err, latestId) {
             if (err) {
-               reject(err);
+                reject(err);
             } else {
                 resolve(latestId);
             }

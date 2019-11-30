@@ -91,7 +91,7 @@ http.listen(3000, () => {
         config = configLab;
     }
     if (validations.passed) {
-        computationsController.connectToSQL().then (() => {
+        computationsController.connectToSQL().then(() => {
             mysqlConnected = true;
             console.log('mySQL connected');
         }).catch(err => {
@@ -229,12 +229,11 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         if (config.cacheEnabled) {
             helper.log('cache enabled = TRUE');
             await contractController.getAllGroupbys().then(async resultGB => {
-
-                if(resultGB.times.getGroupIdTime !== null && resultGB.times.getGroupIdTime !== undefined) {
+                if (resultGB.times.getGroupIdTime !== null && resultGB.times.getGroupIdTime !== undefined) {
                     globalAllGroupBysTime.getGroupIdTime = resultGB.times.getGroupIdTime;
                 }
 
-                if(resultGB.times.getAllGBsTime !== null && resultGB.times.getAllGBsTime !== undefined) {
+                if (resultGB.times.getAllGBsTime !== null && resultGB.times.getAllGBsTime !== undefined) {
                     globalAllGroupBysTime.getAllGBsTime = resultGB.times.getAllGBsTime;
                 }
                 delete resultGB.times;
@@ -242,7 +241,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 if (Object.keys(resultGB).length > 1) {
                     let filteredGBs = helper.filterGBs(resultGB, view);
                     if (filteredGBs.length > 0) {
-                        console.log("FILTERED GBS > 0");
+                        console.log('FILTERED GBS > 0');
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
@@ -268,7 +267,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                             getGroupIdTime: globalAllGroupBysTime.getGroupIdTime
                                         };
                                         await viewMaterializationController.calculateFromCache(cachedGroupBy,
-                                            sortedByEvictionCost, view, gbFields, latestId, times).then(result =>  {
+                                            sortedByEvictionCost, view, gbFields, latestId, times).then(result => {
                                             gbRunning = false;
                                             materializationDone = true;
                                             io.emit('view_results', stringify(result).replace('\\', ''));
@@ -292,7 +291,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 // THEN MERGE IT WITH THE ONES IN CACHE
                                 // THEN SAVE BACK IN CACHE
                                 await viewMaterializationController.calculateForDeltasAndMergeWithCached(mostEfficient,
-                                    latestId, createTable, view, gbFields,sortedByEvictionCost, globalAllGroupBysTime,
+                                    latestId, createTable, view, gbFields, sortedByEvictionCost, globalAllGroupBysTime,
                                     getLatestFactIdTime, totalStart).then(results => {
                                     io.emit('view_results', results);
                                     gbRunning = false;
@@ -312,7 +311,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         });
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
-                        console.log("NO FILTERED GROUP BYS FOUND");
+                        console.log('NO FILTERED GROUP BYS FOUND');
                         await contractController.getLatestId(async latestId => {
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
@@ -338,7 +337,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 return res.send(err);
             });
         }
-        if(!materializationDone) {
+        if (!materializationDone) {
             // this is the default fallback where the view requested is materialized from the beginning
             viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
                 globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,

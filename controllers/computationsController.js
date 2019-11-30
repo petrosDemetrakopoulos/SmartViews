@@ -52,7 +52,7 @@ function queryAndDropTable (query, tableName) {
 }
 
 function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
         connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
             if (err) {
                 helper.log(err);
@@ -64,7 +64,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
                     reject(err);
                 }
                 if (facts.length === 0) {
-                    reject({ error: 'No facts' });
+                    reject(new Error('No facts'));
                 }
                 let sql = jsonSql.build({
                     type: 'insert',
@@ -172,7 +172,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                         {
                             func: {
                                 name: op,
-                                args: [{field: lastCol}]
+                                args: [{ field: lastCol }]
                             }
                         }]
                 });
@@ -185,13 +185,13 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                             {
                                 func: {
                                     name: 'SUM',
-                                    args: [{field: prelastCol}]
+                                    args: [{ field: prelastCol }]
                                 }
                             },
                             {
                                 func: {
                                     name: 'SUM',
-                                    args: [{field: lastCol}]
+                                    args: [{ field: lastCol }]
                                 }
                             }]
                     });
@@ -289,7 +289,7 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                         } else {
                             groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.gbFields);
                         }
-                       resolve(groupBySqlResult);
+                        resolve(groupBySqlResult);
                     }).catch(err => {
                         helper.log(err);
                         reject(err);

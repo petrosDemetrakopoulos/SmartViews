@@ -330,7 +330,8 @@ function getMainTransactionObject (account) {
 }
 
 function assignTimes (result, times) {
-    if (times.bcTime && times.sqlTime && times.cacheRetrieveTime && times.cacheSaveTime && times.totalTime) { //means we have already calculated times in previous step
+    if (times.bcTime && times.sqlTime && times.cacheRetrieveTime && times.cacheSaveTime && times.totalTime) {
+        // means we have already calculated times in previous step
         result.bcTime = times.bcTime;
         result.sqlTime = times.sqlTime;
         result.cacheRetrieveTime = times.cacheRetrieveTime;
