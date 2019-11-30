@@ -268,9 +268,11 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                             totalStart: totalStart,
                                             getGroupIdTime: globalAllGroupBysTime.getGroupIdTime
                                         };
-                                        await viewMaterializationController.calculateFromCache(cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times).then(result =>  {
+                                        await viewMaterializationController.calculateFromCache(cachedGroupBy,
+                                            sortedByEvictionCost, view, gbFields, latestId, times).then(result =>  {
                                             gbRunning = false;
                                             materializationDone = true;
+                                            console.log("calculate from cache end");
                                             io.emit('view_results', stringify(result).replace('\\', ''));
                                             res.status(200);
                                             return res.send(stringify(result).replace('\\', ''));
@@ -291,8 +293,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 // CALCULATING THE VIEW JUST FOR THE DELTAS
                                 // THEN MERGE IT WITH THE ONES IN CACHE
                                 // THEN SAVE BACK IN CACHE
-                                await viewMaterializationController.calculateForDeltasAndMergeWithCached(mostEfficient, latestId,
-                                    createTable, view, gbFields,sortedByEvictionCost, globalAllGroupBysTime,
+                                await viewMaterializationController.calculateForDeltasAndMergeWithCached(mostEfficient,
+                                    latestId, createTable, view, gbFields,sortedByEvictionCost, globalAllGroupBysTime,
                                     getLatestFactIdTime, totalStart).then(results => {
                                     io.emit('view_results', results);
                                     gbRunning = false;
@@ -315,7 +317,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         console.log("NO FILTERED GROUP BYS FOUND");
                         await contractController.getLatestId(async latestId => {
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
+                            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
+                                globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 gbRunning = false;
                                 io.emit('view_results', stringify(result).replace('\\', ''));
                                 res.status(200);
@@ -340,7 +343,9 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         if(!materializationDone) {
             // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
             // just like the case that the cache is originally empty
-            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime, []).then(result => {
+            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
+                globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
+                []).then(result => {
                 gbRunning = false;
                 io.emit('view_results', stringify(result).replace('\\', ''));
                 res.status(200);

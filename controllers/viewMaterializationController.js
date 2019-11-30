@@ -57,7 +57,7 @@ function calculateForDeltasAndMergeWithCached(mostEfficient, latestId, createTab
                                         cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
                                             helper.log('error:' + err);
                                             reject(err);
-                                        }).on('receipt',async (receipt) => {
+                                        }).on('receipt', async (receipt) => {
                                             let cacheSaveTimeEnd = helper.time();
                                             delete mergeResult.gbCreateTable;
                                             if (sortedByEvictionCost.length >= config.maxCacheSize) {
@@ -306,24 +306,17 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times) {
 }
 
 function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        console.log("calculate from cache start");
         if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
             // this means we want to calculate a different group by than the stored one
             // but however it can be calculated just from redis cache
             if (cachedGroupBy.field === view.aggregationField &&
                 view.operation === cachedGroupBy.operation) {
-                reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId).then(results => {
-                    resolve(results);
+                return await reduceGroupByFromCache(cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId).then(results => {
+                    return resolve(results);
                 }).catch(err => {
-                    reject(err);
-                });
-            } else {
-                // some fields contained in a Group by but operation and aggregation fields differ
-                // this means we should proceed to new group by calculation from the begining
-                calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost).then(result => {
-                    resolve(result);
-                }).catch(err => {
-                    reject(err);
+                    return reject(err);
                 });
             }
         } else {
@@ -335,17 +328,15 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
                 cachedGroupBy.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
                 cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
                 cachedGroupBy.allTotal = totalEnd - times.totalStart;
-                resolve(cachedGroupBy);
-            } else {
-                // same fields but different operation or different aggregate field
-                // this means we should proceed to new group by calculation from the begining
-                calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost).then(result => {
-                    resolve(result);
-                }).catch(err => {
-                    reject(err);
-                });
+                return resolve(cachedGroupBy);
             }
         }
+        console.log("fucking calculating new gb!!!!");
+        calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost).then(result => {
+            return resolve(result);
+        }).catch(err => {
+            return reject(err);
+        });
     });
 }
 
