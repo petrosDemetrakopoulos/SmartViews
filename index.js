@@ -185,22 +185,20 @@ app.get('/getFactsFromTo/:from/:to', function (req, res) {
 });
 
 app.get('/allfacts', contractController.contractChecker, function (req, res) {
-    contractController.getLatestId(function (err, result) {
-        if (!err) {
-            // async loop waiting to get all the facts separately
-            let timeStart = helper.time();
-            contractController.getAllFactsHeavy(result).then(retval => {
-                let timeFinish = helper.time() - timeStart;
-                helper.log('Get all facts time: ' + timeFinish + ' s');
-                retval.push({ time: timeFinish });
-                res.send(retval);
-            }).catch(error => {
-                helper.log(error);
-            });
-        } else {
-            helper.log(err);
-            res.send(err);
-        }
+    contractController.getLatestId().then(async result => {
+        // async loop waiting to get all the facts separately
+        let timeStart = helper.time();
+        contractController.getAllFactsHeavy(result).then(retval => {
+            let timeFinish = helper.time() - timeStart;
+            helper.log('Get all facts time: ' + timeFinish + ' s');
+            retval.push({ time: timeFinish });
+            res.send(retval);
+        }).catch(error => {
+            helper.log(error);
+        });
+    }).catch(err => {
+        helper.log(err);
+        res.send(err);
     });
 });
 
@@ -223,78 +221,70 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         res.status(200);
         return res.send({ error: 'view not found' });
     }
+    let materializationDone = false;
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
         gbRunning = true; // a flag to handle retries of the request from the front-end
         let gbFields = helper.extractGBFields(view);
         view.gbFields = gbFields;
-
+        let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
         if (config.cacheEnabled) {
             helper.log('cache enabled = TRUE');
-            contractController.getAllGroupbys(async function (err, resultGB, allGroupBysTime) {
-                if (err) {
-                    helper.log(err);
-                    gbRunning = false;
-                    return res.send(err);
+            await contractController.getAllGroupbys().then(async resultGB => {
+
+                if(resultGB.times.getGroupIdTime !== null && resultGB.times.getGroupIdTime !== undefined) {
+                    globalAllGroupBysTime.getGroupIdTime = resultGB.times.getGroupIdTime;
                 }
-                if (resultGB) {
+
+                if(resultGB.times.getAllGBsTime !== null && resultGB.times.getAllGBsTime !== undefined) {
+                    globalAllGroupBysTime.getAllGBsTime = resultGB.times.getAllGBsTime;
+                }
+                delete resultGB.times;
+
+                if (Object.keys(resultGB).length > 1) {
                     let filteredGBs = helper.filterGBs(resultGB, view);
                     if (filteredGBs.length > 0) {
+                        console.log("FILTERED GBS > 0");
                         let getLatestFactIdTimeStart = helper.time();
-                        contractController.getLatestId(async function (err, latestId) {
+                          await contractController.getLatestId().then(async latestId => {
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId);
                             let mostEfficient = sortedByCalculationCost[0];
                             let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
-                            if (err) {
-                                helper.log(err);
-                                gbRunning = false;
-                                return res.send(err);
-                            }
+
                             if (mostEfficient.latestFact >= (latestId - 1)) {
                                 helper.log('NO NEW FACTS');
                                 // NO NEW FACTS after the latest group by
                                 // -> incrementally calculate the groupby requested by summing the one in redis cache
                                 let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
                                 let cacheRetrieveTimeStart = helper.time();
-                                cacheController.getManyCachedResults(allHashes, function (error, allCached) {
+                                await cacheController.getManyCachedResults(allHashes).then(async allCached => {
                                     let cacheRetrieveTimeEnd = helper.time();
-                                    if (error) {
-                                        helper.log(error);
-                                        gbRunning = false;
-                                        return res.send(error);
-                                    }
+
                                     let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
                                     if (cachedGroupBy) {
                                         let times = {
                                             cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
                                             cacheRetrieveTimeStart: cacheRetrieveTimeStart,
                                             totalStart: totalStart,
-                                            getGroupIdTime: allGroupBysTime.getGroupIdTime
+                                            getGroupIdTime: globalAllGroupBysTime.getGroupIdTime
                                         };
-                                        viewMaterializationController.calculateFromCache(cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times, function (error, result) {
+                                        await viewMaterializationController.calculateFromCache(cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times).then(result =>  {
                                             gbRunning = false;
-                                            if (error) {
-                                                return res.send(error);
-                                            }
+                                            materializationDone = true;
                                             io.emit('view_results', stringify(result).replace('\\', ''));
                                             res.status(200);
                                             return res.send(stringify(result).replace('\\', ''));
-                                        });
-                                    } else {
-                                        // for some reason cachedGroupBy returned null, this means we have some discrepancy issue between the cache
-                                        // and blockchain saved hashes, the hashes of the cached results saved in blockchain do not exist in cache
-                                        // therefore we proceed to a new materialization
-                                        viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                        }).catch(err => {
+                                            helper.log(err);
                                             gbRunning = false;
-                                            if (error) {
-                                                return res.send(error);
-                                            }
-                                            io.emit('view_results', stringify(result).replace('\\', ''));
-                                            res.status(200);
-                                            return res.send(stringify(result).replace('\\', ''));
+                                            return res.send(err);
                                         });
                                     }
+                                }).catch(err => {
+                                    helper.log(err);
+                                    gbRunning = false;
+                                    return res.send(err);
                                 });
                             } else {
                                 helper.log('DELTAS DETECTED');
@@ -303,28 +293,18 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 // THEN MERGE IT WITH THE ONES IN CACHE
                                 // THEN SAVE BACK IN CACHE
                                 let bcTimeStart = helper.time();
-                                contractController.getFactsFromTo(mostEfficient.latestFact, latestId - 1).then(deltas => {
+                                await contractController.getFactsFromTo(mostEfficient.latestFact, latestId - 1).then(async deltas => {
                                     let bcTimeEnd = helper.time();
-                                    computationsController.executeQuery(createTable, function (error, results, fields) {
-                                        if (error) throw error;
+                                    await computationsController.executeQuery(createTable).then(async results => {
                                         deltas = helper.removeTimestamps(deltas);
                                         helper.log('CALCULATING GROUP-BY FOR DELTAS:');
                                         let sqlTimeStart = helper.time();
-                                        computationsController.calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField, async function (groupBySqlResult, error) {
+                                        await computationsController.calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField).then(async groupBySqlResult => {
                                             let sqlTimeEnd = helper.time();
-                                            if (error) {
-                                                gbRunning = false;
-                                                return res.send(error);
-                                            }
                                             let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
                                             let cacheRetrieveTimeStart = helper.time();
-                                            cacheController.getManyCachedResults(allHashes, async function (error, allCached) {
+                                            await cacheController.getManyCachedResults(allHashes).then(async allCached => {
                                                 let cacheRetrieveTimeEnd = helper.time();
-                                                if (error) {
-                                                    helper.log(error);
-                                                    gbRunning = false;
-                                                    return res.send(error);
-                                                }
 
                                                 let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
 
@@ -332,12 +312,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                     view.operation === cachedGroupBy.operation) {
                                                     if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
                                                         let reductionTimeStart = helper.time();
-                                                        computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields, async function (reducedResult, error) {
+                                                        await computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
                                                             let reductionTimeEnd = helper.time();
-                                                            if (error) {
-                                                                gbRunning = false;
-                                                                return res.send(error);
-                                                            }
 
                                                             let viewMeta = helper.extractViewMeta(view);
                                                             // MERGE reducedResult with groupBySQLResult
@@ -348,12 +324,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
 
                                                             let mergeTimeStart = helper.time();
-                                                            computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewMeta.viewNameSQL, view, viewMeta.lastCol, viewMeta.prelastCol, function (mergeResult, error) {
+                                                             await computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewMeta.viewNameSQL, view, viewMeta.lastCol, viewMeta.prelastCol).then(mergeResult => {
                                                                 let mergeTimeEnd = helper.time();
-                                                                if (error) {
-                                                                    gbRunning = false;
-                                                                    return res.send(error);
-                                                                }
                                                                 mergeResult.operation = view.operation;
                                                                 mergeResult.field = view.aggregationField;
                                                                 mergeResult.gbCreateTable = view.SQLTable;
@@ -364,15 +336,14 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                     helper.log('error:' + err);
                                                                     gbRunning = false;
                                                                     return res.send(err);
-                                                                }).on('receipt', (receipt) => {
+                                                                }).on('receipt',async (receipt) => {
                                                                     let cacheSaveTimeEnd = helper.time();
                                                                     delete mergeResult.gbCreateTable;
                                                                     if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                                        contractController.deleteCachedResults(sortedByEvictionCost, function (err) {
+                                                                        await contractController.deleteCachedResults(sortedByEvictionCost).then(receiptDelete => {
                                                                             let totalEnd = helper.time();
-                                                                            if (!err) {
                                                                                 mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
-                                                                                mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + allGroupBysTime.getGroupIdTime + allGroupBysTime.getAllGBsTime;
+                                                                                mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
                                                                                 mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                                 mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                                 mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
@@ -381,16 +352,18 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                                 helper.log('receipt:' + JSON.stringify(receipt));
                                                                                 io.emit('view_results', mergeResult);
                                                                                 gbRunning = false;
+                                                                                materializationDone = true;
                                                                                 res.status(200);
                                                                                 return res.send(stringify(mergeResult).replace('\\', ''));
-                                                                            }
+                                                                        }).catch(err => {
+                                                                            helper.log(err);
                                                                             gbRunning = false;
                                                                             return res.send(err);
                                                                         });
                                                                     } else {
                                                                         let totalEnd = helper.time();
                                                                         mergeResult.sqlTime = (sqlTimeEnd - sqlTimeStart) + (reductionTimeEnd - reductionTimeStart) + (mergeTimeEnd - mergeTimeStart);
-                                                                        mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + allGroupBysTime.getGroupIdTime + allGroupBysTime.getAllGBsTime;
+                                                                        mergeResult.bcTime = (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
                                                                         mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                                         mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
                                                                         mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
@@ -399,11 +372,20 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                                         helper.log('receipt:' + JSON.stringify(receipt));
                                                                         io.emit('view_results', mergeResult);
                                                                         gbRunning = false;
+                                                                        materializationDone = true;
                                                                         res.status(200);
                                                                         return res.send(stringify(mergeResult).replace('\\', ''));
                                                                     }
                                                                 });
-                                                            });
+                                                            }).catch(err => {
+                                                                 helper.log(err);
+                                                                 gbRunning = false;
+                                                                 return res.send(err);
+                                                             });
+                                                        }).catch(err => {
+                                                            helper.log(err);
+                                                            gbRunning = false;
+                                                            return res.send(err);
                                                         });
                                                     } else {
                                                         console.log('GROUP-BY FIELDS OF DELTAS AND CACHED ARE THE SAME');
@@ -411,8 +393,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                         // MERGE cached and groupBySqlResults
                                                         let times = { bcTimeEnd: bcTimeEnd,
                                                             bcTimeStart: bcTimeStart,
-                                                            getGroupIdTime: allGroupBysTime.getGroupIdTime,
-                                                            getAllGBsTime: allGroupBysTime.getAllGBsTime,
+                                                            getGroupIdTime: globalAllGroupBysTime.getGroupIdTime,
+                                                            getAllGBsTime: globalAllGroupBysTime.getAllGBsTime,
                                                             getLatestFactIdTime: getLatestFactIdTime,
                                                             sqlTimeEnd: sqlTimeEnd,
                                                             sqlTimeStart: sqlTimeStart,
@@ -420,43 +402,47 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                                             cacheRetrieveTimeStart: cacheRetrieveTimeStart,
                                                             totalStart: totalStart };
 
-                                                        viewMaterializationController.mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times, function (err, result) {
-                                                            if (err) {
-                                                                gbRunning = false;
-                                                                return res.send(err);
-                                                            }
+                                                        await viewMaterializationController.mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times).then(result =>  {
                                                             io.emit('view_results', stringify(result).replace('\\', ''));
                                                             res.status(200);
                                                             gbRunning = false;
+                                                            materializationDone = true;
                                                             return res.send(stringify(result).replace('\\', ''));
-                                                        })
-                                                    }
-                                                } else {
-                                                    // No filtered group-bys found, proceed to group-by from the beginning
-                                                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
-                                                        gbRunning = false;
-                                                        if (error) {
+                                                        }).catch(err => {
+                                                            helper.log(err);
                                                             gbRunning = false;
-                                                            return res.send(stringify(error))
-                                                        }
-                                                        io.emit('view_results', stringify(result).replace('\\', ''));
-                                                        res.status(200);
-                                                        gbRunning = false;
-                                                        return res.send(stringify(result).replace('\\', ''));
-                                                    });
+                                                            return res.send(err);
+                                                        });
+                                                    }
                                                 }
+                                            }).catch(err => {
+                                                helper.log(err);
+                                                gbRunning = false;
+                                                return res.send(err);
                                             });
+                                        }).catch(err => {
+                                            helper.log(err);
+                                            gbRunning = false;
+                                            return res.send(err);
                                         });
+                                    }).catch(err => {
+                                        helper.log(err);
+                                        gbRunning = false;
+                                        return res.send(err);
                                     });
                                 });
                             }
-                        });
+                        }).catch(err => {
+                             helper.log(err);
+                             gbRunning = false;
+                             return res.send(err);
+                         });
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
-                        contractController.getLatestId(async function (err, latestId) {
-                            if (!err) {
+                        console.log("NO FILTERED GROUP BYS FOUND");
+                        await contractController.getLatestId(async latestId => {
                                 let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                                viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
+                                 viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost, function (error, result) {
                                     gbRunning = false;
                                     if (error) {
                                         gbRunning = false;
@@ -465,32 +451,27 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                     io.emit('view_results', stringify(result).replace('\\', ''));
                                     res.status(200);
                                     gbRunning = false;
+                                    materializationDone = true;
                                     return res.send(stringify(result).replace('\\', ''));
                                 });
-                            } else {
-                                return res.send(stringify(err))
-                            }
+                        }).catch(err => {
+                            return res.send(stringify(err));
                         });
                     }
-                } else {
-                    // No group bys exist in cache, we are in the initial state
-                    // this means we should proceed to new group by calculation from the begining
-                    viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, allGroupBysTime.getGroupIdTime, [], function (error, result) {
-                        gbRunning = false;
-                        if (error) {
-                            return res.send(stringify(error))
-                        }
-                        io.emit('view_results', stringify(result).replace('\\', ''));
-                        res.status(200);
-                        return res.send(stringify(result).replace('\\', ''));
-                    });
                 }
+            }).catch(err => {
+                helper.log(err);
+                gbRunning = false;
+                return res.send(err);
             });
-        } else {
+        }
+        if(!materializationDone) {
             helper.log('cache enabled = FALSE');
             // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
             // just like the case that the cache is originally empty
-            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, 0, [], function (error, result) {
+            console.log("%%%%%");
+            console.log(globalAllGroupBysTime);
+            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart, globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime, [], function (error, result) {
                 gbRunning = false;
                 if (error) {
                     return res.send(stringify(error))
@@ -500,7 +481,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 return res.send(stringify(result).replace('\\', ''));
             });
         }
-    }
+        }
 });
 
 app.get('/getcount', contractController.contractChecker, function (req, res) {

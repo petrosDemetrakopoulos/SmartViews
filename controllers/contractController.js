@@ -48,32 +48,35 @@ async function getGroupByWithId (id) {
     });
 }
 
-function getAllGroupbys (callback) {
+async function getAllGroupbys () { // promisify it to await where we call it
     let getGroupIdTimeStart = helper.time();
-    contract.methods.groupId().call(function (err, result) {
-        let getGroupIdTime = helper.time() - getGroupIdTimeStart;
-        if (!err) {
-            if (result > 0) {
-                let getAllGBsFromBCTimeStart = helper.time();
-                contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
-                    let getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
-                    let times = { getAllGBsTime: getAllGBsTime, getGroupIdTime: getGroupIdTime };
-                    if (!err) {
-                        resultGB = removeUnneededFieldsFromBCResponse(resultGB);
-                        callback(null, resultGB, times);
-                    } else {
-                        helper.log(err);
-                        callback(err);
-                    }
-                });
+    return new Promise((resolve, reject) => {
+        contract.methods.groupId().call(function (err, result) {
+            let getGroupIdTime = helper.time() - getGroupIdTimeStart;
+            if (!err) {
+                if (result > 0) {
+                    let getAllGBsFromBCTimeStart = helper.time();
+                    return contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
+                        let getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
+                        let times = { getAllGBsTime: getAllGBsTime, getGroupIdTime: getGroupIdTime };
+                        if (!err) {
+                            resultGB = removeUnneededFieldsFromBCResponse(resultGB);
+                            resultGB.times = times;
+                            resolve(resultGB);
+                        } else {
+                            helper.log(err);
+                            reject(err);
+                        }
+                    });
+                } else {
+                    let times = {times: { getGroupIdTime: getGroupIdTime, getAllGBsTime: 0 }};
+                    resolve(times);
+                }
             } else {
-                let times = { getGroupIdTime: getGroupIdTime };
-                callback(null, null, times);
+                helper.log(err);
+                reject(err);
             }
-        } else {
-            helper.log(err);
-            callback(err);
-        }
+        });
     });
 }
 
@@ -186,13 +189,15 @@ async function getFactsCount () {
     return id;
 }
 
-function getLatestId (callback) {
-    contract.methods.dataId().call(function (err, latestId) {
-        if (err) {
-            callback(err, null);
-        } else {
-            callback(null, latestId);
-        }
+async function getLatestId () {
+    return new Promise((resolve, reject) => {
+        contract.methods.dataId().call(function (err, latestId) {
+            if (err) {
+               reject(err);
+            } else {
+                resolve(latestId);
+            }
+        });
     });
 }
 
@@ -211,13 +216,15 @@ function removeUnneededFieldsFromBCResponse (bcResponse) {
     return bcResponse;
 }
 
-function deleteCachedResults (sortedByEvictionCost, callback) {
-    cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
-        deleteGBsById(gbIdsToDelete).then(receipt => {
-            callback(null, receipt);
-        }).catch(error => {
-            helper.log(error);
-            callback(error);
+function deleteCachedResults (sortedByEvictionCost) {
+    return new Promise((resolve, reject) => {
+        cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+            deleteGBsById(gbIdsToDelete).then(receipt => {
+                resolve(receipt);
+            }).catch(error => {
+                helper.log(error);
+                reject(error);
+            });
         });
     });
 }

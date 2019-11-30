@@ -1,5 +1,4 @@
 const fs = require('fs');
-const request = require('request');
 let path = require('path');
 let fileToSaveTestData = 'testData_';
 const filename = './queriesEXP1.txt';
@@ -10,7 +9,6 @@ const Promise = require('promise');
 const ResultsFile = 'resultsEXP1_100A.txt';
 const rp = require('request-promise');
 
-
 const load =  (file) => {
     let read = Promise.denodeify(fs.readFile);
     return read(path.resolve(__dirname, file), 'utf8');
@@ -19,7 +17,7 @@ const load =  (file) => {
 load_files = (directory, valid, error) => {
     return new Promise((resolve, reject) => {
         let result = '';
-        fs.readdir(path.resolve(__dirname, directory),function(error, items){
+        fs.readdir(path.resolve(__dirname, directory),function (error, items) {
             if (error) {
                 return console.log(error)
             } else {
@@ -43,7 +41,7 @@ const load_data = async (fileno, queries) => {
         console.log(queries[0]);
         console.log('urlGB: ' + urlGB);
         console.log('url: ' + url);
-        let t = 12000*60*10;
+        let t = 12000 * 60 * 10;
 
         let options = {
             uri: url,
@@ -57,7 +55,7 @@ const load_data = async (fileno, queries) => {
             timeout:t,
             uri: urlGB,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/38.0.2125.111 Safari/537.36','Connection': 'keep-alive'},
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/38.0.2125.111 Safari/537.36','Connection': 'keep-alive' },
             json: true // Automatically parses the JSON string in the response
         };
 
@@ -121,24 +119,24 @@ const jparse = function(filename, error) {
         res = res.replace('},]','}]');
         let j_file = JSON.parse(res);
 
-        let blockchain_array = [];
-        let cache_retrieve_array = [];
-        let cache_save_array = [];
-        let total_array = [];
-        let all_total_array = [];
-        let sql_array = [];
+        let blockchainArray = [];
+        let cacheRetrieveArray = [];
+        let cacheSaveArray = [];
+        let totalArray = [];
+        let allTotalArray = [];
+        let sqlArray = [];
 
         for (let i = 0; i < j_file.length; i++) {
             let jObject = j_file[i];
-            blockchain_array.push(jObject.bcTime);
-            cache_retrieve_array.push(jObject.cacheRetrieveTime);
-            cache_save_array.push(jObject.cacheSaveTime);
-            sql_array.push(jObject.sqlTime);
-            total_array.push(jObject.totalTime);
+            blockchainArray.push(jObject.bcTime);
+            cacheRetrieveArray.push(jObject.cacheRetrieveTime);
+            cacheSaveArray.push(jObject.cacheSaveTime);
+            sqlArray.push(jObject.sqlTime);
+            totalArray.push(jObject.totalTime);
         }
 
-        for (let i = 0;i < total_array.length; i++) {
-            console.log('i: ' + i + ' ' + total_array[i]);
+        for (let i = 0;i < totalArray.length; i++) {
+            console.log('i: ' + i + ' ' + totalArray[i]);
         }
     });
 };

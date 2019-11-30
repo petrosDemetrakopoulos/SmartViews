@@ -341,7 +341,7 @@ function assignTimes (result, times) {
     }
     result.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
     result.totalTime = result.sqlTime;
-    if (times.bcTimeEnd && times.bcTimeStart && times.getGroupIdTime) {
+    if (times.bcTimeEnd && times.bcTimeStart && times.getGroupIdTime !== null && times.getGroupIdTime !== undefined) {
         result.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime;
         result.totalTime += result.bcTime;
     }

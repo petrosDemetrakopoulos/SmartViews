@@ -47,193 +47,112 @@ function queryAndDropTable(query, tableName, callback) {
     });
 }
 
-function calculateNewGroupBy (facts, operation, gbFields, aggregationField, callback) {
-    connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
-        if (err) {
-            helper.log(err);
-            callback(null, err);
-        }
-        connection.query(createTable, function (error) { // creating the SQL table for 'Fact Table'
-            if (error) {
-                helper.log(error);
-                callback(null, error);
+function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
+    return new Promise((resolve,reject) => {
+        connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
+            if (err) {
+                helper.log(err);
+                reject(err);
             }
-            if (facts.length === 0) {
-                callback(null, { error: 'No facts' });
-            }
-            let sql = jsonSql.build({
-                type: 'insert',
-                table: tableName,
-                values: facts
-            });
-
-            let editedQuery = helper.sanitizeSQLQuery(sql);
-            connection.query(editedQuery, function (error) { // insert facts
+            connection.query(createTable, function (error) { // creating the SQL table for 'Fact Table'
                 if (error) {
                     helper.log(error);
-                    callback(null, error);
+                    reject(err);
                 }
-
-                let gbQuery = {};
-                if (operation === 'AVERAGE') {
-                    gbQuery = jsonSql.build({
-                        type: 'select',
-                        table: tableName,
-                        group: gbFields,
-                        fields: [gbFields,
-                            {
-                                func: {
-                                    name: 'SUM', args: [{ field: aggregationField }]
-                                }
-                            },
-                            {
-                                func: {
-                                    name: 'COUNT', args: [{ field: aggregationField }]
-                                }
-                            }]
-                    });
-                } else {
-                    gbQuery = jsonSql.build({
-                        type: 'select',
-                        table: tableName,
-                        group: gbFields,
-                        fields: [gbFields,
-                            {
-                                func: {
-                                    name: operation,
-                                    args: [{ field: aggregationField }]
-                                }
-                            }]
-                    });
+                if (facts.length === 0) {
+                    reject({ error: 'No facts' });
                 }
+                let sql = jsonSql.build({
+                    type: 'insert',
+                    table: tableName,
+                    values: facts
+                });
 
-                let editedGB = helper.sanitizeSQLQuery(gbQuery);
-                queryAndDropTable(editedGB, tableName, function (error, results) {
-                    if (err) {
-                        helper.log(err);
-                        callback(null, err);
+                let editedQuery = helper.sanitizeSQLQuery(sql);
+                connection.query(editedQuery, function (error) { // insert facts
+                    if (error) {
+                        helper.log(error);
+                        reject(error);
                     }
-                    let groupBySqlResult = transformations.transformGBFromSQL(results, operation, aggregationField, gbFields);
-                    callback(groupBySqlResult, null);
+
+                    let gbQuery = {};
+                    if (operation === 'AVERAGE') {
+                        gbQuery = jsonSql.build({
+                            type: 'select',
+                            table: tableName,
+                            group: gbFields,
+                            fields: [gbFields,
+                                {
+                                    func: {
+                                        name: 'SUM', args: [{ field: aggregationField }]
+                                    }
+                                },
+                                {
+                                    func: {
+                                        name: 'COUNT', args: [{ field: aggregationField }]
+                                    }
+                                }]
+                        });
+                    } else {
+                        gbQuery = jsonSql.build({
+                            type: 'select',
+                            table: tableName,
+                            group: gbFields,
+                            fields: [gbFields,
+                                {
+                                    func: {
+                                        name: operation,
+                                        args: [{ field: aggregationField }]
+                                    }
+                                }]
+                        });
+                    }
+
+                    let editedGB = helper.sanitizeSQLQuery(gbQuery);
+                    queryAndDropTable(editedGB, tableName, function (error, results) {
+                        if (err) {
+                            helper.log(err);
+                            reject(err);
+                        }
+                        let groupBySqlResult = transformations.transformGBFromSQL(results, operation, aggregationField, gbFields);
+                        resolve(groupBySqlResult);
+                    });
                 });
             });
         });
     });
 }
 
-function calculateReducedGroupBy (cachedGroupBy, view, gbFields, callback) {
+function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
     // this means we want to calculate a different group by than the stored one
     // but however it can be calculated just from redis cache
     // calculating the reduced Group By in SQL
-    let tableName = cachedGroupBy.gbCreateTable.split(' ');
-    tableName = tableName[3];
-    tableName = tableName.split('(')[0];
-    connection.query(cachedGroupBy.gbCreateTable, async function (error) {
-        if (error) {
-            callback(null, error);
-        }
-        let lastCol = '';
-        let prelastCol = ''; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
-        lastCol = cachedGroupBy.gbCreateTable.split(' ');
-        prelastCol = lastCol[lastCol.length - 4];
-        lastCol = lastCol[lastCol.length - 2];
-
-        let rows = helper.extractGBValues(cachedGroupBy, view);
-
-        let sqlInsert = jsonSql.build({
-            type: 'insert',
-            table: tableName,
-            values: rows
-        });
-        let editedQuery = helper.sanitizeSQLQuery(sqlInsert);
-        connection.query(editedQuery, function (error, results, fields) {
+    return new Promise((resolve, reject) => {
+        let tableName = cachedGroupBy.gbCreateTable.split(' ');
+        tableName = tableName[3];
+        tableName = tableName.split('(')[0];
+        connection.query(cachedGroupBy.gbCreateTable, async function (error) {
             if (error) {
-                helper.log(error);
-                callback(null, error);
+                reject(error);
             }
-            let op = '';
-            if (view.operation === 'SUM' || view.operation === 'COUNT') {
-                op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
-            } else {
-                op = view.operation;
-            }
+            let lastCol = '';
+            let prelastCol = ''; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
+            lastCol = cachedGroupBy.gbCreateTable.split(' ');
+            prelastCol = lastCol[lastCol.length - 4];
+            lastCol = lastCol[lastCol.length - 2];
 
-            let gbQuery = jsonSql.build({
-                type: 'select',
+            let rows = helper.extractGBValues(cachedGroupBy, view);
+
+            let sqlInsert = jsonSql.build({
+                type: 'insert',
                 table: tableName,
-                group: gbFields,
-                fields: [gbFields,
-                    {
-                        func: {
-                            name: op,
-                            args: [{ field: lastCol }]
-                        }
-                    }]
+                values: rows
             });
-            if (view.operation === 'AVERAGE') {
-                gbQuery = jsonSql.build({
-                    type: 'select',
-                    table: tableName,
-                    group: gbFields,
-                    fields: [gbFields,
-                        {
-                            func: {
-                                name: 'SUM',
-                                args: [{ field: prelastCol }]
-                            }
-                        },
-                        {
-                            func: {
-                                name: 'SUM',
-                                args: [{ field: lastCol }]
-                            }
-                        }]
-                });
-            }
-
-            let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
-            queryAndDropTable(editedGBQuery, tableName, function (error, results) {
+            let editedQuery = helper.sanitizeSQLQuery(sqlInsert);
+            connection.query(editedQuery, function (error, results, fields) {
                 if (error) {
                     helper.log(error);
-                    callback(null, error);
-                }
-                callback(results);
-            });
-        });
-    });
-}
-
-function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, lastCol, prelastCol, callback) {
-    connection.query(gbCreateTable, function (error) {
-        if (error) {
-            helper.log(error);
-            callback(null, error);
-        }
-
-        let sqlInsertA = jsonSql.build({
-            type: 'insert',
-            table: tableName,
-            values: groupByA
-        });
-
-        let sqlInsertB = jsonSql.build({
-            type: 'insert',
-            table: tableName,
-            values: groupByB
-        });
-
-        let editedQueryA = helper.sanitizeSQLQuery(sqlInsertA);
-        let editedQueryB = helper.sanitizeSQLQuery(sqlInsertB);
-
-        connection.query(editedQueryA, function (err, results, fields) {
-            if (err) {
-                helper.log(err);
-                callback(null, err);
-            }
-            connection.query(editedQueryB, function (err, results, fields) {
-                if (err) {
-                    helper.log(err);
-                    callback(null, err);
+                    reject(error);
                 }
                 let op = '';
                 if (view.operation === 'SUM' || view.operation === 'COUNT') {
@@ -241,15 +160,16 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                 } else {
                     op = view.operation;
                 }
+
                 let gbQuery = jsonSql.build({
                     type: 'select',
                     table: tableName,
-                    group: view.gbFields,
-                    fields: [view.gbFields,
+                    group: gbFields,
+                    fields: [gbFields,
                         {
                             func: {
                                 name: op,
-                                args: [{ field: lastCol }]
+                                args: [{field: lastCol}]
                             }
                         }]
                 });
@@ -257,18 +177,18 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                     gbQuery = jsonSql.build({
                         type: 'select',
                         table: tableName,
-                        group: view.gbFields,
-                        fields: [view.gbFields,
+                        group: gbFields,
+                        fields: [gbFields,
                             {
                                 func: {
                                     name: 'SUM',
-                                    args: [{ field: prelastCol }]
+                                    args: [{field: prelastCol}]
                                 }
                             },
                             {
                                 func: {
                                     name: 'SUM',
-                                    args: [{ field: lastCol }]
+                                    args: [{field: lastCol}]
                                 }
                             }]
                     });
@@ -278,27 +198,117 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                 queryAndDropTable(editedGBQuery, tableName, function (error, results) {
                     if (error) {
                         helper.log(error);
-                        callback(null, error);
-                    }
-                    let groupBySqlResult = {};
-                    if (view.operation === 'AVERAGE') {
-                        groupBySqlResult = transformations.transformAverage(results, view.gbFields, view.aggregationField);
+                        reject(error);
                     } else {
-                        groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.gbFields);
+                        resolve(results);
                     }
-                    callback(groupBySqlResult);
                 });
             });
         });
     });
 }
 
-function executeQuery (queryString, callback) {
-    connection.query(queryString, async function (error, results, fields) {
-        if (error) {
-            callback(error);
-        }
-        callback(null, results, fields);
+function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, lastCol, prelastCol) {
+    return new Promise((resolve, reject) => {
+        connection.query(gbCreateTable, function (error) {
+            if (error) {
+                helper.log(error);
+                reject(error);
+            }
+
+            let sqlInsertA = jsonSql.build({
+                type: 'insert',
+                table: tableName,
+                values: groupByA
+            });
+
+            let sqlInsertB = jsonSql.build({
+                type: 'insert',
+                table: tableName,
+                values: groupByB
+            });
+
+            let editedQueryA = helper.sanitizeSQLQuery(sqlInsertA);
+            let editedQueryB = helper.sanitizeSQLQuery(sqlInsertB);
+
+            connection.query(editedQueryA, function (err, results, fields) {
+                if (err) {
+                    helper.log(err);
+                    reject(err);
+                }
+                connection.query(editedQueryB, function (err, results, fields) {
+                    if (err) {
+                        helper.log(err);
+                        reject(err);
+                    }
+                    let op = '';
+                    if (view.operation === 'SUM' || view.operation === 'COUNT') {
+                        op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
+                    } else {
+                        op = view.operation;
+                    }
+                    let gbQuery = jsonSql.build({
+                        type: 'select',
+                        table: tableName,
+                        group: view.gbFields,
+                        fields: [view.gbFields,
+                            {
+                                func: {
+                                    name: op,
+                                    args: [{field: lastCol}]
+                                }
+                            }]
+                    });
+                    if (view.operation === 'AVERAGE') {
+                        gbQuery = jsonSql.build({
+                            type: 'select',
+                            table: tableName,
+                            group: view.gbFields,
+                            fields: [view.gbFields,
+                                {
+                                    func: {
+                                        name: 'SUM',
+                                        args: [{field: prelastCol}]
+                                    }
+                                },
+                                {
+                                    func: {
+                                        name: 'SUM',
+                                        args: [{field: lastCol}]
+                                    }
+                                }]
+                        });
+                    }
+
+                    let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
+                    queryAndDropTable(editedGBQuery, tableName, function (error, results) {
+                        if (error) {
+                            helper.log(error);
+                            reject(error);
+                        }
+                        let groupBySqlResult = {};
+                        if (view.operation === 'AVERAGE') {
+                            groupBySqlResult = transformations.transformAverage(results, view.gbFields, view.aggregationField);
+                        } else {
+                            groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.gbFields);
+                        }
+                       resolve(groupBySqlResult);
+                    });
+                });
+            });
+        });
+    });
+}
+
+function executeQuery (queryString) {
+    return new Promise((resolve, reject) => {
+        connection.query(queryString, async function (error, results, fields) {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(results);
+            }
+        });
     });
 }
 

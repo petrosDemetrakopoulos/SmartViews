@@ -34,14 +34,13 @@ function saveOnCache (gbResult, operation, latestId) {
         if (gbResultSize > config.cacheSlice) {
             let crnSlice = [];
             let metaKeys = {
-                operation: gbResult['operation'],
-                groupByFields: gbResult['groupByFields'],
-                field: gbResult['field'],
-                viewName: gbResult['viewName']
+                operation: gbResult.operation,
+                groupByFields: gbResult.groupByFields,
+                field: gbResult.field,
+                viewName: gbResult.viewName
             };
             for (const key of Object.keys(gbResult)) {
                 if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'viewName') {
-                    helper.log(key);
                     crnSlice.push({ [key]: gbResult[key] });
                     if (crnSlice.length >= config.cacheSlice) {
                         slicedGbResult.push(crnSlice);
@@ -73,7 +72,6 @@ function saveOnCache (gbResult, operation, latestId) {
             let crnSliceLengthInBytes = 0;
             for (const key of Object.keys(gbResult)) {
                 if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
-                    helper.log(key);
                     crnSlice.push({ [key]: gbResult[key] });
                     rowsAddedInslice++;
                     crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
@@ -130,18 +128,21 @@ function deleteFromCache (evicted, callback) {
         helper.log('keys to remove from cache are:');
         helper.log(keysToDelete);
     }
+    // WHAT DAFUQ HAPPENS THERE IS COST FUNCTION IS THE POLICY
     client.del(keysToDelete);
     callback(gbIdsToDelete);
 }
 
-function getManyCachedResults (allHashes, callback) {
-    client.mget(allHashes, function (error, allCached) {
-        if (error) {
-            callback(error);
-        } else {
-            callback(null, allCached);
-        }
-    })
+function getManyCachedResults (allHashes) {
+    return new Promise((resolve, reject) => {
+        client.mget(allHashes, function (error, allCached) {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(allCached);
+            }
+        });
+    });
 }
 
 function preprocessCachedGroupBy (allCached) {
