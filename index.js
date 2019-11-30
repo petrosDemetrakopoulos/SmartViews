@@ -20,7 +20,6 @@ app.use(express.static('public'));
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 const contractGenerator = require('./helpers/contractGenerator');
-const transformations = require('./helpers/transformations');
 const contractDeployer = require('./helpers/contractDeployer');
 const contractController = require('./controllers/contractController');
 const cacheController = require('./controllers/cacheController');
@@ -340,8 +339,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             });
         }
         if(!materializationDone) {
-            // cache not enabled, so just fetch everything everytime from blockchain and then make calculation in sql
-            // just like the case that the cache is originally empty
+            // this is the default fallback where the view requested is materialized from the beginning
             viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
                 globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
                 []).then(result => {
