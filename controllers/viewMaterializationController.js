@@ -27,7 +27,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
             let cacheSaveTimeStart = helper.time();
             cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
                 helper.log('error:', err);
-                reject(error);
+                reject(err);
             }).on('receipt', (receipt) => {
                 helper.log('receipt:' + JSON.stringify(receipt));
                 let cacheSaveTimeEnd = helper.time();
@@ -40,12 +40,12 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                     resolve(results);
                 }).catch(err => {
                     console.log(err);
-                    reject(error);
+                    reject(err);
                 });
             });
         }).catch(err => {
             console.log(err);
-            reject(error);
+            reject(err);
         });
     });
 }
