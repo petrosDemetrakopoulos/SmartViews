@@ -12,11 +12,8 @@ function setContract (contractObject, account) {
 function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId) {
     return new Promise((resolve, reject) => {
         let reductionTimeStart = helper.time();
-        computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields, async function (reducedResult, error) {
+        computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
             let reductionTimeEnd = helper.time();
-            if (error) {
-                reject(error);
-            }
 
             let viewMeta = helper.extractViewMeta(view);
             if (view.operation === 'AVERAGE') {
@@ -46,6 +43,9 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                     reject(error);
                 });
             });
+        }).catch(err => {
+            console.log(err);
+            reject(error);
         });
     });
 }
