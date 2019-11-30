@@ -16,16 +16,18 @@ function setTableName (newTableName) {
     tableName = newTableName;
 }
 
-function connectToSQL (callback) {
-    config = helper.requireUncached('../config_private');
-    mysqlConfig = config.sql;
-    connection = mysql.createConnection(mysqlConfig);
-    connection.connect(function (err) {
-        if (err) {
-            console.error('error connecting to mySQL: ' + err.stack);
-            callback(err);
-        }
-        callback(null);
+function connectToSQL () {
+    return new Promise((resolve, reject) => {
+        config = helper.requireUncached('../config_private');
+        mysqlConfig = config.sql;
+        connection = mysql.createConnection(mysqlConfig);
+        connection.connect(function (err) {
+            if (err) {
+                console.error('error connecting to mySQL: ' + err.stack);
+                reject(err);
+            }
+            resolve();
+        });
     });
 }
 

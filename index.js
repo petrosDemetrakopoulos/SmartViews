@@ -92,14 +92,12 @@ http.listen(3000, () => {
         config = configLab;
     }
     if (validations.passed) {
-        computationsController.connectToSQL(function (err) {
-            if (err) {
-                console.error('error connecting to mySQL: ' + err.stack);
-                return;
-            }
+        computationsController.connectToSQL().then (() => {
             mysqlConnected = true;
             console.log('mySQL connected');
-        });
+        }).catch(err => {
+            console.error('error connecting to mySQL: ' + err.stack);
+        })
     } else {
         console.log('Config file validations failed');
         console.log(validations);
@@ -116,7 +114,6 @@ app.get('/deployContract/:fn', function (req, res) {
                     helper.log('******************');
                     helper.log('Contract Deployed!');
                     helper.log('******************');
-
                     contractsDeployed.push(options.contractDeployed);
                     contract = options.contractObject;
                     contractController.setContract(contract, account);
@@ -135,7 +132,8 @@ app.get('/deployContract/:fn', function (req, res) {
 
 app.get('/load_dataset/:dt', contractController.contractChecker, function (req, res) {
     let dt = require('./test_data/' + req.params.dt);
-    if (!running) { // a guard to check that this asynchronous process will not start again if called while loading data
+    if (!running) {
+        // a guard to check that this asynchronous process will not start again if called while loading data
         running = true;
         let startTime = helper.time();
         contractController.addManyFacts(dt, config.recordsSlice, io).then(retval => {
@@ -216,7 +214,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     let totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
     let viewsDefined = factTbl.views;
-    let view = helper.checkViewExists(viewsDefined, req.params.viewName, factTbl); // returns an empty object if view not exist, otherwise it returns the view object
+    let view = helper.checkViewExists(viewsDefined, req.params.viewName, factTbl);
+    // returns an empty object if view not exist, otherwise it returns the view object
     if (Object.keys(view).length === 0 && view.constructor === Object) {
         res.status(200);
         return res.send({ error: 'view not found' });
