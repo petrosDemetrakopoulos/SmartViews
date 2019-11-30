@@ -1,4 +1,3 @@
-let contract = null;
 const helper = require('../helpers/helper');
 const cacheController = require('./cacheController');
 const contractController = require('./contractController');
@@ -91,63 +90,65 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
                 });
             });
         }).catch(err => {
-           reject(err);
+            reject(err);
         });
     });
 }
 
-function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sortedByEvictionCost, callback) {
-    let bcTimeStart = helper.time();
-    contractController.getLatestId().then(latestId => {
-        contractController.getAllFactsHeavy(latestId).then(retval => {
-            let bcTimeEnd = helper.time();
-            if (retval.length === 0) {
-                return callback({ error: 'No facts exist in blockchain' }, null);
-            }
-            let facts = helper.removeTimestamps(retval);
-            helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
-            let sqlTimeStart = helper.time();
-            computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField).then(groupBySqlResult  => {
-                let sqlTimeEnd = helper.time();
-                groupBySqlResult.gbCreateTable = view.SQLTable;
-                groupBySqlResult.field = view.aggregationField;
-                groupBySqlResult.viewName = view.name;
-                if (config.cacheEnabled) {
-                    let cacheSaveTimeStart = helper.time();
-                    cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
-                        helper.log('error:', err);
-                        return callback(err, null);
-                    }).on('receipt', (receipt) => {
-                        let cacheSaveTimeEnd = helper.time();
-                        groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                        delete groupBySqlResult.gbCreateTable;
-                        helper.log('receipt:' + JSON.stringify(receipt));
-                        let times = { sqlTimeEnd: sqlTimeEnd, sqlTimeStart: sqlTimeStart,
-                            bcTimeStart: bcTimeStart, bcTimeEnd: bcTimeEnd,
-                            getGroupIdTime: getGroupIdTime, totalStart: totalStart };
-                        clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, times, function (err, results) {
-                            if(err){
-                                return callback(err);
-                            }
-                            helper.printTimes(results);
-                            return callback(null, results);
-                        });
-                    });
-                } else {
-                    let totalEnd = helper.time();
-                    groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
-                    groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime;
-                    groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime;
-                    groupBySqlResult.allTotal = totalEnd - totalStart;
-                    helper.printTimes(groupBySqlResult);
-                    return callback(null, groupBySqlResult);
+function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sortedByEvictionCost) {
+    return new Promise((resolve, reject) => {
+        let bcTimeStart = helper.time();
+        contractController.getLatestId().then(latestId => {
+            contractController.getAllFactsHeavy(latestId).then(retval => {
+                let bcTimeEnd = helper.time();
+                if (retval.length === 0) {
+                    reject({ error: 'No facts exist in blockchain' });
                 }
-            }).catch(err => {
-                throw err;
+                let facts = helper.removeTimestamps(retval);
+                helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
+                let sqlTimeStart = helper.time();
+                computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField).then(groupBySqlResult  => {
+                    let sqlTimeEnd = helper.time();
+                    groupBySqlResult.gbCreateTable = view.SQLTable;
+                    groupBySqlResult.field = view.aggregationField;
+                    groupBySqlResult.viewName = view.name;
+                    if (config.cacheEnabled) {
+                        let cacheSaveTimeStart = helper.time();
+                        cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
+                            helper.log('error:', err);
+                            reject(err);
+                        }).on('receipt', (receipt) => {
+                            let cacheSaveTimeEnd = helper.time();
+                            groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                            delete groupBySqlResult.gbCreateTable;
+                            helper.log('receipt:' + JSON.stringify(receipt));
+                            let times = { sqlTimeEnd: sqlTimeEnd, sqlTimeStart: sqlTimeStart,
+                                bcTimeStart: bcTimeStart, bcTimeEnd: bcTimeEnd,
+                                getGroupIdTime: getGroupIdTime, totalStart: totalStart };
+                            clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, times, function (err, results) {
+                                if(err){
+                                    reject(err);
+                                }
+                                helper.printTimes(results);
+                                resolve(results);
+                            });
+                        });
+                    } else {
+                        let totalEnd = helper.time();
+                        groupBySqlResult.sqlTime = sqlTimeEnd - sqlTimeStart;
+                        groupBySqlResult.bcTime = (bcTimeEnd - bcTimeStart) + getGroupIdTime;
+                        groupBySqlResult.totalTime = groupBySqlResult.sqlTime + groupBySqlResult.bcTime;
+                        groupBySqlResult.allTotal = totalEnd - totalStart;
+                        helper.printTimes(groupBySqlResult);
+                        resolve(groupBySqlResult);
+                    }
+                }).catch(err => {
+                    throw err;
+                });
             });
+        }).catch(err => {
+            throw err;
         });
-    }).catch(err => {
-       throw err;
     });
 }
 
@@ -155,10 +156,10 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times, call
     if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
         contractController.deleteCachedResults(sortedByEvictionCost).then(deleteReceipt => {
             times.totalEnd = helper.time();
-                if (times) {
-                    groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
-                }
-                return callback(null, groupBySqlResult);
+            if (times) {
+                groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
+            }
+            return callback(null, groupBySqlResult);
         }).catch(err => {
             callback(err);
         });
@@ -186,11 +187,10 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
             } else {
                 // some fields contained in a Group by but operation and aggregation fields differ
                 // this means we should proceed to new group by calculation from the begining
-                calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost, function (error, result) {
-                    if (error) {
-                        reject(error);
-                    }
+                calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost).then(result => {
                     resolve(result);
+                }).catch(err => {
+                    reject(err);
                 });
             }
         } else {
@@ -206,11 +206,10 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
             } else {
                 // same fields but different operation or different aggregate field
                 // this means we should proceed to new group by calculation from the begining
-                calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost, function (error, result) {
-                    if (error) {
-                        reject(error);
-                    }
+                calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost).then(result => {
                     resolve(result);
+                }).catch(err => {
+                    reject(err);
                 });
             }
         }

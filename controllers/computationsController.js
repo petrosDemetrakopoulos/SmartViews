@@ -31,18 +31,20 @@ function connectToSQL (callback) {
 
 // It is a very common pattern to run a query to make a view materialization
 // and then drop the temporary table we used to do it.
-function queryAndDropTable(query, tableName, callback) {
-    connection.query(query, function (error, results) {
-        if (error) {
-            helper.log(error);
-            callback(null, error);
-        }
-        connection.query('DROP TABLE ' + tableName, function (err) {
-            if (err) {
-                helper.log(err);
-                callback(error);
+function queryAndDropTable (query, tableName) {
+    return new Promise((resolve, reject) => {
+        connection.query(query, function (error, results) {
+            if (error) {
+                helper.log(error);
+                reject(error);
             }
-            callback(null, results);
+            connection.query('DROP TABLE ' + tableName, function (err) {
+                if (err) {
+                    helper.log(err);
+                    reject(err);
+                }
+                resolve(results);
+            });
         });
     });
 }
@@ -109,13 +111,12 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
                     }
 
                     let editedGB = helper.sanitizeSQLQuery(gbQuery);
-                    queryAndDropTable(editedGB, tableName, function (error, results) {
-                        if (err) {
-                            helper.log(err);
-                            reject(err);
-                        }
+                    queryAndDropTable(editedGB, tableName).then(results => {
                         let groupBySqlResult = transformations.transformGBFromSQL(results, operation, aggregationField, gbFields);
                         resolve(groupBySqlResult);
+                    }).catch(err => {
+                        helper.log(err);
+                        reject(err);
                     });
                 });
             });
@@ -195,13 +196,11 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                 }
 
                 let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
-                queryAndDropTable(editedGBQuery, tableName, function (error, results) {
-                    if (error) {
-                        helper.log(error);
-                        reject(error);
-                    } else {
-                        resolve(results);
-                    }
+                queryAndDropTable(editedGBQuery, tableName).then(results => {
+                    resolve(results);
+                }).catch(err => {
+                    helper.log(err);
+                    reject(err);
                 });
             });
         });
@@ -231,12 +230,12 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
             let editedQueryA = helper.sanitizeSQLQuery(sqlInsertA);
             let editedQueryB = helper.sanitizeSQLQuery(sqlInsertB);
 
-            connection.query(editedQueryA, function (err, results, fields) {
+            connection.query(editedQueryA, function (err) {
                 if (err) {
                     helper.log(err);
                     reject(err);
                 }
-                connection.query(editedQueryB, function (err, results, fields) {
+                connection.query(editedQueryB, function (err) {
                     if (err) {
                         helper.log(err);
                         reject(err);
@@ -281,11 +280,7 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                     }
 
                     let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
-                    queryAndDropTable(editedGBQuery, tableName, function (error, results) {
-                        if (error) {
-                            helper.log(error);
-                            reject(error);
-                        }
+                    queryAndDropTable(editedGBQuery, tableName).then(results => {
                         let groupBySqlResult = {};
                         if (view.operation === 'AVERAGE') {
                             groupBySqlResult = transformations.transformAverage(results, view.gbFields, view.aggregationField);
@@ -293,6 +288,9 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                             groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.gbFields);
                         }
                        resolve(groupBySqlResult);
+                    }).catch(err => {
+                        helper.log(err);
+                        reject(err);
                     });
                 });
             });
