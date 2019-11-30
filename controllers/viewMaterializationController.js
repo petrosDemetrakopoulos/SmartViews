@@ -38,11 +38,10 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                     totalStart: times.totalStart, cacheSaveTimeStart: cacheSaveTimeStart,
                     cacheSaveTimeEnd: cacheSaveTimeEnd, cacheRetrieveTimeStart: times.cacheRetrieveTimeStart,
                     cacheRetrieveTimeEnd: times.cacheRetrieveTimeEnd };
-                clearCacheIfNeeded(sortedByEvictionCost, reducedResult, times2, function (err, results) {
-                    if (!err) {
-                        helper.printTimes(results);
-                        resolve(results);
-                    }
+                clearCacheIfNeeded(sortedByEvictionCost, reducedResult, times2).then(results => {
+                    helper.printTimes(results);
+                    resolve(results);
+                }).catch(err => {
                     console.log(err);
                     reject(error);
                 });
@@ -80,13 +79,11 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
                 timesReady.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
                 timesReady.totalTime = timesReady.bcTime + timesReady.sqlTime + timesReady.cacheSaveTime + timesReady.cacheRetrieveTime;
                 timesReady.totalStart = times.totalStart;
-                clearCacheIfNeeded(sortedByEvictionCost, mergeResult, timesReady, function (err, results) {
-                    if (!err) {
-                        helper.printTimes(mergeResult);
-                        resolve(results);
-                    } else {
-                        reject(err);
-                    }
+                clearCacheIfNeeded(sortedByEvictionCost, mergeResult, timesReady).then(results =>  {
+                    helper.printTimes(mergeResult);
+                    resolve(results);
+                }).catch(err => {
+                    reject(err);
                 });
             });
         }).catch(err => {
@@ -125,13 +122,12 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                             let times = { sqlTimeEnd: sqlTimeEnd, sqlTimeStart: sqlTimeStart,
                                 bcTimeStart: bcTimeStart, bcTimeEnd: bcTimeEnd,
                                 getGroupIdTime: getGroupIdTime, totalStart: totalStart };
-                            clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, times, function (err, results) {
-                                if(err){
-                                    reject(err);
-                                }
+                            clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, times).then(results => {
                                 helper.printTimes(results);
                                 resolve(results);
-                            });
+                            }).catch(err => {
+                                reject(err);
+                            })
                         });
                     } else {
                         let totalEnd = helper.time();
@@ -152,24 +148,26 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
     });
 }
 
-function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times, callback) {
-    if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
-        contractController.deleteCachedResults(sortedByEvictionCost).then(deleteReceipt => {
-            times.totalEnd = helper.time();
+function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times) {
+    return new Promise((resolve, reject) => {
+        if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
+            contractController.deleteCachedResults(sortedByEvictionCost).then(deleteReceipt => {
+                times.totalEnd = helper.time();
+                if (times) {
+                    groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
+                }
+                resolve(groupBySqlResult);
+            }).catch(err => {
+                reject(err);
+            });
+        } else {
             if (times) {
+                times.totalEnd = helper.time();
                 groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
             }
-            return callback(null, groupBySqlResult);
-        }).catch(err => {
-            callback(err);
-        });
-    } else {
-        if (times) {
-            times.totalEnd = helper.time();
-            groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
+            resolve(groupBySqlResult);
         }
-        return callback(null, groupBySqlResult);
-    }
+    });
 }
 
 function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times) {
