@@ -33,6 +33,7 @@
     "socket.io-client": "^2.3.0",
     "solc": "^0.4.25",
     "sync-request": "^6.1.0",
+    "text-template": "^1.0.3",
     "web3": "^1.2.2"
   },
   "devDependencies": {

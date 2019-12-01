@@ -152,7 +152,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                 values: rows
             });
             let editedQuery = helper.sanitizeSQLQuery(sqlInsert);
-            connection.query(editedQuery, function (error, results, fields) {
+            connection.query(editedQuery, function (error) {
                 if (error) {
                     helper.log(error);
                     reject(error);

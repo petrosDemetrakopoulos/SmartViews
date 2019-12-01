@@ -220,6 +220,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         return res.send({ error: 'view not found' });
     }
     let materializationDone = false;
+    let materializationSteps = [];
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
         gbRunning = true; // a flag to handle retries of the request from the front-end
@@ -255,9 +256,10 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 // -> incrementally calculate the groupby requested by summing the one in redis cache
                                 let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
                                 let cacheRetrieveTimeStart = helper.time();
+                                let matSteps = [];
                                 await cacheController.getManyCachedResults(allHashes).then(async allCached => {
                                     let cacheRetrieveTimeEnd = helper.time();
-
+                                    matSteps.push({type: 'cacheFetch'});
                                     let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
                                     if (cachedGroupBy) {
                                         let times = {
@@ -267,7 +269,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                             getGroupIdTime: globalAllGroupBysTime.getGroupIdTime
                                         };
                                         await viewMaterializationController.calculateFromCache(cachedGroupBy,
-                                            sortedByEvictionCost, view, gbFields, latestId, times).then(result => {
+                                            sortedByEvictionCost, view, gbFields, latestId, times, matSteps).then(result => {
                                             gbRunning = false;
                                             materializationDone = true;
                                             io.emit('view_results', stringify(result).replace('\\', ''));
@@ -343,6 +345,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
                 []).then(result => {
                 gbRunning = false;
+                console.log(result.matSteps);
                 io.emit('view_results', stringify(result).replace('\\', ''));
                 res.status(200);
                 return res.send(stringify(result).replace('\\', ''));

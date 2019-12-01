@@ -128,7 +128,6 @@ function deleteFromCache (evicted, callback) {
         helper.log('keys to remove from cache are:');
         helper.log(keysToDelete);
     }
-    // WHAT DAFUQ HAPPENS THERE IS COST FUNCTION IS THE POLICY
     client.del(keysToDelete);
     callback(gbIdsToDelete);
 }

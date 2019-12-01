@@ -173,6 +173,12 @@
                             <div class="col-lg-6">
                                 <label>Output</label>
                                 <textarea readonly id="outputView" class="form-control" rows="7"></textarea>
+                                <div class="panel panel-default" style="margin-top: 2em;">
+                                    <div class="panel-heading">Materialization steps</div>
+                                    <div class="panel-body">
+                                <div id="steps" style="text-align: center"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -359,6 +365,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
     }
 
     function fetchViewByName(viewName) {
+        $('#steps').html('');
        gbXhttp = new XMLHttpRequest();
         gbXhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -374,6 +381,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 let totalTimeIndex = -1;
                 let allTotalTimeIndex = -1
                 let cacheRetrieveIndex = -1;
+                let matStepsIndex = -1;
                 for(let i =0; i < meta.length; i++){
                     if(meta[i].indexOf("operation") >= 0){
                         usefullMetaIndex = i;
@@ -397,6 +405,9 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                         allTotalTimeIndex = i;
                     }
 
+                    if(meta[i].indexOf("matSteps") >= 0){
+                        matStepsIndex = i;
+                    }
                 }
                 let cacheRetrieveTime = 0;
                 let totalTime = 0;
@@ -404,6 +415,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 let sqlTime = 0;
                 let cacheSaveTime = 0;
                 let allTotalTime = 0;
+                let matSteps = [];
 
                 if(cacheRetrieveIndex > -1){
                     cacheRetrieveTime =  parseFloat(meta[cacheRetrieveIndex].split(":")[1]);
@@ -422,6 +434,42 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 }
                 if(allTotalTimeIndex > -1){
                     allTotalTime =  parseFloat(meta[allTotalTimeIndex].split(":")[1]);
+                }
+                if(matStepsIndex > -1){
+                    console.log("***");
+                    let stringiFiedMatSteps = '{';
+                    for(let i = matStepsIndex; i < meta.length; i++){
+                        console.log(meta[i]);
+                        if(i < meta.length-1) {
+                            stringiFiedMatSteps += meta[i] + ",";
+                        } else {
+                            stringiFiedMatSteps += meta[i];
+                        }
+                    }
+
+                    matSteps = JSON.parse(stringiFiedMatSteps);
+                    for (let j = 0; j < matSteps.matSteps.length; j++) {
+                        $('#steps').append("<p style='font-weight: bold; font-size: 1.5em'>Step " + (j + 1) + ":</p>");
+                        if(matSteps.matSteps[j].type === 'bcFetch') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Fetched " +  matSteps.matSteps[j].numOfFacts + " facts from blockchain</p>");
+                        } else if (matSteps.matSteps[j].type === 'sqlCalculationInitial') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Calculated the view in SQL for all the facts</p>");
+                        } else if (matSteps.matSteps[j].type === 'cacheSave') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Saved the result in cache</p>");
+                        } else if (matSteps.matSteps[j].type === 'bcFetchDeltas') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Fetched " +  matSteps.matSteps[j].numOfFacts + " deltas from blockchain</p>");
+                        } else if (matSteps.matSteps[j].type === 'sqlCalculationDeltas') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Calculated the view in SQL for the deltas</p>");
+                        } else if (matSteps.matSteps[j].type === 'cacheFetch') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Fetched older result from cache</p>");
+                        } else if (matSteps.matSteps[j].type === 'sqlReduction') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Reduced previous cached result from " + matSteps.matSteps[j].from + " to " + matSteps.matSteps[j].to + "</p>");
+                        } else if (matSteps.matSteps[j].type === 'sqlMergeReducedCachedWithDeltas') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Merged reduced cached result with the result calculated for deltas</p>");
+                        } else if (matSteps.matSteps[j].type === 'sqlMergeCachedWithDeltas') {
+                            $('#steps').append("<p style='font-size: 1.2em'>Merged cached result with the result calculated for deltas</p>");
+                        }
+                    }
                 }
 
                 $('#total').html(totalTime.toFixed(5));
