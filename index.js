@@ -44,7 +44,8 @@ app.get('/', function (req, res) {
             if (blockNum >= 0) {
                 blockchainReady = true;
             }
-            return res.render('index', { 'templates': items, 'redisStatus': cacheController.getRedisStatus(), 'sqlStatus': mysqlConnected, 'blockchainStatus': blockchainReady });
+            return res.render('index', { 'templates': items, 'redisStatus': cacheController.getRedisStatus(),
+                'sqlStatus': mysqlConnected, 'blockchainStatus': blockchainReady });
         });
     });
 });

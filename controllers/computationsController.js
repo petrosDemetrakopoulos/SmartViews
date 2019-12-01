@@ -139,7 +139,8 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                 reject(error);
             }
             let lastCol = '';
-            let prelastCol = ''; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
+            let prelastCol = '';
+            // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
             lastCol = cachedGroupBy.gbCreateTable.split(' ');
             prelastCol = lastCol[lastCol.length - 4];
             lastCol = lastCol[lastCol.length - 2];

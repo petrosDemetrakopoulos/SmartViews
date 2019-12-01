@@ -229,6 +229,9 @@
 <script src="../vendor/metisMenu/metisMenu.min.js"></script>
 <script src="../dist/js/sb-admin-2.js"></script>
 <script src="../js/bootstrap-notify.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css">
+<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
@@ -436,38 +439,36 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                     allTotalTime =  parseFloat(meta[allTotalTimeIndex].split(":")[1]);
                 }
                 if(matStepsIndex > -1){
-                    console.log("***");
                     let stringiFiedMatSteps = '{';
                     for(let i = matStepsIndex; i < meta.length; i++){
-                        console.log(meta[i]);
                         if(i < meta.length-1) {
                             stringiFiedMatSteps += meta[i] + ",";
                         } else {
                             stringiFiedMatSteps += meta[i];
                         }
                     }
-
+                    let $steps = $('#steps');
                     matSteps = JSON.parse(stringiFiedMatSteps);
                     for (let j = 0; j < matSteps.matSteps.length; j++) {
-                        $('#steps').append("<p style='font-weight: bold; font-size: 1.5em'>Step " + (j + 1) + ":</p>");
+                        $steps.append("<p style='font-weight: bold; font-size: 1.5em'>Step " + (j + 1) + ":</p>");
                         if(matSteps.matSteps[j].type === 'bcFetch') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Fetched " +  matSteps.matSteps[j].numOfFacts + " facts from blockchain</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Fetched " +  matSteps.matSteps[j].numOfFacts + " facts from blockchain</p>");
                         } else if (matSteps.matSteps[j].type === 'sqlCalculationInitial') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Calculated the view in SQL for all the facts</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Calculated the view in SQL for all the facts</p>");
                         } else if (matSteps.matSteps[j].type === 'cacheSave') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Saved the result in cache</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Saved the result in cache</p>");
                         } else if (matSteps.matSteps[j].type === 'bcFetchDeltas') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Fetched " +  matSteps.matSteps[j].numOfFacts + " deltas from blockchain</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Fetched " +  matSteps.matSteps[j].numOfFacts + " deltas from blockchain</p>");
                         } else if (matSteps.matSteps[j].type === 'sqlCalculationDeltas') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Calculated the view in SQL for the deltas</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Calculated the view in SQL for the deltas</p>");
                         } else if (matSteps.matSteps[j].type === 'cacheFetch') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Fetched older result from cache</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Fetched older result from cache</p>");
                         } else if (matSteps.matSteps[j].type === 'sqlReduction') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Reduced previous cached result from " + matSteps.matSteps[j].from + " to " + matSteps.matSteps[j].to + "</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Reduced previous cached result from " + matSteps.matSteps[j].from + " to " + matSteps.matSteps[j].to + "</p>");
                         } else if (matSteps.matSteps[j].type === 'sqlMergeReducedCachedWithDeltas') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Merged reduced cached result with the result calculated for deltas</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Merged reduced cached result with the result calculated for deltas</p>");
                         } else if (matSteps.matSteps[j].type === 'sqlMergeCachedWithDeltas') {
-                            $('#steps').append("<p style='font-size: 1.2em'>Merged cached result with the result calculated for deltas</p>");
+                            $steps.append("<p style='font-size: 1.2em'>Merged cached result with the result calculated for deltas</p>");
                         }
                     }
                 }
@@ -503,13 +504,16 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                     flattenedArray[i] = JSON.parse(flattenedArray[i])
                 }
 
-                let table_body = '<table class="table table-bordered">';
+                let table_body = '<table class="table table-bordered" id="dt">';
+                table_body += '<thead>';
                 table_body += '<tr>';
                 for(let j=0;j<keys.length ;j++){
                     table_body += '<th style="text-weight: bold; text-align: center;">' + keys[j] + '</th>';
                 }
                 table_body += '<th>Value</th>';
                 table_body += '</tr>';
+                table_body += '</thead>';
+                table_body += '<tbody>';
                 for(let i=0;i<flattenedArray.length;i+=2){
                     table_body+='<tr>';
                     for(let j=0;j<keys.length;j++){
@@ -521,8 +525,13 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                     table_body +='<td>' + flattenedArray[i+1] + '</td>';
                     table_body+='</tr>';
                 }
+                table_body += '</tbody>';
                 table_body+='</table>';
                 $('.tblResults').html(table_body);
+                $('#dt').dataTable( {
+                    "paging": true,
+                    "pageLength": 10
+                });
                 gbXhttp = null;
             }
         };

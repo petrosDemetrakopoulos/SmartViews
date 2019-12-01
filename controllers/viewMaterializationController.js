@@ -246,7 +246,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
             contractController.getAllFactsHeavy(latestId).then(retval => {
                 let bcTimeEnd = helper.time();
                 if (retval.length === 0) {
-                    reject({ error: 'No facts exist in blockchain' });
+                    return reject({ error: 'No facts exist in blockchain' });
                 }
                 matSteps.push({type: 'bcFetch', numOfFacts: retval.length});
                 let facts = helper.removeTimestamps(retval);
