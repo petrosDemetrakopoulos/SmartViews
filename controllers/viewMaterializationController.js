@@ -3,6 +3,7 @@ const cacheController = require('./cacheController');
 const contractController = require('./contractController');
 const computationsController = require('./computationsController');
 const transformations = require('../helpers/transformations');
+const stringify = require('fast-stringify');
 let config = require('../config_private');
 
 function setContract (contractObject, account) {
@@ -65,8 +66,28 @@ function calculateForDeltasAndMergeWithCached(mostEfficient, latestId, createTab
                                             let cacheSaveTimeEnd = helper.time();
                                             matSteps.push({type: 'cacheSave'});
                                             delete mergeResult.gbCreateTable;
-                                            if (sortedByEvictionCost.length >= config.maxCacheSize) {
-                                                await contractController.deleteCachedResults(sortedByEvictionCost).then(receiptDelete => {
+                                            let totalCurrentCacheLoad = 0; // in Bytes
+                                            for(let i =0; i < sortedByEvictionCost.length; i++) {
+                                                totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
+                                            }
+                                            console.log("CURRENT CACHE LOAD = " + totalCurrentCacheLoad + " Bytes OR " + (totalCurrentCacheLoad/1024) + " KB");
+                                            console.log("MAX CACHE SIZE = 5KB");
+                                            if (totalCurrentCacheLoad/1024 >= config.maxCacheSizeInKB) {
+                                                //same logic as clearCacheIfNeeded
+                                                // delete as many cached results as to free up cache size equal to the size of the latest result we computed
+                                                // we can easily multiply it by a factor to see how it performs
+                                                let sortedByEvictionCostFiltered = [];
+                                                let gbSize = stringify(mergeResult).length;
+                                                let totalSize = 0;
+                                                let i = 0;
+                                                while (totalSize < (config.maxCacheSizeInKB*1024 - gbSize)){
+                                                    totalSize += parseInt(sortedByEvictionCost[i].size);
+                                                    sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
+                                                    i++;
+                                                }
+                                                console.log("TOTAL SIZE = " + totalSize);
+                                                console.log("GB SIZE = " + gbSize);
+                                                await contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(receiptDelete => {
                                                     let totalEnd = helper.time();
                                                     let sqlTime = (sqlTimeEnd - sqlTimeStart);
                                                     let reductionTime = (reductionTimeEnd - reductionTimeStart);
@@ -303,8 +324,28 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
 
 function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times) {
     return new Promise((resolve, reject) => {
-        if (sortedByEvictionCost.length > 0 && sortedByEvictionCost.length >= config.maxCacheSize) {
-            contractController.deleteCachedResults(sortedByEvictionCost).then(deleteReceipt => {
+        let totalCurrentCacheLoad = 0; // in Bytes
+        for(let i =0; i < sortedByEvictionCost.length; i++){
+            console.log(sortedByEvictionCost[i].size);
+            totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
+        }
+        console.log("CURRENT CACHE LOAD = " + totalCurrentCacheLoad + " Bytes OR " + (totalCurrentCacheLoad/1024) + " KB");
+        console.log("MAX CACHE SIZE = 5KB");
+        if (totalCurrentCacheLoad > 0 && (totalCurrentCacheLoad/1024) >= config.maxCacheSizeInKB) {
+            // delete as many cached results as to free up cache size equal to the size of the latest result we computed
+            // we can easily multiply it by a factor to see how it performs
+            let sortedByEvictionCostFiltered = [];
+            let gbSize = stringify(groupBySqlResult).length;
+            let totalSize = 0;
+            let i = 0;
+            while (totalSize < (config.maxCacheSizeInKB*1024 - gbSize)){
+                totalSize += parseInt(sortedByEvictionCost[i].size);
+                sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
+                i++;
+            }
+            console.log("TOTAL SIZE = " + totalSize);
+            console.log("GB SIZE = " + gbSize);
+            contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(deleteReceipt => {
                 times.totalEnd = helper.time();
                 if (times) {
                     groupBySqlResult = helper.assignTimes(groupBySqlResult, times);

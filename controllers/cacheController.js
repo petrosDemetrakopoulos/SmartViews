@@ -26,7 +26,8 @@ client.on('error', function (err) {
 
 function saveOnCache (gbResult, operation, latestId) {
     md5sum = crypto.createHash('md5');
-    md5sum.update(stringify(gbResult));
+    let resultString = stringify(gbResult);
+    md5sum.update(resultString);
     let hash = md5sum.digest('hex');
     let gbResultSize = Object.keys(gbResult).length;
     let slicedGbResult = [];
@@ -91,6 +92,8 @@ function saveOnCache (gbResult, operation, latestId) {
             helper.log('NO SLICING NEEDED');
         }
     }
+    let resultSize = resultString.length;
+    console.log("RESULT SIZE = " + resultSize +" bytes");
     let colSize = gbResult.groupByFields.length;
     let columns = stringify({ fields: gbResult.groupByFields });
     let num = 0;
@@ -99,35 +102,33 @@ function saveOnCache (gbResult, operation, latestId) {
         for (const slice in slicedGbResult) {
             crnHash = hash + '_' + num;
             helper.log(crnHash);
-            client.set(crnHash, stringify(slicedGbResult[slice]), redis.print);
+            client.set(crnHash, stringify(slicedGbResult[slice]));
             num++;
         }
     } else {
         crnHash = hash + '_0';
-        client.set(crnHash, stringify(gbResult), redis.print);
+        client.set(crnHash, stringify(gbResult));
     }
-    return contract.methods.addGroupBy(crnHash, Web3.utils.fromAscii(operation), latestId, colSize, gbResultSize, columns).send(mainTransactionObject);
+    return contract.methods.addGroupBy(crnHash, Web3.utils.fromAscii(operation), latestId, colSize, resultSize, columns).send(mainTransactionObject);
 }
 
 function deleteFromCache (evicted, callback) {
     let keysToDelete = [];
     let gbIdsToDelete = [];
-    if (config.cacheEvictionPolicy === 'FIFO') {
-        for (let i = 0; i < config.maxCacheSize; i++) {
-            keysToDelete.push(evicted[i].hash);
-            let crnHash = evicted[i].hash;
-            let cachedGBSplited = crnHash.split('_');
-            let cachedGBLength = parseInt(cachedGBSplited[1]);
-            if (cachedGBLength > 0) { // reconstructing all the hashes in cache if it is sliced
-                for (let j = 0; j < cachedGBLength; j++) {
-                    keysToDelete.push(cachedGBSplited[0] + '_' + j);
-                }
+    for (let i = 0; i < evicted.length; i++) {
+        keysToDelete.push(evicted[i].hash);
+        let crnHash = evicted[i].hash;
+        let cachedGBSplited = crnHash.split('_');
+        let cachedGBLength = parseInt(cachedGBSplited[1]);
+        if (cachedGBLength > 0) { // reconstructing all the hashes in cache if it is sliced
+            for (let j = 0; j < cachedGBLength; j++) {
+                keysToDelete.push(cachedGBSplited[0] + '_' + j);
             }
-            gbIdsToDelete[i] = evicted[i].id;
         }
-        helper.log('keys to remove from cache are:');
-        helper.log(keysToDelete);
+        gbIdsToDelete[i] = evicted[i].id;
     }
+    helper.log('keys to remove from cache are:');
+    helper.log(keysToDelete);
     client.del(keysToDelete);
     callback(gbIdsToDelete);
 }

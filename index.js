@@ -243,7 +243,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 if (Object.keys(resultGB).length > 1) {
                     let filteredGBs = helper.filterGBs(resultGB, view);
                     if (filteredGBs.length > 0) {
-                        console.log('FILTERED GBS > 0');
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
