@@ -58,42 +58,62 @@ function calculateForDeltasAndMergeWithCached(mostEfficient, latestId, createTab
                                         mergeResult.gbCreateTable = view.SQLTable;
                                         mergeResult.viewName = view.name;
                                         // save on cache before return
-                                        let cacheSaveTimeStart = helper.time();
-                                        cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
-                                            helper.log('error:' + err);
-                                            reject(err);
-                                        }).on('receipt', async (receipt) => {
-                                            let cacheSaveTimeEnd = helper.time();
-                                            matSteps.push({type: 'cacheSave'});
-                                            delete mergeResult.gbCreateTable;
-                                            let totalCurrentCacheLoad = 0; // in Bytes
-                                            for(let i =0; i < sortedByEvictionCost.length; i++) {
-                                                totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
-                                            }
-                                            console.log("CURRENT CACHE LOAD = " + totalCurrentCacheLoad + " Bytes OR " + (totalCurrentCacheLoad/1024) + " KB");
-                                            console.log("MAX CACHE SIZE = 5KB");
-                                            if (totalCurrentCacheLoad/1024 >= config.maxCacheSizeInKB) {
-                                                //same logic as clearCacheIfNeeded
-                                                // delete as many cached results as to free up cache size equal to the size of the latest result we computed
-                                                // we can easily multiply it by a factor to see how it performs
-                                                let sortedByEvictionCostFiltered = [];
-                                                let gbSize = stringify(mergeResult).length;
-                                                let totalSize = 0;
-                                                let i = 0;
-                                                while (totalSize < (config.maxCacheSizeInKB*1024 - gbSize)){
-                                                    totalSize += parseInt(sortedByEvictionCost[i].size);
-                                                    sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
-                                                    i++;
+                                        let gbSize = stringify(mergeResult).length;
+                                        if(gbSize/1024 <= config.maxCacheSizeInKB) {
+                                            let cacheSaveTimeStart = helper.time();
+                                            cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
+                                                helper.log('error:' + err);
+                                                reject(err);
+                                            }).on('receipt', async (receipt) => {
+                                                let cacheSaveTimeEnd = helper.time();
+                                                matSteps.push({type: 'cacheSave'});
+                                                delete mergeResult.gbCreateTable;
+                                                let totalCurrentCacheLoad = 0; // in Bytes
+                                                for (let i = 0; i < sortedByEvictionCost.length; i++) {
+                                                    totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
                                                 }
-                                                console.log("TOTAL SIZE = " + totalSize);
-                                                console.log("GB SIZE = " + gbSize);
-                                                await contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(receiptDelete => {
+                                                console.log("CURRENT CACHE LOAD = " + totalCurrentCacheLoad + " Bytes OR " + (totalCurrentCacheLoad / 1024) + " KB");
+                                                if (totalCurrentCacheLoad / 1024 >= config.maxCacheSizeInKB) {
+                                                    //same logic as clearCacheIfNeeded
+                                                    // delete as many cached results as to free up cache size equal to the size of the latest result we computed
+                                                    // we can easily multiply it by a factor to see how it performs
+                                                    let sortedByEvictionCostFiltered = [];
+                                                    let gbSize = stringify(mergeResult).length;
+                                                    let totalSize = 0;
+                                                    let i = 0;
+                                                    while (totalSize < (config.maxCacheSizeInKB * 1024 - gbSize)) {
+                                                        totalSize += parseInt(sortedByEvictionCost[i].size);
+                                                        sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
+                                                        i++;
+                                                    }
+                                                    console.log("TOTAL SIZE = " + totalSize);
+                                                    console.log("GB SIZE = " + gbSize);
+                                                    await contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(receiptDelete => {
+                                                        let totalEnd = helper.time();
+                                                        let sqlTime = (sqlTimeEnd - sqlTimeStart);
+                                                        let reductionTime = (reductionTimeEnd - reductionTimeStart);
+                                                        let mergeTime = (mergeTimeEnd - mergeTimeStart);
+                                                        let bcTime = (bcTimeEnd - bcTimeStart);
+                                                        mergeResult.sqlTime = sqlTime + reductionTime + mergeTime;
+                                                        mergeResult.bcTime = bcTime + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
+                                                        mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                                                        mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                                        mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                                        mergeResult.allTotal = totalEnd - totalStart;
+                                                        mergeResult.matSteps = matSteps;
+                                                        helper.printTimes(mergeResult);
+                                                        helper.log('receipt:' + JSON.stringify(receipt));
+                                                        resolve(mergeResult);
+                                                    }).catch(err => {
+                                                        reject(err);
+                                                    });
+                                                } else {
                                                     let totalEnd = helper.time();
                                                     let sqlTime = (sqlTimeEnd - sqlTimeStart);
                                                     let reductionTime = (reductionTimeEnd - reductionTimeStart);
                                                     let mergeTime = (mergeTimeEnd - mergeTimeStart);
                                                     let bcTime = (bcTimeEnd - bcTimeStart);
-                                                    mergeResult.sqlTime = sqlTime  + reductionTime + mergeTime;
+                                                    mergeResult.sqlTime = sqlTime + reductionTime + mergeTime;
                                                     mergeResult.bcTime = bcTime + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
                                                     mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                                                     mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
@@ -103,27 +123,24 @@ function calculateForDeltasAndMergeWithCached(mostEfficient, latestId, createTab
                                                     helper.printTimes(mergeResult);
                                                     helper.log('receipt:' + JSON.stringify(receipt));
                                                     resolve(mergeResult);
-                                                }).catch(err => {
-                                                    reject(err);
-                                                });
-                                            } else {
-                                                let totalEnd = helper.time();
-                                                let sqlTime = (sqlTimeEnd - sqlTimeStart);
-                                                let reductionTime = (reductionTimeEnd - reductionTimeStart);
-                                                let mergeTime = (mergeTimeEnd - mergeTimeStart);
-                                                let bcTime = (bcTimeEnd - bcTimeStart);
-                                                mergeResult.sqlTime = sqlTime + reductionTime + mergeTime;
-                                                mergeResult.bcTime = bcTime + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
-                                                mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-                                                mergeResult.allTotal = totalEnd - totalStart;
-                                                mergeResult.matSteps = matSteps;
-                                                helper.printTimes(mergeResult);
-                                                helper.log('receipt:' + JSON.stringify(receipt));
-                                                resolve(mergeResult);
-                                            }
-                                        });
+                                                }
+                                            });
+                                        } else {
+                                            let totalEnd = helper.time();
+                                            let sqlTime = (sqlTimeEnd - sqlTimeStart);
+                                            let reductionTime = (reductionTimeEnd - reductionTimeStart);
+                                            let mergeTime = (mergeTimeEnd - mergeTimeStart);
+                                            let bcTime = (bcTimeEnd - bcTimeStart);
+                                            mergeResult.sqlTime = sqlTime + reductionTime + mergeTime;
+                                            mergeResult.bcTime = bcTime + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
+                                            mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
+                                            mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
+                                            mergeResult.allTotal = totalEnd - totalStart;
+                                            mergeResult.matSteps = matSteps;
+                                            helper.printTimes(mergeResult);
+                                            helper.log('receipt:' + JSON.stringify(receipt));
+                                            resolve(mergeResult);
+                                        }
                                     }).catch(err => {
                                         helper.log(err);
                                         reject(err);
@@ -189,25 +206,39 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
             reducedResult.field = view.aggregationField;
             reducedResult.viewName = view.name;
             reducedResult.operation = view.operation;
-            let cacheSaveTimeStart = helper.time();
-            cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
-                helper.log('error:', err);
-                reject(err);
-            }).on('receipt', (receipt) => {
-                helper.log('receipt:' + JSON.stringify(receipt));
-                let cacheSaveTimeEnd = helper.time();
-                let times2 = { sqlTimeEnd: reductionTimeEnd, sqlTimeStart: reductionTimeStart,
-                    totalStart: times.totalStart, cacheSaveTimeStart: cacheSaveTimeStart,
-                    cacheSaveTimeEnd: cacheSaveTimeEnd, cacheRetrieveTimeStart: times.cacheRetrieveTimeStart,
-                    cacheRetrieveTimeEnd: times.cacheRetrieveTimeEnd };
-                clearCacheIfNeeded(sortedByEvictionCost, reducedResult, times2).then(results => {
-                    helper.printTimes(results);
-                    resolve(results);
-                }).catch(err => {
-                    console.log(err);
+            let gbSize = stringify(reducedResult).length;
+            if(gbSize/1024 <= config.maxCacheSizeInKB) {
+                let cacheSaveTimeStart = helper.time();
+                cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
+                    helper.log('error:', err);
                     reject(err);
+                }).on('receipt', (receipt) => {
+                    helper.log('receipt:' + JSON.stringify(receipt));
+                    let cacheSaveTimeEnd = helper.time();
+                    let times2 = {
+                        sqlTimeEnd: reductionTimeEnd, sqlTimeStart: reductionTimeStart,
+                        totalStart: times.totalStart, cacheSaveTimeStart: cacheSaveTimeStart,
+                        cacheSaveTimeEnd: cacheSaveTimeEnd, cacheRetrieveTimeStart: times.cacheRetrieveTimeStart,
+                        cacheRetrieveTimeEnd: times.cacheRetrieveTimeEnd
+                    };
+                    clearCacheIfNeeded(sortedByEvictionCost, reducedResult, times2).then(results => {
+                        helper.printTimes(results);
+                        resolve(results);
+                    }).catch(err => {
+                        console.log(err);
+                        reject(err);
+                    });
                 });
-            });
+            } else {
+                let times2 = {
+                    sqlTimeEnd: reductionTimeEnd, sqlTimeStart: reductionTimeStart,
+                    totalStart: times.totalStart, cacheRetrieveTimeStart: times.cacheRetrieveTimeStart,
+                    cacheRetrieveTimeEnd: times.cacheRetrieveTimeEnd
+                };
+                reducedResult = helper.assignTimes(reducedResult, times2);
+                helper.printTimes(reducedResult);
+                resolve(reducedResult);
+            }
         }).catch(err => {
             console.log(err);
             reject(err);
@@ -231,28 +262,43 @@ function mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy, groupBySqlR
             mergeResult.field = view.aggregationField;
             mergeResult.gbCreateTable = view.SQLTable;
             mergeResult.viewName = view.name;
-            let cacheSaveTimeStart = helper.time();
-            cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
-                helper.log('error:' + err);
-                reject(err);
-            }).on('receipt', (receipt) => {
-                let cacheSaveTimeEnd = helper.time();
+            let gbSize = stringify(mergeResult).length;
+            if(gbSize/1024 <= config.maxCacheSizeInKB) {
+                let cacheSaveTimeStart = helper.time();
+                cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
+                    helper.log('error:' + err);
+                    reject(err);
+                }).on('receipt', (receipt) => {
+                    let cacheSaveTimeEnd = helper.time();
+                    delete mergeResult.gbCreateTable;
+                    let timesReady = {};
+                    helper.log('receipt:' + JSON.stringify(receipt));
+                    timesReady.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime + times.getAllGBsTime + times.getLatestFactIdTime;
+                    timesReady.sqlTime = (mergeTimeEnd - mergeTimeStart) + (times.sqlTimeEnd - times.sqlTimeStart);
+                    timesReady.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
+                    timesReady.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
+                    timesReady.totalTime = timesReady.bcTime + timesReady.sqlTime + timesReady.cacheSaveTime + timesReady.cacheRetrieveTime;
+                    timesReady.totalStart = times.totalStart;
+                    clearCacheIfNeeded(sortedByEvictionCost, mergeResult, timesReady).then(results => {
+                        helper.printTimes(mergeResult);
+                        resolve(results);
+                    }).catch(err => {
+                        reject(err);
+                    });
+                });
+            } else {
                 delete mergeResult.gbCreateTable;
                 let timesReady = {};
-                helper.log('receipt:' + JSON.stringify(receipt));
                 timesReady.bcTime = (times.bcTimeEnd - times.bcTimeStart) + times.getGroupIdTime + times.getAllGBsTime + times.getLatestFactIdTime;
                 timesReady.sqlTime = (mergeTimeEnd - mergeTimeStart) + (times.sqlTimeEnd - times.sqlTimeStart);
-                timesReady.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                 timesReady.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
                 timesReady.totalTime = timesReady.bcTime + timesReady.sqlTime + timesReady.cacheSaveTime + timesReady.cacheRetrieveTime;
                 timesReady.totalStart = times.totalStart;
-                clearCacheIfNeeded(sortedByEvictionCost, mergeResult, timesReady).then(results =>  {
-                    helper.printTimes(mergeResult);
-                    resolve(results);
-                }).catch(err => {
-                    reject(err);
-                });
-            });
+                timesReady.totalEnd = helper.time();
+                mergeResult = helper.assignTimes(mergeResult, timesReady);
+                helper.printTimes(mergeResult);
+                resolve(mergeResult);
+            }
         }).catch(err => {
             reject(err);
         });
@@ -280,7 +326,8 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                     groupBySqlResult.gbCreateTable = view.SQLTable;
                     groupBySqlResult.field = view.aggregationField;
                     groupBySqlResult.viewName = view.name;
-                    if (config.cacheEnabled) {
+                    let gbSize = stringify(groupBySqlResult).length;
+                    if (config.cacheEnabled && ((gbSize/1024) <= config.maxCacheSizeInKB)) {
                         let cacheSaveTimeStart = helper.time();
                         cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                             helper.log('error:', err);
@@ -324,21 +371,26 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
 
 function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times) {
     return new Promise((resolve, reject) => {
+     //   console.log("groupBySqlResult = ");
+     //   console.log(groupBySqlResult);
         let totalCurrentCacheLoad = 0; // in Bytes
-        for(let i =0; i < sortedByEvictionCost.length; i++){
-            console.log(sortedByEvictionCost[i].size);
+        for(let i = 0; i < sortedByEvictionCost.length; i++){
+           // console.log(sortedByEvictionCost[i].size);
             totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
         }
         console.log("CURRENT CACHE LOAD = " + totalCurrentCacheLoad + " Bytes OR " + (totalCurrentCacheLoad/1024) + " KB");
-        console.log("MAX CACHE SIZE = 5KB");
         if (totalCurrentCacheLoad > 0 && (totalCurrentCacheLoad/1024) >= config.maxCacheSizeInKB) {
             // delete as many cached results as to free up cache size equal to the size of the latest result we computed
             // we can easily multiply it by a factor to see how it performs
             let sortedByEvictionCostFiltered = [];
             let gbSize = stringify(groupBySqlResult).length;
+            console.log("CRN GB SIZE = " + gbSize);
             let totalSize = 0;
             let i = 0;
-            while (totalSize < (config.maxCacheSizeInKB*1024 - gbSize)){
+            // issue when gbSize >= config.maxCacheSizeInKB*1024 as it never enters the loop
+            // in that case we should not append the result in cache
+            while (totalSize < (config.maxCacheSizeInKB*1024 - gbSize)) {
+                console.log("totalSize = " + totalSize);
                 totalSize += parseInt(sortedByEvictionCost[i].size);
                 sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
                 i++;
@@ -350,6 +402,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, times) {
                 if (times) {
                     groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                 }
+                console.log("DELETED CACHED RESULTS");
                 resolve(groupBySqlResult);
             }).catch(err => {
                 reject(err);
