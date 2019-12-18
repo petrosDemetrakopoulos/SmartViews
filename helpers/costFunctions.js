@@ -1,5 +1,6 @@
 const cacheController = require('../controllers/cacheController');
 const helper = require('../helpers/helper');
+const exec = require('child_process').execSync;
 // this function  assigns a cost to each group by
 function calculationCost (groupBys) {
     for (let i = 0; i < groupBys.length; i++) {
@@ -111,9 +112,36 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
     return groupBys;
 }
 
+async function word2vec(groupBys,view) {
+    let victims = [];
+    console.log(view);
+    console.log(groupBys);
+    let viewForW2V = view.gbFields.toString().replace(/,/g,"");
+    console.log(viewForW2V);
+    for(let i=0;i<groupBys.length; i++) {
+        let currentFields= JSON.parse(groupBys[i].columns);
+        let new_victim = currentFields.fields.toString().replace(/,/g,'').replace('""','');
+        victims.push(new_victim);
+    }
+    let process = exec('python word2vec.py ' +victims.toString() + " " + viewForW2V);
+    let sims = process.toString('utf8');
+    sims = sims.replace('[','').replace(']','')
+        .replace(/\n/g,'').trim().split(',');
+    sims = sims.map(sim => {
+        return sim.trim();
+    });
+    for(let i=0;i<groupBys.length; i++) {
+        let crnGroupBy = groupBys[i];
+        crnGroupBy.word2vecScore = sims[i];
+        groupBys[i] = crnGroupBy;
+    }
+    return groupBys;
+}
+
 module.exports = {
     calculationCost: calculationCost,
     cacheEvictionCost: cacheEvictionCost,
     cacheEvictionCostOfficial: cacheEvictionCostOfficial,
-    calculationCostOfficial: calculationCostOfficial
+    calculationCostOfficial: calculationCostOfficial,
+    word2vec: word2vec
 };

@@ -1,6 +1,6 @@
 {
     "recordsSlice": 1000,
-    "cacheEvictionPolicy": "FIFO",
+    "cacheEvictionPolicy": "word2vec",
     "maxCacheSize": 1000,
     "maxCacheSizeInKB": 100,
     "cacheSlice": 2,

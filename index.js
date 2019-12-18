@@ -231,9 +231,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         if (config.cacheEnabled) {
             helper.log('cache enabled = TRUE');
             await contractController.getAllGroupbys().then(async resultGB => {
-                console.log("-------");
-                console.log(resultGB);
-                console.log("-------");
                 if (resultGB.times.getGroupIdTime !== null && resultGB.times.getGroupIdTime !== undefined) {
                     globalAllGroupBysTime.getGroupIdTime = resultGB.times.getGroupIdTime;
                 }
@@ -243,15 +240,16 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 }
                 delete resultGB.times;
                 if (Object.keys(resultGB).length > 1) {
-                    console.log("SORTED");
-                    console.log(sortedByW2V);
+                    console.log(resultGB);
                     let filteredGBs = helper.filterGBs(resultGB, view);
                     if (filteredGBs.length > 0) {
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
                          //   let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId);
-                            let sortedByEvictionCost = await helper.word2vec(resultGB, view);
+                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, view, view, factTbl);
+                            console.log("SORTED BY W2V");
+                            console.log(sortedByEvictionCost);
                             let mostEfficient = sortedByCalculationCost[0];
                             let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
