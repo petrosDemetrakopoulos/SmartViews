@@ -1,6 +1,7 @@
 const config = require('../config_private');
 const microtime = require('microtime');
 const fs = require('fs');
+const exec = require('child_process').execSync;
 
 function removeTimestamps (records) {
     for (let i = 0; i < records.length; i++) {
@@ -174,6 +175,39 @@ function getJSONFiles (items) {
     });
 }
 
+async function word2vec(groupBys,view) {
+    let victims = [];
+    console.log(view);
+    let viewForW2V = view.gbFields.toString().replace(/,/g,"");
+    console.log(viewForW2V);
+    for(let i=0;i<groupBys.columns.length; i++) {
+            let currentFields= JSON.parse(groupBys.columns[i]);
+            let new_victim = currentFields.fields.toString().replace(/,/g,'').replace('""','');
+            victims.push(new_victim);
+    }
+    console.log("@@@");
+    console.log(victims.toString());
+    console.log("@@@");
+      let process = exec('python word2vec.py ' +victims.toString() + " " + viewForW2V);
+      let sims = process.toString('utf8').trimRight();
+    //console.log(sims.split('\n'));
+    sims = sims.replace('[','').replace(']','').replace(/\n/g,' ').split(',');
+    console.log(sims);
+    let transformedArray = transformGBMetadataFromBlockchain(groupBys);
+    transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
+
+    for(let j = 0; j < transformedArray.length; j++){
+        let crnGB = transformedArray[j];
+        crnGB.word2vecScore = sims[j];
+        transformedArray[j] = crnGB;
+    }
+    let sortedByEvictionCost = Array.from(transformedArray);
+    await sortedByEvictionCost.sort(function (a, b) {
+        return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
+    });
+    return sortedByEvictionCost;
+}
+
 function transformGBMetadataFromBlockchain (resultGB) {
     let len = Object.keys(resultGB).length;
     for (let j = 0; j < len / 2; j++) {
@@ -298,6 +332,8 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
         } else if (config.cacheEvictionPolicy === 'COST FUNCTION') {
             log('SORT WITH COST FUNCTION');
             return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
+        } else if (config.cacheEvictionPolicy === 'word2vec'){
+            return parseFloat(a.word2vecScore) - parseFloat(b.word2vecScore);
         }
     });
     return sortedByEvictionCost;
@@ -391,6 +427,7 @@ module.exports = {
     sortByCalculationCost: sortByCalculationCost,
     reconstructSlicedCachedResult: reconstructSlicedCachedResult,
     getMainTransactionObject: getMainTransactionObject,
-    assignTimes: assignTimes
+    assignTimes: assignTimes,
+    word2vec: word2vec
 };
 const costFunctions = require('./costFunctions');

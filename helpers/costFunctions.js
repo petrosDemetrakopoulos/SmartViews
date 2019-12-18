@@ -24,9 +24,11 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
     let allGroupBys = [];
     let allGroupBys2 = [];
     let allMinus = [];
+    let allFields = [];
     for (let i = 0; i < groupBys.length; i++) {
         allGroupBys.push(groupBys[i]);
         allGroupBys2.push(groupBys[i]);
+        allFields.push(groupBys.columns);
     }
     for (let i = 0; i < groupBys.length; i++) {
         let crnGroupBy = groupBys[i];
