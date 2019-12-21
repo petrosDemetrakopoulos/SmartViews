@@ -114,10 +114,7 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
 
 async function word2vec(groupBys,view) {
     let victims = [];
-    console.log(view);
-    console.log(groupBys);
     let viewForW2V = view.gbFields.toString().replace(/,/g,"");
-    console.log(viewForW2V);
     for(let i=0;i<groupBys.length; i++) {
         let currentFields= JSON.parse(groupBys[i].columns);
         let new_victim = currentFields.fields.toString().replace(/,/g,'').replace('""','');

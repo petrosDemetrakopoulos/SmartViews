@@ -127,8 +127,8 @@ function deleteFromCache (evicted, callback) {
         }
         gbIdsToDelete[i] = evicted[i].id;
     }
-    console.log('keys to remove from cache are:');
-    console.log(keysToDelete);
+    helper.log('keys to remove from cache are:');
+    helper.log(keysToDelete);
     client.del(keysToDelete);
     callback(gbIdsToDelete);
 }

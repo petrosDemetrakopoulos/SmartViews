@@ -309,11 +309,18 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     return sortedByEvictionCost;
 }
 
-async function sortByCalculationCost (resultGBs, latestId) {
-    resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
-    await resultGBs.sort(function (a, b) {
-        return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
-    }); // order ascending
+async function sortByCalculationCost (resultGBs, latestId, view) {
+    if(config.calculationCostFunction === "costFunction") {
+        resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
+        await resultGBs.sort(function (a, b) {
+            return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
+        }); // order ascending
+    } else if(config.calculationCostFunction === "word2vec"){
+        resultGBs = await costFunctions.word2vec(resultGBs, view);
+        await resultGBs.sort(function (a,b) {
+            return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
+        });
+    }
     return resultGBs;
 }
 

@@ -240,14 +240,15 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 }
                 delete resultGB.times;
                 if (Object.keys(resultGB).length > 1) {
-                    console.log(resultGB);
                     let filteredGBs = helper.filterGBs(resultGB, view);
                     if (filteredGBs.length > 0) {
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
                          //   let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId);
-                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, view, view, factTbl);
+                            let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
+                            console.log("SORTED BY CALCULATION COST:");
+                            console.log(sortedByCalculationCost);
+                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             console.log("SORTED BY W2V");
                             console.log(sortedByEvictionCost);
                             let mostEfficient = sortedByCalculationCost[0];

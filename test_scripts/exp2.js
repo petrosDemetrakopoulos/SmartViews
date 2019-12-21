@@ -6,7 +6,7 @@ const generator = require('./testDataGenerator2');
 const dir = '../test_data/';
 const dreq = '100dir';
 const Promise = require('promise');
-const ResultsFile = 'resultsEXP1_100A.txt';
+const ResultsFile = 'resultsEXP1_DefaultCostFunction.txt';
 const rp = require('request-promise');
 
 const load =  (file) => {
