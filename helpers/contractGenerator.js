@@ -36,8 +36,8 @@ async function generateContract (templateFileName) {
         let crnProp = factTbl.properties[i];
         properties += '\t\t' + crnProp.data_type + ' ' + crnProp.key + ';\n';
     }
-    let groupStruct = '\tstruct groupBy{ \n  \t\tstring hash;\n' + '  \t\tuint latestFact;\n' + '        uint size;\n\t' + '\t\tuint colSize;\n' +
-        '  \t\tstring columns;\n' + '        uint timestamp;\n\t}\n';
+    let groupStruct = '\tstruct groupBy{ \n  \t\tstring hash;\n' + '  \t\tuint latestFact;\n' + ' \t\tuint size;\n' + ' \t\tuint colSize;\n' +
+        '  \t\tstring columns;\n' + ' \t\tuint timestamp;\n\t}\n';
     let gbView = '\tstruct gbView{ \n  \t\tstring viewDef;\n\t}\n'; // viewDef is a strigifiedJSON defining a view
     let viewMapping = '\tmapping(uint => gbView) public gbViews;\n\n';
     let groupMapping = '\tmapping(uint => groupBy) public groupBys;\n\n';
@@ -99,24 +99,13 @@ async function generateContract (templateFileName) {
         '\t\treturn (gbViews[viewId-1].viewDef, viewId-1);\n' +
         '\t}\n\n';
 
-    let addGroupBy = '\tfunction addGroupBy(string hash, bytes32 category, uint latestFact, uint colSize, uint size, string columns) public returns(string groupAdded, uint groupID){\n' +
+    let addGroupBy = '\tfunction addGroupBy(string hash, uint latestFact, uint colSize, uint size, string columns) public returns(string groupAdded, uint groupID){\n' +
         '\t\tgroupBys[groupId].hash = hash;\n' +
         '\t\tgroupBys[groupId].timestamp = now;\n' +
         '\t\tgroupBys[groupId].latestFact = latestFact;\n' +
         '\t\tgroupBys[groupId].colSize = colSize;\n' +
         '\t\tgroupBys[groupId].size = size;\n' +
         '\t\tgroupBys[groupId].columns = columns;\n' +
-        '\t\tif(category == COUNT_LITERAL){\n' +
-        '\t\t\tlastCount  = groupID;\n' +
-        '\t\t} else if(category == SUM_LITERAL){\n' +
-        '\t\t\tlastSUM = groupID;\n' +
-        '\t\t} else if(category == MIN_LITERAL){\n' +
-        '\t\t\tlastMin = groupID;\n' +
-        '\t\t} else if(category == MAX_LITERAL){\n' +
-        '\t\t\tlastMax = groupID;\n' +
-        '\t\t} else if(category == AVERAGE_LITERAL){\n' +
-        '\t\t\tlastAverage = groupID;\n' +
-        '\t\t}\n' +
         '\t\tgroupId += 1;\n' +
         '\t\treturn (groupBys[groupId-1].hash, groupId-1);\n' +
         '\t}\n\n';
@@ -301,12 +290,12 @@ async function generateContract (templateFileName) {
     contrPayload = firstLine + secondLine + thirdLine + fourthLine + sixthLine + fifthLine +
         constr + struct + properties + closeStruct + groupStruct + groupMapping + mapping + gbView +
         viewMapping + addFact + setters + retStmt + getFact + getParams + retFact + addView + addGroupBy +
-        getGroupBy + getLatestGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +
+        getGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +
         getGBsLoop + getAllFacts + getFactFromTo + addManyFacts + deleteGBById + '\n}';
     return new Promise(function (resolve, reject) {
         fs.writeFile('contracts/' + factTbl.name + '.sol', contrPayload, function (err) {
             if (err) {
-                helper.log(err);
+                console.log(err);
                 return reject(new Error('error'));
             }
             helper.log('******************');

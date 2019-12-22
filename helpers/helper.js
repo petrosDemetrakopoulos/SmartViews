@@ -381,6 +381,18 @@ function assignTimes (result, times) {
     return result;
 }
 
+function findSameOldestResults(sortedByEvictionCost, view){
+    let sameOldestResults = [];
+    for(let i = 0; i < sortedByEvictionCost.length; i++){
+        let crnRes = sortedByEvictionCost[i];
+        let meta = JSON.parse(crnRes.columns);
+        if(JSON.stringify(meta.fields) === JSON.stringify(view.gbFields) && meta.aggrFunc === view.operation){
+            sameOldestResults.push(crnRes);
+        }
+    }
+    return sameOldestResults;
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -404,6 +416,7 @@ module.exports = {
     sortByCalculationCost: sortByCalculationCost,
     reconstructSlicedCachedResult: reconstructSlicedCachedResult,
     getMainTransactionObject: getMainTransactionObject,
-    assignTimes: assignTimes
+    assignTimes: assignTimes,
+    findSameOldestResults: findSameOldestResults
 };
 const costFunctions = require('./costFunctions');

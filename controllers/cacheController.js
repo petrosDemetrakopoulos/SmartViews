@@ -95,7 +95,7 @@ function saveOnCache (gbResult, operation, latestId) {
     let resultSize = resultString.length;
     console.log("RESULT SIZE = " + resultSize +" bytes");
     let colSize = gbResult.groupByFields.length;
-    let columns = stringify({ fields: gbResult.groupByFields });
+    let columns = stringify({ fields: gbResult.groupByFields, aggrFunc: gbResult.operation  });
     let num = 0;
     let crnHash = '';
     if (slicedGbResult.length > 0) {
@@ -109,7 +109,7 @@ function saveOnCache (gbResult, operation, latestId) {
         crnHash = hash + '_0';
         client.set(crnHash, stringify(gbResult));
     }
-    return contract.methods.addGroupBy(crnHash, Web3.utils.fromAscii(operation), latestId, colSize, resultSize, columns).send(mainTransactionObject);
+    return contract.methods.addGroupBy(crnHash, latestId, colSize, resultSize, columns).send(mainTransactionObject);
 }
 
 function deleteFromCache (evicted, callback) {

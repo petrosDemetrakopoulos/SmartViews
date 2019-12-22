@@ -157,7 +157,7 @@ app.get('/new_contract/:fn', function (req, res) {
         createTable = result.createTable;
         return res.send({ msg: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
     }).catch(err => {
-        helper.log(err);
+        console.log(err);
         return res.send({ msg: 'error' });
     });
 });

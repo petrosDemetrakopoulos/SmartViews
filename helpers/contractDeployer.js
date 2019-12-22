@@ -7,6 +7,7 @@ const helper = require('../helpers/helper');
 async function deploy (account, contractPath, contract) {
     const input = fs.readFileSync(contractPath);
     const output = solc.compile(input.toString(), 1);
+    console.log(output);
     const bytecode = output.contracts[Object.keys(output.contracts)[0]].bytecode;
     const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
     let rec = {};
@@ -24,7 +25,7 @@ async function deploy (account, contractPath, contract) {
             }
         })
         .on('error', (err) => {
-            helper.log('error:' + err);
+            console.log('error:' + err);
         })
         .on('transactionHash', (txHash) => {
             helper.log('transactionHash:' + txHash);
