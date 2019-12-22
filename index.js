@@ -100,7 +100,6 @@ http.listen(3000, () => {
         })
     } else {
         console.log('Config file validations failed');
-        console.log(validations);
         process.exit(1);
     }
 });
@@ -246,11 +245,11 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                         await contractController.getLatestId().then(async latestId => {
                          //   let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
-                            console.log("SORTED BY CALCULATION COST:");
-                            console.log(sortedByCalculationCost);
+                           // console.log("SORTED BY CALCULATION COST:");
+                           // console.log(sortedByCalculationCost);
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            console.log("SORTED BY W2V");
-                            console.log(sortedByEvictionCost);
+                           // console.log("SORTED BY W2V");
+                          //  console.log(sortedByEvictionCost);
                             let mostEfficient = sortedByCalculationCost[0];
                             let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
@@ -349,7 +348,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
                 []).then(result => {
                 gbRunning = false;
-                console.log(result.matSteps);
                 io.emit('view_results', stringify(result).replace('\\', ''));
                 res.status(200);
                 return res.send(stringify(result).replace('\\', ''));

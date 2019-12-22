@@ -1,7 +1,7 @@
 {
     "recordsSlice": 1000,
     "cacheEvictionPolicy": "word2vec",
-    "calculationCostFunction": "costFunction",
+    "calculationCostFunction": "word2vec",
     "maxCacheSize": 1000,
     "maxCacheSizeInKB": 10000,
     "cacheSlice": 2,
@@ -17,5 +17,5 @@
         "database": "Ptychiaki"
     },
     "cacheEnabled": true,
-    "logging": true
+    "logging": false
 }

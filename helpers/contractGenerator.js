@@ -24,11 +24,11 @@ async function generateContract (templateFileName) {
     let constr = '\tconstructor() {\n' +
         '\t\tdataId = 0;\n' +
         '\t\tgroupId = 0;\n' +
-        '\t\tlastCount = 0;\n' +
-        '\t\tlastSUM = 0;\n' +
-        '\t\tlastMin = 0;\n' +
-        '\t\tlastMax = 0;\n' +
-        '\t\tlastAverage = 0;\n' +
+        // '\t\tlastCount = 0;\n' +
+        // '\t\tlastSUM = 0;\n' +
+        // '\t\tlastMin = 0;\n' +
+        // '\t\tlastMax = 0;\n' +
+        // '\t\tlastAverage = 0;\n' +
         '\t}\n';
     let properties = '';
     let struct = '\tstruct ' + factTbl.struct_Name + '{ \n';
@@ -287,7 +287,7 @@ async function generateContract (templateFileName) {
     deleteGBById += '\t\treturn (deletedIdss);\n';
     deleteGBById += '\t}\n';
 
-    contrPayload = firstLine + secondLine + thirdLine + fourthLine + sixthLine + fifthLine +
+    contrPayload = firstLine + secondLine + thirdLine + fourthLine + sixthLine +
         constr + struct + properties + closeStruct + groupStruct + groupMapping + mapping + gbView +
         viewMapping + addFact + setters + retStmt + getFact + getParams + retFact + addView + addGroupBy +
         getGroupBy + getAllViews + getAllViewsDec + getViewsLoop + getAllGBs + getAllGBsDec +

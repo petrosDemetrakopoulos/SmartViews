@@ -6,7 +6,7 @@ const generator = require('./testDataGenerator2');
 const dir = '../test_data/';
 const dreq = '100dir';
 const Promise = require('promise');
-const ResultsFile = 'resultsEXP1_DefaultCostFunction.txt';
+const ResultsFile = 'resultsEXP1_Word2VecCalcCostFunction_2.txt';
 const rp = require('request-promise');
 
 const load =  (file) => {
@@ -21,7 +21,6 @@ load_files = (directory, valid, error) => {
             if (error) {
                 return console.log(error)
             } else {
-                console.log(items);
                 let filtered = items.filter(el => valid.includes(el));
                 let list_files = filtered.toString();
                 items = list_files.split(',');
@@ -81,7 +80,6 @@ const load_data = async (fileno, queries) => {
 
 handleResponse = async(body) => {
     return new Promise((resolve, reject) => {
-     //   console.log(JSON.stringify(body));
         let f = body.toString().substr(String(body).indexOf('operation').toString());
         console.log(f);
         let JSONresp = JSON.parse(('{"' + f).toString());

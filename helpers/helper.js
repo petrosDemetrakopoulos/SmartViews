@@ -87,9 +87,7 @@ function containsAllFields (transformedArray, view) {
         for (let index in cachedGBFields.fields) {
             cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
         }
-        log(cachedGBFields);
         for (let j = 0; j < view.gbFields.length; j++) {
-            log(view.gbFields[j]);
             if (!cachedGBFields.fields.includes(view.gbFields[j])) {
                 containsAllFields = false
             }
@@ -294,7 +292,6 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     sortedByEvictionCost = await costFunctions.word2vec(sortedByEvictionCost, view);
     log(sortedByEvictionCost);
     log('cache eviction costs assigned:');
-    log(sortedByEvictionCost);
     await sortedByEvictionCost.sort(function (a, b) {
         if (config.cacheEvictionPolicy === 'FIFO') {
             return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
