@@ -69,108 +69,20 @@ function calculateForDeltasAndMergeWithCached(mostEfficient, latestId, createTab
                                                 let cacheSaveTimeEnd = helper.time();
                                                 matSteps.push({type: 'cacheSave'});
                                                 delete mergeResult.gbCreateTable;
-                                                //same logic as deleteFromCache
-                                                let totalCurrentCacheLoad = 0; // in Bytes
+
+                                                let times = {bcTime: (bcTimeEnd - bcTimeStart) + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
+                                                sqlTime: (mergeTimeEnd - mergeTimeStart) + (reductionTimeEnd - reductionTimeStart),
+                                                cacheRetrieveTime: cacheRetrieveTimeEnd - cacheRetrieveTimeStart,
+                                                cacheSaveTime: cacheSaveTimeEnd - cacheSaveTimeStart,
+                                                totalStart: totalStart};
+                                                times.totalTime = times.bcTime + times.sqlTime + times.cacheRetrieveTime + times.cacheSaveTime;
                                                 let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
-                                                for(let i = 0; i < sortedByEvictionCost.length; i++){
-                                                    totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
-                                                }
-                                                console.log("CURRENT CACHE LOAD = " + totalCurrentCacheLoad + " Bytes OR " + (totalCurrentCacheLoad/1024) + " KB");
-                                                if (totalCurrentCacheLoad > 0 && (totalCurrentCacheLoad/1024) >= config.maxCacheSizeInKB) {
-                                                    // delete as many cached results as to free up cache size equal to the size of the latest result we computed
-                                                    // we can easily multiply it by a factor to see how it performs
-                                                    let sortedByEvictionCostFiltered = [];
-                                                    let gbSize = stringify(groupBySqlResult).length;
-                                                    let totalSize = 0;
-                                                    let i = 0;
-                                                    for (let k = 0; k < sameOldestResults.length; k++) {
-                                                        let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
-                                                        if (indexInSortedByEviction > -1) {
-                                                            sortedByEvictionCost.splice(indexInSortedByEviction,1);
-                                                        }
-                                                    }
-                                                    while ((totalSize + parseInt(sortedByEvictionCost[i].size)) < (config.maxCacheSizeInKB*1024 - gbSize)) {
-                                                        totalSize += parseInt(sortedByEvictionCost[i].size);
-                                                        //sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
-                                                        i++;
-                                                    }
-
-                                                    for (let k = 0; k < sameOldestResults.length; k++) {
-                                                        let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
-                                                        if (indexInSortedByEviction > -1) {
-                                                            totalSize += parseInt(sortedByEvictionCost[indexInSortedByEviction].size);
-                                                            sortedByEvictionCost.splice(indexInSortedByEviction,1);
-                                                        }
-                                                    }
-
-                                                    for (let k = 0;k < i; k++) {
-                                                        sortedByEvictionCostFiltered.push(sortedByEvictionCost[k]);
-                                                        console.log('Evicted view with size: '+sortedByEvictionCost[k])
-                                                    }
-                                                    console.log("TOTAL SIZE = " + totalSize);
-                                                    console.log("GB SIZE = " + gbSize);
-                                                    let tot= (totalSize + gbSize);
-                                                    let res= tot.toString()+'\n';
-                                                    console.log('result to txt: ' + res);
-                                                    fs.appendFile('cache_sizeWV.txt',res,  function(err) {
-                                                        if (err) {
-                                                            return console.error(err);
-                                                        }
-                                                    });
-                                                    console.log("ORIGINAL sortedByEvictionCostFiltered:");
-                                                    console.log(sortedByEvictionCostFiltered);
-                                                    console.log("ORIGINAL sameOldestResults");
-                                                    console.log(sameOldestResults);
-                                                    sortedByEvictionCostFiltered = sortedByEvictionCostFiltered.concat(sameOldestResults);
-                                                    await contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(receiptDelete => {
-                                                        let totalEnd = helper.time();
-                                                        let sqlTime = (sqlTimeEnd - sqlTimeStart);
-                                                        let reductionTime = (reductionTimeEnd - reductionTimeStart);
-                                                        let mergeTime = (mergeTimeEnd - mergeTimeStart);
-                                                        let bcTime = (bcTimeEnd - bcTimeStart);
-                                                        mergeResult.sqlTime = sqlTime + reductionTime + mergeTime;
-                                                        mergeResult.bcTime = bcTime + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
-                                                        mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                        mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                        mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-                                                        mergeResult.allTotal = totalEnd - totalStart;
-                                                    //    mergeResult.matSteps = matSteps;
-                                                        helper.printTimes(mergeResult);
-                                                        helper.log('receipt:' + JSON.stringify(receipt));
-                                                        resolve(mergeResult);
-                                                    }).catch(err => {
-                                                        reject(err);
-                                                    });
-                                                } else {
-                                                    let totalEnd = helper.time();
-                                                    let sqlTime = (sqlTimeEnd - sqlTimeStart);
-                                                    let reductionTime = (reductionTimeEnd - reductionTimeStart);
-                                                    let mergeTime = (mergeTimeEnd - mergeTimeStart);
-                                                    let bcTime = (bcTimeEnd - bcTimeStart);
-                                                    mergeResult.sqlTime = sqlTime + reductionTime + mergeTime;
-                                                    mergeResult.bcTime = bcTime + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
-                                                    mergeResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
-                                                    mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
-                                                    mergeResult.totalTime = mergeResult.sqlTime + mergeResult.bcTime + mergeResult.cacheSaveTime + mergeResult.cacheRetrieveTime;
-                                                    mergeResult.allTotal = totalEnd - totalStart;
-                                                 //   mergeResult.matSteps = matSteps;
-                                                    if(sameOldestResults.length > 0) {
-                                                        contractController.deleteCachedResults(sameOldestResults).then(deleteReceipt => {
-                                                            totalEnd = helper.time();
-                                                            mergeResult.allTotal = totalEnd - totalStart;
-                                                            console.log("DELETED CACHED RESULTS");
-                                                            resolve(groupBySqlResult);
-                                                        }).catch(err => {
-                                                            reject(err);
-                                                        });
-                                                    } else {
-                                                        totalEnd = helper.time();
-                                                        mergeResult.allTotal = totalEnd - totalStart;
-                                                        helper.printTimes(mergeResult);
-                                                        helper.log('receipt:' + JSON.stringify(receipt));
-                                                        resolve(mergeResult);
-                                                    }
-                                                }
+                                                clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, times).then(results => {
+                                                    helper.printTimes(results);
+                                                    resolve(results);
+                                                }).catch(err => {
+                                                    reject(err);
+                                                });
                                             });
                                         } else {
                                             let totalEnd = helper.time();
@@ -431,6 +343,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
         if (totalCurrentCacheLoad > 0 && (totalCurrentCacheLoad/1024) >= config.maxCacheSizeInKB) {
             // delete as many cached results as to free up cache size equal to the size of the latest result we computed
             // we can easily multiply it by a factor to see how it performs
+            console.log("-->CLEARING CACHE");
             let sortedByEvictionCostFiltered = [];
             let gbSize = stringify(groupBySqlResult).length;
             let totalSize = 0;
@@ -461,8 +374,8 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             }
             console.log("TOTAL SIZE = " + totalSize);
             console.log("GB SIZE = " + gbSize);
-            let tot= (totalSize + gbSize);
-            let res= tot.toString()+'\n';
+            let tot = (totalSize + gbSize);
+            let res = tot.toString()+'\n';
             console.log('result to txt: ' + res);
             fs.appendFile('cache_sizeWV.txt',res,  function(err) {
                 if (err) {
@@ -476,15 +389,26 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             sortedByEvictionCostFiltered = sortedByEvictionCostFiltered.concat(sameOldestResults);
             contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(deleteReceipt => {
                 times.totalEnd = helper.time();
+                console.log("**** TIMES BEFORE ****");
+                console.log(times);
                 if (times) {
                     groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                 }
+                console.log("**** GB RESULT AFTER ****");
+                console.log(groupBySqlResult);
                 console.log("DELETED CACHED RESULTS");
                 resolve(groupBySqlResult);
             }).catch(err => {
                 reject(err);
             });
         } else {
+            console.log("-->NOT CLEARING CACHE");
+            times.totalEnd = helper.time();
+            if (times) {
+                groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
+            }
+            resolve(groupBySqlResult);
+            /*
             if(sameOldestResults.length > 0) {
                 contractController.deleteCachedResults(sameOldestResults).then(deleteReceipt => {
                     times.totalEnd = helper.time();
@@ -503,6 +427,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 }
                 resolve(groupBySqlResult);
             }
+             */
         }
     });
 }
