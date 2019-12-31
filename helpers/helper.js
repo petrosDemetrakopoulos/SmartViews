@@ -1,7 +1,6 @@
 const config = require('../config_private');
 const microtime = require('microtime');
 const fs = require('fs');
-const exec = require('child_process').execSync;
 
 function removeTimestamps (records) {
     for (let i = 0; i < records.length; i++) {
@@ -49,10 +48,11 @@ function configFileValidations () {
     if (!Number.isInteger(config.redisPort)) {
         formatErrors.push({ field: 'redisPort', error: 'Should be integer' });
     }
-    if (config.cacheEvictionPolicy !== 'FIFO' && config.cacheEvictionPolicy !== 'COST FUNCTION'
-        && config.cacheEvictionPolicy !== 'word2vec') {
+    if (config.cacheEvictionPolicy !== 'FIFO' &&
+        config.cacheEvictionPolicy !== 'costFunction' &&
+        config.cacheEvictionPolicy !== 'word2vec') {
         formatErrors.push({ field: 'cacheEvictionPolicy',
-            error: 'Should be either \'FIFO\' or \'COST FUNCTION\' or \'word2vec\'' });
+            error: 'Should be either \'FIFO\' or \'costFunction\' or \'word2vec\'' });
     }
     if ((typeof config.blockchainIP) !== 'string') {
         formatErrors.push({ field: 'blockchainIP', error: 'Should be string' });
@@ -295,10 +295,10 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     await sortedByEvictionCost.sort(function (a, b) {
         if (config.cacheEvictionPolicy === 'FIFO') {
             return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
-        } else if (config.cacheEvictionPolicy === 'COST FUNCTION') {
+        } else if (config.cacheEvictionPolicy === 'costFunction') {
             log('SORT WITH COST FUNCTION');
             return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
-        } else if (config.cacheEvictionPolicy === 'word2vec'){
+        } else if (config.cacheEvictionPolicy === 'word2vec') {
             log('SORT WITH word2vec');
             return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
         }
@@ -307,14 +307,14 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
 }
 
 async function sortByCalculationCost (resultGBs, latestId, view) {
-    if(config.calculationCostFunction === "costFunction") {
+    if (config.calculationCostFunction === 'costFunction') {
         resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
         await resultGBs.sort(function (a, b) {
             return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
         }); // order ascending
-    } else if(config.calculationCostFunction === "word2vec"){
+    } else if (config.calculationCostFunction === 'word2vec') {
         resultGBs = await costFunctions.word2vec(resultGBs, view);
-        await resultGBs.sort(function (a,b) {
+        await resultGBs.sort(function (a, b) {
             return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
         });
     }
@@ -387,12 +387,12 @@ function assignTimes (result, times) {
     return result;
 }
 
-function findSameOldestResults(sortedByEvictionCost, view){
+function findSameOldestResults (sortedByEvictionCost, view) {
     let sameOldestResults = [];
-    for(let i = 0; i < sortedByEvictionCost.length; i++){
+    for (let i = 0; i < sortedByEvictionCost.length; i++) {
         let crnRes = sortedByEvictionCost[i];
         let meta = JSON.parse(crnRes.columns);
-        if(JSON.stringify(meta.fields) === JSON.stringify(view.gbFields) && meta.aggrFunc === view.operation){
+        if (JSON.stringify(meta.fields) === JSON.stringify(view.gbFields) && meta.aggrFunc === view.operation) {
             sameOldestResults.push(crnRes);
         }
     }

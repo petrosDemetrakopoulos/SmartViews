@@ -1,6 +1,6 @@
 {
     "recordsSlice": 1000,
-    "cacheEvictionPolicy": "word2vec",
+    "cacheEvictionPolicy": "costFunction",
     "calculationCostFunction": "costFunction",
     "maxCacheSize": 1000,
     "maxCacheSizeInKB": 1000000,

@@ -44,8 +44,10 @@ app.get('/', function (req, res) {
             if (blockNum >= 0) {
                 blockchainReady = true;
             }
-            return res.render('index', { 'templates': items, 'redisStatus': cacheController.getRedisStatus(),
-                'sqlStatus': mysqlConnected, 'blockchainStatus': blockchainReady });
+            return res.render('index', { 'templates': items,
+                'redisStatus': cacheController.getRedisStatus(),
+                'sqlStatus': mysqlConnected,
+                'blockchainStatus': blockchainReady });
         });
     });
 });
@@ -243,13 +245,13 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                     if (filteredGBs.length > 0) {
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
-                         //   let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            //let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
-                           // console.log("SORTED BY CALCULATION COST:");
-                           // console.log(sortedByCalculationCost);
+                            // console.log("SORTED BY CALCULATION COST:");
+                            // console.log(sortedByCalculationCost);
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                           // console.log("SORTED BY W2V");
-                          //  console.log(sortedByEvictionCost);
+                            //console.log("SORTED BY W2V");
+                           //console.log(sortedByEvictionCost);
                             let mostEfficient = sortedByCalculationCost[0];
                             let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
@@ -262,7 +264,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 let matSteps = [];
                                 await cacheController.getManyCachedResults(allHashes).then(async allCached => {
                                     let cacheRetrieveTimeEnd = helper.time();
-                                    matSteps.push({type: 'cacheFetch'});
+                                    matSteps.push({ type: 'cacheFetch' });
                                     let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
                                     if (cachedGroupBy) {
                                         let times = {
