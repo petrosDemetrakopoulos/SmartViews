@@ -101,7 +101,7 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
     // which is the cost to materialize view V from view Vi (where V < Vi)
     let a = 10; // factor of deltas
     let sizeDeltas = 0;
-    let sizeCached = 0; // crnGroubBy
+    let sizeCached = 0;
     for (let i = 0; i < groupBys.length; i++) {
         let crnGroupBy = groupBys[i];
         sizeDeltas = latestFact - Number.parseInt(crnGroupBy.latestFact); // latestFact is the latest fact written in bc
@@ -112,7 +112,7 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
     return groupBys;
 }
 
-async function word2vec(groupBys,view) {
+async function word2vec(groupBys, view) {
     let victims = [];
     let viewForW2V = view.gbFields.toString().replace(/,/g,"");
     for(let i = 0; i < groupBys.length; i++) {

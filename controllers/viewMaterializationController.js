@@ -298,12 +298,13 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                         }).on('receipt', (receipt) => {
                             matSteps.push({type: 'cacheSave'});
                             let cacheSaveTimeEnd = helper.time();
-                            groupBySqlResult.cacheSaveTime = cacheSaveTimeEnd - cacheSaveTimeStart;
                             delete groupBySqlResult.gbCreateTable;
                             helper.log('receipt:' + JSON.stringify(receipt));
-                            let times = { sqlTimeEnd: sqlTimeEnd, sqlTimeStart: sqlTimeStart,
-                                bcTimeStart: bcTimeStart, bcTimeEnd: bcTimeEnd,
-                                getGroupIdTime: getGroupIdTime, totalStart: totalStart };
+                            let times = { sqlTime: sqlTimeEnd - sqlTimeStart,
+                                bcTime: (bcTimeEnd - bcTimeStart) + getGroupIdTime,
+                                cacheSaveTime: cacheSaveTimeEnd - cacheSaveTimeStart,
+                                totalStart: totalStart };
+                            times.totalTime = times.bcTime + times.sqlTime + times.cacheSaveTime;
                             let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
                             clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, sameOldestResults, times).then(results => {
                                 helper.printTimes(results);
@@ -324,10 +325,12 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                         resolve(groupBySqlResult);
                     }
                 }).catch(err => {
+                    console.log(err);
                     throw err;
                 });
             });
         }).catch(err => {
+            console.log(err);
             throw err;
         });
     });

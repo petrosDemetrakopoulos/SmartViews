@@ -359,6 +359,15 @@ function assignTimes (result, times) {
         result.allTotal = times.totalEnd - times.totalStart;
         return result;
     }
+    if (times.bcTime && times.sqlTime && times.cacheSaveTime && times.totalTime) {
+        // means we have already calculated times in previous step
+        result.bcTime = times.bcTime;
+        result.sqlTime = times.sqlTime;
+        result.cacheSaveTime = times.cacheSaveTime;
+        result.totalTime = times.totalTime;
+        result.allTotal = times.totalEnd - times.totalStart;
+        return result;
+    }
     result.sqlTime = times.sqlTimeEnd - times.sqlTimeStart;
     result.totalTime = result.sqlTime;
     if (times.bcTimeEnd && times.bcTimeStart && times.getGroupIdTime !== null && times.getGroupIdTime !== undefined) {
