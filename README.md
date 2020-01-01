@@ -222,6 +222,7 @@ During the evaluation process of the optimal cached result for the fastest mater
 Note: this policy is set in the ```calculationCostFunction``` field of our ```config.json``` file.
 
 1) A Cost Function
+$$cost(Vi, V ) = ↵ ⇥ size_{deltas(i)} + size_{cached(i)} $$
 2) Word2Vec model
 
 

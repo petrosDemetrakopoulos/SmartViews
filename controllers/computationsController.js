@@ -87,14 +87,10 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
                             group: gbFields,
                             fields: [gbFields,
                                 {
-                                    func: {
-                                        name: 'SUM', args: [{ field: aggregationField }]
-                                    }
+                                    func: { name: 'SUM', args: [{ field: aggregationField }] }
                                 },
                                 {
-                                    func: {
-                                        name: 'COUNT', args: [{ field: aggregationField }]
-                                    }
+                                    func: { name: 'COUNT', args: [{ field: aggregationField }] }
                                 }]
                         });
                     } else {
