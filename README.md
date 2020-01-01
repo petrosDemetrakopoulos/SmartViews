@@ -223,9 +223,9 @@ Note: this policy is set in the ```calculationCostFunction``` field of our ```co
 
 1) A Cost Function
 
-<img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V) = size_{deltas(i)} + size_{cached(i)}">
+<img style="align-content: center; width: 300px;" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=size_{deltas(i)} %2B size_{cached(i)}">
 
-Where <img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)">
+Where  <img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)">  
 is the cost of materializing view V using the lates cached result of a different view Vi (always assuming that <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi">)
 
 2) Word2Vec model
