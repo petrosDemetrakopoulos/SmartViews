@@ -224,11 +224,11 @@ Note: this policy is set in the ```calculationCostFunction``` field of our ```co
 1) A Cost Function
 
 <div ALIGN="center">
-<img width="300px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=a\times size_{deltas(i)} %2B size_{cached(i)}">
+<img width="400px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=a\times size_{deltas(i)} %2B size_{cached(i)}">
 </div>
 
-Where &nbsp;<img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)"> is the cost of materializing view V using the latest cached result of a different view Vi (always assuming that <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi">)
-for some constant <img src="https://render.githubusercontent.com/render/math?math=a\gg 1">.
+Where &nbsp;<img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)" width="90px"> is the cost of materializing view V using the latest cached result of a different view Vi (always assuming that <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi">)
+for some constant <img width="60px" src="https://render.githubusercontent.com/render/math?math=a\gg 1">.
 
 In that way application server sorts all the cached results based on that function and picks the best one (the one with the less cost).  
 
