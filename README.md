@@ -226,10 +226,14 @@ These cached results are the ones that contain more and / or other fields than t
 
 **As a general rule, the cached results that can be used for the materialization of a requested view are the ones that their fields are a superset of the fields of the requested view and they also have the same aggregate function.**
 
-During the evaluation process of the optimal cached result for the fastest materialization of the view 2 different policies may apply:
+i.e Let's assume we have the previous stored results in cache of the views ```{Brand, Category, Cylinders}``` and ```{Year, Model, Brand}``` for the ```COUNT``` aggregate function.
+If the next view requested by the user is the ```{Brand, Category}``` view for the ```COUNT``` aggregate function, then the ```{Year, Model, Brand}``` cached result will be eliminated as it does not contain each and every field of the requested view.
+Application server will use the previous cached result for the view ```{Brand, Category, Cylinders}``` in order to materialize the view incrementally as it can reduce it to the requested view by summing the aggregate function values of the previous cached result.
+
+During the evaluation process of the optimal cached result for the fastest materialization of the view, 2 different policies may apply:
 Note: this policy is set in the ```calculationCostFunction``` field of our ```config.json``` file.
 
-1) Cost Function
+1) A Cost Function
 2) Word2Vec model
 
 
