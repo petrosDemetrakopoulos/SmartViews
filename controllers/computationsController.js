@@ -257,7 +257,7 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                             {
                                 func: {
                                     name: op,
-                                    args: [{field: lastCol}]
+                                    args: [{ field: lastCol }]
                                 }
                             }]
                     });
@@ -270,13 +270,13 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                                 {
                                     func: {
                                         name: 'SUM',
-                                        args: [{field: prelastCol}]
+                                        args: [{ field: prelastCol }]
                                     }
                                 },
                                 {
                                     func: {
                                         name: 'SUM',
-                                        args: [{field: lastCol}]
+                                        args: [{ field: lastCol }]
                                     }
                                 }]
                         });

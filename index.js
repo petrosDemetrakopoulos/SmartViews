@@ -222,7 +222,6 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         return res.send({ error: 'view not found' });
     }
     let materializationDone = false;
-    let materializationSteps = [];
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
         gbRunning = true; // a flag to handle retries of the request from the front-end
@@ -245,13 +244,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                     if (filteredGBs.length > 0) {
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
-                            //let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
-                            // console.log("SORTED BY CALCULATION COST:");
-                            // console.log(sortedByCalculationCost);
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            //console.log("SORTED BY W2V");
-                           //console.log(sortedByEvictionCost);
                             let mostEfficient = sortedByCalculationCost[0];
                             let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
@@ -350,16 +344,11 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
                 []).then(result => {
                 gbRunning = false;
-                console.log(result);
-                console.log("@@");
                 io.emit('view_results', stringify(result).replace('\\', ''));
                 res.status(200);
                 return res.send(stringify(result).replace('\\', ''));
             }).catch(err => {
                 gbRunning = false;
-                console.log("-----");
-                console.log(err);
-                console.log("-----");
                 return res.send(stringify(err))
             });
         }

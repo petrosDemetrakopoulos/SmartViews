@@ -47,18 +47,25 @@ fs.writeFile('test_data/' + fileToSaveTestData + '1' + '.json', JSON.stringify(a
             console.log('The file was saved!');
             // experiment scenario begins
             // 1) We add n records
-
-            request({url: url, method: 'GET', headers: {
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0','Connection': 'keep-alive'
-                }, timeout: 150000000}, async function (error, httpResponse, body) {
+            request({ url: url,
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0',
+                    'Connection': 'keep-alive'
+                },
+                timeout: 150000000 }, async function (error, httpResponse, body) {
                 if (error) {
                     return console.log(error);
                 }
                 console.log('added first records');
                 // 2) We request group by A|B(COUNT)
-                await request({ url: urlgbCountAB, method: 'GET',  headers: {
-                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0','Connection': 'keep-alive'
-                    }, timeout: 150000000}, async function (error, httpResponse, body) {
+                await request({ url: urlgbCountAB,
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0',
+                        'Connection': 'keep-alive'
+                    },
+                    timeout: 150000000 }, async function (error, httpResponse, body) {
                     if (error) {
                         return console.log(error);
                     }
@@ -81,19 +88,25 @@ fs.writeFile('test_data/' + fileToSaveTestData + '1' + '.json', JSON.stringify(a
                     console.log('All total time: ' + JSONresp.allTotal.toFixed(5));
                     console.log('**');
                     // 3) We add n records again
-                    await request({ url: urlSec, method: 'GET', headers: {
+                    await request({ url: urlSec,
+                        method: 'GET',
+                        headers: {
                             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0',
                             'Connection': 'keep-alive'
-                        }, timeout: 150000000 }, async function (error, httpResponse, body) {
-                        console.log('%%%');
+                        },
+                        timeout: 150000000 }, async function (error, httpResponse, body) {
                         if (error) {
                             return console.log(error);
                         }
                         console.log('added second records');
                         // 4) We request group by A|B(COUNT) again
-                        await request({ url: urlgbCountAB, method: 'GET', headers: {
-                                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0', 'Connection': 'keep-alive'
-                            }, timeout: 150000000}, async function (error, httpResponse, body2) {
+                        await request({ url: urlgbCountAB,
+                            method: 'GET',
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0',
+                                'Connection': 'keep-alive'
+                            },
+                            timeout: 150000000 }, async function (error, httpResponse, body2) {
                             if (error) {
                                 return console.log(error);
                             }

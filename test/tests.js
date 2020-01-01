@@ -112,7 +112,7 @@ describe('testing /form/:contract route', function () {
 });
 
 describe('testing /addFact route', function () {
-    let payload = {pk: 250, A: 1, B: 2, C: 3, D:12.3};
+    let payload = { pk: 250, A: 1, B: 2, C: 3, D: 12.3 };
     let resp = {};
     it('should return OK status', function () {
         return request(app)
@@ -164,7 +164,7 @@ describe('testing /load_dataset/:dt route', function () {
 
 describe('testing /allfacts', function () {
     setTimeout(function () { console.log('waiting...'); }, 1000);
-    // wait so that latest fact should not have the same timetamp with the group by that will be cached
+    // wait so that latest fact should not have the same timestamp with the group by that will be cached
     let resp = {};
     it('should return OK status', function () {
         return request(app)
@@ -558,7 +558,7 @@ describe('testing /getViewByName/:viewName/:contract -- cache disabled', functio
     let config = require('../config_private');
     before(function () {
         config.cacheEnabled = false;
-        fs.writeFile('./config_private.json', JSON.stringify(config, null,4), function (err) {
+        fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
             if (err) throw err;
         });
     });

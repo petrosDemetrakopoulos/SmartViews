@@ -93,9 +93,9 @@ function saveOnCache (gbResult, operation, latestId) {
         }
     }
     let resultSize = resultString.length;
-    console.log("RESULT SIZE = " + resultSize +" bytes");
+    console.log('RESULT SIZE = ' + resultSize + ' bytes');
     let colSize = gbResult.groupByFields.length;
-    let columns = stringify({ fields: gbResult.groupByFields, aggrFunc: gbResult.operation  });
+    let columns = stringify({ fields: gbResult.groupByFields, aggrFunc: gbResult.operation });
     let num = 0;
     let crnHash = '';
     if (slicedGbResult.length > 0) {

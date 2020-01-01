@@ -6,7 +6,7 @@ const generator = require('./testDataGenerator2');
 const dir = '../test_data/';
 const dreq = '100dir';
 const Promise = require('promise');
-const ResultsFile = 'resultsEXP1_DefaultCostFunction_8.txt';
+const ResultsFile = 'resultsEXP1_DefaultCostFunction_8.json';
 const rp = require('request-promise');
 
 const load = (file) => {
@@ -46,15 +46,17 @@ const loadData = async (fileno, queries) => {
             uri: url,
             timeout: t,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/38.0.2125.111 Safari/537.36', 'Connection': 'keep-alive'},
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/38.0.2125.111 Safari/537.36',
+                'Connection': 'keep-alive'},
             json: true // Automatically parses the JSON string in the response
         };
 
         let options2 = {
-            timeout:t,
+            timeout: t,
             uri: urlGB,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/38.0.2125.111 Safari/537.36','Connection': 'keep-alive' },
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/38.0.2125.111 Safari/537.36',
+                'Connection': 'keep-alive' },
             json: true // Automatically parses the JSON string in the response
         };
 
@@ -78,7 +80,7 @@ const loadData = async (fileno, queries) => {
     });
 };
 
-const handleResponse = async(body) => {
+const handleResponse = async (body) => {
     return new Promise((resolve, reject) => {
         let f = body.toString().substr(String(body).indexOf('operation').toString());
         console.log(f);
@@ -90,7 +92,7 @@ const handleResponse = async(body) => {
     });
 };
 
-const writeToFile = async(data, filepath) => {
+const writeToFile = async (data, filepath) => {
     return new Promise((resolve, reject) => {
         let write = Promise.denodeify(fs.appendFile);
         const res = String(data + ',\n');
@@ -101,13 +103,13 @@ const writeToFile = async(data, filepath) => {
 };
 
 const saveFile = (dataToWrite, outComeFilePath) => {
-    writeToFile(dataToWrite, outComeFilePath)
-        .then(() => console.log ('file' + outComeFilePath + 'saved successfully'))
+    writeToFile(dataToWrite, outComeFilePath).then(() =>
+        console.log ('file' + outComeFilePath + 'saved successfully'))
         .catch((err) => console.log(err));
 };
 
-const jparse = function(filename, error) {
-    fs.readFile(filename, function read(err, data) {
+const jparse = function (filename, error) {
+    fs.readFile(filename, function read (err, data) {
         if (err) {
             throw err;
         }
@@ -133,28 +135,28 @@ const jparse = function(filename, error) {
             totalArray.push(jObject.totalTime);
         }
 
-        for (let i = 0;i < totalArray.length; i++) {
+        for (let i = 0; i < totalArray.length; i++) {
             console.log('i: ' + i + ' ' + totalArray[i]);
         }
     });
 };
 
-const main = async() => {
+const main = async () => {
     //jparse(ResultsFile);
     load(filename)
-        .then(async(res) => {
+        .then(async (res) => {
             let fns = [];
             const queries = res.split(',');
             for (let i = 1; i <= 100; i++) {
-                let crnFN =  await generator.generate(100 * (i-1),100 * i);
+                let crnFN = await generator.generate(100 * (i - 1), 100 * i);
                 fns.push(crnFN);
                 // return array with filenames, then filter the ones read from the directory
             }
             loadFiles(dir, fns)
-                .then(async(files) => {
+                .then(async (files) => {
                     for (let i = 0; i < queries.length; i++) {
                         await loadData(files[i], queries[i]).then(() => {
-                            console.log('file ' + i +' loaded');
+                            console.log('file ' + i + ' loaded');
                         });
                     }
                 });
@@ -164,5 +166,5 @@ const main = async() => {
         })
 };
 main().then(() => {
-    console.log("DONE")
+    console.log('DONE');
 });

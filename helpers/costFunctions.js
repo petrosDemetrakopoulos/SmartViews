@@ -112,20 +112,20 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
     return groupBys;
 }
 
-async function word2vec(groupBys, view) {
+async function word2vec (groupBys, view) {
     let victims = [];
-    let viewForW2V = view.gbFields.toString().replace(/,/g,"");
+    let viewForW2V = view.gbFields.toString().replace(/,/g, '');
     for (let i = 0; i < groupBys.length; i++) {
         let currentFields = JSON.parse(groupBys[i].columns);
-        let new_victim = currentFields.fields.toString()
+        let newVictim = currentFields.fields.toString()
             .replace(/,/g, '')
             .replace('""', '');
-        victims.push(new_victim);
+        victims.push(newVictim);
     }
     let process = exec('python word2vec.py ' + victims.toString() + ' ' + viewForW2V);
     let sims = process.toString('utf8');
-    sims = sims.replace('[','').replace(']','')
-        .replace(/\n/g,'').trim().split(',');
+    sims = sims.replace('[', '').replace(']', '')
+        .replace(/\n/g, '').trim().split(',');
     sims = sims.map(sim => {
         return sim.trim();
     });
