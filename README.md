@@ -219,6 +219,19 @@ The flowchart below presents the materialization process that takes place when t
 <img src="schematics/ptychiaki_flow.png" width="900" align="center">
 </div>
 
+# Cached results evaluation process
+When a Smart-View is requested, the application server fetches the metadata stored for each previous cached result from the Blockchain which acts as our permanent storage.
+Then, it filters out the cached results that are not useful for the materialization of the view requested. 
+These cached results are the ones that contain more and / or other fields than the fields of the requested view.
+
+**As a general rule, the cached results that can be used for the materialization of a requested view are the ones that their fields are a superset of the fields of the requested view and they also have the same aggregate function.**
+
+During the evaluation process of the optimal cached result for the fastest materialization of the view 2 different policies may apply:
+Note: this policy is set in the ```calculationCostFunction``` field of our ```config.json``` file.
+
+1) Cost Function
+2) Word2Vec model
+
 
 # The Code
 The back-end code is separated in 4 main categories.
