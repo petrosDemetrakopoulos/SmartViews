@@ -223,9 +223,9 @@ Note: this policy is set in the ```calculationCostFunction``` field of our ```co
 
 1) A Cost Function
 
-<p style="text-align: center">
-<img style="width: 330px;" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=size_{deltas(i)} %2B size_{cached(i)}">
-</p>
+<div ALIGN="center">
+<img width="300px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=size_{deltas(i)} %2B size_{cached(i)}">
+</div>
 
 Where &nbsp;<img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)"> is the cost of materializing view V using the latest cached result of a different view Vi (always assuming that <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi">)
 
