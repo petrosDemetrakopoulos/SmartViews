@@ -34,7 +34,7 @@
   "views": [
     {
       "name": "brand|category(COUNT)",
-      "gbFields": [
+      "fields": [
         "brand",
         "category"
       ],
@@ -45,7 +45,7 @@
     },
     {
       "name": "brand|category|cylinders(COUNT)",
-      "gbFields": [
+      "fields": [
         "brand",
         "category",
         "cylinders"
@@ -57,7 +57,7 @@
     },
     {
       "name": "brand(COUNT)",
-      "gbFields": [
+      "fields": [
         "brand"
       ],
       "operation": "COUNT",

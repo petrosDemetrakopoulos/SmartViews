@@ -225,7 +225,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
         gbRunning = true; // a flag to handle retries of the request from the front-end
-        let gbFields = helper.extractGBFields(view);
+        let gbFields = helper.extractFields(view);
         view.gbFields = gbFields;
         let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
         if (config.cacheEnabled) {
@@ -294,7 +294,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 await viewMaterializationController.calculateForDeltasAndMergeWithCached(mostEfficient,
                                     latestId, createTable, view, gbFields, sortedByEvictionCost, globalAllGroupBysTime,
                                     getLatestFactIdTime, totalStart).then(results => {
-                                    io.emit('view_results', results);
+                                    io.emit('view_results', stringify(results).replace('\\', ''));
                                     gbRunning = false;
                                     materializationDone = true;
                                     res.status(200);

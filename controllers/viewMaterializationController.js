@@ -81,6 +81,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                                 helper.log('receipt:' + JSON.stringify(receipt));
                                                 clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, times).then(results => {
                                                     helper.printTimes(results);
+                                                    results.matSteps = matSteps;
                                                     resolve(results);
                                                 }).catch(err => {
                                                     reject(err);

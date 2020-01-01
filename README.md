@@ -156,7 +156,7 @@ An example of a smart view template is shown below.
   "views": [
     {
       "name": "brand|category(COUNT)",
-      "gbFields": [
+      "fields": [
         "brand",
         "category"
       ],
@@ -167,7 +167,7 @@ An example of a smart view template is shown below.
     },
     {
       "name": "brand|category|cylinders(COUNT)",
-      "gbFields": [
+      "fields": [
         "brand",
         "category",
         "cylinders"
@@ -179,7 +179,7 @@ An example of a smart view template is shown below.
     },
     {
       "name": "brand(COUNT)",
-      "gbFields": [
+      "fields": [
         "brand"
       ],
       "operation": "COUNT",

@@ -34,18 +34,22 @@
   "views": [
     {
       "name": "AB(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B"
       ],
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 1269
+      "frequency": 1273,
+      "gbFields": [
+        "A",
+        "B"
+      ]
     },
     {
       "name": "CD(COUNT)",
-      "gbFields": [
+      "fields": [
         "C",
         "D"
       ],
@@ -56,7 +60,7 @@
     },
     {
       "name": "ABC(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B",
         "C"
@@ -68,7 +72,7 @@
     },
     {
       "name": "ABCD(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B",
         "C",
@@ -81,7 +85,7 @@
     },
     {
       "name": "AB(SUM-D)",
-      "gbFields": [
+      "fields": [
         "A",
         "B"
       ],
@@ -92,7 +96,7 @@
     },
     {
       "name": "AB(AVERAGE-D)",
-      "gbFields": [
+      "fields": [
         "A",
         "B"
       ],
@@ -103,7 +107,7 @@
     },
     {
       "name": "A(AVERAGE-D)",
-      "gbFields": [
+      "fields": [
         "A"
       ],
       "operation": "AVERAGE",
@@ -113,7 +117,7 @@
     },
     {
       "name": "AB(MAX-D)",
-      "gbFields": [
+      "fields": [
         "A",
         "B"
       ],
@@ -124,7 +128,7 @@
     },
     {
       "name": "AB(MIN-D)",
-      "gbFields": [
+      "fields": [
         "A",
         "B"
       ],
@@ -135,17 +139,20 @@
     },
     {
       "name": "A(COUNT)",
-      "gbFields": [
+      "fields": [
         "A"
       ],
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
-      "frequency": 515
+      "frequency": 519,
+      "gbFields": [
+        "A"
+      ]
     },
     {
       "name": "B(COUNT)",
-      "gbFields": [
+      "fields": [
         "B"
       ],
       "operation": "COUNT",
@@ -155,7 +162,7 @@
     },
     {
       "name": "C(COUNT)",
-      "gbFields": [
+      "fields": [
         "C"
       ],
       "operation": "COUNT",
@@ -165,7 +172,7 @@
     },
     {
       "name": "D(COUNT)",
-      "gbFields": [
+      "fields": [
         "D"
       ],
       "operation": "COUNT",
@@ -175,7 +182,7 @@
     },
     {
       "name": "E(COUNT)",
-      "gbFields": [
+      "fields": [
         "E"
       ],
       "operation": "COUNT",
@@ -185,7 +192,7 @@
     },
     {
       "name": "AD(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "D"
       ],
@@ -196,7 +203,7 @@
     },
     {
       "name": "BC(COUNT)",
-      "gbFields": [
+      "fields": [
         "B",
         "C"
       ],
@@ -207,7 +214,7 @@
     },
     {
       "name": "BD(COUNT)",
-      "gbFields": [
+      "fields": [
         "B",
         "D"
       ],
@@ -218,7 +225,7 @@
     },
     {
       "name": "AE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "E"
       ],
@@ -229,7 +236,7 @@
     },
     {
       "name": "BE(COUNT)",
-      "gbFields": [
+      "fields": [
         "B",
         "E"
       ],
@@ -240,7 +247,7 @@
     },
     {
       "name": "CE(COUNT)",
-      "gbFields": [
+      "fields": [
         "C",
         "E"
       ],
@@ -251,7 +258,7 @@
     },
     {
       "name": "DE(COUNT)",
-      "gbFields": [
+      "fields": [
         "D",
         "E"
       ],
@@ -262,7 +269,7 @@
     },
     {
       "name": "ABD(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B",
         "D"
@@ -274,7 +281,7 @@
     },
     {
       "name": "ABE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B",
         "E"
@@ -286,7 +293,7 @@
     },
     {
       "name": "BCE(COUNT)",
-      "gbFields": [
+      "fields": [
         "B",
         "C",
         "E"
@@ -298,7 +305,7 @@
     },
     {
       "name": "CDE(COUNT)",
-      "gbFields": [
+      "fields": [
         "C",
         "D",
         "E"
@@ -310,7 +317,7 @@
     },
     {
       "name": "ACE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "C",
         "E"
@@ -322,7 +329,7 @@
     },
     {
       "name": "ADE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "D",
         "E"
@@ -334,7 +341,7 @@
     },
     {
       "name": "BDE(COUNT)",
-      "gbFields": [
+      "fields": [
         "B",
         "D",
         "E"
@@ -346,7 +353,7 @@
     },
     {
       "name": "ABDE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B",
         "D",
@@ -359,7 +366,7 @@
     },
     {
       "name": "ABCE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B",
         "C",
@@ -372,7 +379,7 @@
     },
     {
       "name": "ACDE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "C",
         "D",
@@ -385,7 +392,7 @@
     },
     {
       "name": "BCDE(COUNT)",
-      "gbFields": [
+      "fields": [
         "B",
         "C",
         "D",
@@ -398,7 +405,7 @@
     },
     {
       "name": "ACDE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "C",
         "D",
@@ -411,7 +418,7 @@
     },
     {
       "name": "ABCDE(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "B",
         "C",
@@ -425,7 +432,7 @@
     },
     {
       "name": "BCD(COUNT)",
-      "gbFields": [
+      "fields": [
         "B",
         "C",
         "D"
@@ -437,7 +444,7 @@
     },
     {
       "name": "ACD(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "C",
         "D"
@@ -449,7 +456,7 @@
     },
     {
       "name": "AC(COUNT)",
-      "gbFields": [
+      "fields": [
         "A",
         "C"
       ],

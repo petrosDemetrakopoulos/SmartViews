@@ -216,22 +216,17 @@ function updateViewFrequency (factTbl, contract, crnView) {
     });
 }
 
-function extractGBFields (view) {
-    let gbFields = [];
-    if (view.gbFields.indexOf('|') > -1) {
-        // more than 1 group by fields
-        gbFields = view.gbFields.split('|');
+function extractFields (view) {
+    let fields = [];
+    if (Array.isArray(view.fields)) {
+        fields = view.fields;
     } else {
-        if (Array.isArray(view.gbFields)) {
-            gbFields = view.gbFields;
-        } else {
-            gbFields.push(view.gbFields);
-        }
+        fields.push(view.fields);
     }
-    for (let index in gbFields) {
-        gbFields[index] = gbFields[index].trim();
+    for (let index in fields) {
+        fields[index] = fields[index].trim();
     }
-    return gbFields;
+    return fields;
 }
 
 function extractViewMeta (view) {
@@ -413,7 +408,7 @@ module.exports = {
     extractGBValues: extractGBValues,
     getJSONFiles: getJSONFiles,
     updateViewFrequency: updateViewFrequency,
-    extractGBFields: extractGBFields,
+    extractFields: extractFields,
     extractViewMeta: extractViewMeta,
     checkViewExists: checkViewExists,
     sanitizeSQLQuery: sanitizeSQLQuery,
