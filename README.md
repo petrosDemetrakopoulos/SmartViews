@@ -143,24 +143,12 @@ An example of a smart view template is shown below.
   ],
   "template": {
     "properties": [
-      {
-        "key": "pk"
-      },
-      {
-        "key": "brand"
-      },
-      {
-        "key": "model"
-      },
-      {
-        "key": "year"
-      },
-      {
-        "key": "category"
-      },
-      {
-        "key": "cylinders"
-      }
+      { "key": "pk" },
+      { "key": "brand" },
+      { "key": "model" },
+      { "key": "year" },
+      { "key": "category" },
+      { "key": "cylinders" }
     ],
     "create_table": "CREATE TEMPORARY TABLE CARS(\n\tpk int not null\n\t\tprimary key,\n\tbrand varchar(25),\n\tmodel varchar(25),\n\tyear int,\n\tcategory varchar(25),\n\tcylinders int);\n\n",
     "table_name": "CARS"
