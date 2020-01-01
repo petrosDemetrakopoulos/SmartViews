@@ -325,9 +325,9 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 gbRunning = false;
                                 io.emit('view_results', stringify(result).replace('\\', ''));
-                                res.status(200);
                                 gbRunning = false;
                                 materializationDone = true;
+                                res.status(200);
                                 return res.send(stringify(result).replace('\\', ''));
                             }).catch(err => {
                                 gbRunning = false;
@@ -350,11 +350,16 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
                 []).then(result => {
                 gbRunning = false;
+                console.log(result);
+                console.log("@@");
                 io.emit('view_results', stringify(result).replace('\\', ''));
                 res.status(200);
                 return res.send(stringify(result).replace('\\', ''));
             }).catch(err => {
                 gbRunning = false;
+                console.log("-----");
+                console.log(err);
+                console.log("-----");
                 return res.send(stringify(err))
             });
         }
@@ -366,7 +371,6 @@ app.get('/getcount', contractController.contractChecker, function (req, res) {
         if (result === -1) {
             return res.send({ status: 'ERROR', options: 'Error getting count' });
         } else {
-            res.status(200);
             return res.send(result);
         }
     });

@@ -357,10 +357,17 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                     sortedByEvictionCost.splice(indexInSortedByEviction,1);
                 }
             }
-            while ((totalSize + parseInt(sortedByEvictionCost[i].size)) < (config.maxCacheSizeInKB*1024 - gbSize)) {
+
+            let crnSize = parseInt(sortedByEvictionCost[i].size);
+            while ((totalSize + crnSize) < (config.maxCacheSizeInKB*1024 - gbSize)) {
                 totalSize += parseInt(sortedByEvictionCost[i].size);
                 //sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
                 i++;
+                if(sortedByEvictionCost[i]) {
+                    crnSize = parseInt(sortedByEvictionCost[i].size);
+                } else {
+                    break;
+                }
             }
 
             for (let k = 0; k < sameOldestResults.length; k++) {
@@ -385,21 +392,12 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                     return console.error(err);
                 }
             });
-            console.log("ORIGINAL sortedByEvictionCostFiltered:");
-            console.log(sortedByEvictionCostFiltered);
-            console.log("ORIGINAL sameOldestResults");
-            console.log(sameOldestResults);
             sortedByEvictionCostFiltered = sortedByEvictionCostFiltered.concat(sameOldestResults);
             contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(deleteReceipt => {
                 times.totalEnd = helper.time();
-                console.log("**** TIMES BEFORE ****");
-                console.log(times);
                 if (times) {
                     groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                 }
-                console.log("**** GB RESULT AFTER ****");
-                console.log(groupBySqlResult);
-                console.log("DELETED CACHED RESULTS");
                 resolve(groupBySqlResult);
             }).catch(err => {
                 reject(err);
