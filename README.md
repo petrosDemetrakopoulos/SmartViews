@@ -244,13 +244,24 @@ In total, the cost of using smart view <img src="https://render.githubuserconten
 </div>
 
 This can be written as
+<div ALIGN="center">
+<img width="400px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=(w_{sql} %2B w_{blockchain})\times size_{deltas(i)} %2B w_{sql}\times size_{cached(i)}">
+</div>
+or
+<div ALIGN="center">
+<img width="700px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=w_{sql} \times[(1 %2B \frac{w_{blockchain}}{w_{sql}}) \times size_{deltas(i)} %2B size_{cached(i)}]">
+</div>
+Constants <img width="35px" src="https://render.githubusercontent.com/render/math?math=w_{sql}"> and <img width="80px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}">
+denote the relative costs of post- aggregating cached results with delta records and retrieving data from the blockchain, respectively.
+In most implementations we expect <img width="170px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\gg w_{sql}">.
 
+Thus, for the purpose of ranking the views Vi and selecting the top candidate for materializing view V the cost formula can be simplified as:
 <div ALIGN="center">
 <img width="400px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=a\times size_{deltas(i)} %2B size_{cached(i)}">
 </div>
 
-Where &nbsp;<img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)" width="90px"> is the cost of materializing view V using the latest cached result of a different view Vi (always assuming that <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi">)
-for some constant <img width="60px" src="https://render.githubusercontent.com/render/math?math=a\gg 1">.
+Where &nbsp;<img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)" width="90px"> is the cost of materializing view V using the latest cached result of a view Vi (always assuming that <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi">)
+for some constant  <img width="50px" src="https://render.githubusercontent.com/render/math?math=a\gg 1">.
 
 In that way application server sorts all the cached results based on that function and picks the best one (the one with the less cost).  
 
