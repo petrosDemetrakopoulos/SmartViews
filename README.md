@@ -230,6 +230,7 @@ Let &nbsp;<img width="90px" src="https://render.githubusercontent.com/render/mat
 &nbsp;<img width="80px" src="https://render.githubusercontent.com/render/math?math=size_{deltas}"> the size of the deltas respectively. 
 The merge operation of the cached result and the deltas are actually an aggregate SQL statement over these data.
 Aggregations are typically computed in linear complexity by the SQL backend.
+
 Thus we can estimate the cost of the merge as 
 <div ALIGN="center">
 <img width="300px" src="https://render.githubusercontent.com/render/math?math=w_{sql}\times(size_{cached(i)} %2B size_{deltas(i)})">.
@@ -245,14 +246,16 @@ In total, the cost of using smart view <img src="https://render.githubuserconten
 
 This can be written as
 <div ALIGN="center">
-<img width="600px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=(w_{sql} %2B w_{blockchain})\times size_{deltas(i)} %2B w_{sql}\times size_{cached(i)}">
+<img width="700px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=(w_{sql} %2B w_{blockchain})\times size_{deltas(i)} %2B w_{sql}\times size_{cached(i)}">
 </div>
 or
 <div ALIGN="center">
 <img width="700px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=w_{sql} \times[(1 %2B \frac{w_{blockchain}}{w_{sql}}) \times size_{deltas(i)} %2B size_{cached(i)}]">
 </div>
+<p>
 Constants <img width="35px" src="https://render.githubusercontent.com/render/math?math=w_{sql}"> and <img width="80px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}">
 denote the relative costs of post- aggregating cached results with delta records and retrieving data from the blockchain, respectively.
+</p>
 In most implementations we expect <img width="170px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\gg w_{sql}">.
 Thus, for the purpose of ranking the views Vi and selecting the top candidate for materializing view V the cost formula can be simplified as:
 <div ALIGN="center">
