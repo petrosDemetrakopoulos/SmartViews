@@ -144,11 +144,14 @@ An example of a smart view template is shown below.
   "template": {
     "properties": [
       { "key": "pk" },
-      { "key": "brand" },
-      { "key": "model" },
-      { "key": "year" },
-      { "key": "category" },
-      { "key": "cylinders" }
+      { "key": "Brand" },
+      { "key": "Model" },
+      { "key": "Year" },
+      { "key": "Category" },
+      { "key": "Cylinders" },
+      { "key": "HorsePower" },
+      { "key": "Navigation" },
+      { "key": "Price" }
     ],
     "create_table": "CREATE TEMPORARY TABLE CARS(\n\tpk int not null\n\t\tprimary key,\n\tbrand varchar(25),\n\tmodel varchar(25),\n\tyear int,\n\tcategory varchar(25),\n\tcylinders int);\n\n",
     "table_name": "CARS"
@@ -221,7 +224,7 @@ Application server will use the previous cached result for the view ```{Brand, C
 During the evaluation process of the optimal cached result for the fastest materialization of the view, 2 different policies may apply:
 Note: this policy is set in the ```calculationCostFunction``` field of our ```config.json``` file.
 
-1) A Cost Function
+1) **A Cost Function**
 
 Let &nbsp; <img width="12px" src="https://render.githubusercontent.com/render/math?math=t_{i}"> be the moment where a previous cached result has been calculated for a view &nbsp;<img width="20px" src="https://render.githubusercontent.com/render/math?math=V_{i}">.
 Then &nbsp; <img width="50px" src="https://render.githubusercontent.com/render/math?math=deltas_{i}"> are the records written in blockchain after the time &nbsp; <img width="12px" src="https://render.githubusercontent.com/render/math?math=t_{i}">.
@@ -258,7 +261,7 @@ Constants <img width="35px" src="https://render.githubusercontent.com/render/mat
 denote the relative costs of post- aggregating cached results with delta records and retrieving data from the blockchain, respectively.
 </p>
 <p>
-In most implementations we expect <img width="170px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\gg w_{sql}">.
+In most implementations we expect &nbsp; <img width="170px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\gg w_{sql}">.
 </p>
 Thus, for the purpose of ranking the views Vi and selecting the top candidate for materializing view V the cost formula can be simplified as:
 <div ALIGN="center">
@@ -270,8 +273,20 @@ for some constant  <img width="50px" src="https://render.githubusercontent.com/r
 
 In that way application server sorts all the cached results based on that function and picks the best one (the one with the less cost).  
 
-2) Word2Vec model
+2) **Query2Vec model**
 
+Inspired by the original Word2Vec model that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
+Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
+Each view requested in the past is represented by a vector in this space.
+View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.
+In that way, we can then sort the cached views based on their **similarity** (Euclidean or cosine) with the requested view.
+
+The following graph shows the position of 252 different views of the cars dataset.
+The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
+
+PCA to 2 dimensions has been performed for visualisation purposes.
+ 
+<div ALIGN="center"> <img src="schematics/cars_query_embeddings.png" width="900" align="center"> </div>
 
 # The Code
 The back-end code is separated in 4 main categories.
