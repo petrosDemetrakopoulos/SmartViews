@@ -276,12 +276,12 @@ In that way application server sorts all the cached results based on that functi
 2) **Query2Vec model**
 
 Inspired by the original **Word2Vec model** that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
-
+As Word2Vec model uses two-layer neural networks that try to "guess" the linguistic and semantic context of the words, Query2Vec model is trained to "guess" which views may be requested within similar context.
+ 
 **Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
 Each view requested in the past is represented by a vector in this space.
 View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
 In that way, we can then sort the cached views based on their **similarity** (Euclidean or cosine) with the requested view and then pick the most similar.
-
 
 The following graph shows the position of 252 different views of the cars dataset.
 The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
@@ -291,6 +291,7 @@ PCA to 2 dimensions has been performed for visualisation purposes.
 <div ALIGN="center"> <img src="schematics/cars_query_embeddings.png" width="900" align="center"> </div>
 
 Smart-Views use [gensim library](https://radimrehurek.com/gensim/) for the Word2Vec model implementation and training.
+
 
 # The Code
 The back-end code is separated in 4 main categories.
