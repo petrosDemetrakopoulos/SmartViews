@@ -252,11 +252,14 @@ or
 <div ALIGN="center">
 <img width="700px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=w_{sql} \times[(1 %2B \frac{w_{blockchain}}{w_{sql}}) \times size_{deltas(i)} %2B size_{cached(i)}]">
 </div>
+
 <p>
 Constants <img width="35px" src="https://render.githubusercontent.com/render/math?math=w_{sql}"> and <img width="80px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}">
 denote the relative costs of post- aggregating cached results with delta records and retrieving data from the blockchain, respectively.
 </p>
+<p>
 In most implementations we expect <img width="170px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\gg w_{sql}">.
+</p>
 Thus, for the purpose of ranking the views Vi and selecting the top candidate for materializing view V the cost formula can be simplified as:
 <div ALIGN="center">
 <img width="400px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=a\times size_{deltas(i)} %2B size_{cached(i)}">
