@@ -290,6 +290,8 @@ PCA to 2 dimensions has been performed for visualisation purposes.
  
 <div ALIGN="center"> <img src="schematics/cars_query_embeddings.png" width="900" align="center"> </div>
 
+Smart-Views use [gensim library](https://radimrehurek.com/gensim/) for the Word2Vec model implementation and training.
+
 # The Code
 The back-end code is separated in 4 main categories.
 1) **Helper functions** (in "helpers" directory)
