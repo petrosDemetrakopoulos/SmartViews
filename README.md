@@ -276,9 +276,10 @@ In that way application server sorts all the cached results based on that functi
 2) **Query2Vec model**
 
 Inspired by the original Word2Vec model that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
-Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
+
+**Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
 Each view requested in the past is represented by a vector in this space.
-View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.
+View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
 In that way, we can then sort the cached views based on their **similarity** (Euclidean or cosine) with the requested view.
 
 The following graph shows the position of 252 different views of the cars dataset.
