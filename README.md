@@ -245,7 +245,7 @@ In total, the cost of using smart view <img src="https://render.githubuserconten
 
 This can be written as
 <div ALIGN="center">
-<img width="400px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=(w_{sql} %2B w_{blockchain})\times size_{deltas(i)} %2B w_{sql}\times size_{cached(i)}">
+<img width="600px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=(w_{sql} %2B w_{blockchain})\times size_{deltas(i)} %2B w_{sql}\times size_{cached(i)}">
 </div>
 or
 <div ALIGN="center">
@@ -254,7 +254,6 @@ or
 Constants <img width="35px" src="https://render.githubusercontent.com/render/math?math=w_{sql}"> and <img width="80px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}">
 denote the relative costs of post- aggregating cached results with delta records and retrieving data from the blockchain, respectively.
 In most implementations we expect <img width="170px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\gg w_{sql}">.
-
 Thus, for the purpose of ranking the views Vi and selecting the top candidate for materializing view V the cost formula can be simplified as:
 <div ALIGN="center">
 <img width="400px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=a\times size_{deltas(i)} %2B size_{cached(i)}">
