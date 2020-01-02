@@ -153,7 +153,7 @@ An example of a smart view template is shown below.
       { "key": "Navigation" },
       { "key": "Price" }
     ],
-    "create_table": "CREATE TEMPORARY TABLE CARS(\n\tpk int not null\n\t\tprimary key,\n\tbrand varchar(25),\n\tmodel varchar(25),\n\tyear int,\n\tcategory varchar(25),\n\tcylinders int);\n\n",
+    "create_table": "CREATE TEMPORARY TABLE CARS(\n\tpk int not null\n\t\tprimary key,\n\tbrand varchar(25),\n\tmodel varchar(25),\n\tyear int,\n\tcategory varchar(25),\n\tcylinders int,\n\tHorsePower int, \n\tNavigation varchar(25),Price numeric(8,2));\n\n",
     "table_name": "CARS"
   },
   "views": [
@@ -275,12 +275,13 @@ In that way application server sorts all the cached results based on that functi
 
 2) **Query2Vec model**
 
-Inspired by the original Word2Vec model that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
+Inspired by the original **Word2Vec model** that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
 
 **Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
 Each view requested in the past is represented by a vector in this space.
 View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
-In that way, we can then sort the cached views based on their **similarity** (Euclidean or cosine) with the requested view.
+In that way, we can then sort the cached views based on their **similarity** (Euclidean or cosine) with the requested view and then pick the most similar.
+
 
 The following graph shows the position of 252 different views of the cars dataset.
 The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
