@@ -241,6 +241,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 delete resultGB.times;
                 if (Object.keys(resultGB).length > 1) {
                     let filteredGBs = helper.filterGBs(resultGB, view);
+                    console.log(filteredGBs);
                     if (filteredGBs.length > 0) {
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
@@ -271,9 +272,9 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                             sortedByEvictionCost, view, gbFields, latestId, times, matSteps).then(result => {
                                             gbRunning = false;
                                             materializationDone = true;
-                                            io.emit('view_results', stringify(result).replace('\\', ''));
+                                            io.emit('view_results', stringify(result).replace(/\\/g, ''));
                                             res.status(200);
-                                            return res.send(stringify(result).replace('\\', ''));
+                                            return res.send(stringify(result).replace(/\\/g, ''));
                                         }).catch(err => {
                                             helper.log(err);
                                             gbRunning = false;
@@ -294,13 +295,14 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                                 await viewMaterializationController.calculateForDeltasAndMergeWithCached(mostEfficient,
                                     latestId, createTable, view, gbFields, sortedByEvictionCost, globalAllGroupBysTime,
                                     getLatestFactIdTime, totalStart).then(results => {
-                                    io.emit('view_results', stringify(results).replace('\\', ''));
+                                    io.emit('view_results', stringify(results).replace(/\\/g, ''));
                                     gbRunning = false;
                                     materializationDone = true;
                                     res.status(200);
-                                    return res.send(stringify(results).replace('\\', ''));
+                                    return res.send(stringify(results).replace(/\\/g, ''));
                                 }).catch(err => {
                                     helper.log(err);
+                                    console.log(err);
                                     gbRunning = false;
                                     return res.send(err);
                                 });
@@ -318,11 +320,11 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                             viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 gbRunning = false;
-                                io.emit('view_results', stringify(result).replace('\\', ''));
+                                io.emit('view_results', stringify(result).replace(/\\/g, ''));
                                 gbRunning = false;
                                 materializationDone = true;
                                 res.status(200);
-                                return res.send(stringify(result).replace('\\', ''));
+                                return res.send(stringify(result).replace(/\\/g, ''));
                             }).catch(err => {
                                 gbRunning = false;
                                 return res.send(stringify(err));
@@ -344,9 +346,9 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
                 []).then(result => {
                 gbRunning = false;
-                io.emit('view_results', stringify(result).replace('\\', ''));
+                io.emit('view_results', stringify(result).replace(/\\/g, ''));
                 res.status(200);
-                return res.send(stringify(result).replace('\\', ''));
+                return res.send(stringify(result).replace(/\\/g, ''));
             }).catch(err => {
                 gbRunning = false;
                 return res.send(stringify(err))

@@ -223,6 +223,28 @@ Note: this policy is set in the ```calculationCostFunction``` field of our ```co
 
 1) A Cost Function
 
+Let &nbsp; <img width="12px" src="https://render.githubusercontent.com/render/math?math=t_{i}"> be the moment where a previous cached result has been calculated for a view &nbsp;<img width="20px" src="https://render.githubusercontent.com/render/math?math=V_{i}">.
+Then &nbsp; <img width="50px" src="https://render.githubusercontent.com/render/math?math=deltas_{i}"> are the records written in blockchain after the time &nbsp; <img width="12px" src="https://render.githubusercontent.com/render/math?math=t_{i}">.
+
+Let &nbsp;<img width="90px" src="https://render.githubusercontent.com/render/math?math=size_{cached(i)}"> &nbsp; to be the size of the latest cached result of view &nbsp;<img width="20px" src="https://render.githubusercontent.com/render/math?math=V_{i}"> and 
+&nbsp;<img width="80px" src="https://render.githubusercontent.com/render/math?math=size_{deltas}"> the size of the deltas respectively. 
+The merge operation of the cached result and the deltas are actually an aggregate SQL statement over these data.
+Aggregations are typically computed in linear complexity by the SQL backend.
+Thus we can estimate the cost of the merge as 
+<div ALIGN="center">
+<img width="300px" src="https://render.githubusercontent.com/render/math?math=w_{sql}\times(size_{cached(i)} %2B size_{deltas(i)})">.
+</div>
+
+The cost of deltas retrieval from the blockchain (which is the most time intensive resource) is estimated as 
+<img width="200px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\times size_{deltas(i)}">
+
+In total, the cost of using smart view <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi"> in order to materialize view  is estimated as 
+<div ALIGN="center">
+<img width="600px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=w_{sql}\times(size_{cached(i)} %2B size_{deltas(i)}) %2B w_{blockchain}\times size_{deltas(i)}">
+</div>
+
+This can be written as
+
 <div ALIGN="center">
 <img width="400px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=a\times size_{deltas(i)} %2B size_{cached(i)}">
 </div>

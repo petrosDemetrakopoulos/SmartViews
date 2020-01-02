@@ -41,7 +41,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 1274,
+      "frequency": 1296,
       "gbFields": [
         "A",
         "B"
@@ -145,7 +145,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
-      "frequency": 520,
+      "frequency": 534,
       "gbFields": [
         "A"
       ]
