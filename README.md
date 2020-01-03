@@ -70,7 +70,7 @@ The config file should look like this:
   "cacheEnabled": true
 }
 ```
-**The mySQL database must be created by you and it must be empty.**
+**Attention: mySQL database must be created by you and it must be empty.**
 It is mandatory as the server uses SQL to do all the calculations for the Group Bys and the merging.
 
 ## Before running the server
@@ -82,8 +82,8 @@ Before you run the server you must do 3 things:
     Of course, in order to perform this action ```ganache-cli``` must be already installed. If you have not yet istalled ```ganache-cli``` you can do so by typing ```npm install ganache-cli -g```.
 3) Start ```redis-server```.  You can do this by simply typing ```redis-server``` in a terminal window. Again, be sure to have ```redis-server``` installed before you perform this action.
 
-Now you can type ```node index.js``` in the project root directory and if everything id fine, the server will start immediately.
-If everything is set up correct you should see the following lines in the terminal:
+Now you can type ```node index.js``` in the project root directory and if everything is fine, the server will start immediately.
+If everything is set up correctly you should see the following lines in the terminal:
 ```
 Smart-Views listening on http://localhost:3000/dashboard
 Redis  connected
@@ -96,11 +96,11 @@ The run.sh script assumes mySQL server is already running, however you can simpl
 The structure of the whole project is presented in the diagram.
 
 It works as described below:
-* **Blockchain** stores the raw data or what we call in data warehouses the "fact table". In our case we use Ethereum blockchain.
+* **Blockchain** stores the raw data or what we call in data warehouses the "fact table". In our implementation we use Ethereum blockchain.
 
-* **View cache** is an in-memory data store (often key-value based) that holds recently computed results of the smart views. In our case we use Redis cache
+* **View cache** is an in-memory data store (often key-value based) that holds recently computed results of the smart views. In our implementation we use Redis cache
 
-* **SQL Database** is used to execute the calculations and update the smart views. In our case we use mySQL server.
+* **SQL Database** is used to execute the calculations and update the smart views. In our implementation we use mySQL server.
 
 * **Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components. 
 <div ALIGN="center">
@@ -281,7 +281,7 @@ As Word2Vec model uses two-layer neural networks that try to "guess" the linguis
 **Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
 Each view requested in the past is represented by a vector in this space.
 View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
-In that way, we can then sort the cached views based on their **similarity** (Euclidean or cosine) with the requested view and then pick the most similar.
+In that way, we can then sort the cached results based on their **similarity** (Euclidean or cosine) with the requested view and then pick the most similar.
 
 The following graph shows the position of 252 different views of the cars dataset.
 The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
