@@ -301,21 +301,26 @@ As we mentioned above, the cost function we use to rank and select a previous ca
 We run the following experiment with 4 different values of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">  in order to estimate the optimal value.
 
 **The experiment**
-The experiment is the repeated insertion of 100 records in our system followed by the materialization request for a view. We preformed 100 iteration for every value of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
+
+The experiment is the repeated insertion of 100 records in our system followed by the materialization request for a view. We preformed 100 iterations for every value of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
+
 The sequence of the views requested was the same for all the iterations and it was randomly generated, the records were randomly generated too.
+
 The experiment was performed using the [ABCDE template](templates/ABCDE.json) wchich contains 5 integer fields (A,B,C,D and E).
+
 You can see the records used in [test_data/benchamarks](test_data/benchmarks) and the sequence of the views requested in [test_scripts/EXPViewSequence.txt](test_scripts/EXPViewSequence.txt) file.
+
 We performed the experiment for &nbsp; <img width="170px" src="https://render.githubusercontent.com/render/math?math=a=[10, 100, 250, 500]"> and we got the following results concerning the materialization time.
 The results are the mean values of all iterations we performed for each value of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
 
-
+<center>
 | <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">                                      	| 10    	| 100  	| 250  	| 500  	|
 |----------------------------------------	|-------	|------	|------	|------	|
 | Total Time (s)                         	| 47.58 	| 5.81 	| 5.70 	| 5.80 	|
 | Blockchain Time (s)                    	| 47.34 	| 5.68 	| 5.57 	| 5.67 	|
 | SQl processing Time (s)                	| 0.11  	| 0.04 	| 0.04 	| 0.04 	|
 | Application server processing Time (s) 	| 0.04  	| 0.01 	| 0.01 	| 0.02 	|
-
+</center>
 
 # The Code
 The back-end code is separated in 4 main categories.
