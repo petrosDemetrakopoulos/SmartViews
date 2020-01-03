@@ -99,7 +99,7 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
-    let a = 10; // factor of deltas
+    let a = 500; // factor of deltas
     let sizeDeltas = 0;
     let sizeCached = 0;
     for (let i = 0; i < groupBys.length; i++) {

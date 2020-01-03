@@ -132,7 +132,7 @@ app.get('/deployContract/:fn', function (req, res) {
 });
 
 app.get('/load_dataset/:dt', contractController.contractChecker, function (req, res) {
-    let dt = require('./test_data/' + req.params.dt);
+    let dt = require('./test_data/benchmarks/' + req.params.dt);
     if (!running) {
         // a guard to check that this asynchronous process will not start again if called while loading data
         running = true;

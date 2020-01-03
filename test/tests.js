@@ -56,7 +56,7 @@ describe('testing /dashboard route', function () {
 describe('testing /new_contract/:fn route', function () {
     it('should return OK status', function () {
         return request(app)
-            .get('/new_contract/ABCD.json')
+            .get('/new_contract/ABCDE.json')
             .then(function (response) {
                 responseBodyContractgeneration = response.body;
                 expect(response.status).to.equal(200);

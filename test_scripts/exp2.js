@@ -1,12 +1,10 @@
 const fs = require('fs');
 let path = require('path');
-let fileToSaveTestData = 'testData_';
-const filename = './queriesEXP3.txt';
-const generator = require('./testDataGenerator2');
-const dir = '../test_data/';
-const dreq = '100dir';
+const filename = './EXPViewSequence.txt';
+const generator = require('./testDataGenerator');
+const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
-const ResultsFile = 'resultsEXP1_DefaultCostFunction_8.json';
+const ResultsFile = 'result_final_DefaultCostFunction_500.json';
 const rp = require('request-promise');
 
 const load = (file) => {
@@ -143,28 +141,36 @@ const jparse = function (filename, error) {
 
 const main = async () => {
     //jparse(ResultsFile);
-    load(filename)
-        .then(async (res) => {
-            let fns = [];
-            const queries = res.split(',');
-            for (let i = 1; i <= 100; i++) {
-                let crnFN = await generator.generate(100 * (i - 1), 100 * i);
-                fns.push(crnFN);
-                // return array with filenames, then filter the ones read from the directory
-            }
-            loadFiles(dir, fns)
-                .then(async (files) => {
-                    for (let i = 0; i < queries.length; i++) {
-                        await loadData(files[i], queries[i]).then(() => {
-                            console.log('file ' + i + ' loaded');
-                        });
-                    }
-                });
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+    return new Promise((resolve, reject) => {
+        load(filename)
+            .then(async (res) => {
+                let fns = [];
+                const queries = res.split(',');
+                for (let i = 1; i <= 100; i++) {
+                    let crnFN = await generator.generate(100 * (i - 1), 100 * i);
+                    fns.push(crnFN);
+                    // return array with filenames, then filter the ones read from the directory
+                }
+                loadFiles(dir, fns)
+                    .then(async (files) => {
+                        for (let i = 0; i < queries.length; i++) {
+                            if(files[i]) { //guard for possible undefined value in the files array
+                                await loadData(files[i], queries[i]).then(() => {
+                                    console.log('file ' + i + ' loaded');
+                                });
+                            }
+                        }
+                        resolve();
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+                reject(err);
+            })
+    });
 };
 main().then(() => {
     console.log('DONE');
+}).catch((err) => {
+    console.log(err);
 });
