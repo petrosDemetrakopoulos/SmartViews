@@ -221,8 +221,8 @@ i.e Let's assume we have the previous stored results in cache of the views ```{B
 If the next view requested by the user is the ```{Brand, Category}``` view for the ```COUNT``` aggregate function, then the ```{Year, Model, Brand}``` cached result will be eliminated as it does not contain each and every field of the requested view.
 Application server will use the previous cached result for the view ```{Brand, Category, Cylinders}``` in order to materialize the view incrementally as it can reduce it to the requested view by summing the aggregate function values of the previous cached result.
 
-During the evaluation process of the optimal cached result for the fastest materialization of the view, 2 different policies may apply:
-Note: this policy is set in the ```calculationCostFunction``` field of our ```config.json``` file.
+During the evaluation process of the optimal cached result for the fastest materialization of the view, 2 different policies may apply: <br>
+(Note: this policy is set in the ```calculationCostFunction``` field of our ```config.json``` file.)
 
 1) **A Cost Function**
 
@@ -283,7 +283,7 @@ Each view requested in the past is represented by a vector in this space.
 View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
 In that way, we can then sort the cached results based on their **similarity** (Euclidean or cosine) with the requested view and then pick the most similar.
 
-The following graph shows the position of 252 different views of the cars dataset.
+The following graph shows the position of 252 different views of the cars template.
 The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
 
 PCA to 2 dimensions has been performed for visualisation purposes.
