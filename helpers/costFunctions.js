@@ -1,7 +1,6 @@
 const cacheController = require('../controllers/cacheController');
 const helper = require('../helpers/helper');
 const exec = require('child_process').execSync;
-const levenshtein = require('js-levenshtein');
 
 // this function  assigns a cost to each group by
 function calculationCost (groupBys) {

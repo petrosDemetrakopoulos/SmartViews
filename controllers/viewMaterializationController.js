@@ -13,9 +13,9 @@ function setContract (contractObject, account) {
 }
 
 function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTable,
-    view, gbFields, sortedByEvictionCost,
-    globalAllGroupBysTime, getLatestFactIdTime,
-    totalStart) {
+                                               view, gbFields, sortedByEvictionCost,
+                                               globalAllGroupBysTime, getLatestFactIdTime,
+                                               totalStart) {
     return new Promise((resolve, reject) => {
         let matSteps = [];
         let bcTimeStart = helper.time();
@@ -83,7 +83,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                                 clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, times).then(results => {
                                                     helper.printTimes(results);
                                                     results.matSteps = matSteps;
-                                                   // prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                                                   //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                                                     resolve(results);
                                                 }).catch(err => {
                                                     reject(err);
@@ -102,7 +102,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                             mergeResult.allTotal = totalEnd - totalStart;
                                             mergeResult.matSteps = matSteps;
                                             helper.printTimes(mergeResult);
-                                          //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                                            //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                                             resolve(mergeResult);
                                         }
                                     }).catch(err => {
@@ -132,7 +132,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                     groupBySqlResult, latestId, sortedByEvictionCost, times).then(result => {
                                     matSteps.push({ type: 'sqlMergeCachedWithDeltas' });
                                     result.matSteps = matSteps;
-                                  //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                                    //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                                     resolve(result);
                                 }).catch(err => {
                                     helper.log(err);
@@ -192,7 +192,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                     let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
                     clearCacheIfNeeded(sortedByEvictionCost, reducedResult, sameOldestResults, times2).then(results => {
                         helper.printTimes(results);
-                      //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                        //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                         resolve(results);
                     }).catch(err => {
                         console.log(err);
@@ -209,7 +209,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                 };
                 reducedResult = helper.assignTimes(reducedResult, times2);
                 helper.printTimes(reducedResult);
-              //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+               //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                 resolve(reducedResult);
             }
         }).catch(err => {
@@ -220,7 +220,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
 }
 
 function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySqlResult,
-    latestId, sortedByEvictionCost, times) {
+                                                 latestId, sortedByEvictionCost, times) {
     return new Promise((resolve, reject) => {
         let viewMeta = helper.extractViewMeta(view);
         let rows = helper.extractGBValues(cachedGroupBy, view);
@@ -257,7 +257,7 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
                     let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
                     clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, timesReady).then(results => {
                         helper.printTimes(mergeResult);
-                      //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                        //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                         resolve(results);
                     }).catch(err => {
                         reject(err);
@@ -274,7 +274,7 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
                 timesReady.totalEnd = helper.time();
                 mergeResult = helper.assignTimes(mergeResult, timesReady);
                 helper.printTimes(mergeResult);
-              //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+               //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                 resolve(mergeResult);
             }
         }).catch(err => {
@@ -323,7 +323,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                             clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, sameOldestResults, times).then(results => {
                                 helper.printTimes(results);
                                 results.matSteps = matSteps;
-                             //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                                //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                                 resolve(results);
                             }).catch(err => {
                                 reject(err);
@@ -460,7 +460,7 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
                     times, latestId).then(results => {
                     matSteps.push({ type: 'sqlReduction', from: cachedGroupBy.groupByFields, to: gbFields });
                     results.matSteps = matSteps;
-                 //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                       //prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                     return resolve(results);
                 }).catch(err => {
                     return reject(err);
@@ -476,12 +476,12 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
                 cachedGroupBy.totalTime = cachedGroupBy.cacheRetrieveTime;
                 cachedGroupBy.allTotal = totalEnd - times.totalStart;
                 cachedGroupBy.matSteps = matSteps;
-               // prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+                //prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                 return resolve(cachedGroupBy);
             }
         }
         calculateNewGroupByFromBeginning(view, times.totalStart, times.getGroupIdTime, sortedByEvictionCost).then(result => {
-           // prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
+          //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
             return resolve(result);
         }).catch(err => {
             return reject(err);
@@ -491,10 +491,19 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
 
 async function prefetchNearset(n, cachedResults, view) {
     let resultGBs = await helper.sortByWord2Vec(cachedResults, view);
-    if(resultGBs.length > n) {
-        return resultGBs.slice(0, n-1)
+    let viewNames = [];
+    for (let i = 0; i < resultGBs.length; i++) {
+        let meta = JSON.parse(resultGBs[i].columns);
+        viewNames.push(meta.fields.join('') + '(' + meta.aggrFunc + ')');
     }
-    return resultGBs;
+    viewNames = viewNames.filter(function(item, pos){
+        return viewNames.indexOf(item) == pos;
+    });
+    if(viewNames.length > n) {
+        viewNames =  viewNames.slice(0, n-1)
+    }
+    //prefetch viewnames there
+    return viewNames;
 }
 
 async function materializeViewWithName(viewName, contract, totalStart, createTable) {
@@ -519,7 +528,6 @@ async function materializeViewWithName(viewName, contract, totalStart, createTab
                 delete resultGB.times;
                 if (Object.keys(resultGB).length > 1) {
                     let filteredGBs = helper.filterGBs(resultGB, view);
-                    console.log(filteredGBs);
                     if (filteredGBs.length > 0) {
                         let getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
@@ -615,11 +623,7 @@ async function materializeViewWithName(viewName, contract, totalStart, createTab
     });
 }
 
-
 module.exports = {
     setContract: setContract,
-    calculateNewGroupByFromBeginning: calculateNewGroupByFromBeginning,
-    calculateFromCache: calculateFromCache,
-    calculateForDeltasAndMergeWithCached: calculateForDeltasAndMergeWithCached,
     materializeViewWithName: materializeViewWithName
 };

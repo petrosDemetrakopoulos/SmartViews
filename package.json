@@ -22,7 +22,6 @@
     "fast-csv": "^ 3.4.0",
     "fast-stringify": "^2.0.0",
     "http": "0.0.0",
-    "js-levenshtein": "^1.1.6",
     "json-sql": "^0.4.11",
     "lodash": "^4.17.15",
     "microtime": "^3.0.0",

@@ -224,7 +224,8 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
         gbRunning = true;
-        viewMaterializationController.materializeViewWithName(req.params.viewName, req.params.contract, totalStart, createTable)
+        viewMaterializationController.materializeViewWithName(req.params.viewName,
+            req.params.contract, totalStart, createTable)
             .then(result => {
                 gbRunning = false;
                 res.status(200);
