@@ -313,14 +313,47 @@ You can see the records used in [test_data/benchamarks](test_data/benchmarks) an
 We performed the experiment for &nbsp; <img width="170px" src="https://render.githubusercontent.com/render/math?math=a=[10, 100, 250, 500]"> and we got the following results concerning the materialization time.
 The results are the mean values of all iterations we performed for each value of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
 
-<center>
-| <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">                                      	| 10    	| 100  	| 250  	| 500  	|
-|----------------------------------------	|-------	|------	|------	|------	|
-| Total Time (s)                         	| 47.58 	| 5.81 	| 5.70 	| 5.80 	|
-| Blockchain Time (s)                    	| 47.34 	| 5.68 	| 5.57 	| 5.67 	|
-| SQl processing Time (s)                	| 0.11  	| 0.04 	| 0.04 	| 0.04 	|
-| Application server processing Time (s) 	| 0.04  	| 0.01 	| 0.01 	| 0.02 	|
-</center>
+<div ALIGN="center">
+<table>
+<thead>
+<tr>
+<th> <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> </th>
+<th>10</th>
+<th>100</th>
+<th>250</th>
+<th>500</th>
+</tr>
+<tr>
+<td>Total Time (s)</td>
+<td>47.58</td>
+<td>5.81</td>
+<td>5.70</td>
+<td>5.80</td>
+</tr>
+<tr>
+<td>Blockchain Time (s)</td>
+<td>47.34</td>
+<td>5.68</td>
+<td>5.57</td>
+<td>5.67</td>
+</tr>
+<tr>
+<td>SQL Processing Time (s)</td>
+<td>0.11</td>
+<td>0.04</td>
+<td>0.04</td>
+<td>0.04</td>
+</tr>
+<tr>
+<td>Application server processing Time (s)</td>
+<td>0.04</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.02</td>
+</tr>
+</thead>
+</table>
+</div>
 
 # The Code
 The back-end code is separated in 4 main categories.
