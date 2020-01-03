@@ -302,12 +302,22 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
 }
 
 async function sortByCalculationCost (resultGBs, latestId, view) {
-    if (config.calculationCostFunction === 'costFunction') {
+    if (config.calculationCostFunction.toLowerCase() === 'costfunction') {
         resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
         await resultGBs.sort(function (a, b) {
             return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
         }); // order ascending
-    } else if (config.calculationCostFunction === 'word2vec') {
+    } else if (config.calculationCostFunction.toLowerCase() === 'word2vec') {
+        resultGBs = await costFunctions.word2vec(resultGBs, view);
+        await resultGBs.sort(function (a, b) {
+            return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
+        });
+    }
+    return resultGBs;
+}
+
+async function sortByWord2Vec (resultGBs, view) {
+    if(resultGBs.length > 1) {
         resultGBs = await costFunctions.word2vec(resultGBs, view);
         await resultGBs.sort(function (a, b) {
             return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
@@ -418,6 +428,7 @@ module.exports = {
     reconstructSlicedCachedResult: reconstructSlicedCachedResult,
     getMainTransactionObject: getMainTransactionObject,
     assignTimes: assignTimes,
-    findSameOldestResults: findSameOldestResults
+    findSameOldestResults: findSameOldestResults,
+    sortByWord2Vec: sortByWord2Vec
 };
 const costFunctions = require('./costFunctions');

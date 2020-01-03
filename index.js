@@ -221,139 +221,19 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
         res.status(200);
         return res.send({ error: 'view not found' });
     }
-    let materializationDone = false;
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
-        gbRunning = true; // a flag to handle retries of the request from the front-end
-        let gbFields = helper.extractFields(view);
-        view.gbFields = gbFields;
-        let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
-        if (config.cacheEnabled) {
-            helper.log('cache enabled = TRUE');
-            await contractController.getAllGroupbys().then(async resultGB => {
-                if (resultGB.times.getGroupIdTime !== null && resultGB.times.getGroupIdTime !== undefined) {
-                    globalAllGroupBysTime.getGroupIdTime = resultGB.times.getGroupIdTime;
-                }
-
-                if (resultGB.times.getAllGBsTime !== null && resultGB.times.getAllGBsTime !== undefined) {
-                    globalAllGroupBysTime.getAllGBsTime = resultGB.times.getAllGBsTime;
-                }
-                delete resultGB.times;
-                if (Object.keys(resultGB).length > 1) {
-                    let filteredGBs = helper.filterGBs(resultGB, view);
-                    console.log(filteredGBs);
-                    if (filteredGBs.length > 0) {
-                        let getLatestFactIdTimeStart = helper.time();
-                        await contractController.getLatestId().then(async latestId => {
-                            let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
-                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            let mostEfficient = sortedByCalculationCost[0];
-                            let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
-
-                            if (mostEfficient.latestFact >= (latestId - 1)) {
-                                helper.log('NO NEW FACTS');
-                                // NO NEW FACTS after the latest group by
-                                // -> incrementally calculate the groupby requested by summing the one in redis cache
-                                let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
-                                let cacheRetrieveTimeStart = helper.time();
-                                let matSteps = [];
-                                await cacheController.getManyCachedResults(allHashes).then(async allCached => {
-                                    let cacheRetrieveTimeEnd = helper.time();
-                                    matSteps.push({ type: 'cacheFetch' });
-                                    let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
-                                    if (cachedGroupBy) {
-                                        let times = {
-                                            cacheRetrieveTimeEnd: cacheRetrieveTimeEnd,
-                                            cacheRetrieveTimeStart: cacheRetrieveTimeStart,
-                                            totalStart: totalStart,
-                                            getGroupIdTime: globalAllGroupBysTime.getGroupIdTime
-                                        };
-                                        await viewMaterializationController.calculateFromCache(cachedGroupBy,
-                                            sortedByEvictionCost, view, gbFields, latestId, times, matSteps).then(result => {
-                                            gbRunning = false;
-                                            materializationDone = true;
-                                            io.emit('view_results', stringify(result).replace(/\\/g, ''));
-                                            res.status(200);
-                                            return res.send(stringify(result).replace(/\\/g, ''));
-                                        }).catch(err => {
-                                            helper.log(err);
-                                            gbRunning = false;
-                                            return res.send(err);
-                                        });
-                                    }
-                                }).catch(err => {
-                                    helper.log(err);
-                                    gbRunning = false;
-                                    return res.send(err);
-                                });
-                            } else {
-                                helper.log('DELTAS DETECTED');
-                                // we have deltas -> we fetch them
-                                // CALCULATING THE VIEW JUST FOR THE DELTAS
-                                // THEN MERGE IT WITH THE ONES IN CACHE
-                                // THEN SAVE BACK IN CACHE
-                                await viewMaterializationController.calculateForDeltasAndMergeWithCached(mostEfficient,
-                                    latestId, createTable, view, gbFields, sortedByEvictionCost, globalAllGroupBysTime,
-                                    getLatestFactIdTime, totalStart).then(results => {
-                                    io.emit('view_results', stringify(results).replace(/\\/g, ''));
-                                    gbRunning = false;
-                                    materializationDone = true;
-                                    res.status(200);
-                                    return res.send(stringify(results).replace(/\\/g, ''));
-                                }).catch(err => {
-                                    helper.log(err);
-                                    console.log(err);
-                                    gbRunning = false;
-                                    return res.send(err);
-                                });
-                            }
-                        }).catch(err => {
-                            helper.log(err);
-                            gbRunning = false;
-                            return res.send(err);
-                        });
-                    } else {
-                        // No filtered group-bys found, proceed to group-by from the beginning
-                        console.log('NO FILTERED GROUP BYS FOUND');
-                        await contractController.getLatestId(async latestId => {
-                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
-                                globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
-                                gbRunning = false;
-                                io.emit('view_results', stringify(result).replace(/\\/g, ''));
-                                gbRunning = false;
-                                materializationDone = true;
-                                res.status(200);
-                                return res.send(stringify(result).replace(/\\/g, ''));
-                            }).catch(err => {
-                                gbRunning = false;
-                                return res.send(stringify(err));
-                            });
-                        }).catch(err => {
-                            return res.send(stringify(err));
-                        });
-                    }
-                }
-            }).catch(err => {
-                helper.log(err);
+        gbRunning = true;
+        viewMaterializationController.materializeViewWithName(req.params.viewName, req.params.contract, totalStart, createTable)
+            .then(result => {
                 gbRunning = false;
-                return res.send(err);
-            });
-        }
-        if (!materializationDone) {
-            // this is the default fallback where the view requested is materialized from the beginning
-            viewMaterializationController.calculateNewGroupByFromBeginning(view, totalStart,
-                globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime,
-                []).then(result => {
-                gbRunning = false;
-                io.emit('view_results', stringify(result).replace(/\\/g, ''));
                 res.status(200);
+                console.log(stringify(result).replace(/\\/g, ''));
                 return res.send(stringify(result).replace(/\\/g, ''));
             }).catch(err => {
-                gbRunning = false;
-                return res.send(stringify(err))
-            });
-        }
+            gbRunning = false;
+            return res.send(stringify(err))
+        });
     }
 });
 

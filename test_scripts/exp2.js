@@ -4,7 +4,7 @@ const filename = './EXPViewSequence.txt';
 const generator = require('./testDataGenerator');
 const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
-const ResultsFile = 'result_final_DefaultCostFunction_500.json';
+const ResultsFile = 'result_final_lalalala.json';
 const rp = require('request-promise');
 
 const load = (file) => {
@@ -34,7 +34,7 @@ const loadData = async (fileno, queries) => {
         let file = fileno;
 
         let url = 'http://localhost:3000/load_dataset/' + fileno;
-        let urlGB = 'http://localhost:3000/getViewByName/' + queries + '(COUNT)/' + 'ABCD';
+        let urlGB = 'http://localhost:3000/getViewByName/' + queries + '(COUNT)/' + 'ABCDE';
         console.log(queries[0]);
         console.log('urlGB: ' + urlGB);
         console.log('url: ' + url);
@@ -80,6 +80,7 @@ const loadData = async (fileno, queries) => {
 
 const handleResponse = async (body) => {
     return new Promise((resolve, reject) => {
+        console.log(body);
         let f = body.toString().substr(String(body).indexOf('operation').toString());
         console.log(f);
         let JSONresp = JSON.parse(('{"' + f).toString());

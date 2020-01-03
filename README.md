@@ -286,7 +286,7 @@ In that way, we can then sort the cached results based on their **similarity** (
 The following graph shows the position of 252 different views of the cars template.
 The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
 
-PCA to 2 dimensions has been performed for visualisation purposes.
+t-SNE to 2 dimensions has been performed for visualisation purposes.
  
 <div ALIGN="center"> <img src="schematics/cars_query_embeddings.png" width="800" align="center"> </div>
 
