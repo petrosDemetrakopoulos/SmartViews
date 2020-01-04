@@ -4,7 +4,7 @@ const filename = './EXPViewSequence.txt';
 const generator = require('./testDataGenerator');
 const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
-const ResultsFile = 'result_final_lalalala.json';
+const ResultsFile = 'result_final_cache_100KB.json';
 const rp = require('request-promise');
 
 const load = (file) => {
@@ -31,7 +31,6 @@ const loadFiles = (directory, valid, error) => {
 
 const loadData = async (fileno, queries) => {
     return new Promise((resolve, reject) => {
-        let file = fileno;
 
         let url = 'http://localhost:3000/load_dataset/' + fileno;
         let urlGB = 'http://localhost:3000/getViewByName/' + queries + '(COUNT)/' + 'ABCDE';

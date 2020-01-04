@@ -229,7 +229,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             .then(result => {
                 gbRunning = false;
                 res.status(200);
-                console.log(stringify(result).replace(/\\/g, ''));
+                io.emit('view_results', stringify(result).replace(/\\/g, ''));
                 return res.send(stringify(result).replace(/\\/g, ''));
             }).catch(err => {
             gbRunning = false;

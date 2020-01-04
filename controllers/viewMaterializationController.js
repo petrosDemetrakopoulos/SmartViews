@@ -367,34 +367,27 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             let gbSize = stringify(groupBySqlResult).length;
             let totalSize = 0;
             let i = 0;
-            for (let k = 0; k < sameOldestResults.length; k++) {
-                let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
-                if (indexInSortedByEviction > -1) {
-                    sortedByEvictionCost.splice(indexInSortedByEviction, 1);
-                }
-            }
 
-            let crnSize = parseInt(sortedByEvictionCost[i].size);
+            let crnSize = parseInt(sortedByEvictionCost[0].size);
             while ((totalSize + crnSize) < (config.maxCacheSizeInKB * 1024 - gbSize)) {
-                totalSize += parseInt(sortedByEvictionCost[i].size);
-                //sortedByEvictionCostFiltered.push(sortedByEvictionCost[i]);
-                i++;
                 if (sortedByEvictionCost[i]) {
                     crnSize = parseInt(sortedByEvictionCost[i].size);
                 } else {
                     break;
                 }
+                totalSize += crnSize;
+                i++;
             }
 
             for (let k = 0; k < sameOldestResults.length; k++) {
                 let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
                 if (indexInSortedByEviction > -1) {
                     totalSize += parseInt(sortedByEvictionCost[indexInSortedByEviction].size);
-                    sortedByEvictionCost.splice(indexInSortedByEviction, 1);
+                    sortedByEvictionCost = sortedByEvictionCost.splice(indexInSortedByEviction, 1);
                 }
             }
 
-            for (let k = 0; k < i; k++) {
+            for (let k = 0; k < sortedByEvictionCost.length; k++) {
                 sortedByEvictionCostFiltered.push(sortedByEvictionCost[k]);
                 console.log('Evicted view with size: ' + sortedByEvictionCost[k])
             }

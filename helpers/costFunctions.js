@@ -96,7 +96,29 @@ function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { /
     }
     return allGroupBys;
 }
+function cacheEvict (cachedGBS, factTbl, latestFact) {
+    cachedGBS = calculationCostOfficial(cachedGBS, latestFact);
+    for (let i = 0; i < cachedGBS.length; i++) {
+        let crnGB = cachedGBS[i];
+        let cachedGBSWithoutCrn = cachedGBS.splice(i,1);
+        cachedGBSWithoutCrn = calculationCostOfficial(cachedGBSWithoutCrn, latestFact);
+        let dispCost = 0;
+        let viewsDefined = factTbl.views;
+        let crnViewFreq = 1;
+        for (let crnView in viewsDefined) {
+            if (factTbl.views[crnView].name === crnGB.viewName) {
+                crnViewFreq = factTbl.views[crnView].frequency;
+                break;
+            }
+        }
 
+        for (let j = 0; j < cachedGBSWithoutCrn.length; j++) {
+           dispCost += crnViewFreq * (cachedGBS[i].calculationCost - cachedGBSWithoutCrn[j].calculationCost);
+        }
+        crnGB.cacheEvictionCost = dispCost;
+        cachedGBS[i] = crnGB;
+    }
+}
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
