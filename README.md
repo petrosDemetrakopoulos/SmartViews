@@ -273,7 +273,7 @@ for some constant  <img width="50px" src="https://render.githubusercontent.com/r
 
 In that way application server sorts all the cached results based on that function and picks the best one (the one with the less cost).  
 
-#Prefetching with Query2Vec model
+# Prefetching with Query2Vec model
 
 Inspired by the original **Word2Vec model** that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
 As Word2Vec model uses two-layer neural networks that try to "guess" the linguistic and semantic context of the words, Query2Vec model is trained to "guess" which views may be requested within similar context.
