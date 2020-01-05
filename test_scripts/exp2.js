@@ -79,7 +79,6 @@ const loadData = async (fileno, queries) => {
 
 const handleResponse = async (body) => {
     return new Promise((resolve, reject) => {
-        console.log(body);
         let f = body.toString().substr(String(body).indexOf('operation').toString());
         console.log(f);
         let JSONresp = JSON.parse(('{"' + f).toString());
@@ -171,6 +170,8 @@ const main = async () => {
 };
 main().then(() => {
     console.log('DONE');
+    process.exit();
 }).catch((err) => {
     console.log(err);
+    process.exit();
 });

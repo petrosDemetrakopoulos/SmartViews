@@ -379,13 +379,13 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 i++;
             }
 
-            for (let k = 0; k < sameOldestResults.length; k++) {
-                let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
-                if (indexInSortedByEviction > -1) {
-                    totalSize += parseInt(sortedByEvictionCost[indexInSortedByEviction].size);
-                    sortedByEvictionCost = sortedByEvictionCost.splice(indexInSortedByEviction, 1);
-                }
-            }
+            // for (let k = 0; k < sameOldestResults.length; k++) {
+            //     let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
+            //     if (indexInSortedByEviction > -1) {
+            //         totalSize += parseInt(sortedByEvictionCost[indexInSortedByEviction].size);
+            //         sortedByEvictionCost = sortedByEvictionCost.splice(indexInSortedByEviction, 1);
+            //     }
+            // }
 
             for (let k = 0; k < (i-1); k++) {
                 sortedByEvictionCostFiltered.push(sortedByEvictionCost[k]);

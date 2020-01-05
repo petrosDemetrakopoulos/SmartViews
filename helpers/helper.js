@@ -284,7 +284,7 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let sortedByEvictionCost = Array.from(transformedArray);
     log('_________________________________');
     sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost, latestId, view.name, factTbl);
-    sortedByEvictionCost = await costFunctions.word2vec(sortedByEvictionCost, view);
+   // sortedByEvictionCost = await costFunctions.word2vec(sortedByEvictionCost, view);
     log(sortedByEvictionCost);
     log('cache eviction costs assigned:');
     await sortedByEvictionCost.sort(function (a, b) {
