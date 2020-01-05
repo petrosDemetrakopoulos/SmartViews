@@ -221,7 +221,7 @@ i.e Let's assume we have the previous stored results in cache of the views ```{B
 If the next view requested by the user is the ```{Brand, Category}``` view for the ```COUNT``` aggregate function, then the ```{Year, Model, Brand}``` cached result will be eliminated as it does not contain each and every field of the requested view.
 Application server will use the previous cached result for the view ```{Brand, Category, Cylinders}``` in order to materialize the view incrementally as it can reduce it to the requested view by summing the aggregate function values of the previous cached result.
 
-During the evaluation process of the optimal cached result for the fastest materialization of the view, 2 different policies may apply: <br>
+During the evaluation process of the optimal cached result for the fastest materialization of the view different policies may apply: <br>
 (Note: this policy is set in the ```calculationCostFunction``` field of our ```config.json``` file.)
 
 1) **A Cost Function**
@@ -273,7 +273,7 @@ for some constant  <img width="50px" src="https://render.githubusercontent.com/r
 
 In that way application server sorts all the cached results based on that function and picks the best one (the one with the less cost).  
 
-2) **Query2Vec model**
+#Prefetching with Query2Vec model
 
 Inspired by the original **Word2Vec model** that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
 As Word2Vec model uses two-layer neural networks that try to "guess" the linguistic and semantic context of the words, Query2Vec model is trained to "guess" which views may be requested within similar context.
@@ -281,7 +281,8 @@ As Word2Vec model uses two-layer neural networks that try to "guess" the linguis
 **Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
 Each view requested in the past is represented by a vector in this space.
 View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
-In that way, we can then sort the cached results based on their **similarity** (Euclidean or cosine) with the requested view and then pick the most similar.
+In that way, we can **prefetch** the n most similar queries based on their Euclidean or cosine **similarity** with the lately requested view.
+When one of the n prefetched views are actually requested by some user, our system will immediately serve it to the user without fetching any facts from the blockchain.
 
 The following graph shows the position of 252 different views of the cars template.
 The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
