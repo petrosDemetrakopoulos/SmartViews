@@ -387,7 +387,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 }
             }
 
-            for (let k = 0; k < sortedByEvictionCost.length; k++) {
+            for (let k = 0; k < (i-1); k++) {
                 sortedByEvictionCostFiltered.push(sortedByEvictionCost[k]);
                 console.log('Evicted view with size: ' + sortedByEvictionCost[k])
             }
