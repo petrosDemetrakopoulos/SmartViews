@@ -365,9 +365,8 @@ It seems that we have a clear "loser".
 10 seems to be very small value for <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> and it does not lead the function to sort the cached results in a way that the optimal one will be selected.
 However, values larger than 100 do not seem to offer any better result in terms of materialization time.
 
-
 Total time vs <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> presents the following asymptotic behavior:
-<img src="schematics/aFactor.png" width="1440" align="center">
+<img src="schematics/aFactor.png" width="450" align="center">
 
 # The Code
 The back-end code is separated in 4 main categories.
