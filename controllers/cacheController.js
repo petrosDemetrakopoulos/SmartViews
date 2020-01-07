@@ -24,6 +24,65 @@ client.on('error', function (err) {
     helper.log('Something went wrong ' + err);
 });
 
+function extractMetaKeys(gbResult) {
+    return {
+        operation: gbResult.operation,
+        groupByFields: gbResult.groupByFields,
+        field: gbResult.field,
+        viewName: gbResult.viewName
+    };
+}
+
+function manualSlicing (gbResult) {
+    let slicedGbResult = [];
+    let crnSlice = [];
+    let metaKeys = extractMetaKeys(gbResult);
+    for (const key of Object.keys(gbResult)) {
+        if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'viewName') {
+            crnSlice.push({ [key]: gbResult[key] });
+            if (crnSlice.length >= config.cacheSlice) {
+                slicedGbResult.push(crnSlice);
+                crnSlice = [];
+            }
+        }
+    }
+    if (crnSlice.length > 0) {
+        slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed,
+                                        // the last one contains less than all the previous ones
+    }
+    slicedGbResult.push(metaKeys);
+    return slicedGbResult
+}
+
+function autoSlicing (gbResult) {
+    const maxGbSize = config.maxGbSize;
+    const mb512InBytes = 512 * 1024 * 1024;
+    let slicedGbResult = [];
+    let crnSlice = [];
+    let metaKeys = extractMetaKeys(gbResult);
+    let rowsAddedInslice = 0;
+    let crnSliceLengthInBytes = 0;
+    for (const key of Object.keys(gbResult)) {
+        if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
+            crnSlice.push({ [key]: gbResult[key] });
+            rowsAddedInslice++;
+            crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
+            helper.log('Rows added in slice:');
+            helper.log(rowsAddedInslice);
+            if (crnSliceLengthInBytes === (mb512InBytes - 40)) { // for hidden character like backslashes etc
+                slicedGbResult.push(crnSlice);
+                crnSlice = [];
+            }
+        }
+    }
+    if (crnSlice.length > 0) {
+        slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed,
+                                        // the last one contains less than all the previous ones
+    }
+    slicedGbResult.push(metaKeys);
+    return slicedGbResult
+}
+
 function saveOnCache (gbResult, operation, latestId) {
     md5sum = crypto.createHash('md5');
     let resultString = stringify(gbResult);
@@ -33,61 +92,17 @@ function saveOnCache (gbResult, operation, latestId) {
     let slicedGbResult = [];
     if (config.autoCacheSlice === 'manual') {
         if (gbResultSize > config.cacheSlice) {
-            let crnSlice = [];
-            let metaKeys = {
-                operation: gbResult.operation,
-                groupByFields: gbResult.groupByFields,
-                field: gbResult.field,
-                viewName: gbResult.viewName
-            };
-            for (const key of Object.keys(gbResult)) {
-                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'viewName') {
-                    crnSlice.push({ [key]: gbResult[key] });
-                    if (crnSlice.length >= config.cacheSlice) {
-                        slicedGbResult.push(crnSlice);
-                        crnSlice = [];
-                    }
-                }
-            }
-            if (crnSlice.length > 0) {
-                slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
-            }
-            slicedGbResult.push(metaKeys);
+           slicedGbResult = manualSlicing(gbResult);
         }
     } else {
         // redis allows 512MB per stored string, so we divide the result of our gb with 512MB to find cache slice
         // maxGbSize is the max number of bytes in a row of the result
-        let mb512InBytes = 512 * 1024 * 1024;
-        let maxGbSize = config.maxGbSize;
+        const mb512InBytes = 512 * 1024 * 1024;
+        const maxGbSize = config.maxGbSize;
         helper.log('Group-By result size in bytes = ' + gbResultSize * maxGbSize);
         helper.log('size a cache position can hold in bytes: ' + mb512InBytes);
         if ((gbResultSize * maxGbSize) > mb512InBytes) {
-            let crnSlice = [];
-            let metaKeys = {
-                operation: gbResult['operation'],
-                groupByFields: gbResult['groupByFields'],
-                field: gbResult['field'],
-                viewName: gbResult['viewName']
-            };
-            let rowsAddedInslice = 0;
-            let crnSliceLengthInBytes = 0;
-            for (const key of Object.keys(gbResult)) {
-                if (key !== 'operation' && key !== 'groupByFields' && key !== 'field') {
-                    crnSlice.push({ [key]: gbResult[key] });
-                    rowsAddedInslice++;
-                    crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
-                    helper.log('Rows added in slice:');
-                    helper.log(rowsAddedInslice);
-                    if (crnSliceLengthInBytes === (mb512InBytes - 40)) { // for hidden character like backslashes etc
-                        slicedGbResult.push(crnSlice);
-                        crnSlice = [];
-                    }
-                }
-            }
-            if (crnSlice.length > 0) {
-                slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed, the last one contains less than all the previous ones
-            }
-            slicedGbResult.push(metaKeys);
+            slicedGbResult = autoSlicing(gbResult);
         } else {
             helper.log('NO SLICING NEEDED');
         }
@@ -146,7 +161,7 @@ function getManyCachedResults (allHashes) {
 }
 
 function preprocessCachedGroupBy (allCached) {
-    let cachedGroupBy = {};
+    let cachedGroupBy;
     if (allCached.length === 1) { // it is <= of slice size, so it is not sliced
         cachedGroupBy = JSON.parse(allCached[0]);
     } else { // it is sliced

@@ -159,16 +159,13 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
 function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId) {
     return new Promise((resolve, reject) => {
         let reductionTimeStart = helper.time();
-        console.log(1);
         computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
             let reductionTimeEnd = helper.time();
-            console.log(2);
             let viewMeta = helper.extractViewMeta(view);
             if (view.operation === 'AVERAGE') {
                 reducedResult = transformations.transformAverage(reducedResult, view.gbFields, view.aggregationField);
             } else {
                 reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
-                console.log(3);
             }
             reducedResult.field = view.aggregationField;
             reducedResult.viewName = view.name;
@@ -484,7 +481,7 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
     });
 }
 
-async function prefetchNearset(n, cachedResults, view) {
+async function prefetchNearset (n, cachedResults, view) {
     let resultGBs = await helper.sortByWord2Vec(cachedResults, view);
     let viewNames = [];
     for (let i = 0; i < resultGBs.length; i++) {
@@ -501,7 +498,7 @@ async function prefetchNearset(n, cachedResults, view) {
     return viewNames;
 }
 
-async function materializeViewWithName(viewName, contract, totalStart, createTable) {
+async function materializeViewWithName (viewName, contract, totalStart, createTable) {
     return new Promise(async (resolve, reject) => {
         let materializationDone = false;
         let factTbl = require('../templates/' + contract);
