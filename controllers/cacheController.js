@@ -26,7 +26,7 @@ client.on('error', function (err) {
     helper.log('Something went wrong ' + err);
 });
 
-function extractMetaKeys(gbResult) {
+function extractMetaKeys (gbResult) {
     return {
         operation: gbResult.operation,
         groupByFields: gbResult.groupByFields,

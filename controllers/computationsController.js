@@ -79,7 +79,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
                         reject(error);
                     }
 
-                    let gbQuery = {};
+                    let gbQuery;
                     if (operation === 'AVERAGE') {
                         gbQuery = jsonSql.build({
                             type: 'select',

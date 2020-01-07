@@ -11,24 +11,9 @@ async function generateContract (templateFileName) {
     let thirdLine = '\tuint public dataId;\n';
     let fourthLine = '\tuint public groupId;\n\n\tevent gbArray(string hash);\n\tevent dataAdded(string dat);\n\tevent groupBysDeleted(uint[] deletedIds);\n';
     let sixthLine = '\tuint public viewId;\n\n';
-    let fifthLine = '\tuint public lastCount;\n' +
-        '\tuint public lastSUM;\n' +
-        '\tuint public lastMin;\n' +
-        '\tuint public lastMax;\n' +
-        '\tuint public lastAverage;\n' +
-        '\tbytes32 MIN_LITERAL = "MIN";\n' +
-        '\tbytes32 MAX_LITERAL = "MAX";\n' +
-        '\tbytes32 AVERAGE_LITERAL = "AVERAGE";\n' +
-        '\tbytes32 COUNT_LITERAL = "COUNT";\n' +
-        '\tbytes32 SUM_LITERAL = "SUM";\n';
     let constr = '\tconstructor() {\n' +
         '\t\tdataId = 0;\n' +
         '\t\tgroupId = 0;\n' +
-        // '\t\tlastCount = 0;\n' +
-        // '\t\tlastSUM = 0;\n' +
-        // '\t\tlastMin = 0;\n' +
-        // '\t\tlastMax = 0;\n' +
-        // '\t\tlastAverage = 0;\n' +
         '\t}\n';
     let properties = '';
     let struct = '\tstruct ' + factTbl.struct_Name + '{ \n';
@@ -114,32 +99,6 @@ async function generateContract (templateFileName) {
         '\t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns, groupBys[idGroup].size);\n' +
         '\t}\n\n';
 
-    let getLatestGroupBy = '\tfunction getLatestGroupBy(bytes32 operation) public constant returns(string latestGroupBy, uint ts, uint latFactInGb, uint colSz, string gbCols){\n' +
-        '\t\tif(groupId > 0){\n' +
-        '\t\t\tif(operation == COUNT_LITERAL){\n' +
-        '\t\t\t\tif(lastCount >= 0){\n' +
-        '\t\t\t\t\treturn (groupBys[lastCount].hash, groupBys[lastCount].timestamp, groupBys[lastCount].latestFact, groupBys[lastCount].colSize, groupBys[lastCount].columns);\n' +
-        '\t\t\t\t}\n' +
-        '\t\t\t} else if (operation == SUM_LITERAL){\n' +
-        '\t\t\t\tif(lastSUM >= 0){\n' +
-        '\t\t\t\t\treturn (groupBys[lastSUM].hash, groupBys[lastSUM].timestamp, groupBys[lastSUM].latestFact, groupBys[lastSUM].colSize, groupBys[lastSUM].columns);\n' +
-        '\t\t\t\t}\n' +
-        '\t\t\t} else if (operation == MIN_LITERAL){\n' +
-        '\t\t\t\tif(lastMin >= 0){\n' +
-        '\t\t\t\t\treturn (groupBys[lastMin].hash, groupBys[lastMin].timestamp, groupBys[lastMin].latestFact, groupBys[lastMin].colSize, groupBys[lastMin].columns);\n' +
-        '\t\t\t\t}\n' +
-        '\t\t\t} else if (operation == MAX_LITERAL){\n' +
-        '\t\t\t\tif(lastMax >= 0){\n' +
-        '\t\t\t\t\treturn (groupBys[lastMax].hash, groupBys[lastMax].timestamp, groupBys[lastMax].latestFact, groupBys[lastMax].colSize, groupBys[lastMax].columns);\n' +
-        '\t\t\t\t}\n' +
-        '\t\t\t} else if (operation == AVERAGE_LITERAL){\n' +
-        '\t\t\t\tif(lastAverage >= 0){\n' +
-        '\t\t\t\t\treturn (groupBys[lastAverage].hash, groupBys[lastAverage].timestamp, groupBys[lastAverage].latestFact, groupBys[lastAverage].colSize, groupBys[lastAverage].columns);\n' +
-        '\t\t\t\t}\n' +
-        '\t\t\t}\n' +
-        '\t\t}\n' +
-        '\t\treturn ("",0,0,0,"");\n' +
-        '\t}\n\n';
 
     let retValsLatest = '';
     let getParamsLatest = '';

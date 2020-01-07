@@ -4,7 +4,7 @@ const exec = require('child_process').execSync;
 
 function cost (Vi, V, latestFact) {
     // The cost of materializing view V using the cached view Vi
-    let  sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
+    let sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
     let sizeCached = Number.parseInt(Vi.size);
     V.calculationCost = 500 * sizeDeltas + sizeCached;
     return V;
