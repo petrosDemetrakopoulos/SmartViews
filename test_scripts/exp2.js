@@ -80,7 +80,7 @@ const loadData = async (fileno, queries) => {
 const handleResponse = async (body) => {
     return new Promise((resolve, reject) => {
         let f = body.toString().substr(String(body).indexOf('operation').toString());
-        console.log(f);
+        console.log(body);
         let JSONresp = JSON.parse(('{"' + f).toString());
         writeToFile(JSON.stringify(JSONresp), ResultsFile).then(() => {
             console.log(JSONresp);

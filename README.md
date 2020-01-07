@@ -2,7 +2,7 @@
 This repository hosts the application server of Smart-Views.
 It is the implementation / application part of my thesis as an undergraduate Computer Science student of Athens University of Economics and Business ([aueb.gr](https://aueb.gr/))
 under the supervision of Professor Yannis Kotidis.
- 
+
 The directory structure of the project is shown below.
 
 The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using the **Web3.JS** library.
@@ -88,7 +88,7 @@ If everything is set up correctly you should see the following lines in the term
 Smart-Views listening on http://localhost:3000/dashboard
 Redis  connected
 mySQL connected
-``` 
+```
 **Alternatively you can simply run the ```run.sh``` script which starts Redis server, the Ethereum blockchain simulator (ganache-cli) and the application server at one.**
 The run.sh script assumes mySQL server is already running, however you can simply add the command that starts mySQL server in th first line and automate that too.
 
@@ -102,7 +102,7 @@ It works as described below:
 
 * **SQL Database** is used to execute the calculations and update the smart views. In our implementation we use mySQL server.
 
-* **Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components. 
+* **Application server** orchestrates the whole process of defining, storing, reusing and up- dating the smart views and fully controls the flow of data between the other components.
 <div ALIGN="center">
 <img src="schematics/architecture.png" width="520" align="center">
 </div>
@@ -113,7 +113,7 @@ In that way it avoids fetching many facts from the blockchain (which is the most
 
 # The application server structure
 The server structure is shown in the diagram below.
-The server communicates with the Ethereum blockchain via the "**Blockchain controller**". 
+The server communicates with the Ethereum blockchain via the "**Blockchain controller**".
 The blockchain controller contains the functions that call the methods of a deployed smart contract and it then passes the responses to the API level.
 <div ALIGN="center">
 <img src="schematics/structure.png" width="520" align="center">
@@ -192,7 +192,7 @@ An example of a smart view template is shown below.
     }
   ]
 }
-``` 
+```
 
 Once the ```deploy``` method of the API is called for a template, the application server automatically generates a Solidity smart contract (saved under "contracts" directory).
 If the template has the correct format and the smart contract generation do not throw an error, the application server continues by deploying the generated smart contract to the Ethereum blockchain.
@@ -212,7 +212,7 @@ The flowchart below presents the materialization process that takes place when t
 
 # Cached results evaluation process
 When a Smart-View is requested, the application server fetches the metadata stored for each previous cached result from the Blockchain which acts as our permanent storage.
-Then, it filters out the cached results that are not useful for the materialization of the view requested. 
+Then, it filters out the cached results that are not useful for the materialization of the view requested.
 These cached results are the ones that contain more and / or other fields than the fields of the requested view.
 
 **As a general rule, the cached results that can be used for the materialization of a requested view are the ones that their fields are a superset of the fields of the requested view and they also have the same aggregate function.**
@@ -229,20 +229,20 @@ During the evaluation process of the optimal cached result for the fastest mater
 Let &nbsp; <img width="12px" src="https://render.githubusercontent.com/render/math?math=t_{i}"> be the moment where a previous cached result has been calculated for a view &nbsp;<img width="20px" src="https://render.githubusercontent.com/render/math?math=V_{i}">.
 Then &nbsp; <img width="50px" src="https://render.githubusercontent.com/render/math?math=deltas_{i}"> are the records written in blockchain after the time &nbsp; <img width="12px" src="https://render.githubusercontent.com/render/math?math=t_{i}">.
 
-Let &nbsp;<img width="90px" src="https://render.githubusercontent.com/render/math?math=size_{cached(i)}"> &nbsp; to be the size of the latest cached result of view &nbsp;<img width="20px" src="https://render.githubusercontent.com/render/math?math=V_{i}"> and 
-&nbsp;<img width="80px" src="https://render.githubusercontent.com/render/math?math=size_{deltas}"> the size of the deltas respectively. 
+Let &nbsp;<img width="90px" src="https://render.githubusercontent.com/render/math?math=size_{cached(i)}"> &nbsp; to be the size of the latest cached result of view &nbsp;<img width="20px" src="https://render.githubusercontent.com/render/math?math=V_{i}"> and
+&nbsp;<img width="80px" src="https://render.githubusercontent.com/render/math?math=size_{deltas}"> the size of the deltas respectively.
 The merge operation of the cached result and the deltas are actually an aggregate SQL statement over these data.
 Aggregations are typically computed in linear complexity by the SQL backend.
 
-Thus we can estimate the cost of the merge as 
+Thus we can estimate the cost of the merge as
 <div ALIGN="center">
 <img width="300px" src="https://render.githubusercontent.com/render/math?math=w_{sql}\times(size_{cached(i)} %2B size_{deltas(i)})">.
 </div>
 
-The cost of deltas retrieval from the blockchain (which is the most time intensive resource) is estimated as 
+The cost of deltas retrieval from the blockchain (which is the most time intensive resource) is estimated as
 <img width="200px" src="https://render.githubusercontent.com/render/math?math=w_{blockchain}\times size_{deltas(i)}">
 
-In total, the cost of using smart view <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi"> in order to materialize view  is estimated as 
+In total, the cost of using smart view <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi"> in order to materialize view  is estimated as
 <div ALIGN="center">
 <img width="600px" src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)=w_{sql}\times(size_{cached(i)} %2B size_{deltas(i)}) %2B w_{blockchain}\times size_{deltas(i)}">
 </div>
@@ -271,13 +271,13 @@ Thus, for the purpose of ranking the views Vi and selecting the top candidate fo
 Where &nbsp;<img src="https://render.githubusercontent.com/render/math?math=cost(Vi, V)" width="90px"> is the cost of materializing view V using the latest cached result of a view Vi (always assuming that <img src="https://render.githubusercontent.com/render/math?math=V\preceq\Vi">)
 for some constant  <img width="50px" src="https://render.githubusercontent.com/render/math?math=a\gg 1">.
 
-In that way application server sorts all the cached results based on that function and picks the best one (the one with the less cost).  
+In that way application server sorts all the cached results based on that function and picks the best one (the one with the less cost).
 
 # Prefetching with Query2Vec model
 
 Inspired by the original **Word2Vec model** that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
 As Word2Vec model uses two-layer neural networks that try to "guess" the linguistic and semantic context of the words, Query2Vec model is trained to "guess" which views may be requested within similar context.
- 
+
 **Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
 Each view requested in the past is represented by a vector in this space.
 View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
@@ -288,7 +288,7 @@ The following graph shows the position of 252 different views of the cars templa
 The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
 
 t-SNE to 2 dimensions has been performed for visualisation purposes.
- 
+
 <div ALIGN="center"> <img src="schematics/cars_query_embeddings.png" width="800" align="center"> </div>
 
 
@@ -361,7 +361,7 @@ The following plot may describe better the behavior of the cost function for the
 
 <img src="schematics/different_a.png" width="1440" align="center">
 
-It seems that we have a clear "loser". 
+It seems that we have a clear "loser".
 10 seems to be very small value for <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> and it does not lead the function to sort the cached results in a way that the optimal one will be selected.
 However, values larger than 100 do not seem to offer any better result in terms of materialization time.
 
@@ -375,7 +375,7 @@ It contains the functions the the API finally calls when a view is requested by 
 4) **The API** (in "index.js" file) that we use to call smart contract and view materialization methods.
 
 
-The front-end code is much simpler and it is located under "views" directory. 
+The front-end code is much simpler and it is located under "views" directory.
 It contains the .ejs templates for the pages we use to call the API functions in a more user-friendly way.
 
 # Tests

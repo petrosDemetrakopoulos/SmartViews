@@ -159,14 +159,16 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
 function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId) {
     return new Promise((resolve, reject) => {
         let reductionTimeStart = helper.time();
+        console.log(1);
         computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
             let reductionTimeEnd = helper.time();
-
+            console.log(2);
             let viewMeta = helper.extractViewMeta(view);
             if (view.operation === 'AVERAGE') {
                 reducedResult = transformations.transformAverage(reducedResult, view.gbFields, view.aggregationField);
             } else {
                 reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
+                console.log(3);
             }
             reducedResult.field = view.aggregationField;
             reducedResult.viewName = view.name;
@@ -547,6 +549,7 @@ async function materializeViewWithName(viewName, contract, totalStart, createTab
                                             totalStart: totalStart,
                                             getGroupIdTime: globalAllGroupBysTime.getGroupIdTime
                                         };
+                                        console.log(7);
                                         await calculateFromCache(cachedGroupBy,
                                             sortedByEvictionCost, view, gbFields, latestId, times, matSteps).then(result => {
                                             materializationDone = true;

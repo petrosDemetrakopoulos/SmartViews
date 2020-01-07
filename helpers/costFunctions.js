@@ -2,123 +2,104 @@ const cacheController = require('../controllers/cacheController');
 const helper = require('../helpers/helper');
 const exec = require('child_process').execSync;
 
-// this function  assigns a cost to each group by
-function calculationCost (groupBys) {
-    for (let i = 0; i < groupBys.length; i++) {
-        let crnGroupBy = groupBys[i];
-        crnGroupBy.cost = (0.5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
-        groupBys[i] = crnGroupBy;
-    }
-    return groupBys;
+function cost (Vi, V, latestFact) {
+    // The cost of materializing view V using the cached view Vi
+    let  sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
+    let sizeCached = Number.parseInt(Vi.size);
+    V.calculationCost = 500 * sizeDeltas + sizeCached;
+    return V;
 }
 
-function cacheEvictionCost (groupBys) {
-    for (let i = 0; i < groupBys.length; i++) {
-        let crnGroupBy = groupBys[i];
-        crnGroupBy.cacheEvictionCost = (5 * crnGroupBy.columnSize) + (100000 / crnGroupBy.gbTimestamp);
-        groupBys[i] = crnGroupBy;
+async function costMat(V, Vc, latestFact) {
+    // The cost of materializing view V using the set of cached views Vc
+    let costs = [];
+    for (let i = 0; i < Vc.length; i++) {
+        let Vi = Vc[i];
+        let crnCost = await cost(Vi, V, latestFact);
+        costs.push(crnCost);
     }
-    return groupBys;
+    await costs.sort(function (a, b) {
+        return parseFloat(a.calculationCost) - parseFloat(b.calculationCost);
+    });
+    return costs[0].calculationCost;
 }
 
-function cacheEvictionCostOfficial (groupBys, latestFact, viewName, factTbl) { // the one written on paper , write one with only time or size
-    let allHashes = [];
-    let allGroupBys = [];
-    let allGroupBys2 = [];
-    let allMinus = [];
-    let allFields = [];
-    for (let i = 0; i < groupBys.length; i++) {
-        allGroupBys.push(groupBys[i]);
-        allGroupBys2.push(groupBys[i]);
-        allFields.push(groupBys.columns);
-    }
-    for (let i = 0; i < groupBys.length; i++) {
-        let crnGroupBy = groupBys[i];
-        allHashes.push(crnGroupBy.hash);
-    }
-    cacheController.getManyCachedResults(allHashes, function (error, allCached) {
-        if (error) {
-            helper.log(error);
-            return;
+function remove (array, element) {
+    return array.filter(el => el !== element);
+}
+
+async function dispCost (Vc, latestFact, factTbl) {
+    return new Promise((resolve, reject) =>  {
+        let allHashes = [];
+        let toBeEvicted = [];
+        for (let i = 0; i < Vc.length; i++) {
+            let crnGroupBy = Vc[i];
+            allHashes.push(crnGroupBy.hash);
         }
-        let freq = 0;
+        cacheController.getManyCachedResults(allHashes).then(async allCached => {
+            let freq = 0;
+            allCached = allCached.filter(function (el) { // remove null objects in case they have been deleted
+                return el != null;
+            });
 
-        allCached = allCached.filter(function (el) { // remove null objects in case they have been deleted
-            return el != null;
-        });
-        if (allHashes.length > 1) {
-            for (let j = 0; j < allCached.length; j++) {
-                let crnGb = JSON.parse(allCached[j]);
-                let viewsDefined = factTbl.views;
-                for (let crnView in viewsDefined) {
-                    if (factTbl.views[crnView].name === crnGb.viewName) {
-                        freq = factTbl.views[crnView].frequency;
-                        break;
-                    }
-                }
-            }
-
-            for (let i = 0; i < allGroupBys.length; i++) {
-                allGroupBys2 = [];
-                for (let j = 0; j < groupBys.length; j++) {
-                    allGroupBys2.push(groupBys[j]);
-                }
-                let groupBysCachedExceptCrnOne = allGroupBys2.splice(1, i);
-                let calcCostVfromVCache = calculationCostOfficial(allGroupBys, latestFact);
-                let calcCostVfromVCacheMinusCrnView = calculationCostOfficial(groupBysCachedExceptCrnOne, latestFact);
-                helper.log('ALL: ');
-                helper.log(calcCostVfromVCache);
-                helper.log('WITHOUT: ');
-                helper.log(calcCostVfromVCacheMinusCrnView);
-                allMinus.push(calcCostVfromVCacheMinusCrnView);
-                let cost = 0;
-                if (i > 0) {
-                    let crnGB = calcCostVfromVCache[i];
-                    for (let k = 0; k < calcCostVfromVCacheMinusCrnView.length; k++) {
-                        let crnMinus = calcCostVfromVCacheMinusCrnView[k];
-                        if (crnGB.id === crnMinus.id) {
-                            cost = freq * (crnGB.calculationCost - crnMinus.calculationCost);
-                            allGroupBys[i].cacheEvictionCost = cost;
-                            helper.log('cost = ' + cost);
+            if (allHashes.length > 1) {
+                for (let j = 0; j < allCached.length; j++) {
+                    let crnGb = JSON.parse(allCached[j]);
+                    let viewsDefined = factTbl.views;
+                    for (let crnView in viewsDefined) {
+                        if (factTbl.views[crnView].name === crnGb.viewName) {
+                            freq = factTbl.views[crnView].frequency;
+                            break;
                         }
                     }
-                } else {
-                    allGroupBys[i].cacheEvictionCost = 1500;
+                }
+
+                for (let i = 0; i < Vc.length; i++) {
+                    let Vi = Vc[i];
+                    let VcMinusVi = remove(Vc, Vi);
+                    let viewsMaterialisableFromVi = getViewsMaterialisableFromVi(Vc, Vi, i);
+                    viewsMaterialisableFromVi = remove(viewsMaterialisableFromVi, Vi);
+                    let dispCostVi = 0;
+                    for (let j = 0; j < viewsMaterialisableFromVi.length; j++) {
+                        let V = viewsMaterialisableFromVi[j];
+                        let costMatVVC = await costMat(V, Vc, latestFact);
+                        let costMatVVcMinusVi = await costMat(V, VcMinusVi, latestFact);
+                        dispCostVi += (costMatVVC - costMatVVcMinusVi);
+                    }
+                    dispCostVi = dispCostVi * freq;
+                    Vi.cacheEvictionCost = dispCostVi / Number.parseInt(Vi.size);
+                    toBeEvicted.push(Vi);
                 }
             }
-            // για καθε ένα array που λείπει ένα cached view πρεπει να βρω ένα που έχει όλα τα άλλα views και να αφαιρέσω
-        } else {
-            allGroupBys[0].cacheEvictionCost = 1000;
-        }
+            resolve(toBeEvicted);
+        }).catch(err => {
+            reject(err)
+        });
     });
-    if (allGroupBys.length === 1) {
-        allGroupBys[0].cacheEvictionCost = 1000;
-    }
-    return allGroupBys;
 }
-function cacheEvict (cachedGBS, factTbl, latestFact) {
-    cachedGBS = calculationCostOfficial(cachedGBS, latestFact);
-    for (let i = 0; i < cachedGBS.length; i++) {
-        let crnGB = cachedGBS[i];
-        let cachedGBSWithoutCrn = cachedGBS.splice(i,1);
-        cachedGBSWithoutCrn = calculationCostOfficial(cachedGBSWithoutCrn, latestFact);
-        let dispCost = 0;
-        let viewsDefined = factTbl.views;
-        let crnViewFreq = 1;
-        for (let crnView in viewsDefined) {
-            if (factTbl.views[crnView].name === crnGB.viewName) {
-                crnViewFreq = factTbl.views[crnView].frequency;
-                break;
-            }
-        }
 
-        for (let j = 0; j < cachedGBSWithoutCrn.length; j++) {
-           dispCost += crnViewFreq * (cachedGBS[i].calculationCost - cachedGBSWithoutCrn[j].calculationCost);
-        }
-        crnGB.cacheEvictionCost = dispCost;
-        cachedGBS[i] = crnGB;
+function getViewsMaterialisableFromVi (Vc, Vi) {
+    let viewsMaterialisableFromVi = [];
+    for (let j = 0; j < Vc.length; j++) { // finding all the Vs < Vi
+            let crnView = Vc[j];
+            let crnViewFields = JSON.parse(crnView.columns);
+            let ViFields = JSON.parse(Vi.columns);
+            for (let index in crnViewFields.fields) {
+                crnViewFields.fields[index] = crnViewFields.fields[index].trim();
+            }
+            let containsAllFields = true;
+            for (let k = 0; k < crnViewFields.fields.length; k++) {
+                if (!ViFields.fields.includes(crnViewFields.fields[k])) {
+                    containsAllFields = false
+                }
+            }
+            if (containsAllFields) {
+                viewsMaterialisableFromVi.push(crnView);
+            }
     }
+    return viewsMaterialisableFromVi;
 }
+
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
@@ -161,9 +142,7 @@ async function word2vec (groupBys, view) {
 }
 
 module.exports = {
-    calculationCost: calculationCost,
-    cacheEvictionCost: cacheEvictionCost,
-    cacheEvictionCostOfficial: cacheEvictionCostOfficial,
+    dispCost: dispCost,
     calculationCostOfficial: calculationCostOfficial,
     word2vec: word2vec
 };

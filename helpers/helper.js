@@ -281,24 +281,19 @@ function filterGBs (resultGB, view) {
 async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let transformedArray = transformGBMetadataFromBlockchain(resultGB);
     transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
-    let sortedByEvictionCost = Array.from(transformedArray);
-    log('_________________________________');
-    sortedByEvictionCost = costFunctions.cacheEvictionCostOfficial(sortedByEvictionCost, latestId, view.name, factTbl);
-   // sortedByEvictionCost = await costFunctions.word2vec(sortedByEvictionCost, view);
-    log(sortedByEvictionCost);
-    log('cache eviction costs assigned:');
-    await sortedByEvictionCost.sort(function (a, b) {
-        if (config.cacheEvictionPolicy === 'FIFO') {
-            return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
-        } else if (config.cacheEvictionPolicy === 'costFunction') {
-            log('SORT WITH COST FUNCTION');
-            return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
-        } else if (config.cacheEvictionPolicy === 'word2vec') {
-            log('SORT WITH word2vec');
-            return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
-        }
+    let sortedByEvictionCost = JSON.parse(JSON.stringify(transformedArray));
+    return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(async sortedByEvictionCost => {
+        await sortedByEvictionCost.sort(function (a, b) {
+            if (config.cacheEvictionPolicy === 'FIFO') {
+                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+            } else if (config.cacheEvictionPolicy === 'costFunction') {
+                return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
+            } else if (config.cacheEvictionPolicy === 'word2vec') {
+                return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
+            }
+        });
+        return sortedByEvictionCost;
     });
-    return sortedByEvictionCost;
 }
 
 async function sortByCalculationCost (resultGBs, latestId, view) {
