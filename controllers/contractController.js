@@ -23,28 +23,25 @@ function contractChecker (req, res, next) {
         res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
 }
+let bcResponseHandler = function (err, result) {
+    if (!err) {
+        result = removeUnneededFieldsFromBCResponse(result);
+        Promise.resolve(result);
+    } else {
+        helper.log(err);
+        Promise.reject(err);
+    }
+};
 
 async function getFactById (id) {
     return contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
-        if (!err) {
-            result = removeUnneededFieldsFromBCResponse(result);
-            Promise.resolve(result);
-        } else {
-            helper.log(err);
-            Promise.reject(err);
-        }
+       bcResponseHandler(err, result);
     });
 }
 
 async function getGroupByWithId (id) {
     return contract.methods.getGroupBy(parseInt(id, 10)).call(function (err, result) {
-        if (!err) {
-            result = removeUnneededFieldsFromBCResponse(result);
-            Promise.resolve(result);
-        } else {
-            helper.log(err);
-            Promise.reject(err);
-        }
+        bcResponseHandler(err, result);
     });
 }
 

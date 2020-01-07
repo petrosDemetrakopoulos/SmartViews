@@ -165,7 +165,7 @@ app.get('/new_contract/:fn', function (req, res) {
 
 app.get('/getFactById/:id', contractController.contractChecker, function (req, res) {
     contractController.getFactById(req.params.id).then(result => {
-        res.send(result);
+        res.send(stringify(result).replace(/\\/g,''));
     }).catch(error => {
         helper.log(error);
         res.send(error);
@@ -177,7 +177,7 @@ app.get('/getFactsFromTo/:from/:to', function (req, res) {
     contractController.getFactsFromTo(parseInt(req.params.from), parseInt(req.params.to)).then(retval => {
         let timeFinish = helper.time() - timeStart;
         retval.push({ time: timeFinish });
-        res.send(retval);
+        res.send(stringify(retval).replace(/\\/g,''));
     }).catch(err => {
         res.send(err);
     });
@@ -191,7 +191,7 @@ app.get('/allfacts', contractController.contractChecker, function (req, res) {
             let timeFinish = helper.time() - timeStart;
             helper.log('Get all facts time: ' + timeFinish + ' s');
             retval.push({ time: timeFinish });
-            res.send(retval);
+            res.send(stringify(retval).replace(/\\/g,''));
         }).catch(error => {
             helper.log(error);
         });
@@ -203,7 +203,7 @@ app.get('/allfacts', contractController.contractChecker, function (req, res) {
 
 app.get('/groupbyId/:id', contractController.contractChecker, function (req, res) {
     contractController.getGroupByWithId(req.params.id).then(result => {
-        return res.send(stringify(result).replace('\\', ''));
+        return res.send(stringify(result).replace(/\\/g, ''));
     }).catch(error => {
         helper.log(error);
         return res.send(error);
