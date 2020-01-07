@@ -280,7 +280,7 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
 
                     let editedGBQuery = helper.sanitizeSQLQuery(gbQuery);
                     queryAndDropTable(editedGBQuery, tableName).then(results => {
-                        let groupBySqlResult = {};
+                        let groupBySqlResult;
                         if (view.operation === 'AVERAGE') {
                             groupBySqlResult = transformations.transformAverage(results, view.gbFields, view.aggregationField);
                         } else {
@@ -299,7 +299,7 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
 
 function executeQuery (queryString) {
     return new Promise((resolve, reject) => {
-        connection.query(queryString, async function (error, results, fields) {
+        connection.query(queryString, async function (error, results) {
             if (error) {
                 reject(error)
             } else {

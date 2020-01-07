@@ -23,6 +23,7 @@ function contractChecker (req, res, next) {
         res.send({ status: 'ERROR', options: 'Contract not deployed' });
     }
 }
+
 let bcResponseHandler = function (err, result) {
     if (!err) {
         result = removeUnneededFieldsFromBCResponse(result);

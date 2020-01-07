@@ -118,7 +118,6 @@ app.get('/deployContract/:fn', function (req, res) {
                     contractsDeployed.push(options.contractDeployed);
                     contract = options.contractObject;
                     contractController.setContract(contract, account);
-                    cacheController.setContract(contract, account);
                     viewMaterializationController.setContract(contract, account);
                     res.send({ status: 'OK', options: options.options });
                 })
