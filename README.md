@@ -357,6 +357,7 @@ The results are the mean values of all iterations we performed for each value of
 </table>
 </div>
 
+
 The following plot may describe better the behavior of the cost function for the different values of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
 
 <img src="schematics/different_a.png" width="1440" align="center">
@@ -365,8 +366,10 @@ It seems that we have a clear "loser".
 10 seems to be very small value for <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> and it does not lead the function to sort the cached results in a way that the optimal one will be selected.
 However, values larger than 100 do not seem to offer any better result in terms of materialization time.
 
+<div align="center">
 Total time vs <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> presents the following asymptotic behavior:
 <img src="schematics/aFactor.png" width="450" align="center">
+</div>
 
 # The Code
 The back-end code is separated in 4 main categories.
