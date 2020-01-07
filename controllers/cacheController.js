@@ -2,6 +2,8 @@ const crypto = require('crypto');
 let md5sum = crypto.createHash('md5');
 const stringify = require('fast-stringify');
 let config = require('../config_private');
+const maxGbSize = config.maxGbSize;
+const mb512InBytes = 512 * 1024 * 1024;
 const redis = require('redis');
 const client = redis.createClient(config.redisPort, config.redisIP);
 const Web3 = require('web3');
@@ -55,8 +57,6 @@ function manualSlicing (gbResult) {
 }
 
 function autoSlicing (gbResult) {
-    const maxGbSize = config.maxGbSize;
-    const mb512InBytes = 512 * 1024 * 1024;
     let slicedGbResult = [];
     let crnSlice = [];
     let metaKeys = extractMetaKeys(gbResult);
@@ -97,8 +97,6 @@ function saveOnCache (gbResult, operation, latestId) {
     } else {
         // redis allows 512MB per stored string, so we divide the result of our gb with 512MB to find cache slice
         // maxGbSize is the max number of bytes in a row of the result
-        const mb512InBytes = 512 * 1024 * 1024;
-        const maxGbSize = config.maxGbSize;
         helper.log('Group-By result size in bytes = ' + gbResultSize * maxGbSize);
         helper.log('size a cache position can hold in bytes: ' + mb512InBytes);
         if ((gbResultSize * maxGbSize) > mb512InBytes) {
