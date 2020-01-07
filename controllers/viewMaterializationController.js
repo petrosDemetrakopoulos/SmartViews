@@ -492,7 +492,7 @@ async function prefetchNearset(n, cachedResults, view) {
         viewNames.push(meta.fields.join('') + '(' + meta.aggrFunc + ')');
     }
     viewNames = viewNames.filter(function(item, pos){
-        return viewNames.indexOf(item) == pos;
+        return viewNames.indexOf(item) === pos;
     });
     if(viewNames.length > n) {
         viewNames =  viewNames.slice(0, n-1)

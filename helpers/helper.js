@@ -302,11 +302,6 @@ async function sortByCalculationCost (resultGBs, latestId, view) {
         await resultGBs.sort(function (a, b) {
             return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
         }); // order ascending
-    } else if (config.calculationCostFunction.toLowerCase() === 'word2vec') {
-        resultGBs = await costFunctions.word2vec(resultGBs, view);
-        await resultGBs.sort(function (a, b) {
-            return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
-        });
     }
     return resultGBs;
 }

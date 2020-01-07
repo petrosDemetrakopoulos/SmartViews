@@ -939,11 +939,11 @@ if (!document.createElement('canvas').getContext) {
                          mr(p.xEnd), ',', mr(p.yEnd));
             break;
         }
-  
-  
+
+
         // TODO: Following is broken for curves due to
         //       move to proper paths.
-  
+
         // Figure out dimensions so we can do gradient fills
         // properly
         if (p) {
@@ -962,15 +962,15 @@ if (!document.createElement('canvas').getContext) {
         }
       }
       lineStr.push(' ">');
-  
+
       if (!aFill) {
         appendStroke(this, lineStr);
       } else {
         appendFill(this, lineStr, min, max);
       }
-  
+
       lineStr.push('</g_vml_:shape>');
-  
+
       this.element_.insertAdjacentHTML('beforeEnd', lineStr.join(''));
     }
   };
@@ -1115,7 +1115,7 @@ if (!document.createElement('canvas').getContext) {
       x: Z * (aX * m[0][0] + aY * m[1][0] + m[2][0]) - Z2,
       y: Z * (aX * m[0][1] + aY * m[1][1] + m[2][1]) - Z2
     };
-  };
+  }
 
   contextPrototype.save = function() {
     var o = {};
@@ -1366,7 +1366,7 @@ if (!document.createElement('canvas').getContext) {
       case null:
       case '':
         this.repetition_ = 'repeat';
-        break
+        break;
       case 'repeat-x':
       case 'repeat-y':
       case 'no-repeat':

@@ -133,7 +133,7 @@
 
     $.fn.exists = function () {
         return this.length !== 0;
-    }
+    };
 
     function deployContract(contract) {
         let xhttp = new XMLHttpRequest();
@@ -152,7 +152,7 @@
                         $(contractStatusSelector).html('Deploying contract...');
                     }
                     if (this.readyState === 4 && this.status === 200) {
-                        let respObject = JSON.parse(this.responseText)
+                        let respObject = JSON.parse(this.responseText);
                         console.log(respObject);
                         $(contractStatusSelector).html(respObject.options.address);
                         $(contractStatusSelector).css({'color': 'green', 'font-weight': 'bold'});
@@ -162,7 +162,7 @@
                         $(contractStatusSelector).html('Error while deploying contract');
                         $(contractStatusSelector).css({'color': 'red'});
                     }
-                }
+                };
                 xhttpDep.open('GET', '/deployContract/' + respObj.filename, true);
                 xhttpDep.send();
             } else if (this.status === 400) {

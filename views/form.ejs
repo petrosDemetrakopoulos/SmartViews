@@ -301,7 +301,7 @@
             fl = event.target.files[0];
             $("#addFactFromFile").removeClass("disabled");
         }
-    }, false)
+    }, false);
 
     $(document).on('click', '#addFactFromFile', function(){
         addFactFromFile();
@@ -375,14 +375,14 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 var editedResp = this.responseText.replace(/\\/g, '');
                 $("#outputView").val(editedResp.replace('"{', "'{").replace('}"', "}'"));
                 let edited = editedResp.replace(/"{/g, "'{").replace(/}"/g, "}'");
-                let splited = edited.split("':")
+                let splited = edited.split("':");
                 let meta = splited[splited.length - 1].split(",");
                 let usefullMetaIndex = -1;
                 let sqlTimeIndex = -1;
                 let bcTimeIndex = -1;
                 let cacheTimeIndex = -1;
                 let totalTimeIndex = -1;
-                let allTotalTimeIndex = -1
+                let allTotalTimeIndex = -1;
                 let cacheRetrieveIndex = -1;
                 let matStepsIndex = -1;
                 for(let i =0; i < meta.length; i++){
@@ -486,7 +486,7 @@ let crnContractDeployed = <%-JSON.stringify(template)%>;
                 $('#cacheRetrieveTime').css("width",(cacheRetrieveTime / totalTime)*100 + "%");
                 $('#sqlTime').css("width",(sqlTime / totalTime)*100 + "%");
                 for(let i = 0; i < splited.length; i ++){
-                    let secondSplit = []
+                    let secondSplit = [];
                     secondSplit = splited[i].split(",'");
                     splited[i] = secondSplit;
                 }
