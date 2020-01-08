@@ -51,8 +51,8 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                     let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
 
                                     let mergeTimeStart = helper.time();
-                                    await computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable,
-                                        viewMeta.viewNameSQL, view, viewMeta.lastCol, viewMeta.prelastCol).then(mergeResult => {
+                                    await computationsController.mergeGroupBys(rows, rowsDelta,
+                                        view, viewMeta).then(mergeResult => {
                                         let mergeTimeEnd = helper.time();
                                         matSteps.push({ type: 'sqlMergeReducedCachedWithDeltas' });
                                         mergeResult.operation = view.operation;
@@ -223,8 +223,8 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
         let rows = helper.extractGBValues(cachedGroupBy, view);
         let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
         let mergeTimeStart = helper.time();
-        computationsController.mergeGroupBys(rows, rowsDelta, view.SQLTable, viewMeta.viewNameSQL,
-            view, viewMeta.lastCol, viewMeta.prelastCol).then(mergeResult => {
+        computationsController.mergeGroupBys(rows, rowsDelta,
+            view, viewMeta).then(mergeResult => {
             let mergeTimeEnd = helper.time();
             // SAVE ON CACHE BEFORE RETURN
             helper.log('SAVE ON CACHE BEFORE RETURN');

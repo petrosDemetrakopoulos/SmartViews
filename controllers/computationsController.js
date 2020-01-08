@@ -201,8 +201,12 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
     });
 }
 
-function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, lastCol, prelastCol) {
+function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
     return new Promise((resolve, reject) => {
+        let lastCol = viewMeta.lastCol;
+        let prelastCol = viewMeta.prelastCol;
+        let tableName = viewMeta.viewNameSQL;
+        let gbCreateTable = view.SQLTable;
         connection.query(gbCreateTable, function (error) {
             if (error) {
                 helper.log(error);
