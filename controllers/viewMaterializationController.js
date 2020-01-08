@@ -504,7 +504,7 @@ async function materializeViewWithName (viewName, contract, totalStart, createTa
         let view = helper.checkViewExists(viewsDefined, viewName, factTbl);
         let gbFields = helper.extractFields(view);
         view.gbFields = gbFields;
-        let globalAllGroupBysTime = {getAllGBsTime: 0, getGroupIdTime: 0};
+        let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
         if (config.cacheEnabled) {
             helper.log('cache enabled = TRUE');
             await contractController.getAllGroupbys().then(async resultGB => {
@@ -544,7 +544,6 @@ async function materializeViewWithName (viewName, contract, totalStart, createTa
                                             totalStart: totalStart,
                                             getGroupIdTime: globalAllGroupBysTime.getGroupIdTime
                                         };
-                                        console.log(7);
                                         await calculateFromCache(cachedGroupBy,
                                             sortedByEvictionCost, view, gbFields, latestId, times, matSteps).then(result => {
                                             materializationDone = true;
@@ -571,7 +570,6 @@ async function materializeViewWithName (viewName, contract, totalStart, createTa
                                     resolve(results);
                                 }).catch(err => {
                                     helper.log(err);
-                                    console.log(err);
                                     reject(err);
                                 });
                             }
@@ -581,7 +579,7 @@ async function materializeViewWithName (viewName, contract, totalStart, createTa
                         });
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
-                        console.log('NO FILTERED GROUP BYS FOUND');
+                        helper.log('NO FILTERED GROUP BYS FOUND');
                         await contractController.getLatestId(async latestId => {
                             let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             calculateNewGroupByFromBeginning(view, totalStart,

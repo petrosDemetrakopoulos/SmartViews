@@ -42,7 +42,6 @@ fs.writeFile('test_data/' + fileToSaveTestData + '1' + '.json', JSON.stringify(a
             }
             let url = 'http://localhost:3000/load_dataset/' + fileToSaveTestData + '1' + '.json';
             let urlSec = 'http://localhost:3000/load_dataset/' + fileToSaveTestData + '2' + '.json';
-            let urlThird = 'http://localhost:3000/load_dataset/' + fileToSaveTestData + '3' + '.json';
             let urlgbCountAB = 'http://localhost:3000/getViewByName/A|B(COUNT)';
             console.log('The file was saved!');
             // experiment scenario begins

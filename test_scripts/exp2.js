@@ -31,7 +31,6 @@ const loadFiles = (directory, valid, error) => {
 
 const loadData = async (fileno, queries) => {
     return new Promise((resolve, reject) => {
-
         let url = 'http://localhost:3000/load_dataset/' + fileno;
         let urlGB = 'http://localhost:3000/getViewByName/' + queries + '(COUNT)/' + 'ABCDE';
         console.log(queries[0]);
@@ -44,7 +43,7 @@ const loadData = async (fileno, queries) => {
             timeout: t,
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/38.0.2125.111 Safari/537.36',
-                'Connection': 'keep-alive'},
+                'Connection': 'keep-alive' },
             json: true // Automatically parses the JSON string in the response
         };
 
@@ -90,7 +89,7 @@ const handleResponse = async (body) => {
 };
 
 const writeToFile = async (data, filepath) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let write = Promise.denodeify(fs.appendFile);
         const res = String(data + ',\n');
         console.log('result: ' + res);
@@ -100,46 +99,12 @@ const writeToFile = async (data, filepath) => {
 };
 
 const saveFile = (dataToWrite, outComeFilePath) => {
-    writeToFile(dataToWrite, outComeFilePath).then(() =>
-        console.log ('file' + outComeFilePath + 'saved successfully'))
-        .catch((err) => console.log(err));
-};
-
-const jparse = function (filename, error) {
-    fs.readFile(filename, function read (err, data) {
-        if (err) {
-            throw err;
-        }
-        let res = data;
-        res = '[' + String(res) + ']';
-
-        res = res.replace('},]', '}]');
-        let jFile = JSON.parse(res);
-
-        let blockchainArray = [];
-        let cacheRetrieveArray = [];
-        let cacheSaveArray = [];
-        let totalArray = [];
-        let allTotalArray = [];
-        let sqlArray = [];
-
-        for (let i = 0; i < jFile.length; i++) {
-            let jObject = jFile[i];
-            blockchainArray.push(jObject.bcTime);
-            cacheRetrieveArray.push(jObject.cacheRetrieveTime);
-            cacheSaveArray.push(jObject.cacheSaveTime);
-            sqlArray.push(jObject.sqlTime);
-            totalArray.push(jObject.totalTime);
-        }
-
-        for (let i = 0; i < totalArray.length; i++) {
-            console.log('i: ' + i + ' ' + totalArray[i]);
-        }
-    });
+    writeToFile(dataToWrite, outComeFilePath).then(() => {
+        console.log ('file' + outComeFilePath + 'saved successfully')
+    }).catch((err) => console.log(err));
 };
 
 const main = async () => {
-    //jparse(ResultsFile);
     return new Promise((resolve, reject) => {
         load(filename)
             .then(async (res) => {
@@ -153,7 +118,7 @@ const main = async () => {
                 loadFiles(dir, fns)
                     .then(async (files) => {
                         for (let i = 0; i < queries.length; i++) {
-                            if(files[i]) { //guard for possible undefined value in the files array
+                            if (files[i]) { // guard for possible undefined value in the files array
                                 await loadData(files[i], queries[i]).then(() => {
                                     console.log('file ' + i + ' loaded');
                                 });

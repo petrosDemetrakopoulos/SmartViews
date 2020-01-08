@@ -91,7 +91,7 @@ function saveOnCache (gbResult, operation, latestId) {
     let slicedGbResult = [];
     if (config.autoCacheSlice === 'manual') {
         if (gbResultSize > config.cacheSlice) {
-           slicedGbResult = manualSlicing(gbResult);
+            slicedGbResult = manualSlicing(gbResult);
         }
     } else {
         // redis allows 512MB per stored string, so we divide the result of our gb with 512MB to find cache slice
