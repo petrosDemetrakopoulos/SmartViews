@@ -229,6 +229,16 @@ function extractFields (view) {
     return fields;
 }
 
+function extractOperation (op) {
+    let operation = '';
+    if (op === 'SUM' || op === 'COUNT') {
+        operation = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
+    } else {
+        operation = op;
+    }
+    return operation;
+}
+
 function extractViewMeta (view) {
     let viewNameSQL = view.SQLTable.split(' ');
     viewNameSQL = viewNameSQL[3];
@@ -238,12 +248,7 @@ function extractViewMeta (view) {
     let prelastCol = lastCol[lastCol.length - 4]; // need this for AVERAGE calculation where we have 2 derivative columns, first is SUM, second one is COUNT
     lastCol = lastCol[lastCol.length - 2];
 
-    let op = '';
-    if (view.operation === 'SUM' || view.operation === 'COUNT') {
-        op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
-    } else {
-        op = view.operation;
-    }
+    let op = extractOperation(view.operation);
 
     return { viewNameSQL: viewNameSQL, lastCol: lastCol, prelastCol: prelastCol, op: op };
 }
@@ -307,7 +312,7 @@ async function sortByCalculationCost (resultGBs, latestId, view) {
 }
 
 async function sortByWord2Vec (resultGBs, view) {
-    if(resultGBs.length > 1) {
+    if (resultGBs.length > 1) {
         resultGBs = await costFunctions.word2vec(resultGBs, view);
         await resultGBs.sort(function (a, b) {
             return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
@@ -419,6 +424,7 @@ module.exports = {
     getMainTransactionObject: getMainTransactionObject,
     assignTimes: assignTimes,
     findSameOldestResults: findSameOldestResults,
-    sortByWord2Vec: sortByWord2Vec
+    sortByWord2Vec: sortByWord2Vec,
+    extractOperation: extractOperation
 };
 const costFunctions = require('./costFunctions');

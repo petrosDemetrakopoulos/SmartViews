@@ -21,6 +21,7 @@ client.on('connect', function () {
     redisConnected = true;
     helper.log('Redis connected');
 });
+
 client.on('error', function (err) {
     redisConnected = false;
     helper.log('Something went wrong ' + err);
@@ -49,8 +50,7 @@ function manualSlicing (gbResult) {
         }
     }
     if (crnSlice.length > 0) {
-        slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed,
-                                        // the last one contains less than all the previous ones
+        slicedGbResult.push(crnSlice); // we have a modulo, the last slice contains less than all the previous ones
     }
     slicedGbResult.push(metaKeys);
     return slicedGbResult
@@ -76,8 +76,7 @@ function autoSlicing (gbResult) {
         }
     }
     if (crnSlice.length > 0) {
-        slicedGbResult.push(crnSlice); // we have a modulo, slices are not all evenly dιstributed,
-                                        // the last one contains less than all the previous ones
+        slicedGbResult.push(crnSlice); // we have a modulo, the last slice contains less than all the previous ones
     }
     slicedGbResult.push(metaKeys);
     return slicedGbResult

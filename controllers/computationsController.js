@@ -26,7 +26,7 @@ function connectToSQL () {
                 console.error('error connecting to mySQL: ' + err.stack);
                 reject(err);
             }
-            resolve();
+            resolve(true);
         });
     });
 }
@@ -154,12 +154,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                     helper.log(error);
                     reject(error);
                 }
-                let op = '';
-                if (view.operation === 'SUM' || view.operation === 'COUNT') {
-                    op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
-                } else {
-                    op = view.operation;
-                }
+                let op = helper.extractOperation(view.operation);
 
                 let gbQuery = jsonSql.build({
                     type: 'select',
@@ -239,12 +234,7 @@ function mergeGroupBys (groupByA, groupByB, gbCreateTable, tableName, view, last
                         helper.log(err);
                         reject(err);
                     }
-                    let op = '';
-                    if (view.operation === 'SUM' || view.operation === 'COUNT') {
-                        op = 'SUM'; // operation is set to 'SUM' both for COUNT and SUM operation
-                    } else {
-                        op = view.operation;
-                    }
+                    let op = helper.extractOperation(view.operation);
                     let gbQuery = jsonSql.build({
                         type: 'select',
                         table: tableName,
