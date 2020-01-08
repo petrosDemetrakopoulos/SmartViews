@@ -1,5 +1,4 @@
 const cacheController = require('../controllers/cacheController');
-const helper = require('../helpers/helper');
 const exec = require('child_process').execSync;
 
 function cost (Vi, V, latestFact) {
@@ -10,7 +9,7 @@ function cost (Vi, V, latestFact) {
     return V;
 }
 
-async function costMat(V, Vc, latestFact) {
+async function costMat (V, Vc, latestFact) {
     // The cost of materializing view V using the set of cached views Vc
     let costs = [];
     for (let i = 0; i < Vc.length; i++) {
@@ -29,7 +28,7 @@ function remove (array, element) {
 }
 
 async function dispCost (Vc, latestFact, factTbl) {
-    return new Promise((resolve, reject) =>  {
+    return new Promise((resolve, reject) => {
         let allHashes = [];
         let toBeEvicted = [];
         for (let i = 0; i < Vc.length; i++) {
@@ -81,21 +80,21 @@ async function dispCost (Vc, latestFact, factTbl) {
 function getViewsMaterialisableFromVi (Vc, Vi) {
     let viewsMaterialisableFromVi = [];
     for (let j = 0; j < Vc.length; j++) { // finding all the Vs < Vi
-            let crnView = Vc[j];
-            let crnViewFields = JSON.parse(crnView.columns);
-            let ViFields = JSON.parse(Vi.columns);
-            for (let index in crnViewFields.fields) {
-                crnViewFields.fields[index] = crnViewFields.fields[index].trim();
+        let crnView = Vc[j];
+        let crnViewFields = JSON.parse(crnView.columns);
+        let ViFields = JSON.parse(Vi.columns);
+        for (let index in crnViewFields.fields) {
+            crnViewFields.fields[index] = crnViewFields.fields[index].trim();
+        }
+        let containsAllFields = true;
+        for (let k = 0; k < crnViewFields.fields.length; k++) {
+            if (!ViFields.fields.includes(crnViewFields.fields[k])) {
+                containsAllFields = false
             }
-            let containsAllFields = true;
-            for (let k = 0; k < crnViewFields.fields.length; k++) {
-                if (!ViFields.fields.includes(crnViewFields.fields[k])) {
-                    containsAllFields = false
-                }
-            }
-            if (containsAllFields) {
-                viewsMaterialisableFromVi.push(crnView);
-            }
+        }
+        if (containsAllFields) {
+            viewsMaterialisableFromVi.push(crnView);
+        }
     }
     return viewsMaterialisableFromVi;
 }

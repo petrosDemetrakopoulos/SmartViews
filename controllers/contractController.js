@@ -36,7 +36,7 @@ let bcResponseHandler = function (err, result) {
 
 async function getFactById (id) {
     return contract.methods.getFact(parseInt(id, 10)).call(function (err, result) {
-       bcResponseHandler(err, result);
+        bcResponseHandler(err, result);
     });
 }
 
@@ -217,9 +217,9 @@ function removeUnneededFieldsFromBCResponse (bcResponse) {
 function deleteCachedResults (sortedByEvictionCost) {
     return new Promise((resolve, reject) => {
         cacheController.deleteFromCache(sortedByEvictionCost).then(gbIdsToDelete => {
-            helper.log("IDS DELETED FROM CACHE:");
+            helper.log('IDS DELETED FROM CACHE:');
             helper.log(gbIdsToDelete);
-            helper.log("*********");
+            helper.log('*********');
             deleteGBsById(gbIdsToDelete).then(receipt => {
                 resolve(receipt);
             }).catch(error => {

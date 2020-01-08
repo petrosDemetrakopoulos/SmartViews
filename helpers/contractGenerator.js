@@ -99,7 +99,6 @@ async function generateContract (templateFileName) {
         '\t\treturn(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns, groupBys[idGroup].size);\n' +
         '\t}\n\n';
 
-
     let retValsLatest = '';
     let getParamsLatest = '';
     for (let i = 0; i < factTbl.properties.length; i++) {
