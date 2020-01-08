@@ -216,7 +216,7 @@ function removeUnneededFieldsFromBCResponse (bcResponse) {
 
 function deleteCachedResults (sortedByEvictionCost) {
     return new Promise((resolve, reject) => {
-        cacheController.deleteFromCache(sortedByEvictionCost, function (gbIdsToDelete) {
+        cacheController.deleteFromCache(sortedByEvictionCost).then(gbIdsToDelete => {
             helper.log("IDS DELETED FROM CACHE:");
             helper.log(gbIdsToDelete);
             helper.log("*********");

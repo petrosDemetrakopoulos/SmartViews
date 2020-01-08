@@ -125,25 +125,27 @@ function saveOnCache (gbResult, operation, latestId) {
     return contract.methods.addGroupBy(crnHash, latestId, colSize, resultSize, columns).send(mainTransactionObject);
 }
 
-function deleteFromCache (evicted, callback) {
-    let keysToDelete = [];
-    let gbIdsToDelete = [];
-    for (let i = 0; i < evicted.length; i++) {
-        keysToDelete.push(evicted[i].hash);
-        let crnHash = evicted[i].hash;
-        let cachedGBSplited = crnHash.split('_');
-        let cachedGBLength = parseInt(cachedGBSplited[1]);
-        if (cachedGBLength > 0) { // reconstructing all the hashes in cache if it is sliced
-            for (let j = 0; j < cachedGBLength; j++) {
-                keysToDelete.push(cachedGBSplited[0] + '_' + j);
+function deleteFromCache (evicted) {
+    return new Promise((resolve) => {
+        let keysToDelete = [];
+        let gbIdsToDelete = [];
+        for (let i = 0; i < evicted.length; i++) {
+            keysToDelete.push(evicted[i].hash);
+            let crnHash = evicted[i].hash;
+            let cachedGBSplited = crnHash.split('_');
+            let cachedGBLength = parseInt(cachedGBSplited[1]);
+            if (cachedGBLength > 0) { // reconstructing all the hashes in cache if it is sliced
+                for (let j = 0; j < cachedGBLength; j++) {
+                    keysToDelete.push(cachedGBSplited[0] + '_' + j);
+                }
             }
+            gbIdsToDelete[i] = evicted[i].id;
         }
-        gbIdsToDelete[i] = evicted[i].id;
-    }
-    helper.log('keys to remove from cache are:');
-    helper.log(keysToDelete);
-    client.del(keysToDelete);
-    callback(gbIdsToDelete);
+        helper.log('keys to remove from cache are:');
+        helper.log(keysToDelete);
+        client.del(keysToDelete);
+        resolve(gbIdsToDelete);
+    });
 }
 
 function getManyCachedResults (allHashes) {

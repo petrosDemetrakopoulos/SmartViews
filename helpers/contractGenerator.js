@@ -260,7 +260,7 @@ async function generateContract (templateFileName) {
             helper.log('******************');
             helper.log('Contract generated!');
             helper.log('******************');
-            let templ = {};
+            let templ;
             if ('template' in factTbl) {
                 templ = factTbl['template'];
             } else {
