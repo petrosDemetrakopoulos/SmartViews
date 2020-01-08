@@ -97,9 +97,10 @@ http.listen(3000, () => {
         computationsController.connectToSQL().then(connected => {
             mysqlConnected = true;
             console.log('mySQL connected');
+            helper.welcomeMessage();
         }).catch(err => {
             console.error('error connecting to mySQL: ' + err.stack);
-        })
+        });
     } else {
         console.log('Config file validations failed');
         process.exit(1);

@@ -399,6 +399,15 @@ function findSameOldestResults (sortedByEvictionCost, view) {
     return sameOldestResults;
 }
 
+function welcomeMessage () {
+    console.log('     _____                          _ __      __ _                      ');
+    console.log('    / ____|                        | |\\ \\    / /(_)                     ');
+    console.log('   | (___   _ __ ___    __ _  _ __ | |_\\ \\  / /  _   ___ __      __ ___ ');
+    console.log('    \\___ \\ | \'_ ` _ \\  / _` || \'__|| __| \\ \/ /  | | / _ \\ \ /\\ / // __|');
+    console.log('    ____) || | | | | || (_| || |   | |_  \\  /   | ||  __/ \ V  V / \\__ \\');
+    console.log('   |_____/ |_| |_| |_| \\__,_||_|    \\__|  \\/    |_| \\___|  \\_/\\_/  |___/');
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -425,6 +434,7 @@ module.exports = {
     assignTimes: assignTimes,
     findSameOldestResults: findSameOldestResults,
     sortByWord2Vec: sortByWord2Vec,
-    extractOperation: extractOperation
+    extractOperation: extractOperation,
+    welcomeMessage: welcomeMessage
 };
 const costFunctions = require('./costFunctions');
