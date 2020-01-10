@@ -140,6 +140,28 @@ async function word2vec (groupBys, view) {
     return groupBys;
 }
 
+//definition of cube distance
+//For two views V1,V2 we can define their distance in data cube lattice
+//as the number of roll-ups, drill-downs needed to go from V1 to V2.
+
+//DataCubeDistance('ABC','AB'))=1 { ΑBC --rollup--> AB }
+//DataCubeDistance('ABC','ACD')=2   {ABC ->AC->ACD }
+//DataCubeDistance('ABC','DE) = 5 {ABC->AB->A->()->D->DE}
+
+//dim(V)= set of dimensions in view V
+//DataCubeDistance(x,y) = |dim(x) UNION dim(y) - dim(x) INTERSECTION dim(y)|
+
+function dataCubeDistance (view1, view2) {
+    let view1fields = JSON.parse(view1.columns);
+    let view2fields = JSON.parse(view1.columns);
+    view1fields = view1fields.fields;
+    view2fields = view2fields.fields;
+    let union = _.union(view1fields, view2fields).sort();
+    let intersection = _.intersection(view1fields, view2fields).sort();
+    return union.length - intersection.length;
+}
+
+
 module.exports = {
     dispCost: dispCost,
     calculationCostOfficial: calculationCostOfficial,

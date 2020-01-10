@@ -41,7 +41,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 1347,
+      "frequency": 1352,
       "gbFields": [
         "A",
         "B"
@@ -106,7 +106,11 @@
       "operation": "SUM",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, SUMD int)",
-      "frequency": 176
+      "frequency": 182,
+      "gbFields": [
+        "A",
+        "B"
+      ]
     },
     {
       "name": "AB(AVERAGE-D)",
@@ -117,7 +121,12 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTD int, SUMD int)",
-      "frequency": 59
+      "frequency": 61,
+      "gbFields": [
+        "A",
+        "B"
+      ],
+      "id": "5"
     },
     {
       "name": "A(AVERAGE-D)",
@@ -127,7 +136,11 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTD int, SUMD int)",
-      "frequency": 62
+      "frequency": 64,
+      "gbFields": [
+        "A"
+      ],
+      "id": "6"
     },
     {
       "name": "AB(MAX-D)",
@@ -138,7 +151,12 @@
       "operation": "MAX",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MAXD int)",
-      "frequency": 130
+      "frequency": 132,
+      "gbFields": [
+        "A",
+        "B"
+      ],
+      "id": "7"
     },
     {
       "name": "AB(MIN-D)",
@@ -149,7 +167,12 @@
       "operation": "MIN",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MIND int)",
-      "frequency": 80
+      "frequency": 82,
+      "gbFields": [
+        "A",
+        "B"
+      ],
+      "id": "8"
     },
     {
       "name": "A(COUNT)",
@@ -159,10 +182,11 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
-      "frequency": 550,
+      "frequency": 555,
       "gbFields": [
         "A"
-      ]
+      ],
+      "id": "9"
     },
     {
       "name": "B(COUNT)",
