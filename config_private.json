@@ -5,7 +5,7 @@
     "maxCacheSize": 1000,
     "maxCacheSizeInKB": 500,
     "cacheSlice": 2,
-    "autoCacheSlice": "auto",
+    "autoCacheSlice": "manual",
     "maxGbSize": 10000,
     "redisPort": 6379,
     "redisIP": "127.0.0.1",
@@ -17,5 +17,5 @@
         "database": "Ptychiaki"
     },
     "cacheEnabled": true,
-    "logging": true
+    "logging": false
 }

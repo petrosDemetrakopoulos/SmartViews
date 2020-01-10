@@ -11,7 +11,7 @@ function setContract (contractObject, account) {
 }
 
 async function addFact (fact) {
-    let addFactPromise = contract.methods.addFact(stringify(fact));
+    const addFactPromise = contract.methods.addFact(stringify(fact));
     return sendTransactionWithContractMethod(addFactPromise);
 }
 
@@ -47,16 +47,16 @@ async function getGroupByWithId (id) {
 }
 
 async function getAllGroupbys () { // promisify it to await where we call it
-    let getGroupIdTimeStart = helper.time();
+    const getGroupIdTimeStart = helper.time();
     return new Promise((resolve, reject) => {
         contract.methods.groupId().call(function (err, result) {
-            let getGroupIdTime = helper.time() - getGroupIdTimeStart;
+            const getGroupIdTime = helper.time() - getGroupIdTimeStart;
             if (!err) {
                 if (result > 0) {
-                    let getAllGBsFromBCTimeStart = helper.time();
+                    const getAllGBsFromBCTimeStart = helper.time();
                     return contract.methods.getAllGroupBys(result).call(function (err, resultGB) {
-                        let getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
-                        let times = { getAllGBsTime: getAllGBsTime, getGroupIdTime: getGroupIdTime };
+                        const getAllGBsTime = helper.time() - getAllGBsFromBCTimeStart;
+                        const times = { getAllGBsTime: getAllGBsTime, getGroupIdTime: getGroupIdTime };
                         if (!err) {
                             resultGB = removeUnneededFieldsFromBCResponse(resultGB);
                             resultGB.times = times;
@@ -67,7 +67,7 @@ async function getAllGroupbys () { // promisify it to await where we call it
                         }
                     });
                 } else {
-                    let times = { times: { getGroupIdTime: getGroupIdTime, getAllGBsTime: 0 } };
+                    const times = { times: { getGroupIdTime: getGroupIdTime, getAllGBsTime: 0 } };
                     resolve(times);
                 }
             } else {
@@ -83,7 +83,7 @@ async function addManyFacts (facts, sliceSize, io) {
     let allSlicesReady = [];
     if (sliceSize > 1) {
         let slices = [];
-        let slicesNum = Math.ceil(facts.length / sliceSize);
+        const slicesNum = Math.ceil(facts.length / sliceSize);
         helper.log('*will add ' + slicesNum + ' slices*');
         for (let j = 0; j < slicesNum; j++) {
             if (j === 0) {
@@ -125,7 +125,7 @@ async function getAllFacts (factsLength) {
             if (!err) {
                 result2 = removeUnneededFieldsFromBCResponse(result2);
                 if ('payload' in result2) {
-                    let crnLn = JSON.parse(result2['payload']);
+                    const crnLn = JSON.parse(result2['payload']);
                     crnLn.timestamp = result2['timestamp'];
                     allFacts.push(crnLn);
                 }
@@ -144,7 +144,7 @@ async function getAllFactsHeavy (factsLength) {
             result = removeUnneededFieldsFromBCResponse(result);
             if ('payloads' in result) {
                 for (let i = 0; i < result['payloads'].length; i++) {
-                    let crnLn = JSON.parse(result['payloads'][i]);
+                    const crnLn = JSON.parse(result['payloads'][i]);
                     crnLn.timestamp = result['timestamps'][i];
                     allFacts.push(crnLn);
                 }
@@ -163,7 +163,7 @@ async function getFactsFromTo (from, to) {
             result = removeUnneededFieldsFromBCResponse(result);
             if ('payloadsFromTo' in result) {
                 for (let i = 0; i < result['payloadsFromTo'].length; i++) {
-                    let crnLn = JSON.parse(result['payloadsFromTo'][i]);
+                    const crnLn = JSON.parse(result['payloadsFromTo'][i]);
                     crnLn.timestamp = result['timestampsFromTo'][i];
                     allFacts.push(crnLn);
                 }
@@ -200,14 +200,14 @@ async function getLatestId () {
 }
 
 function deleteGBsById (gbIdsToDelete) {
-    let deleteGBsByIdPromise = contract.methods.deleteGBsById(gbIdsToDelete);
+    const deleteGBsByIdPromise = contract.methods.deleteGBsById(gbIdsToDelete);
     return sendTransactionWithContractMethod(deleteGBsByIdPromise);
 }
 
 function removeUnneededFieldsFromBCResponse (bcResponse) {
     // for some unknown reason web3 responses contain all fields twice, therefore we have
     // to remove half of them to proceed, it is just a data preprocessing stage
-    let len = Object.keys(bcResponse).length;
+    const len = Object.keys(bcResponse).length;
     for (let j = 0; j < len / 2; j++) {
         delete bcResponse[j];
     }

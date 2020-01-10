@@ -3,8 +3,8 @@ const exec = require('child_process').execSync;
 
 function cost (Vi, V, latestFact) {
     // The cost of materializing view V using the cached view Vi
-    let sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
-    let sizeCached = Number.parseInt(Vi.size);
+    const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
+    const sizeCached = Number.parseInt(Vi.size);
     V.calculationCost = 500 * sizeDeltas + sizeCached;
     return V;
 }
@@ -102,7 +102,7 @@ function getViewsMaterialisableFromVi (Vc, Vi) {
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
-    let a = 500; // factor of deltas
+    const a = 500; // factor of deltas
     let sizeDeltas = 0;
     let sizeCached = 0;
     for (let i = 0; i < groupBys.length; i++) {
@@ -153,17 +153,26 @@ async function word2vec (groupBys, view) {
 
 function dataCubeDistance (view1, view2) {
     let view1fields = JSON.parse(view1.columns);
-    let view2fields = JSON.parse(view1.columns);
+    let view2fields = JSON.parse(view2.columns);
     view1fields = view1fields.fields;
     view2fields = view2fields.fields;
-    let union = _.union(view1fields, view2fields).sort();
-    let intersection = _.intersection(view1fields, view2fields).sort();
+    const union = _.union(view1fields, view2fields).sort();
+    const intersection = _.intersection(view1fields, view2fields).sort();
     return union.length - intersection.length;
+}
+
+function dataCubeDistanceBatch (cachedViews, view) {
+    view.columns = JSON.stringify(view.fields);
+    for (let i = 0; i < cachedViews.length; i++) {
+        cachedViews[i].dataCubeDistance = dataCubeDistance(cachedViews[i], view);
+    }
+    return cachedViews;
 }
 
 
 module.exports = {
     dispCost: dispCost,
     calculationCostOfficial: calculationCostOfficial,
-    word2vec: word2vec
+    word2vec: word2vec,
+    dataCubeDistanceBatch : dataCubeDistanceBatch
 };

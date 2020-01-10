@@ -154,7 +154,7 @@ function extractGBValues (reducedResult, view) {
     lastCol = lastCol[lastCol.length - 2];
 
     for (let i = 0, keys = Object.keys(reducedResult); i < keys.length; i++) {
-        let key = keys[i];
+        const key = keys[i];
         if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
             let crnRow = JSON.parse(key);
             if (view.operation === 'AVERAGE') {
@@ -170,7 +170,7 @@ function extractGBValues (reducedResult, view) {
 }
 
 function getJSONFiles (items) {
-    let suffix = '.json';
+    const suffix = '.json';
     return items.filter(file => {
         return file.indexOf(suffix) !== -1; // filtering out non-json files
     });
@@ -256,7 +256,7 @@ function extractViewMeta (view) {
 
 function checkViewExists (viewsDefined, viewName, factTbl) {
     let view = {};
-    for (let crnView in viewsDefined) {
+    for (const crnView in viewsDefined) {
         if (factTbl.views[crnView].name === viewName) {
             view = factTbl.views[crnView];
             view.id = crnView;
@@ -288,6 +288,7 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let transformedArray = transformGBMetadataFromBlockchain(resultGB);
     transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
     let sortedByEvictionCost = JSON.parse(JSON.stringify(transformedArray));
+    sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
     return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(async sortedByEvictionCost => {
         await sortedByEvictionCost.sort(function (a, b) {
             if (config.cacheEvictionPolicy === 'FIFO') {
@@ -296,6 +297,8 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
                 return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
             } else if (config.cacheEvictionPolicy === 'word2vec') {
                 return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
+            } else if (config.cacheEvictionPolicy === 'cubeDistance') {
+                return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
             }
         });
         return sortedByEvictionCost;
@@ -323,8 +326,8 @@ async function sortByWord2Vec (resultGBs, view) {
 }
 
 function reconstructSlicedCachedResult (cachedGB) {
-    let hashId = cachedGB.hash.split('_')[1];
-    let hashBody = cachedGB.hash.split('_')[0];
+    const hashId = cachedGB.hash.split('_')[1];
+    const hashBody = cachedGB.hash.split('_')[0];
     let allHashes = [];
     for (let i = 0; i <= hashId; i++) {
         allHashes.push(hashBody + '_' + i);
@@ -391,8 +394,8 @@ function assignTimes (result, times) {
 function findSameOldestResults (sortedByEvictionCost, view) {
     let sameOldestResults = [];
     for (let i = 0; i < sortedByEvictionCost.length; i++) {
-        let crnRes = sortedByEvictionCost[i];
-        let meta = JSON.parse(crnRes.columns);
+        const crnRes = sortedByEvictionCost[i];
+        const meta = JSON.parse(crnRes.columns);
         if (JSON.stringify(meta.fields) === JSON.stringify(view.gbFields) && meta.aggrFunc === view.operation) {
             sameOldestResults.push(crnRes);
         }

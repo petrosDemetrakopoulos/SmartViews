@@ -170,17 +170,17 @@ describe('testing /allfacts', function () {
         return request(app)
             .get('/allfacts')
             .then(function (response) {
-                resp = response.body;
+                resp = response.text;
                 expect(response.status).to.equal(200);
             });
     });
 
     it('should be an array', function () {
-        expect(resp).to.be.a('array');
+        expect(JSON.parse(resp).to.be.a('array'));
     });
 
     it('should have length of 11', function () {
-        expect(resp).to.have.lengthOf(11);
+        expect(resp.to.have.lengthOf(11));
     });
 });
 
@@ -190,7 +190,8 @@ describe('testing /getFactsFromTo/:from/:to', function () {
         return request(app)
             .get('/getFactsFromTo/2/5')
             .then(function (response) {
-                resp = response.body;
+                resp = response.text;
+                console.log(resp);
                 expect(response.status).to.equal(200);
             });
     });
@@ -199,8 +200,8 @@ describe('testing /getFactsFromTo/:from/:to', function () {
         expect(resp).to.be.a('array');
     });
 
-    it('should have length of 4', function () {
-        expect(resp).to.have.lengthOf(4);
+    it('should have length of 5', function () {
+        expect(JSON.parse(resp).to.have.lengthOf(5));
     });
 });
 
@@ -333,6 +334,7 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
                 return request(app)
                     .get('/getViewByName/AB(SUM-D)/ABCDE')
                     .then(function (response) {
+                        console.log(response.text);
                         resp = response.text;
                         expect(response.status).to.equal(200);
                     });

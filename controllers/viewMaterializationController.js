@@ -19,55 +19,55 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
         let matSteps = [];
         let bcTimeStart = helper.time();
         contractController.getFactsFromTo(mostEfficient.latestFact, latestId - 1).then(async deltas => {
-            let bcTimeEnd = helper.time();
+            const bcTimeEnd = helper.time();
             matSteps.push({ type: 'bcFetchDeltas', numOfFacts: deltas.length });
             await computationsController.executeQuery(createTable).then(async results => {
                 deltas = helper.removeTimestamps(deltas);
                 helper.log('CALCULATING GROUP-BY FOR DELTAS:');
-                let sqlTimeStart = helper.time();
+                const sqlTimeStart = helper.time();
                 await computationsController.calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField).then(async groupBySqlResult => {
-                    let sqlTimeEnd = helper.time();
-                    let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
+                    const sqlTimeEnd = helper.time();
+                    const allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
                     matSteps.push({ type: 'sqlCalculationDeltas' });
-                    let cacheRetrieveTimeStart = helper.time();
+                    const cacheRetrieveTimeStart = helper.time();
                     await cacheController.getManyCachedResults(allHashes).then(async allCached => {
-                        let cacheRetrieveTimeEnd = helper.time();
+                        const cacheRetrieveTimeEnd = helper.time();
                         matSteps.push({ type: 'cacheFetch' });
-                        let cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
+                        const cachedGroupBy = cacheController.preprocessCachedGroupBy(allCached);
 
                         if (cachedGroupBy.field === view.aggregationField &&
                             view.operation === cachedGroupBy.operation) {
                             if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
-                                let reductionTimeStart = helper.time();
-                                await computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
-                                    let reductionTimeEnd = helper.time();
+                                const reductionTimeStart = helper.time();
+                                computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
+                                    const reductionTimeEnd = helper.time();
                                     matSteps.push({ type: 'sqlReduction', from: cachedGroupBy.groupByFields, to: gbFields });
-                                    let viewMeta = helper.extractViewMeta(view);
+                                    const viewMeta = helper.extractViewMeta(view);
                                     // MERGE reducedResult with groupBySQLResult
                                     reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
                                     reducedResult.field = view.aggregationField;
                                     reducedResult.viewName = view.name;
-                                    let rows = helper.extractGBValues(reducedResult, view);
-                                    let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
+                                    const rows = helper.extractGBValues(reducedResult, view);
+                                    const rowsDelta = helper.extractGBValues(groupBySqlResult, view);
 
-                                    let mergeTimeStart = helper.time();
-                                    await computationsController.mergeGroupBys(rows, rowsDelta,
+                                    const mergeTimeStart = helper.time();
+                                    computationsController.mergeGroupBys(rows, rowsDelta,
                                         view, viewMeta).then(mergeResult => {
-                                        let mergeTimeEnd = helper.time();
+                                        const mergeTimeEnd = helper.time();
                                         matSteps.push({ type: 'sqlMergeReducedCachedWithDeltas' });
                                         mergeResult.operation = view.operation;
                                         mergeResult.field = view.aggregationField;
                                         mergeResult.gbCreateTable = view.SQLTable;
                                         mergeResult.viewName = view.name;
                                         // save on cache before return
-                                        let gbSize = stringify(mergeResult).length;
+                                        const gbSize = stringify(mergeResult).length;
                                         if (gbSize / 1024 <= config.maxCacheSizeInKB) {
-                                            let cacheSaveTimeStart = helper.time();
+                                            const cacheSaveTimeStart = helper.time();
                                             cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
                                                 helper.log('error:' + err);
                                                 reject(err);
                                             }).on('receipt', async (receipt) => {
-                                                let cacheSaveTimeEnd = helper.time();
+                                                const cacheSaveTimeEnd = helper.time();
                                                 matSteps.push({ type: 'cacheSave' });
                                                 delete mergeResult.gbCreateTable;
 
@@ -77,7 +77,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                                     cacheSaveTime: cacheSaveTimeEnd - cacheSaveTimeStart,
                                                     totalStart: totalStart };
                                                 times.totalTime = times.bcTime + times.sqlTime + times.cacheRetrieveTime + times.cacheSaveTime;
-                                                let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
+                                                const sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
                                                 helper.log('receipt:' + JSON.stringify(receipt));
                                                 clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, times).then(results => {
                                                     helper.printTimes(results);
@@ -89,11 +89,11 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                                 });
                                             });
                                         } else {
-                                            let totalEnd = helper.time();
-                                            let sqlTime = (sqlTimeEnd - sqlTimeStart);
-                                            let reductionTime = (reductionTimeEnd - reductionTimeStart);
-                                            let mergeTime = (mergeTimeEnd - mergeTimeStart);
-                                            let bcTime = (bcTimeEnd - bcTimeStart);
+                                            const totalEnd = helper.time();
+                                            const sqlTime = (sqlTimeEnd - sqlTimeStart);
+                                            const reductionTime = (reductionTimeEnd - reductionTimeStart);
+                                            const mergeTime = (mergeTimeEnd - mergeTimeStart);
+                                            const bcTime = (bcTimeEnd - bcTimeStart);
                                             mergeResult.sqlTime = sqlTime + reductionTime + mergeTime;
                                             mergeResult.bcTime = bcTime + getLatestFactIdTime + globalAllGroupBysTime.getGroupIdTime + globalAllGroupBysTime.getAllGBsTime;
                                             mergeResult.cacheRetrieveTime = cacheRetrieveTimeEnd - cacheRetrieveTimeStart;
@@ -116,7 +116,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                 console.log('GROUP-BY FIELDS OF DELTAS AND CACHED ARE THE SAME');
                                 // group by fields of deltas and cached are the same so
                                 // MERGE cached and groupBySqlResults
-                                let times = { bcTimeEnd: bcTimeEnd,
+                                const times = { bcTimeEnd: bcTimeEnd,
                                     bcTimeStart: bcTimeStart,
                                     getGroupIdTime: globalAllGroupBysTime.getGroupIdTime,
                                     getAllGBsTime: globalAllGroupBysTime.getAllGBsTime,
@@ -157,10 +157,10 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
 
 function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEvictionCost, times, latestId) {
     return new Promise((resolve, reject) => {
-        let reductionTimeStart = helper.time();
+        const reductionTimeStart = helper.time();
         computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
-            let reductionTimeEnd = helper.time();
-            let viewMeta = helper.extractViewMeta(view);
+            const reductionTimeEnd = helper.time();
+            const viewMeta = helper.extractViewMeta(view);
             if (view.operation === 'AVERAGE') {
                 reducedResult = transformations.transformAverage(reducedResult, view.gbFields, view.aggregationField);
             } else {
@@ -169,7 +169,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
             reducedResult.field = view.aggregationField;
             reducedResult.viewName = view.name;
             reducedResult.operation = view.operation;
-            let gbSize = stringify(reducedResult).length;
+            const gbSize = stringify(reducedResult).length;
             if (gbSize / 1024 <= config.maxCacheSizeInKB) {
                 let cacheSaveTimeStart = helper.time();
                 cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
@@ -177,8 +177,8 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                     reject(err);
                 }).on('receipt', (receipt) => {
                     helper.log('receipt:' + JSON.stringify(receipt));
-                    let cacheSaveTimeEnd = helper.time();
-                    let times2 = {
+                    const cacheSaveTimeEnd = helper.time();
+                    const times2 = {
                         sqlTimeEnd: reductionTimeEnd,
                         sqlTimeStart: reductionTimeStart,
                         totalStart: times.totalStart,
@@ -187,7 +187,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                         cacheRetrieveTimeStart: times.cacheRetrieveTimeStart,
                         cacheRetrieveTimeEnd: times.cacheRetrieveTimeEnd
                     };
-                    let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
+                    const sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
                     clearCacheIfNeeded(sortedByEvictionCost, reducedResult, sameOldestResults, times2).then(results => {
                         helper.printTimes(results);
                         //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
@@ -198,7 +198,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                     });
                 });
             } else {
-                let times2 = {
+                const times2 = {
                     sqlTimeEnd: reductionTimeEnd,
                     sqlTimeStart: reductionTimeStart,
                     totalStart: times.totalStart,
@@ -219,10 +219,10 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
 
 function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySqlResult, latestId, sortedByEvictionCost, times) {
     return new Promise((resolve, reject) => {
-        let viewMeta = helper.extractViewMeta(view);
-        let rows = helper.extractGBValues(cachedGroupBy, view);
-        let rowsDelta = helper.extractGBValues(groupBySqlResult, view);
-        let mergeTimeStart = helper.time();
+        const viewMeta = helper.extractViewMeta(view);
+        const rows = helper.extractGBValues(cachedGroupBy, view);
+        const rowsDelta = helper.extractGBValues(groupBySqlResult, view);
+        const mergeTimeStart = helper.time();
         computationsController.mergeGroupBys(rows, rowsDelta,
             view, viewMeta).then(mergeResult => {
             let mergeTimeEnd = helper.time();
@@ -232,14 +232,14 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
             mergeResult.field = view.aggregationField;
             mergeResult.gbCreateTable = view.SQLTable;
             mergeResult.viewName = view.name;
-            let gbSize = stringify(mergeResult).length;
+            const gbSize = stringify(mergeResult).length;
             if (gbSize / 1024 <= config.maxCacheSizeInKB) {
-                let cacheSaveTimeStart = helper.time();
+                const cacheSaveTimeStart = helper.time();
                 cacheController.saveOnCache(mergeResult, view.operation, latestId - 1).on('error', (err) => {
                     helper.log('error:' + err);
                     reject(err);
                 }).on('receipt', (receipt) => {
-                    let cacheSaveTimeEnd = helper.time();
+                    const cacheSaveTimeEnd = helper.time();
                     delete mergeResult.gbCreateTable;
                     let timesReady = {};
                     helper.log('receipt:' + JSON.stringify(receipt));
@@ -251,7 +251,7 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
                     timesReady.totalStart = times.totalStart;
                     //find from sortedByEvictionCost any cached result that is exactly the same with the one requested
                     //then add it to a separate array and delete it anyway independently to if they are already in sortedByEvictionCost
-                    let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
+                    const sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
                     clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, timesReady).then(results => {
                         helper.printTimes(mergeResult);
                         //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
@@ -286,29 +286,29 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
         let bcTimeStart = helper.time();
         contractController.getLatestId().then(latestId => {
             contractController.getAllFactsHeavy(latestId).then(retval => {
-                let bcTimeEnd = helper.time();
+                const bcTimeEnd = helper.time();
                 if (retval.length === 0) {
                     return reject(new Error('No facts exist in blockchain'));
                 }
                 matSteps.push({ type: 'bcFetch', numOfFacts: retval.length });
-                let facts = helper.removeTimestamps(retval);
+                const facts = helper.removeTimestamps(retval);
                 helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
-                let sqlTimeStart = helper.time();
+                const sqlTimeStart = helper.time();
                 computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField).then(groupBySqlResult => {
                     matSteps.push({ type: 'sqlCalculationInitial' });
-                    let sqlTimeEnd = helper.time();
+                    const sqlTimeEnd = helper.time();
                     groupBySqlResult.gbCreateTable = view.SQLTable;
                     groupBySqlResult.field = view.aggregationField;
                     groupBySqlResult.viewName = view.name;
-                    let gbSize = stringify(groupBySqlResult).length;
+                    const gbSize = stringify(groupBySqlResult).length;
                     if (config.cacheEnabled && ((gbSize / 1024) <= config.maxCacheSizeInKB)) {
-                        let cacheSaveTimeStart = helper.time();
+                        const cacheSaveTimeStart = helper.time();
                         cacheController.saveOnCache(groupBySqlResult, view.operation, latestId - 1).on('error', (err) => {
                             helper.log('error:', err);
                             reject(err);
                         }).on('receipt', (receipt) => {
                             matSteps.push({ type: 'cacheSave' });
-                            let cacheSaveTimeEnd = helper.time();
+                            const cacheSaveTimeEnd = helper.time();
                             delete groupBySqlResult.gbCreateTable;
                             helper.log('receipt:' + JSON.stringify(receipt));
                             let times = { sqlTime: sqlTimeEnd - sqlTimeStart,
@@ -339,12 +339,12 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                     }
                 }).catch(err => {
                     console.log(err);
-                    throw err;
+                    reject(err);
                 });
             });
         }).catch(err => {
             console.log(err);
-            throw err;
+            reject(err);
         });
     });
 }
@@ -459,7 +459,7 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
         } else {
             if (cachedGroupBy.field === view.aggregationField &&
                 view.operation === cachedGroupBy.operation) {
-                let totalEnd = helper.time();
+                const totalEnd = helper.time();
                 // this means we just have to return the group by stored in cache
                 // field, operation are same and no new records written
                 cachedGroupBy.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
@@ -480,10 +480,10 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
 }
 
 async function prefetchNearset (n, cachedResults, view) {
-    let resultGBs = await helper.sortByWord2Vec(cachedResults, view);
+    const resultGBs = await helper.sortByWord2Vec(cachedResults, view);
     let viewNames = [];
     for (let i = 0; i < resultGBs.length; i++) {
-        let meta = JSON.parse(resultGBs[i].columns);
+        const meta = JSON.parse(resultGBs[i].columns);
         viewNames.push(meta.fields.join('') + '(' + meta.aggrFunc + ')');
     }
     viewNames = viewNames.filter(function (item, pos) {
@@ -499,10 +499,10 @@ async function prefetchNearset (n, cachedResults, view) {
 async function materializeViewWithName (viewName, contract, totalStart, createTable) {
     return new Promise(async (resolve, reject) => {
         let materializationDone = false;
-        let factTbl = require('../templates/' + contract);
-        let viewsDefined = factTbl.views;
-        let view = helper.checkViewExists(viewsDefined, viewName, factTbl);
-        let gbFields = helper.extractFields(view);
+        const factTbl = require('../templates/' + contract);
+        const viewsDefined = factTbl.views;
+        const view = helper.checkViewExists(viewsDefined, viewName, factTbl);
+        const gbFields = helper.extractFields(view);
         view.gbFields = gbFields;
         let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
         if (config.cacheEnabled) {
@@ -517,21 +517,21 @@ async function materializeViewWithName (viewName, contract, totalStart, createTa
                 }
                 delete resultGB.times;
                 if (Object.keys(resultGB).length > 1) {
-                    let filteredGBs = helper.filterGBs(resultGB, view);
+                    const filteredGBs = helper.filterGBs(resultGB, view);
                     if (filteredGBs.length > 0) {
-                        let getLatestFactIdTimeStart = helper.time();
+                        const getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
-                            let sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
-                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            let mostEfficient = sortedByCalculationCost[0];
-                            let getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
+                            const sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
+                            const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            const mostEfficient = sortedByCalculationCost[0];
+                            const getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
                             if (mostEfficient.latestFact >= (latestId - 1)) {
                                 helper.log('NO NEW FACTS');
                                 // NO NEW FACTS after the latest group by
                                 // -> incrementally calculate the groupby requested by summing the one in redis cache
-                                let allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
-                                let cacheRetrieveTimeStart = helper.time();
+                                const allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
+                                const cacheRetrieveTimeStart = helper.time();
                                 let matSteps = [];
                                 await cacheController.getManyCachedResults(allHashes).then(async allCached => {
                                     let cacheRetrieveTimeEnd = helper.time();
@@ -581,7 +581,7 @@ async function materializeViewWithName (viewName, contract, totalStart, createTa
                         // No filtered group-bys found, proceed to group-by from the beginning
                         helper.log('NO FILTERED GROUP BYS FOUND');
                         await contractController.getLatestId(async latestId => {
-                            let sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             calculateNewGroupByFromBeginning(view, totalStart,
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 materializationDone = true;

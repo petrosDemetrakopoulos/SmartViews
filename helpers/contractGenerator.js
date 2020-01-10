@@ -2,9 +2,9 @@ const fs = require('fs');
 const helper = require('../helpers/helper');
 
 async function generateContract (templateFileName) {
-    let factTbl = require('../templates/' + templateFileName);
-    let createTable = factTbl.template.create_table;
-    let tableName = factTbl.template.table_name;
+    const factTbl = require('../templates/' + templateFileName);
+    const createTable = factTbl.template.create_table;
+    const tableName = factTbl.template.table_name;
     let contrPayload = '';
     let firstLine = 'pragma solidity ^0.4.24;\npragma experimental ABIEncoderV2;\n';
     let secondLine = 'contract ' + factTbl.name + ' { \n';
@@ -27,8 +27,8 @@ async function generateContract (templateFileName) {
     let viewMapping = '\tmapping(uint => gbView) public gbViews;\n\n';
     let groupMapping = '\tmapping(uint => groupBy) public groupBys;\n\n';
     properties += '\t\tuint timestamp;\n';
-    let closeStruct = '\t}\n';
-    let mapping = '\tmapping(uint =>' + factTbl.struct_Name + ') public facts;\n\n';
+    const closeStruct = '\t}\n';
+    const mapping = '\tmapping(uint =>' + factTbl.struct_Name + ') public facts;\n\n';
     let addParams = '';
     let addFact = '\tfunction addFact(';
 
