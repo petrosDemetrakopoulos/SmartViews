@@ -51,9 +51,9 @@ function configFileValidations () {
     }
     if (config.cacheEvictionPolicy !== 'FIFO' &&
         config.cacheEvictionPolicy !== 'costFunction' &&
-        config.cacheEvictionPolicy !== 'word2vec') {
+        config.cacheEvictionPolicy !== 'cubeDistance') {
         formatErrors.push({ field: 'cacheEvictionPolicy',
-            error: 'Should be either \'FIFO\' or \'costFunction\' or \'word2vec\'' });
+            error: 'Should be either \'FIFO\' or \'costFunction\' or \'cubeDistance\'' });
     }
     if ((typeof config.blockchainIP) !== 'string') {
         formatErrors.push({ field: 'blockchainIP', error: 'Should be string' });
@@ -82,7 +82,7 @@ function printTimes (resultObject) {
 function containsAllFields (transformedArray, view) {
     for (let i = 0; i < transformedArray.length; i++) {
         let containsAllFields = true;
-        let crnView = transformedArray[i];
+        const crnView = transformedArray[i];
 
         let cachedGBFields = JSON.parse(crnView.columns);
         for (let index in cachedGBFields.fields) {
@@ -140,7 +140,7 @@ function mergeSlicedCachedResult (allCached) {
     }
     let gbFinal = {};
     for (const i in mergedArray) {
-        let crnKey = Object.keys(mergedArray[i])[0];
+        const crnKey = Object.keys(mergedArray[i])[0];
         gbFinal[crnKey] = Object.values(mergedArray[i])[0];
     }
     return gbFinal;
@@ -177,7 +177,7 @@ function getJSONFiles (items) {
 }
 
 function transformGBMetadataFromBlockchain (resultGB) {
-    let len = Object.keys(resultGB).length;
+    const len = Object.keys(resultGB).length;
     for (let j = 0; j < len / 2; j++) {
         delete resultGB[j];
     }

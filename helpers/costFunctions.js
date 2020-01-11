@@ -32,7 +32,7 @@ async function dispCost (Vc, latestFact, factTbl) {
         let allHashes = [];
         let toBeEvicted = [];
         for (let i = 0; i < Vc.length; i++) {
-            let crnGroupBy = Vc[i];
+            const crnGroupBy = Vc[i];
             allHashes.push(crnGroupBy.hash);
         }
         cacheController.getManyCachedResults(allHashes).then(async allCached => {
@@ -43,8 +43,8 @@ async function dispCost (Vc, latestFact, factTbl) {
 
             if (allHashes.length > 1) {
                 for (let j = 0; j < allCached.length; j++) {
-                    let crnGb = JSON.parse(allCached[j]);
-                    let viewsDefined = factTbl.views;
+                    const crnGb = JSON.parse(allCached[j]);
+                    const viewsDefined = factTbl.views;
                     for (let crnView in viewsDefined) {
                         if (factTbl.views[crnView].name === crnGb.viewName) {
                             freq = factTbl.views[crnView].frequency;
@@ -117,7 +117,7 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
 
 async function word2vec (groupBys, view) {
     let victims = [];
-    let viewForW2V = view.gbFields.toString().replace(/,/g, '');
+    const viewForW2V = view.gbFields.toString().replace(/,/g, '');
     for (let i = 0; i < groupBys.length; i++) {
         let currentFields = JSON.parse(groupBys[i].columns);
         let newVictim = currentFields.fields.toString()
