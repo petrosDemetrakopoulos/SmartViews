@@ -20,14 +20,14 @@ before(function (done) {
     setTimeout(done, 3000);
 });
 describe('testing default route', function () {
-    it('should return OK status', function () {
+    it('should return OK status', async () => {
         return request(app)
             .get('/')
             .then(function (response) {
                 expect(response.status).to.equal(200);
             });
     });
-    it('should be html', function () {
+    it('should be html', async () =>  {
         return request(app)
             .get('/')
             .then(function (response) {
@@ -37,14 +37,14 @@ describe('testing default route', function () {
 });
 
 describe('testing /dashboard route', function () {
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/dashboard')
             .then(function (response) {
                 expect(response.status).to.equal(200);
             });
     });
-    it('should be html', function () {
+    it('should be html', async () =>  {
         return request(app)
             .get('/dashboard')
             .then(function (response) {
@@ -54,7 +54,7 @@ describe('testing /dashboard route', function () {
 });
 
 describe('testing /new_contract/:fn route', function () {
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/new_contract/ABCDE.json')
             .then(function (response) {
@@ -77,7 +77,7 @@ describe('testing /new_contract/:fn route', function () {
 });
 
 describe('testing /deployContract/:fn route', function () {
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/deployContract/' + responseBodyContractgeneration.filename)
             .then(function (response) {
@@ -97,7 +97,7 @@ describe('testing /deployContract/:fn route', function () {
 
 describe('testing /form/:contract route', function () {
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/form/ABCDE')
             .then(function (response) {
@@ -114,7 +114,7 @@ describe('testing /form/:contract route', function () {
 describe('testing /addFact route', function () {
     let payload = { pk: 250, A: 1, B: 2, C: 3, D: 12.3 };
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .post('/addFact')
             .send(payload)
@@ -132,7 +132,7 @@ describe('testing /addFact route', function () {
 
 describe('testing /getFactById/:id route', function () {
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getFactById/0')
             .then(function (response) {
@@ -148,9 +148,9 @@ describe('testing /getFactById/:id route', function () {
 
 describe('testing /load_dataset/:dt route', function () {
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
-            .get('/load_dataset/10fourcol')
+            .get('/load_dataset/10fourcol.json')
             .then(function (response) {
                 resp = response.body;
                 expect(response.status).to.equal(200);
@@ -166,49 +166,48 @@ describe('testing /allfacts', function () {
     setTimeout(function () { console.log('waiting...'); }, 1000);
     // wait so that latest fact should not have the same timestamp with the group by that will be cached
     let resp = {};
-    it('should return OK status', function () {
-        return request(app)
+    it('should return OK status', async () =>  {
+        return await request(app)
             .get('/allfacts')
             .then(function (response) {
-                resp = response.text;
+                resp = JSON.parse(response.text);
                 expect(response.status).to.equal(200);
             });
     });
 
     it('should be an array', function () {
-        expect(JSON.parse(resp).to.be.a('array'));
+        expect(resp).to.be.an('array');
     });
 
     it('should have length of 11', function () {
-        expect(resp.to.have.lengthOf(11));
+        expect(resp).to.have.lengthOf(13);
     });
 });
 
 describe('testing /getFactsFromTo/:from/:to', function () {
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getFactsFromTo/2/5')
             .then(function (response) {
-                resp = response.text;
-                console.log(resp);
+                resp = JSON.parse(response.text);
                 expect(response.status).to.equal(200);
             });
     });
 
     it('should be an array', function () {
-        expect(resp).to.be.a('array');
+        expect(resp).to.be.an('array');
     });
 
-    it('should have length of 5', function () {
-        expect(JSON.parse(resp).to.have.lengthOf(5));
+    it('should have length of 4', function () {
+        expect(resp).to.have.lengthOf(4);
     });
 });
 
 describe('testing /getViewByName/:viewName/:contract -- Initial query', function () {
     freeze(1000);
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getViewByName/AB(COUNT)/ABCDE')
             .then(function (response) {
@@ -224,7 +223,7 @@ describe('testing /getViewByName/:viewName/:contract -- Initial query', function
 
 describe('testing /getViewByName/:viewName/:contract -- Reduction from cache without deltas', async function () {
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         freeze(1000);
         return request(app)
             .get('/getViewByName/A(COUNT)/ABCDE')
@@ -242,7 +241,7 @@ describe('testing /getViewByName/:viewName/:contract -- Reduction from cache wit
 describe('testing /getViewByName/:viewName/:contract -- SUM', function () {
     freeze(1000);
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getViewByName/AB(SUM-D)/ABCDE')
             .then(function (response) {
@@ -259,7 +258,7 @@ describe('testing /getViewByName/:viewName/:contract -- SUM', function () {
 describe('testing /getViewByName/:viewName/:contract -- MAX', function () {
     freeze(1000);
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getViewByName/AB(MAX-D)/ABCDE')
             .then(function (response) {
@@ -276,7 +275,7 @@ describe('testing /getViewByName/:viewName/:contract -- MAX', function () {
 describe('testing /getViewByName/:viewName/:contract -- MIN', function () {
     freeze(1000);
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getViewByName/AB(MIN-D)/ABCDE')
             .then(function (response) {
@@ -293,7 +292,7 @@ describe('testing /getViewByName/:viewName/:contract -- MIN', function () {
 describe('testing /getViewByName/:viewName/:contract -- AVERAGE', function () {
     freeze(1000);
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getViewByName/AB(AVERAGE-D)/ABCDE')
             .then(function (response) {
@@ -310,7 +309,7 @@ describe('testing /getViewByName/:viewName/:contract -- AVERAGE', function () {
 describe('testing /getViewByName/:viewName/:contract -- AVERAGE (Reduction from cache)', function () {
     freeze(1000);
     let resp = {};
-    it('should return OK status', function () {
+    it('should return OK status', async () =>  {
         return request(app)
             .get('/getViewByName/A(AVERAGE-D)/ABCDE')
             .then(function (response) {
@@ -324,22 +323,17 @@ describe('testing /getViewByName/:viewName/:contract -- AVERAGE (Reduction from 
     });
 });
 
-describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas -- SUM', function () {
+describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas -- SUM', async function () {
     let resp = {};
-    it('should return OK status', function () {
-        freeze(1000);
-        return request(app)
-            .get('/load_dataset/10fourcol_b.json') // adding deltas
-            .then(function (response) {
-                return request(app)
-                    .get('/getViewByName/AB(SUM-D)/ABCDE')
-                    .then(function (response) {
-                        console.log(response.text);
-                        resp = response.text;
-                        expect(response.status).to.equal(200);
-                    });
-            });
+    before(async function () {
+       let as = await request(app).get('/load_dataset/10fourcol_b.json');
     });
+
+    it('should return OK status', async function() {
+            const resQuery = await request(app).get('/getViewByName/AB(SUM-D)/ABCDE');
+            expect(resQuery.status).to.equal(200);
+            resp = resQuery.text;
+        });
 
     it('should be a string', function () {
         expect(resp).to.be.a('string');
@@ -544,7 +538,6 @@ describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique pr
                     .get('/getViewByName/A(COUNT)/ABCDE')
                     .then(function (response) {
                         resp = response.text;
-                        console.log(resp);
                         expect(response.status).to.equal(200);
                     });
             });

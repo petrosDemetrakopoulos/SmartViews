@@ -5,7 +5,7 @@
     "maxCacheSize": 1000,
     "maxCacheSizeInKB": 500,
     "cacheSlice": 2,
-    "autoCacheSlice": "manual",
+    "autoCacheSlice": "auto",
     "maxGbSize": 10000,
     "redisPort": 6379,
     "redisIP": "127.0.0.1",

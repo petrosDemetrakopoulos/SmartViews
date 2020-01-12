@@ -1,5 +1,6 @@
 const solc = require('solc');
 const fs = require('fs');
+const path = require('path');
 let config = require('../config_private');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.WebsocketProvider(config.blockchainIP));
@@ -7,10 +8,26 @@ const helper = require('../helpers/helper');
 
 
 async function deploy (account, contractPath, contract) {
-    const input = fs.readFileSync(contractPath);
-    const output = solc.compile(input.toString(), 1);
-    const bytecode = output.contracts[Object.keys(output.contracts)[0]].bytecode;
-    const abi = JSON.parse(output.contracts[Object.keys(output.contracts)[0]].interface);
+    const inputContract = fs.readFileSync(contractPath).toString();
+    const fn = path.basename(contractPath);
+    const contractName = fn.substr(0, fn.length - 4);
+    let input = {
+        language: 'Solidity',
+        sources: { },
+        settings: {
+            outputSelection: {
+                '*': {
+                    '*': ['*']
+                }
+            }
+        }
+    };
+    input.sources[fn] = {
+        content: inputContract
+    };
+    const output = JSON.parse(solc.compile(JSON.stringify(input)));
+    const bytecode = output.contracts[fn][contractName].evm.bytecode.object;
+    const abi = output.contracts[fn][contractName].abi;
     let rec = {};
     contract = new web3.eth.Contract(abi);
     let contractInstance = await contract.deploy({ data: '0x' + bytecode })
@@ -20,7 +37,7 @@ async function deploy (account, contractPath, contract) {
             gasPrice: '30000000000000'
         }, (err, txHash) => {
             if (err) {
-                helper.log('send:' + err);
+                console.log('send:' + err);
             } else {
                 helper.log('send:' + txHash);
             }
@@ -36,7 +53,7 @@ async function deploy (account, contractPath, contract) {
             contract.options.address = receipt.contractAddress;
             rec = receipt;
         });
-    return { contractDeployed: { contractName: Object.keys(output.contracts)[0].slice(1), address: rec.contractAddress },
+    return { contractDeployed: { contractName: contractName, address: rec.contractAddress },
         options: contractInstance.options,
         contractObject: contract
     };

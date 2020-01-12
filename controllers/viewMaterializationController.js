@@ -127,7 +127,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                     cacheRetrieveTimeStart: cacheRetrieveTimeStart,
                                     totalStart: totalStart };
 
-                                mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy,
+                                await mergeCachedWithDeltasResultsSameFields(view, cachedGroupBy,
                                     groupBySqlResult, latestId, sortedByEvictionCost, times).then(result => {
                                     matSteps.push({ type: 'sqlMergeCachedWithDeltas' });
                                     result.matSteps = matSteps;
@@ -139,6 +139,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                 });
                             }
                         }
+                        //should add a fallback case
                     }).catch(err => {
                         helper.log(err);
                         reject(err);

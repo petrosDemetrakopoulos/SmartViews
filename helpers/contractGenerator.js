@@ -9,7 +9,7 @@ async function generateContract (templateFileName) {
 
     const templateFile = fs.readFileSync('contracts/contractTemplate.txt', "utf8");
     const handlebarTemplate = handlebars.compile(templateFile);
-    const contractResult = handlebarTemplate({contract: {name:  factTbl.name, structName: factTbl.structName}});
+    const contractResult = handlebarTemplate({ contract: { name:  factTbl.name, structName: factTbl.structName } });
     return new Promise(function (resolve, reject) {
         fs.writeFile('contracts/' + factTbl.name + '.sol', contractResult, function (err) {
             if (err) {

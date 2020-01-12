@@ -1,6 +1,6 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.6.1;
 pragma experimental ABIEncoderV2;
-contract {{contract.name}} {
+contract {{contract.name}}{
 	uint public dataId;
 	uint public groupId;
 
@@ -9,7 +9,7 @@ contract {{contract.name}} {
 	event groupBysDeleted(uint[] deletedIds);
 	uint public viewId;
 
-	constructor() {
+	constructor() public{
 		dataId = 0;
 		groupId = 0;
 	}
@@ -27,31 +27,31 @@ contract {{contract.name}} {
 	}
 	mapping(uint => groupBy) public groupBys;
 
-	mapping(uint =>{{contract.structName}}) public facts;
+	mapping(uint => {{contract.structName}}) public facts;
 
 	struct gbView{
   		string viewDef;
 	}
 	mapping(uint => gbView) public gbViews;
 
-	function addFact(string payload) public returns (string , uint ID){
+	function addFact(string memory payload) public returns (string memory, uint ID){
 		facts[dataId].payload= payload;
 		facts[dataId].timestamp = now;
  		dataId += 1;
 		return (facts[dataId-1].payload,dataId -1);
 	}
 
-	function getFact(uint id) public constant returns (string payload, uint timestamp){
+	function getFact(uint id) public view returns (string memory payload, uint timestamp){
 		return (facts[id].payload, facts[id].timestamp);
 	}
 
-	function addView(string definition) public returns(string viewAdded, uint viewID) {
+	function addView(string memory definition) public returns(string memory viewAdded, uint viewID) {
 		gbViews[viewId].viewDef = definition;
 		viewId += 1;
 		return (gbViews[viewId-1].viewDef, viewId-1);
 	}
 
-	function addGroupBy(string hash, uint latestFact, uint colSize, uint size, string columns) public returns(string groupAdded, uint groupID){
+	function addGroupBy(string memory hash, uint latestFact, uint colSize, uint size, string memory columns) public returns(string memory groupAdded, uint groupID){
 		groupBys[groupId].hash = hash;
 		groupBys[groupId].timestamp = now;
 		groupBys[groupId].latestFact = latestFact;
@@ -62,11 +62,11 @@ contract {{contract.name}} {
 		return (groupBys[groupId-1].hash, groupId-1);
 	}
 
-	function getGroupBy(uint idGroup) public constant returns (string groupByID, uint timeStamp, uint latFact, string cols, uint sz){
+	function getGroupBy(uint idGroup) public view returns (string memory groupByID, uint timeStamp, uint latFact, string memory cols, uint sz){
 		return(groupBys[idGroup].hash, groupBys[idGroup].timestamp, groupBys[idGroup].latestFact, groupBys[idGroup].columns, groupBys[idGroup].size);
 	}
 
-	function getAllViews(uint viewID) public returns (string[] viewDefinitions){
+	function getAllViews(uint viewID) public view returns (string[] memory viewDefinitions){
 		string[] memory allViews = new string[](viewID);
 		for(uint i =0; i < viewID; i++){
 		 gbView storage crnView = gbViews[i];
@@ -75,7 +75,7 @@ contract {{contract.name}} {
 		return(allViews);
 	}
 
-	function getAllGroupBys(uint groupById) public returns (string[] hashes, uint[] latFacts, uint[] columnSize, uint[] size,  string[] columns, uint[] gbTimestamp){
+	function getAllGroupBys(uint groupById) public view returns (string[] memory hashes, uint[] memory latFacts, uint[] memory columnSize, uint[] memory size,  string[] memory columns, uint[] memory gbTimestamp) {
 		string[] memory allHashes = new string[](groupById);
 		uint[] memory allLatFact = new uint[](groupById);
 		uint[] memory allColSize = new uint[](groupById);
@@ -94,23 +94,23 @@ contract {{contract.name}} {
 		return(allHashes, allLatFact, allColSize, allSize, allColumns, allTs);
 	}
 
-	function getAllFacts(uint id) public returns (string[] payloads, uint[] timestamps){
+	function getAllFacts(uint id) public view returns (string[] memory payloads, uint[] memory timestamps){
 		string[] memory payloadss = new string[](id);
 		uint[] memory timestampss = new uint[](id);
 		for(uint i =0; i < id; i++){
-			{{contract.structName}} storage fact = facts[i];
+			Abcde storage fact = facts[i];
 			payloadss[i] = fact.payload;
 			timestampss[i] = fact.timestamp;
 		}
 		return (payloadss,timestampss);
 	}
 
-	function getFactsFromTo(uint from, uint to) public returns (string[] payloadsFromTo, uint[] timestampsFromTo){
+	function getFactsFromTo(uint from, uint to) public view returns (string[] memory payloadsFromTo, uint[] memory timestampsFromTo){
 		string[] memory payloadss = new string[](to - from);
 		uint[] memory timestampss = new uint[](to - from);
 		uint j = 0;
 		for(uint i = from; i < to; i++){
-			{{contract.structName}} storage fact = facts[j];
+			Abcde storage fact = facts[j];
 			payloadss[j] = fact.payload;
 			timestampss[j] = fact.timestamp;
 			j++;
@@ -118,7 +118,7 @@ contract {{contract.name}} {
 		return (payloadss,timestampss);
 	}
 
-	function addFacts(string[] payloadsss) public returns (string, uint IDMany){
+	function addFacts(string[] memory payloadsss) public returns (string memory, uint IDMany){
 		for(uint i =0; i < payloadsss.length; i++){
 			facts[dataId].payload= payloadsss[i];
 			facts[dataId].timestamp = now;
@@ -128,7 +128,7 @@ contract {{contract.name}} {
 		return (facts[dataId-1].payload,dataId -1);
 	}
 
-	function deleteGBsById(uint[] gbIds) public returns (uint[] deletedIds){
+	function deleteGBsById(uint[] memory gbIds) public returns (uint[] memory deletedIds){
 		uint[] memory deletedIdss = new uint[](gbIds.length);
 		for(uint i=0; i < gbIds.length; i++){
 			uint crnDelId = gbIds[i];

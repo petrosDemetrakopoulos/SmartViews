@@ -1,5 +1,6 @@
 const cacheController = require('../controllers/cacheController');
 const exec = require('child_process').execSync;
+const _ = require('underscore');
 
 function cost (Vi, V, latestFact) {
     // The cost of materializing view V using the cached view Vi
@@ -169,10 +170,9 @@ function dataCubeDistanceBatch (cachedViews, view) {
     return cachedViews;
 }
 
-
 module.exports = {
     dispCost: dispCost,
     calculationCostOfficial: calculationCostOfficial,
     word2vec: word2vec,
-    dataCubeDistanceBatch : dataCubeDistanceBatch
+    dataCubeDistanceBatch: dataCubeDistanceBatch
 };
