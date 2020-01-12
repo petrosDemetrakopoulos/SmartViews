@@ -1,12 +1,6 @@
 {
   "name": "ABCDE",
-  "struct_Name": "Abcde",
-  "properties": [
-    {
-      "key": "payload",
-      "data_type": "string"
-    }
-  ],
+  "structName": "Abcde",
   "template": {
     "properties": [
       {
@@ -28,8 +22,8 @@
         "key": "E"
       }
     ],
-    "create_table": "CREATE TEMPORARY TABLE ABCDE(\n\tpk int not null\n\t\tprimary key,\n\tA int,\n\tB int,\n\tC int,\n\tD FLOAT(2),\n\tE int);\n\n",
-    "table_name": "ABCDE"
+    "createTable": "CREATE TEMPORARY TABLE ABCDE(\n\tpk int not null\n\t\tprimary key,\n\tA int,\n\tB int,\n\tC int,\n\tD FLOAT(2),\n\tE int);\n\n",
+    "tableName": "ABCDE"
   },
   "views": [
     {

@@ -135,12 +135,6 @@ An example of a smart view template is shown below.
 {
   "name": "CARS",
   "struct_Name": "Cars",
-  "properties": [
-    {
-      "key": "payload",
-      "data_type": "string"
-    }
-  ],
   "template": {
     "properties": [
       { "key": "pk" },
