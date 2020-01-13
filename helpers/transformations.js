@@ -2,45 +2,17 @@ const stringify = require('fast-stringify');
 const helper = require('../helpers/helper');
 function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) {
     let transformed = {};
-    if (operation === 'COUNT') {
-        helper.log('OPERATION = COUNT');
+    if(operation !== 'AVERAGE') { //AVERAGE has exclusive treatment as it can be incrementally calculated iff we keep both sum and count
+        helper.log('OPERATION = ' + operation);
         for (let i = 0; i < groupByResult.length; i++) {
-            let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
-            delete groupByResult[i]['COUNT(' + aggregateField + ')'];
+            let crnCount = groupByResult[i][operation + '(' + aggregateField + ')'];
+            delete groupByResult[i][operation + '(' + aggregateField + ')'];
             let filtered = groupByResult[i];
             transformed[stringify(filtered)] = crnCount;
         }
-        transformed.operation = 'COUNT';
-    } else if (operation === 'SUM') {
-        helper.log('OPERATION = SUM');
-        for (let i = 0; i < groupByResult.length; i++) {
-            let crnCount = groupByResult[i]['SUM(' + aggregateField + ')'];
-            delete groupByResult[i]['SUM(' + aggregateField + ')'];
-            let filtered = groupByResult[i];
-            transformed[stringify(filtered)] = crnCount;
-        }
-        transformed.operation = 'SUM';
-    } else if (operation === 'MIN') {
-        helper.log('OPERATION = MIN');
-        for (let i = 0; i < groupByResult.length; i++) {
-            let crnCount = groupByResult[i]['MIN(' + aggregateField + ')'];
-            delete groupByResult[i]['MIN(' + aggregateField + ')'];
-            let filtered = groupByResult[i];
-            transformed[stringify(filtered)] = crnCount;
-        }
-        transformed.operation = 'MIN';
-    } else if (operation === 'MAX') {
-        helper.log('OPERATION = MAX');
-        for (let i = 0; i < groupByResult.length; i++) {
-            let crnCount = groupByResult[i]['MAX(' + aggregateField + ')'];
-            delete groupByResult[i]['MAX(' + aggregateField + ')'];
-            let filtered = groupByResult[i];
-            transformed[JSON.stringify(filtered)] = crnCount;
-        }
-        transformed.operation = 'MAX';
-    } else { // AVERAGE
+        transformed.operation = operation;
+    } else {
         helper.log('OPERATION = AVERAGE');
-
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i]['COUNT(' + aggregateField + ')'];
             let crnSum = groupByResult[i]['SUM(' + aggregateField + ')'];
