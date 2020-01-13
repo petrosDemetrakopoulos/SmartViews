@@ -382,4 +382,4 @@ It contains the .ejs templates for the pages we use to call the API functions in
 # Tests
 Test have been written for most of the functionality of the project and they are located in ```tests.js``` file.
 You can run them by executing ```npm test```.
-Tests are written with Mocha.js and Chai.js libraries.
+Tests are written with Supertest.js, Mocha.js and Chai.js libraries.

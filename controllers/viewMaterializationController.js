@@ -389,6 +389,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 sortedByEvictionCostFiltered.push(sortedByEvictionCost[k]);
                 console.log('Evicted view with size: ' + sortedByEvictionCost[k])
             }
+
             console.log('TOTAL SIZE = ' + totalSize);
             console.log('GB SIZE = ' + gbSize);
             let tot = (totalSize + gbSize);

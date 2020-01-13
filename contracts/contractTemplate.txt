@@ -13,6 +13,7 @@ contract {{contract.name}}{
 		dataId = 0;
 		groupId = 0;
 	}
+
 	struct {{contract.structName}}{
 		string payload;
 		uint timestamp;

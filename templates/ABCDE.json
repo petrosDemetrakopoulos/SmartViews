@@ -35,7 +35,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 1450,
+      "frequency": 1458,
       "gbFields": [
         "A",
         "B"
@@ -101,7 +101,7 @@
       "operation": "SUM",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, SUMD int)",
-      "frequency": 287,
+      "frequency": 291,
       "gbFields": [
         "A",
         "B"
@@ -118,7 +118,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTD int, SUMD int)",
-      "frequency": 109,
+      "frequency": 111,
       "gbFields": [
         "A",
         "B"
@@ -134,7 +134,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTD int, SUMD int)",
-      "frequency": 112,
+      "frequency": 114,
       "gbFields": [
         "A"
       ],
@@ -150,7 +150,7 @@
       "operation": "MAX",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MAXD int)",
-      "frequency": 180,
+      "frequency": 182,
       "gbFields": [
         "A",
         "B"
@@ -167,7 +167,7 @@
       "operation": "MIN",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MIND int)",
-      "frequency": 130,
+      "frequency": 132,
       "gbFields": [
         "A",
         "B"
@@ -183,7 +183,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
-      "frequency": 624,
+      "frequency": 632,
       "gbFields": [
         "A"
       ],
