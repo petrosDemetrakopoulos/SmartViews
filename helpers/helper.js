@@ -290,15 +290,12 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
     return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(async sortedByEvictionCost => {
         await sortedByEvictionCost.sort(function (a, b) {
-            if (config.cacheEvictionPolicy === 'FIFO') {
-                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
-            } else if (config.cacheEvictionPolicy === 'costFunction') {
-                return parseFloat(a.cacheEvictionCost) - parseFloat(b.cacheEvictionCost);
-            } else if (config.cacheEvictionPolicy === 'word2vec') {
-                return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
-            } else if (config.cacheEvictionPolicy === 'cubeDistance') {
-                return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
-            }
+            let sortFunctionMap = new Map();
+            sortFunctionMap.set('FIFO', parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp));
+            sortFunctionMap.set('costFunction', parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost));
+            sortFunctionMap.set('word2vec', parseInt(a.word2vecScore) - parseInt(b.word2vecScore));
+            sortFunctionMap.set('dataCubeDistance', parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance));
+            return sortFunctionMap.get(config.cacheEvictionPolicy);
         });
         return sortedByEvictionCost;
     });
