@@ -97,10 +97,13 @@ http.listen(3000, () => {
             console.log('mySQL connected');
             helper.welcomeMessage();
         }).catch(err => {
+            /* istanbul ignore next */
             console.error('error connecting to mySQL: ' + err.stack);
         });
     } else {
+        /* istanbul ignore next */
         console.log('Config file validations failed');
+        /* istanbul ignore next */
         process.exit(1);
     }
 });
@@ -123,8 +126,10 @@ app.get('/deployContract/:fn', function (req, res) {
                 .catch(err => {
                     /* istanbul ignore next */
                     helper.log('error on deploy ' + err);
+                    /* istanbul ignore next */
                     res.status(400);
-                    res.send({ status: 'ERROR', options: 'Deployment failed' });
+                    /* istanbul ignore next */
+                    res.send({ status: 'ERROR', message: 'Deployment failed' });
                 })
         }
     });
@@ -146,6 +151,7 @@ app.get('/load_dataset/:dt', contractController.contractChecker, function (req, 
         }).catch(error => {
             /* istanbul ignore next */
             helper.log(error);
+            /* istanbul ignore next */
             res.send(helper.errorToJson(error));
         });
     }
@@ -160,7 +166,8 @@ app.get('/new_contract/:fn', function (req, res) {
     }).catch(err => {
         /* istanbul ignore next */
         console.log(err);
-        return res.send({ msg: 'error' });
+        /* istanbul ignore next */
+        return res.send(helper.errorToJson(err));
     });
 });
 
@@ -170,6 +177,7 @@ app.get('/getFactById/:id', contractController.contractChecker, function (req, r
     }).catch(error => {
         /* istanbul ignore next */
         helper.log(error);
+        /* istanbul ignore next */
         res.send(helper.errorToJson(error));
     });
 });
@@ -202,6 +210,7 @@ app.get('/allfacts', contractController.contractChecker, function (req, res) {
     }).catch(err => {
         /* istanbul ignore next */
         helper.log(err);
+        /* istanbul ignore next */
         res.send(helper.errorToJson(err));
     });
 });
@@ -212,6 +221,7 @@ app.get('/groupbyId/:id', contractController.contractChecker, function (req, res
     }).catch(error => {
         /* istanbul ignore next */
         helper.log(error);
+        /* istanbul ignore next */
         return res.send(helper.errorToJson(error));
     });
 });
@@ -247,6 +257,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             }).catch(err => {
                 /* istanbul ignore next */
                 gbRunning = false;
+            /* istanbul ignore next */
                 return res.send(stringify(err))
             });
     }
@@ -255,7 +266,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
 app.get('/getcount', contractController.contractChecker, function (req, res) {
     contractController.getFactsCount().then(result => {
         if (result === -1) {
-            return res.send({ status: 'ERROR', options: 'Error getting count' });
+            return res.send({ status: 'ERROR', message: 'Error getting count' });
         } else {
             return res.send(result);
         }
@@ -268,6 +279,7 @@ app.post('/addFact', contractController.contractChecker, function (req, res) {
     }).catch(error => {
         /* istanbul ignore next */
         helper.log(error);
+        /* istanbul ignore next */
         res.send(helper.errorToJson(error));
     })
 });
