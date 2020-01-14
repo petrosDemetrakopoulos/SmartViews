@@ -253,14 +253,10 @@ function extractViewMeta (view) {
     return { viewNameSQL: viewNameSQL, lastCol: lastCol, prelastCol: prelastCol, op: op };
 }
 
-function checkViewExists (viewsDefined, viewName, factTbl) {
+function checkViewExists (viewsDefined, viewName) {
     let view = {};
-    for (const crnView in viewsDefined) {
-        if (factTbl.views[crnView].name === viewName) {
-            view = factTbl.views[crnView];
-            view.id = crnView;
-            break;
-        }
+    if(viewsDefined.has(viewName)){
+        view = viewsDefined.get(viewName);
     }
     return view;
 }

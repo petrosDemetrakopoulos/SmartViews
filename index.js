@@ -212,10 +212,15 @@ app.get('/groupbyId/:id', contractController.contractChecker, function (req, res
 
 app.get('/getViewByName/:viewName/:contract', contractController.contractChecker, async function (req, res) {
     config = helper.requireUncached('../config_private');
-    let totalStart = helper.time();
+    const totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
-    let viewsDefined = factTbl.views;
-    let view = helper.checkViewExists(viewsDefined, req.params.viewName, factTbl);
+    const viewsDefined = factTbl.views;
+    let viewMap = new Map();
+    for (let crnView in viewsDefined) {
+        factTbl.views[crnView].id = crnView;
+        viewMap.set(factTbl.views[crnView].name, factTbl.views[crnView]);
+    }
+    const view = helper.checkViewExists(viewMap, req.params.viewName);
     // returns an empty object if view not exist, otherwise it returns the view object
     if (Object.keys(view).length === 0 && view.constructor === Object) {
         res.status(200);
@@ -224,7 +229,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
         gbRunning = true;
-        viewMaterializationController.materializeViewWithName(req.params.viewName,
+        viewMaterializationController.materializeView(view,
             req.params.contract, totalStart, createTable)
             .then(result => {
                 gbRunning = false;

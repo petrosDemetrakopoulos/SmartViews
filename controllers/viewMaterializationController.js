@@ -498,12 +498,10 @@ async function prefetchNearset (n, cachedResults, view) {
     return viewNames;
 }
 
-async function materializeViewWithName (viewName, contract, totalStart, createTable) {
+async function materializeView (view, contract, totalStart, createTable) {
     return new Promise(async (resolve, reject) => {
         let materializationDone = false;
         const factTbl = require('../templates/' + contract);
-        const viewsDefined = factTbl.views;
-        const view = helper.checkViewExists(viewsDefined, viewName, factTbl);
         const gbFields = helper.extractFields(view);
         view.gbFields = gbFields;
         let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
@@ -616,5 +614,5 @@ async function materializeViewWithName (viewName, contract, totalStart, createTa
 
 module.exports = {
     setContract: setContract,
-    materializeViewWithName: materializeViewWithName
+    materializeView: materializeView
 };
