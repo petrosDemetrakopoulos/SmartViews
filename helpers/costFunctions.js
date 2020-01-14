@@ -42,16 +42,16 @@ async function dispCost (Vc, latestFact, factTbl) {
                 return el != null;
             });
 
+            const viewsDefined = factTbl.views;
+            let viewMap = new Map();
+            for (let crnView in viewsDefined) {
+                viewMap.set(factTbl.views[crnView].name, factTbl.views[crnView]);
+            }
+
             if (allHashes.length > 1) {
                 for (let j = 0; j < allCached.length; j++) {
                     const crnGb = JSON.parse(allCached[j]);
-                    const viewsDefined = factTbl.views;
-                    for (let crnView in viewsDefined) {
-                        if (factTbl.views[crnView].name === crnGb.viewName) {
-                            freq = factTbl.views[crnView].frequency;
-                            break;
-                        }
-                    }
+                    freq = viewMap.get(crnGb.viewName).frequency;
                 }
 
                 for (let i = 0; i < Vc.length; i++) {
@@ -103,7 +103,7 @@ function getViewsMaterialisableFromVi (Vc, Vi) {
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
-    const a = 500; // factor of deltas
+    const a = 10; // factor of deltas
     let sizeDeltas = 0;
     let sizeCached = 0;
     for (let i = 0; i < groupBys.length; i++) {

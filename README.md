@@ -299,17 +299,17 @@ The results are the mean values of all iterations we performed for each value of
 </tr>
 <tr>
 <td>Total Time (s)</td>
-<td>47.58</td>
-<td>5.81</td>
-<td>5.70</td>
-<td>5.80</td>
+<td>50.07</td>
+<td>3.13</td>
+<td>3.14</td>
+<td>3.31</td>
 </tr>
 <tr>
 <td>Blockchain Time (s)</td>
-<td>47.34</td>
-<td>5.68</td>
-<td>5.57</td>
-<td>5.67</td>
+<td>49.85</td>
+<td>3.02</td>
+<td>3.04</td>
+<td>3.20</td>
 </tr>
 <tr>
 <td>SQL Processing Time (s)</td>
@@ -323,7 +323,7 @@ The results are the mean values of all iterations we performed for each value of
 <td>0.04</td>
 <td>0.01</td>
 <td>0.01</td>
-<td>0.02</td>
+<td>0.01</td>
 </tr>
 </thead>
 </table>
@@ -332,7 +332,7 @@ The results are the mean values of all iterations we performed for each value of
 
 The following plot may describe better the behavior of the cost function for the different values of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
 
-<img src="schematics/different_a.png" width="1440" align="center">
+<img src="schematics/different_a_new.png" width="1440" align="center">
 
 It seems that we have a clear "loser".
 10 seems to be very small value for <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> and it does not lead the function to sort the cached results in a way that the optimal one will be selected.

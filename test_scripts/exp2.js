@@ -4,7 +4,7 @@ const filename = './EXPViewSequence.txt';
 const generator = require('./testDataGenerator');
 const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
-const ResultsFile = 'result_final_cache_100KB.json';
+const ResultsFile = 'result_final_DefaultCostFunction_10_new.json';
 const rp = require('request-promise');
 
 const load = (file) => {
@@ -140,3 +140,5 @@ main().then(() => {
     console.log(err);
     process.exit();
 });
+
+module.exports = { main: main }
