@@ -102,7 +102,7 @@ function saveOnCache (gbResult, operation, latestId) {
         }
     }
     let resultSize = resultString.length;
-    console.log('RESULT SIZE = ' + resultSize + ' bytes');
+    helper.log('RESULT SIZE = ' + resultSize + ' bytes');
     let colSize = gbResult.groupByFields.length;
     let columns = stringify({ fields: gbResult.groupByFields, aggrFunc: gbResult.operation });
     let num = 0;
@@ -148,6 +148,7 @@ function getManyCachedResults (allHashes) {
     return new Promise((resolve, reject) => {
         client.mget(allHashes, function (error, allCached) {
             if (error) {
+                /* istanbul ignore next */
                 reject(error);
             } else {
                 resolve(allCached);

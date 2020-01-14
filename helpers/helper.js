@@ -279,13 +279,13 @@ function filterGBs (resultGB, view) {
     return filteredGBs;
 }
 
-async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
+function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let transformedArray = transformGBMetadataFromBlockchain(resultGB);
     transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
     let sortedByEvictionCost = JSON.parse(JSON.stringify(transformedArray));
     sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
-    return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(async sortedByEvictionCost => {
-        await sortedByEvictionCost.sort(function (a, b) {
+    return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(sortedByEvictionCost => {
+        sortedByEvictionCost.sort(function (a, b) {
             let sortFunctionMap = new Map();
             sortFunctionMap.set('FIFO', parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp));
             sortFunctionMap.set('costFunction', parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost));
@@ -297,10 +297,10 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     });
 }
 
-async function sortByCalculationCost (resultGBs, latestId, view) {
+function sortByCalculationCost (resultGBs, latestId) {
     if (config.calculationCostFunction.toLowerCase() === 'costfunction') {
         resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
-        await resultGBs.sort(function (a, b) {
+        resultGBs.sort(function (a, b) {
             return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
         }); // order ascending
     }
@@ -310,7 +310,7 @@ async function sortByCalculationCost (resultGBs, latestId, view) {
 async function sortByWord2Vec (resultGBs, view) {
     if (resultGBs.length > 1) {
         resultGBs = await costFunctions.word2vec(resultGBs, view);
-        await resultGBs.sort(function (a, b) {
+        resultGBs.sort(function (a, b) {
             return parseFloat(b.word2vecScore) - parseFloat(a.word2vecScore);
         });
     }

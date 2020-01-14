@@ -23,6 +23,7 @@ function connectToSQL () {
         connection = mysql.createConnection(mysqlConfig);
         connection.connect(function (err) {
             if (err) {
+                /* istanbul ignore next */
                 console.error('error connecting to mySQL: ' + err.stack);
                 reject(err);
             }
@@ -37,11 +38,13 @@ function queryAndDropTable (query, tableName) {
     return new Promise((resolve, reject) => {
         connection.query(query, function (error, results) {
             if (error) {
+                /* istanbul ignore next */
                 helper.log(error);
                 reject(error);
             }
             connection.query('DROP TABLE ' + tableName, function (err) {
                 if (err) {
+                    /* istanbul ignore next */
                     helper.log(err);
                     reject(err);
                 }
@@ -55,11 +58,13 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
     return new Promise((resolve, reject) => {
         connection.query('DROP TABLE IF EXISTS ' + tableName, function (err) {
             if (err) {
+                /* istanbul ignore next */
                 helper.log(err);
                 reject(err);
             }
             connection.query(createTable, function (error) { // creating the SQL table for 'Fact Table'
                 if (error) {
+                    /* istanbul ignore next */
                     helper.log(error);
                     reject(err);
                 }
@@ -75,6 +80,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
                 let editedQuery = helper.sanitizeSQLQuery(sql);
                 connection.query(editedQuery, function (error) { // insert facts
                     if (error) {
+                        /* istanbul ignore next */
                         helper.log(error);
                         reject(error);
                     }
@@ -113,6 +119,7 @@ function calculateNewGroupBy (facts, operation, gbFields, aggregationField) {
                         let groupBySqlResult = transformations.transformGBFromSQL(results, operation, aggregationField, gbFields);
                         resolve(groupBySqlResult);
                     }).catch(err => {
+                        /* istanbul ignore next */
                         helper.log(err);
                         reject(err);
                     });
@@ -132,6 +139,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
         tableName = tableName.split('(')[0];
         connection.query(cachedGroupBy.gbCreateTable, async function (error) {
             if (error) {
+                /* istanbul ignore next */
                 reject(error);
             }
             let lastCol = '';
@@ -151,6 +159,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
             let editedQuery = helper.sanitizeSQLQuery(sqlInsert);
             connection.query(editedQuery, function (error) {
                 if (error) {
+                    /* istanbul ignore next */
                     helper.log(error);
                     reject(error);
                 }
@@ -193,6 +202,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                 queryAndDropTable(editedGBQuery, tableName).then(results => {
                     resolve(results);
                 }).catch(err => {
+                    /* istanbul ignore next */
                     helper.log(err);
                     reject(err);
                 });
@@ -209,6 +219,7 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
         let gbCreateTable = view.SQLTable;
         connection.query(gbCreateTable, function (error) {
             if (error) {
+                /* istanbul ignore next */
                 helper.log(error);
                 reject(error);
             }
@@ -230,11 +241,13 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
 
             connection.query(editedQueryA, function (err) {
                 if (err) {
+                    /* istanbul ignore next */
                     helper.log(err);
                     reject(err);
                 }
                 connection.query(editedQueryB, function (err) {
                     if (err) {
+                        /* istanbul ignore next */
                         helper.log(err);
                         reject(err);
                     }
@@ -282,6 +295,7 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
                         }
                         resolve(groupBySqlResult);
                     }).catch(err => {
+                        /* istanbul ignore next */
                         helper.log(err);
                         reject(err);
                     });
@@ -295,6 +309,7 @@ function executeQuery (queryString) {
     return new Promise((resolve, reject) => {
         connection.query(queryString, async function (error, results) {
             if (error) {
+                /* istanbul ignore next */
                 reject(error)
             } else {
                 resolve(results);

@@ -6,7 +6,6 @@ const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.WebsocketProvider(config.blockchainIP));
 const helper = require('../helpers/helper');
 
-
 async function deploy (account, contractPath, contract) {
     const inputContract = fs.readFileSync(contractPath).toString();
     const fn = path.basename(contractPath);
@@ -22,27 +21,20 @@ async function deploy (account, contractPath, contract) {
             }
         }
     };
-    input.sources[fn] = {
-        content: inputContract
-    };
+    input.sources[fn] = { content: inputContract };
     const output = JSON.parse(solc.compile(JSON.stringify(input)));
     const bytecode = output.contracts[fn][contractName].evm.bytecode.object;
     const abi = output.contracts[fn][contractName].abi;
     let rec = {};
     contract = new web3.eth.Contract(abi);
-    let contractInstance = await contract.deploy({ data: '0x' + bytecode })
+    const contractInstance = await contract.deploy({ data: '0x' + bytecode })
         .send({
             from: account,
             gas: 150000000,
             gasPrice: '30000000000000'
-        }, (err, txHash) => {
-            if (err) {
-                console.log('send:' + err);
-            } else {
-                helper.log('send:' + txHash);
-            }
         })
         .on('error', (err) => {
+            /* istanbul ignore next */
             console.log('error:' + err);
         })
         .on('transactionHash', (txHash) => {

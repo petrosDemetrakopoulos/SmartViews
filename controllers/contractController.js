@@ -20,7 +20,7 @@ function contractChecker (req, res, next) {
         next()
     } else {
         res.status(400);
-        res.send({ status: 'ERROR', options: 'Contract not deployed' });
+        res.send({ status: 'ERROR', message: 'Contract not deployed' });
     }
 }
 
@@ -29,6 +29,7 @@ const bcResponseHandler = function (err, result) {
         result = removeUnneededFieldsFromBCResponse(result);
         Promise.resolve(result);
     } else {
+        /* istanbul ignore next */
         helper.log(err);
         Promise.reject(err);
     }
@@ -62,6 +63,7 @@ async function getAllGroupbys () { // promisify it to await where we call it
                             resultGB.times = times;
                             resolve(resultGB);
                         } else {
+                            /* istanbul ignore next */
                             helper.log(err);
                             reject(err);
                         }
@@ -71,6 +73,7 @@ async function getAllGroupbys () { // promisify it to await where we call it
                     resolve(times);
                 }
             } else {
+                /* istanbul ignore next */
                 helper.log(err);
                 reject(err);
             }
@@ -108,6 +111,7 @@ async function addManyFacts (facts, sliceSize, io) {
     for (const slc of allSlicesReady) {
         await contract.methods.addFacts(slc).send(mainTransactionObject, () => {
         }).on('error', (err) => {
+            /* istanbul ignore next */
             helper.log('error:', err);
         }).on('transactionHash', (hash) => {
             helper.log(i);
@@ -118,24 +122,6 @@ async function addManyFacts (facts, sliceSize, io) {
     return Promise.resolve(true);
 }
 
-async function getAllFacts (factsLength) {
-    let allFacts = [];
-    for (let i = 0; i < factsLength; i++) {
-        await contract.methods.facts(i).call(function (err, result2) {
-            if (!err) {
-                result2 = removeUnneededFieldsFromBCResponse(result2);
-                if ('payload' in result2) {
-                    const crnLn = JSON.parse(result2['payload']);
-                    crnLn.timestamp = result2['timestamp'];
-                    allFacts.push(crnLn);
-                }
-            } else {
-                helper.log(err);
-            }
-        });
-    }
-    return allFacts;
-}
 
 async function getAllFactsHeavy (factsLength) {
     let allFacts = [];
@@ -150,6 +136,7 @@ async function getAllFactsHeavy (factsLength) {
                 }
             }
         } else {
+            /* istanbul ignore next */
             helper.log(err);
         }
     });
@@ -169,6 +156,7 @@ async function getFactsFromTo (from, to) {
                 }
             }
         } else {
+            /* istanbul ignore next */
             helper.log(err);
         }
     });
@@ -181,6 +169,7 @@ async function getFactsCount () {
         if (!err) {
             id = result;
         } else {
+            /* istanbul ignore next */
             helper.log(err);
         }
     });
@@ -191,6 +180,7 @@ async function getLatestId () {
     return new Promise((resolve, reject) => {
         contract.methods.dataId().call(function (err, latestId) {
             if (err) {
+                /* istanbul ignore next */
                 console.log(err);
                 reject(err);
             } else {
@@ -224,6 +214,7 @@ function deleteCachedResults (sortedByEvictionCost) {
             deleteGBsById(gbIdsToDelete).then(receipt => {
                 resolve(receipt);
             }).catch(error => {
+                /* istanbul ignore next */
                 helper.log(error);
                 reject(error);
             });
@@ -247,7 +238,6 @@ function sendTransactionWithContractMethod (contractMethod) {
 
 module.exports = {
     addManyFacts: addManyFacts,
-    getAllFacts: getAllFacts,
     getAllFactsHeavy: getAllFactsHeavy,
     getFactsFromTo: getFactsFromTo,
     getFactsCount: getFactsCount,

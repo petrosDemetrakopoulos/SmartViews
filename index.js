@@ -39,6 +39,7 @@ let account = null;
 app.get('/', function (req, res) {
     fs.readdir('./templates', function (err, items) {
         if (err) {
+            /* istanbul ignore next */
             console.error('error reading templates directory: ' + err.stack);
             return;
         }
@@ -57,6 +58,7 @@ app.get('/', function (req, res) {
 app.get('/dashboard', function (req, res) {
     fs.readdir('./templates', function (err, items) {
         if (err) {
+            /* istanbul ignore next */
             console.error('error reading templates directory: ' + err.stack);
             return;
         }
@@ -85,7 +87,6 @@ app.get('/form/:contract', function (req, res) {
 http.listen(3000, () => {
     console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
     console.log(`Visit http://localhost:3000/ to view Blockchain, mySQL and Redis cache status`);
-    //   config = new SelfReloadJSON('./config_private.json');
     let validations = helper.configFileValidations();
     if (process.env.ENVIRONMENT === 'LAB') {
         config = configLab;
@@ -120,6 +121,7 @@ app.get('/deployContract/:fn', function (req, res) {
                     res.send({ status: 'OK', options: options.options });
                 })
                 .catch(err => {
+                    /* istanbul ignore next */
                     helper.log('error on deploy ' + err);
                     res.status(400);
                     res.send({ status: 'ERROR', options: 'Deployment failed' });
@@ -142,6 +144,7 @@ app.get('/load_dataset/:dt', contractController.contractChecker, function (req, 
             helper.log('Added ' + dt.length + ' records in ' + timeDiff + ' seconds');
             res.send({ msg: 'OK' });
         }).catch(error => {
+            /* istanbul ignore next */
             helper.log(error);
             res.send(helper.errorToJson(error));
         });
@@ -155,6 +158,7 @@ app.get('/new_contract/:fn', function (req, res) {
         createTable = result.createTable;
         return res.send({ msg: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
     }).catch(err => {
+        /* istanbul ignore next */
         console.log(err);
         return res.send({ msg: 'error' });
     });
@@ -164,18 +168,20 @@ app.get('/getFactById/:id', contractController.contractChecker, function (req, r
     contractController.getFactById(req.params.id).then(result => {
         res.send(stringify(result).replace(/\\/g, ''));
     }).catch(error => {
+        /* istanbul ignore next */
         helper.log(error);
         res.send(helper.errorToJson(error));
     });
 });
 
-app.get('/getFactsFromTo/:from/:to', function (req, res) {
+app.get('/getFactsFromTo/:from/:to', contractController.contractChecker, function (req, res) {
     let timeStart = helper.time();
     contractController.getFactsFromTo(parseInt(req.params.from), parseInt(req.params.to)).then(retval => {
         let timeFinish = helper.time() - timeStart;
         retval.push({ time: timeFinish });
         res.send(stringify(retval).replace(/\\/g, ''));
     }).catch(err => {
+        /* istanbul ignore next */
         res.send(helper.errorToJson(err));
     });
 });
@@ -190,9 +196,11 @@ app.get('/allfacts', contractController.contractChecker, function (req, res) {
             retval.push({ time: timeFinish });
             res.send(stringify(retval).replace(/\\/g, ''));
         }).catch(error => {
+            /* istanbul ignore next */
             console.log(error);
         });
     }).catch(err => {
+        /* istanbul ignore next */
         helper.log(err);
         res.send(helper.errorToJson(err));
     });
@@ -202,13 +210,14 @@ app.get('/groupbyId/:id', contractController.contractChecker, function (req, res
     contractController.getGroupByWithId(req.params.id).then(result => {
         return res.send(stringify(result).replace(/\\/g, ''));
     }).catch(error => {
+        /* istanbul ignore next */
         helper.log(error);
         return res.send(helper.errorToJson(error));
     });
 });
 
 app.get('/getViewByName/:viewName/:contract', contractController.contractChecker, async function (req, res) {
-    if(process.env.TESTS === true) {
+    if(process.env.TESTS) {
         config = reload('./config_private');
     }
     const totalStart = helper.time();
@@ -223,7 +232,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     // returns an empty object if view not exist, otherwise it returns the view object
     if (Object.keys(view).length === 0 && view.constructor === Object) {
         res.status(200);
-        return res.send({ error: 'view not found' });
+        return res.send({ status:'ERROR', message: 'view not found' });
     }
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
@@ -236,6 +245,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 io.emit('view_results', stringify(result).replace(/\\/g, ''));
                 return res.send(stringify(result).replace(/\\/g, ''));
             }).catch(err => {
+                /* istanbul ignore next */
                 gbRunning = false;
                 return res.send(stringify(err))
             });
@@ -256,6 +266,7 @@ app.post('/addFact', contractController.contractChecker, function (req, res) {
     contractController.addFact(req.body).then(receipt => {
         res.send(receipt);
     }).catch(error => {
+        /* istanbul ignore next */
         helper.log(error);
         res.send(helper.errorToJson(error));
     })

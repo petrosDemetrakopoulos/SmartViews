@@ -105,10 +105,12 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                             resolve(mergeResult);
                                         }
                                     }).catch(err => {
+                                        /* istanbul ignore next */
                                         helper.log(err);
                                         reject(err);
                                     });
                                 }).catch(err => {
+                                    /* istanbul ignore next */
                                     helper.log(err);
                                     reject(err);
                                 });
@@ -134,6 +136,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                     //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                                     resolve(result);
                                 }).catch(err => {
+                                    /* istanbul ignore next */
                                     helper.log(err);
                                     reject(err);
                                 });
@@ -141,14 +144,17 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                         }
                         //should add a fallback case
                     }).catch(err => {
+                        /* istanbul ignore next */
                         helper.log(err);
                         reject(err);
                     });
                 }).catch(err => {
+                    /* istanbul ignore next */
                     helper.log(err);
                     reject(err);
                 });
             }).catch(err => {
+                /* istanbul ignore next */
                 helper.log(err);
                 reject(err);
             });
@@ -174,6 +180,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
             if (gbSize / 1024 <= config.maxCacheSizeInKB) {
                 let cacheSaveTimeStart = helper.time();
                 cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
+                    /* istanbul ignore next */
                     helper.log('error:', err);
                     reject(err);
                 }).on('receipt', (receipt) => {
@@ -194,6 +201,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                         //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                         resolve(results);
                     }).catch(err => {
+                        /* istanbul ignore next */
                         console.log(err);
                         reject(err);
                     });
@@ -212,6 +220,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                 resolve(reducedResult);
             }
         }).catch(err => {
+            /* istanbul ignore next */
             console.log(err);
             reject(err);
         });
@@ -258,6 +267,7 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
                         //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                         resolve(results);
                     }).catch(err => {
+                        /* istanbul ignore next */
                         reject(err);
                     });
                 });
@@ -276,6 +286,7 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
                 resolve(mergeResult);
             }
         }).catch(err => {
+            /* istanbul ignore next */
             reject(err);
         });
     });
@@ -324,6 +335,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                                 //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                                 resolve(results);
                             }).catch(err => {
+                                /* istanbul ignore next */
                                 reject(err);
                             })
                         });
@@ -339,11 +351,13 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                         resolve(groupBySqlResult);
                     }
                 }).catch(err => {
+                    /* istanbul ignore next */
                     console.log(err);
                     reject(err);
                 });
             });
         }).catch(err => {
+            /* istanbul ignore next */
             console.log(err);
             reject(err);
         });
@@ -397,6 +411,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             console.log('result to txt: ' + res);
             fs.appendFile('cache_sizeWV.txt', res, function (err) {
                 if (err) {
+                    /* istanbul ignore next */
                     return console.error(err);
                 }
             });
@@ -408,10 +423,11 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 }
                 resolve(groupBySqlResult);
             }).catch(err => {
+                /* istanbul ignore next */
                 reject(err);
             });
         } else {
-            console.log('-->NOT CLEARING CACHE');
+            helper.log('-->NOT CLEARING CACHE');
             times.totalEnd = helper.time();
             if (times) {
                 groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
@@ -455,6 +471,7 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
                     // prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
                     return resolve(results);
                 }).catch(err => {
+                    /* istanbul ignore next */
                     return reject(err);
                 });
             }
@@ -476,6 +493,7 @@ function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields
             // prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
             return resolve(result);
         }).catch(err => {
+            /* istanbul ignore next */
             return reject(err);
         });
     });
@@ -521,8 +539,8 @@ async function materializeView (view, contract, totalStart, createTable) {
                     if (filteredGBs.length > 0) {
                         const getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
-                            const sortedByCalculationCost = await helper.sortByCalculationCost(filteredGBs, latestId, view);
-                            const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            const sortedByCalculationCost =  helper.sortByCalculationCost(filteredGBs, latestId);
+                            const sortedByEvictionCost =  helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             const mostEfficient = sortedByCalculationCost[0];
                             const getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
@@ -549,11 +567,13 @@ async function materializeView (view, contract, totalStart, createTable) {
                                             materializationDone = true;
                                             resolve(result);
                                         }).catch(err => {
+                                            /* istanbul ignore next */
                                             helper.log(err);
                                             reject(err);
                                         });
                                     }
                                 }).catch(err => {
+                                    /* istanbul ignore next */
                                     helper.log(err);
                                     reject(err);
                                 });
@@ -569,32 +589,37 @@ async function materializeView (view, contract, totalStart, createTable) {
                                     materializationDone = true;
                                     resolve(results);
                                 }).catch(err => {
+                                    /* istanbul ignore next */
                                     helper.log(err);
                                     reject(err);
                                 });
                             }
                         }).catch(err => {
+                            /* istanbul ignore next */
                             helper.log(err);
                             reject(err);
                         });
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
                         helper.log('NO FILTERED GROUP BYS FOUND');
-                        await contractController.getLatestId(async latestId => {
-                            const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                        await contractController.getLatestId(latestId => {
+                            const sortedByEvictionCost =  helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             calculateNewGroupByFromBeginning(view, totalStart,
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 materializationDone = true;
                                 resolve(result);
                             }).catch(err => {
+                                /* istanbul ignore next */
                                 reject(err);
                             });
                         }).catch(err => {
+                            /* istanbul ignore next */
                             reject(err);
                         });
                     }
                 }
             }).catch(err => {
+                /* istanbul ignore next */
                 helper.log(err);
                 reject(err);
             });
@@ -606,6 +631,7 @@ async function materializeView (view, contract, totalStart, createTable) {
                 []).then(result => {
                 resolve(result);
             }).catch(err => {
+                /* istanbul ignore next */
                 reject(err);
             });
         }

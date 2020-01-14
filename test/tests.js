@@ -53,6 +53,41 @@ describe('testing /dashboard route', function () {
     });
 });
 
+describe('testing /addFact route with NOT DEPLOYED contract', function () {
+    let payload = { pk: 250, A: 1, B: 2, C: 3, D: 12.3 };
+    let resp = {};
+    it('should return error code 400', async () =>  {
+        return request(app)
+            .post('/addFact')
+            .send(payload)
+            .set('Accept', 'application/json')
+            .then(function (response) {
+                resp = response.body;
+                expect(response.status).to.equal(400);
+            });
+    });
+
+    it('should be an object', function () {
+        expect(resp).to.be.a('object');
+    });
+
+    it('should have property "status" ', function () {
+        expect(resp).to.have.property('status');
+    });
+
+    it('"status" should equal "ERROR" ', function () {
+        expect(resp.status).to.equal('ERROR');
+    });
+
+    it('should have property "message" ', function () {
+        expect(resp).to.have.property('message');
+    });
+
+    it('"message" should equal "Contract not deployed" ', function () {
+        expect(resp.message).to.equal('Contract not deployed');
+    });
+});
+
 describe('testing /new_contract/:fn route', function () {
     it('should return OK status', async () =>  {
         return request(app)
@@ -345,7 +380,7 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
     it('should return OK status', function () {
         freeze(1000);
         return request(app)
-            .get('/load_dataset/10fourcol_e') // adding deltas
+            .get('/load_dataset/10fourcol_c') // adding deltas
             .then(function (response) {
                 return request(app)
                     .get('/getViewByName/AB(AVERAGE-D))/ABCDE')
@@ -366,7 +401,7 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
     it('should return OK status', function () {
         freeze(1000);
         return request(app)
-            .get('/load_dataset/10fourcol_f') // adding deltas
+            .get('/load_dataset/10fourcol_d') // adding deltas
             .then(function (response) {
                 return request(app)
                     .get('/getViewByName/AB(MIN-D))/ABCDE')
@@ -404,7 +439,7 @@ describe('testing /getViewByName/:viewName/:contract -- Same with previous cache
     it('should return OK status', function () {
         freeze(1000);
         return request(app)
-            .get('/load_dataset/10fourcol_c') // adding deltas
+            .get('/load_dataset/10fourcol_e') // adding deltas
             .then(function (response) {
                 return request(app)
                     .get('/getViewByName/AB(COUNT)/ABCDE')
@@ -425,7 +460,7 @@ describe('testing /getViewByName/:viewName/:contract -- Reduction from cache + D
     it('should return OK status', async function () {
         freeze(1000);
         return request(app)
-            .get('/load_dataset/10fourcol_d') // adding deltas
+            .get('/load_dataset/10fourcol_f') // adding deltas
             .then(function (response) {
                 freeze(1000);
                 return request(app)
@@ -475,8 +510,20 @@ describe('testing /getViewByName/:viewName/:contract -- Invalid view name', func
         expect(resp).to.be.a('object');
     });
 
-    it('should have property "error" ', function () {
-        expect(resp).to.have.property('error');
+    it('should have property "message" ', function () {
+        expect(resp).to.have.property('message');
+    });
+
+    it('"message" should equal "view not found"', function () {
+        expect(resp.message).to.equal('view not found');
+    });
+
+    it('should have property "status" ', function () {
+        expect(resp).to.have.property('status');
+    });
+
+    it('"status" should equal "ERROR"', function () {
+        expect(resp.status).to.equal('ERROR');
     });
 });
 
@@ -492,7 +539,7 @@ describe('testing /getViewByName/:viewName/:contract -- manual slicing', functio
 
     it('should return OK status', function () {
         return request(app)
-            .get('/load_dataset/10fourcol')
+            .get('/load_dataset/10fourcol_g.json')
             .then(function (response) {
                 freeze(1000);
                 return request(app)
@@ -531,7 +578,7 @@ describe('testing /getViewByName/:viewName/:contract -- Deltas have no unique pr
     it('should return OK status', async function () {
         freeze(1000);
         return request(app)
-            .get('/load_dataset/10fourcol_c') // adding deltas
+            .get('/load_dataset/10fourcol_h.json') // adding deltas
             .then(function (response) {
                 freeze(1000);
                 return request(app)
@@ -588,6 +635,10 @@ describe('testing /getcount route', function () {
 
     it('should be a string', function () {
         expect(resp).to.be.a('string');
+    });
+
+    it('should equal "89" ', function () {
+        expect(resp).to.equal('89');
     });
 
     after(function (done) {

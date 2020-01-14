@@ -10,15 +10,15 @@ function cost (Vi, V, latestFact) {
     return V;
 }
 
-async function costMat (V, Vc, latestFact) {
+function costMat (V, Vc, latestFact) {
     // The cost of materializing view V using the set of cached views Vc
     let costs = [];
     for (let i = 0; i < Vc.length; i++) {
         let Vi = Vc[i];
-        let crnCost = await cost(Vi, V, latestFact);
+        let crnCost = cost(Vi, V, latestFact);
         costs.push(crnCost);
     }
-    await costs.sort(function (a, b) {
+    costs.sort(function (a, b) {
         return parseFloat(a.calculationCost) - parseFloat(b.calculationCost);
     });
     return costs[0].calculationCost;

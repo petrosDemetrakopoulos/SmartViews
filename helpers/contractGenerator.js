@@ -13,18 +13,15 @@ async function generateContract (templateFileName) {
     return new Promise(function (resolve, reject) {
         fs.writeFile('contracts/' + factTbl.name + '.sol', contractResult, function (err) {
             if (err) {
+                /* istanbul ignore next */
                 console.log(err);
+                /* istanbul ignore next */
                 return reject(new Error('error'));
             }
             helper.log('******************');
             helper.log('Contract generated!');
             helper.log('******************');
-            let templ;
-            if ('template' in factTbl) {
-                templ = factTbl['template'];
-            } else {
-                templ = factTbl;
-            }
+            let templ = factTbl.template;
             return resolve({ msg: 'OK', filename: factTbl.name, template: templ, createTable: createTable, tableName: tableName });
         });
     });
