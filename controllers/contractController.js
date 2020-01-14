@@ -24,7 +24,7 @@ function contractChecker (req, res, next) {
     }
 }
 
-let bcResponseHandler = function (err, result) {
+const bcResponseHandler = function (err, result) {
     if (!err) {
         result = removeUnneededFieldsFromBCResponse(result);
         Promise.resolve(result);

@@ -1,12 +1,11 @@
 const crypto = require('crypto');
 let md5sum = crypto.createHash('md5');
 const stringify = require('fast-stringify');
-let config = require('../config_private');
+const config = require('../config_private');
 const maxGbSize = config.maxGbSize;
 const mb512InBytes = 512 * 1024 * 1024;
 const redis = require('redis');
 const client = redis.createClient(config.redisPort, config.redisIP);
-const Web3 = require('web3');
 let contract = null;
 let mainTransactionObject = {};
 let redisConnected = false;
@@ -89,10 +88,8 @@ function saveOnCache (gbResult, operation, latestId) {
     let hash = md5sum.digest('hex');
     let gbResultSize = Object.keys(gbResult).length;
     let slicedGbResult = [];
-    if (config.autoCacheSlice === 'manual') {
-        if (gbResultSize > config.cacheSlice) {
-            slicedGbResult = manualSlicing(gbResult);
-        }
+    if (config.autoCacheSlice === 'manual' && gbResultSize > config.cacheSlice) {
+        slicedGbResult = manualSlicing(gbResult);
     } else {
         // redis allows 512MB per stored string, so we divide the result of our gb with 512MB to find cache slice
         // maxGbSize is the max number of bytes in a row of the result
@@ -130,9 +127,9 @@ function deleteFromCache (evicted) {
         let gbIdsToDelete = [];
         for (let i = 0; i < evicted.length; i++) {
             keysToDelete.push(evicted[i].hash);
-            let crnHash = evicted[i].hash;
-            let cachedGBSplited = crnHash.split('_');
-            let cachedGBLength = parseInt(cachedGBSplited[1]);
+            const crnHash = evicted[i].hash;
+            const cachedGBSplited = crnHash.split('_');
+            const cachedGBLength = parseInt(cachedGBSplited[1]);
             if (cachedGBLength > 0) { // reconstructing all the hashes in cache if it is sliced
                 for (let j = 0; j < cachedGBLength; j++) {
                     keysToDelete.push(cachedGBSplited[0] + '_' + j);
