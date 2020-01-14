@@ -17,7 +17,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
     globalAllGroupBysTime, getLatestFactIdTime, totalStart) {
     return new Promise((resolve, reject) => {
         let matSteps = [];
-        let bcTimeStart = helper.time();
+        const bcTimeStart = helper.time();
         contractController.getFactsFromTo(mostEfficient.latestFact, latestId - 1).then(async deltas => {
             const bcTimeEnd = helper.time();
             matSteps.push({ type: 'bcFetchDeltas', numOfFacts: deltas.length });

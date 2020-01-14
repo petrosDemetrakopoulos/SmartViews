@@ -19,8 +19,8 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
-let http = require('http').Server(app);
-let io = require('socket.io')(http);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const contractGenerator = require('./helpers/contractGenerator');
 const contractDeployer = require('./helpers/contractDeployer');
 const contractController = require('./controllers/contractController');
@@ -28,9 +28,9 @@ const cacheController = require('./controllers/cacheController');
 const computationsController = require('./controllers/computationsController');
 const viewMaterializationController = require('./controllers/viewMaterializationController');
 const Web3 = require('web3');
-let web3 = new Web3(new Web3.providers.WebsocketProvider(config.blockchainIP));
+const web3 = new Web3(new Web3.providers.WebsocketProvider(config.blockchainIP));
 let createTable = '';
-let contractsDeployed = [];
+const contractsDeployed = new Map();
 
 web3.eth.defaultAccount = web3.eth.accounts[0];
 
@@ -76,12 +76,7 @@ app.get('/form/:contract', function (req, res) {
         templ = factTbl;
     }
     let address = '0';
-    for (let i = 0; i < contractsDeployed.length; i++) {
-        if (contractsDeployed[i].contractName === factTbl.name) {
-            address = contractsDeployed[i].address;
-            break;
-        }
-    }
+    address = contractsDeployed.get(factTbl.name).address;
     let readyViews = factTbl.views;
     readyViews = readyViews.map(x => x.name);
     res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'readyViews': readyViews });
@@ -118,7 +113,7 @@ app.get('/deployContract/:fn', function (req, res) {
                     helper.log('******************');
                     helper.log('Contract Deployed!');
                     helper.log('******************');
-                    contractsDeployed.push(options.contractDeployed);
+                    contractsDeployed.set(options.contractDeployed.contractName, options.contractDeployed);
                     contract = options.contractObject;
                     contractController.setContract(contract, account);
                     viewMaterializationController.setContract(contract, account);
