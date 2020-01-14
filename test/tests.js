@@ -589,6 +589,7 @@ describe('testing /getcount route', function () {
     it('should be a string', function () {
         expect(resp).to.be.a('string');
     });
+
     after(function (done) {
         config.cacheEnabled = true;
         config.autoCacheSlice = 'auto';

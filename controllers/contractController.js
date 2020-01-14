@@ -191,6 +191,7 @@ async function getLatestId () {
     return new Promise((resolve, reject) => {
         contract.methods.dataId().call(function (err, latestId) {
             if (err) {
+                console.log(err);
                 reject(err);
             } else {
                 resolve(latestId);

@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const reload = require('require-reload')(require);
 const stringify = require('fast-stringify');
-let config = require('./config_private');
+let config = reload('./config_private');
 const configLab = require('./config_lab');
 const path = require('path');
 const app = express();
@@ -26,7 +28,7 @@ const cacheController = require('./controllers/cacheController');
 const computationsController = require('./controllers/computationsController');
 const viewMaterializationController = require('./controllers/viewMaterializationController');
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.WebsocketProvider(config.blockchainIP));
+let web3 = new Web3(new Web3.providers.WebsocketProvider(config.blockchainIP));
 let createTable = '';
 let contractsDeployed = [];
 
@@ -146,7 +148,7 @@ app.get('/load_dataset/:dt', contractController.contractChecker, function (req, 
             res.send({ msg: 'OK' });
         }).catch(error => {
             helper.log(error);
-            res.send(error);
+            res.send(helper.errorToJson(error));
         });
     }
 });
@@ -168,7 +170,7 @@ app.get('/getFactById/:id', contractController.contractChecker, function (req, r
         res.send(stringify(result).replace(/\\/g, ''));
     }).catch(error => {
         helper.log(error);
-        res.send(error);
+        res.send(helper.errorToJson(error));
     });
 });
 
@@ -179,7 +181,7 @@ app.get('/getFactsFromTo/:from/:to', function (req, res) {
         retval.push({ time: timeFinish });
         res.send(stringify(retval).replace(/\\/g, ''));
     }).catch(err => {
-        res.send(err);
+        res.send(helper.errorToJson(err));
     });
 });
 
@@ -189,15 +191,15 @@ app.get('/allfacts', contractController.contractChecker, function (req, res) {
         let timeStart = helper.time();
         contractController.getAllFactsHeavy(result).then(retval => {
             let timeFinish = helper.time() - timeStart;
-            helper.log('Get all facts time: ' + timeFinish + ' s');
+            console.log('Get all facts time: ' + timeFinish + ' s');
             retval.push({ time: timeFinish });
             res.send(stringify(retval).replace(/\\/g, ''));
         }).catch(error => {
-            helper.log(error);
+            console.log(error);
         });
     }).catch(err => {
         helper.log(err);
-        res.send(err);
+        res.send(helper.errorToJson(err));
     });
 });
 
@@ -206,12 +208,14 @@ app.get('/groupbyId/:id', contractController.contractChecker, function (req, res
         return res.send(stringify(result).replace(/\\/g, ''));
     }).catch(error => {
         helper.log(error);
-        return res.send(error);
+        return res.send(helper.errorToJson(error));
     });
 });
 
 app.get('/getViewByName/:viewName/:contract', contractController.contractChecker, async function (req, res) {
-    config = helper.requireUncached('../config_private');
+    if(process.env.TESTS === true) {
+        config = reload('./config_private');
+    }
     const totalStart = helper.time();
     let factTbl = require('./templates/' + req.params.contract);
     const viewsDefined = factTbl.views;
@@ -258,7 +262,7 @@ app.post('/addFact', contractController.contractChecker, function (req, res) {
         res.send(receipt);
     }).catch(error => {
         helper.log(error);
-        res.send(error);
+        res.send(helper.errorToJson(error));
     })
 });
 

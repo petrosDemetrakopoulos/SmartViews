@@ -406,6 +406,10 @@ function welcomeMessage () {
     console.log('*******************************************************************************');
 }
 
+function errorToJson (error) {
+    return {status: 'ERROR', message: error.message};
+}
+
 module.exports = {
     containsAllFields: containsAllFields,
     configFileValidations: configFileValidations,
@@ -433,6 +437,7 @@ module.exports = {
     findSameOldestResults: findSameOldestResults,
     sortByWord2Vec: sortByWord2Vec,
     extractOperation: extractOperation,
-    welcomeMessage: welcomeMessage
+    welcomeMessage: welcomeMessage,
+    errorToJson: errorToJson
 };
 const costFunctions = require('./costFunctions');
