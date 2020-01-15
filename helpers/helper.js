@@ -147,7 +147,7 @@ function mergeSlicedCachedResult (allCached) {
 
 function extractGBValues (reducedResult, view) {
     let rows = [];
-    let gbValsReduced = Object.values(reducedResult);
+    const gbValsReduced = Object.values(reducedResult);
     let lastCol = view.SQLTable.split(' ');
     let prelastCol = lastCol[lastCol.length - 4];
     lastCol = lastCol[lastCol.length - 2];

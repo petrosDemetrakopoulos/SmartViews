@@ -31,6 +31,7 @@ const bcResponseHandler = function (err, result) {
     } else {
         /* istanbul ignore next */
         helper.log(err);
+        /* istanbul ignore next */
         Promise.reject(err);
     }
 };
@@ -65,6 +66,7 @@ async function getAllGroupbys () { // promisify it to await where we call it
                         } else {
                             /* istanbul ignore next */
                             helper.log(err);
+                            /* istanbul ignore next */
                             reject(err);
                         }
                     });
@@ -75,6 +77,7 @@ async function getAllGroupbys () { // promisify it to await where we call it
             } else {
                 /* istanbul ignore next */
                 helper.log(err);
+                /* istanbul ignore next */
                 reject(err);
             }
         });
@@ -182,6 +185,7 @@ async function getLatestId () {
             if (err) {
                 /* istanbul ignore next */
                 console.log(err);
+                /* istanbul ignore next */
                 reject(err);
             } else {
                 resolve(latestId);
@@ -216,6 +220,7 @@ function deleteCachedResults (sortedByEvictionCost) {
             }).catch(error => {
                 /* istanbul ignore next */
                 helper.log(error);
+                /* istanbul ignore next */
                 reject(error);
             });
         });
@@ -226,10 +231,12 @@ function sendTransactionWithContractMethod (contractMethod) {
     return contractMethod.send(mainTransactionObject, (err, txHash) => {
         helper.log('send:', err, txHash);
     }).on('error', (err) => {
+        /* istanbul ignore next */
         helper.log('error:', err);
+        /* istanbul ignore next */
         Promise.reject(err);
-    }).on('transactionHash', (err) => {
-        helper.log('transactionHash:', err);
+    }).on('transactionHash', (txHash) => {
+        helper.log('transactionHash:', txHash);
     }).on('receipt', (receipt) => {
         helper.log('receipt:', receipt);
         Promise.resolve(receipt);

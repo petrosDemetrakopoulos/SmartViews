@@ -115,7 +115,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                     reject(err);
                                 });
                             } else {
-                                console.log('GROUP-BY FIELDS OF DELTAS AND CACHED ARE THE SAME');
+                                helper.log('GROUP-BY FIELDS OF DELTAS AND CACHED ARE THE SAME');
                                 // group by fields of deltas and cached are the same so
                                 // MERGE cached and groupBySqlResults
                                 const times = { bcTimeEnd: bcTimeEnd,
@@ -370,11 +370,11 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
         for (let i = 0; i < sortedByEvictionCost.length; i++) {
             totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
         }
-        console.log('CURRENT CACHE LOAD = ' + totalCurrentCacheLoad + ' Bytes OR ' + (totalCurrentCacheLoad / 1024) + ' KB');
+        helper.log('CURRENT CACHE LOAD = ' + totalCurrentCacheLoad + ' Bytes OR ' + (totalCurrentCacheLoad / 1024) + ' KB');
         if (totalCurrentCacheLoad > 0 && (totalCurrentCacheLoad / 1024) >= config.maxCacheSizeInKB) {
             // delete as many cached results as to free up cache size equal to the size of the latest result we computed
             // we can easily multiply it by a factor to see how it performs
-            console.log('-->CLEARING CACHE');
+            helper.log('-->CLEARING CACHE');
             let sortedByEvictionCostFiltered = [];
             let gbSize = stringify(groupBySqlResult).length;
             let totalSize = 0;

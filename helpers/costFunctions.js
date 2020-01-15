@@ -81,10 +81,10 @@ async function dispCost (Vc, latestFact, factTbl) {
 function getViewsMaterialisableFromVi (Vc, Vi) {
     let viewsMaterialisableFromVi = [];
     for (let j = 0; j < Vc.length; j++) { // finding all the Vs < Vi
-        let crnView = Vc[j];
-        let crnViewFields = JSON.parse(crnView.columns);
-        let ViFields = JSON.parse(Vi.columns);
-        for (let index in crnViewFields.fields) {
+        const crnView = Vc[j];
+        const crnViewFields = JSON.parse(crnView.columns);
+        const ViFields = JSON.parse(Vi.columns);
+        for (const index in crnViewFields.fields) {
             crnViewFields.fields[index] = crnViewFields.fields[index].trim();
         }
         let containsAllFields = true;

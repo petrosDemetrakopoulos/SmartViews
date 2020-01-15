@@ -200,7 +200,6 @@ app.get('/allfacts', contractController.contractChecker, function (req, res) {
         let timeStart = helper.time();
         contractController.getAllFactsHeavy(result).then(retval => {
             let timeFinish = helper.time() - timeStart;
-            console.log('Get all facts time: ' + timeFinish + ' s');
             retval.push({ time: timeFinish });
             res.send(stringify(retval).replace(/\\/g, ''));
         }).catch(error => {

@@ -204,6 +204,7 @@ function calculateReducedGroupBy (cachedGroupBy, view, gbFields) {
                 }).catch(err => {
                     /* istanbul ignore next */
                     helper.log(err);
+                    /* istanbul ignore next */
                     reject(err);
                 });
             });
@@ -243,12 +244,14 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
                 if (err) {
                     /* istanbul ignore next */
                     helper.log(err);
+                    /* istanbul ignore next */
                     reject(err);
                 }
                 connection.query(editedQueryB, function (err) {
                     if (err) {
                         /* istanbul ignore next */
                         helper.log(err);
+                        /* istanbul ignore next */
                         reject(err);
                     }
                     let op = helper.extractOperation(view.operation);
@@ -297,6 +300,7 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
                     }).catch(err => {
                         /* istanbul ignore next */
                         helper.log(err);
+                        /* istanbul ignore next */
                         reject(err);
                     });
                 });

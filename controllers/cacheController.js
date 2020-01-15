@@ -38,7 +38,7 @@ function extractMetaKeys (gbResult) {
 function manualSlicing (gbResult) {
     let slicedGbResult = [];
     let crnSlice = [];
-    let metaKeys = extractMetaKeys(gbResult);
+    const metaKeys = extractMetaKeys(gbResult);
     for (const key of Object.keys(gbResult)) {
         if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'viewName') {
             crnSlice.push({ [key]: gbResult[key] });
@@ -58,7 +58,7 @@ function manualSlicing (gbResult) {
 function autoSlicing (gbResult) {
     let slicedGbResult = [];
     let crnSlice = [];
-    let metaKeys = extractMetaKeys(gbResult);
+    const metaKeys = extractMetaKeys(gbResult);
     let rowsAddedInslice = 0;
     let crnSliceLengthInBytes = 0;
     for (const key of Object.keys(gbResult)) {
