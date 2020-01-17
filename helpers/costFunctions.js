@@ -10,17 +10,23 @@ function cost (Vi, V, latestFact) {
     return V;
 }
 
-function costMat (V, Vc, latestFact) {
+async function costMat (V, Vc, latestFact) {
     // The cost of materializing view V using the set of cached views Vc
+    //console.log('costMat Function')
+    //console.log('cost of materializing view V'+V.columns+' using VC, size: '+Vc.length)
     let costs = [];
     for (let i = 0; i < Vc.length; i++) {
         let Vi = Vc[i];
-        let crnCost = cost(Vi, V, latestFact);
-        costs.push(crnCost);
+        if(isMaterializableFrom(V,Vi)){
+            let crnCost = await cost(Vi, V, latestFact);
+            //console.log('Using Vi: '+Vi.columns+' materialization cost: '+crnCost.calculationCost)
+            costs.push(crnCost);
+        }
     }
-    costs.sort(function (a, b) {
+    await costs.sort(function (a, b) {
         return parseFloat(a.calculationCost) - parseFloat(b.calculationCost);
     });
+    console.log('costMat result: '+costs[0].calculationCost)
     return costs[0].calculationCost;
 }
 
@@ -36,27 +42,29 @@ async function dispCost (Vc, latestFact, factTbl) {
             const crnGroupBy = Vc[i];
             allHashes.push(crnGroupBy.hash);
         }
+        //console.log('inside DispCost')
         cacheController.getManyCachedResults(allHashes).then(async allCached => {
             let freq = 0;
             allCached = allCached.filter(function (el) { // remove null objects in case they have been deleted
                 return el != null;
             });
 
-            const viewsDefined = factTbl.views;
-            let viewMap = new Map();
-            for (let crnView in viewsDefined) {
-                viewMap.set(factTbl.views[crnView].name, factTbl.views[crnView]);
-            }
-
             if (allHashes.length > 1) {
                 for (let j = 0; j < allCached.length; j++) {
                     const crnGb = JSON.parse(allCached[j]);
-                    freq = viewMap.get(crnGb.viewName).frequency;
+                    const viewsDefined = factTbl.views;
+                    for (let crnView in viewsDefined) {
+                        if (factTbl.views[crnView].name === crnGb.viewName) {
+                            freq = factTbl.views[crnView].frequency;
+                            break;
+                        }
+                    }
                 }
 
                 for (let i = 0; i < Vc.length; i++) {
-                    let Vi = Vc[i];
-                    let VcMinusVi = remove(Vc, Vi);
+                    let Vi = Vc[i]; //Vi in paper
+                    let VcMinusVi = remove(Vc, Vi); //set of cached views without Vi
+                    //console.log('current Vi: '+Vi.fields)
                     let viewsMaterialisableFromVi = getViewsMaterialisableFromVi(Vc, Vi, i);
                     viewsMaterialisableFromVi = remove(viewsMaterialisableFromVi, Vi);
                     let dispCostVi = 0;
@@ -65,6 +73,8 @@ async function dispCost (Vc, latestFact, factTbl) {
                         let costMatVVC = await costMat(V, Vc, latestFact);
                         let costMatVVcMinusVi = await costMat(V, VcMinusVi, latestFact);
                         dispCostVi += (costMatVVC - costMatVVcMinusVi);
+                        console.log('current Vi: '+Vi.columns+'costMatWC: '+costMatVVC+' CostMatWcMinusVi: '+costMatVVcMinusVi+' result: '+dispCostVi+' frequency: '+freq)
+//prepei na tsekarw an ta views sta 2 costs mporoun na kanoun materialize to Vi
                     }
                     dispCostVi = dispCostVi * freq;
                     Vi.cacheEvictionCost = dispCostVi / Number.parseInt(Vi.size);
@@ -81,11 +91,13 @@ async function dispCost (Vc, latestFact, factTbl) {
 function getViewsMaterialisableFromVi (Vc, Vi) {
     let viewsMaterialisableFromVi = [];
     for (let j = 0; j < Vc.length; j++) { // finding all the Vs < Vi
-        const crnView = Vc[j];
-        const crnViewFields = JSON.parse(crnView.columns);
-        const ViFields = JSON.parse(Vi.columns);
-        for (const index in crnViewFields.fields) {
+        let crnView = Vc[j];
+        let crnViewFields = JSON.parse(crnView.columns);
+        let ViFields = JSON.parse(Vi.columns);
+        //console.log('Vi fields: '+ViFields)
+        for (let index in crnViewFields.fields) {
             crnViewFields.fields[index] = crnViewFields.fields[index].trim();
+            //console.log('Diff fields: '+crnViewFields.fields[index])
         }
         let containsAllFields = true;
         for (let k = 0; k < crnViewFields.fields.length; k++) {
@@ -97,6 +109,11 @@ function getViewsMaterialisableFromVi (Vc, Vi) {
             viewsMaterialisableFromVi.push(crnView);
         }
     }
+    //ViF = JSON.parse(Vi.columns);
+    //console.log('Views materializable from Vi :'+ViF.fields)
+    //for(i=0;i<viewsMaterialisableFromVi.length;i++){
+    //  console.log(viewsMaterialisableFromVi[i].columns)
+    //}
     return viewsMaterialisableFromVi;
 }
 
@@ -156,7 +173,6 @@ function dataCubeDistance (view1, view2) {
     let view1fields = JSON.parse(view1.columns);
     let view2fields = JSON.parse(view2.columns);
     view1fields = view1fields.fields;
-    view2fields = view2fields.fields;
     const union = _.union(view1fields, view2fields).sort();
     const intersection = _.intersection(view1fields, view2fields).sort();
     return union.length - intersection.length;
@@ -168,6 +184,24 @@ function dataCubeDistanceBatch (cachedViews, view) {
         cachedViews[i].dataCubeDistance = dataCubeDistance(cachedViews[i], view);
     }
     return cachedViews;
+}
+
+function isMaterializableFrom (view1, view2) {
+    //check if view2 can materialize view1 ex. isMaterializableFrom('AB','ABC')=true
+    let view1Fields = JSON.parse(view1.columns);
+    let view2Fields = JSON.parse(view2.columns);
+    //console.log('IsMaterializableFrom function')
+    //console.log('Vi fields: '+ViFields)
+    for (let index in view1Fields.fields) {
+        view1Fields.fields[index] = view1Fields.fields[index].trim();
+    }
+    let containsAllFields = true;
+    for (let k = 0; k < view1Fields.fields.length; k++) {
+        if (!view2Fields.fields.includes(view1Fields.fields[k])) {
+            containsAllFields = false
+        }
+    }
+    return containsAllFields;
 }
 
 module.exports = {

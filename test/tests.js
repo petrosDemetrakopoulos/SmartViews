@@ -98,6 +98,18 @@ describe('testing /new_contract/:fn route', function () {
             });
     });
 
+    it('should be an object', function () {
+        expect(responseBodyContractgeneration).to.be.a('object');
+    });
+
+    it('should have property "message"', function () {
+        expect(responseBodyContractgeneration).to.have.property('message');
+    });
+
+    it('"message" should equal "OK"', function () {
+        expect(responseBodyContractgeneration.message).to.equal('OK');
+    });
+
     it('should have property "filename" ', function () {
         expect(responseBodyContractgeneration).to.have.property('filename');
     });
@@ -194,6 +206,14 @@ describe('testing /load_dataset/:dt route', function () {
 
     it('should be an object', function () {
         expect(resp).to.be.a('object');
+    });
+
+    it('should have property "message"', function () {
+        expect(resp).to.have.property('message');
+    });
+
+    it('"message" should equal "OK"', function () {
+        expect(resp.message).to.equal('OK');
     });
 });
 

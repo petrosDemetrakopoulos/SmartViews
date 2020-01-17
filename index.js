@@ -147,7 +147,7 @@ app.get('/load_dataset/:dt', contractController.contractChecker, function (req, 
             running = false;
             io.emit('DONE', 'TRUE');
             helper.log('Added ' + dt.length + ' records in ' + timeDiff + ' seconds');
-            res.send({ msg: 'OK' });
+            res.send({ message: 'OK' });
         }).catch(error => {
             /* istanbul ignore next */
             helper.log(error);
@@ -162,7 +162,7 @@ app.get('/new_contract/:fn', function (req, res) {
         computationsController.setCreateTable(result.createTable);
         computationsController.setTableName(result.tableName);
         createTable = result.createTable;
-        return res.send({ msg: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
+        return res.send({ message: 'OK', 'filename': result.filename + '.sol', 'template': result.template });
     }).catch(err => {
         /* istanbul ignore next */
         console.log(err);
