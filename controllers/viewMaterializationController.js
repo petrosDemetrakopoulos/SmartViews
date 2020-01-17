@@ -390,6 +390,13 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             let sortedByEvictionCostFiltered = [];
             let gbSize = stringify(groupBySqlResult).length;
             let totalSize = 0;
+            for (let k = 0; k < sameOldestResults.length; k++) {
+                let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
+                if (indexInSortedByEviction > -1) {
+                    totalSize += parseInt(sortedByEvictionCost[indexInSortedByEviction].size);
+                    sortedByEvictionCost = sortedByEvictionCost.splice(indexInSortedByEviction, 1);
+                }
+            }
             let i = 0;
             const copy_array = sortedByEvictionCost.reverse();
             let crnSize = parseInt(copy_array[0].size);
@@ -404,13 +411,6 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 i++;
             }
 
-            // for (let k = 0; k < sameOldestResults.length; k++) {
-            //     let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
-            //     if (indexInSortedByEviction > -1) {
-            //         totalSize += parseInt(sortedByEvictionCost[indexInSortedByEviction].size);
-            //         sortedByEvictionCost = sortedByEvictionCost.splice(indexInSortedByEviction, 1);
-            //     }
-            // }
 
             for (let k = i; k < copy_array.length; k++) {
                 sortedByEvictionCostFiltered.push(copy_array[k]);
@@ -457,7 +457,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
             }
             resolve(groupBySqlResult);
-            /*
+
             if (sameOldestResults.length > 0) {
                 contractController.deleteCachedResults(sameOldestResults).then(deleteReceipt => {
                     times.totalEnd = helper.time();
@@ -476,7 +476,6 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 }
                 resolve(groupBySqlResult);
             }
-             */
         }
     });
 }
