@@ -3,7 +3,7 @@
     "cacheEvictionPolicy": "costFunction",
     "calculationCostFunction": "costFunction",
     "maxCacheSize": 1000,
-    "maxCacheSizeInKB": 10000,
+    "maxCacheSizeInKB": 1,
     "cacheSlice": 2,
     "autoCacheSlice": "auto",
     "maxGbSize": 10000,

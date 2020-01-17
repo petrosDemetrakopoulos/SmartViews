@@ -378,7 +378,8 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
     return new Promise((resolve, reject) => {
         let totalCurrentCacheLoad = 0; // in Bytes
         console.log('current view ' + stringify(groupBySqlResult.viewName));
-        console.log('***CACHE OBJECTS***');
+        console.log('***CACHED OBJECTS***');
+        console.log(sortedByEvictionCost);
         for (let i = 0; i < sortedByEvictionCost.length; i++) {
             totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
         }
@@ -388,7 +389,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             // we can easily multiply it by a factor to see how it performs
             console.log('-->CLEARING CACHE');
             let sortedByEvictionCostFiltered = [];
-            let gbSize = stringify(groupBySqlResult).length;
+            const gbSize = stringify(groupBySqlResult).length;
             let totalSize = 0;
             for (let k = 0; k < sameOldestResults.length; k++) {
                 let indexInSortedByEviction = sortedByEvictionCost.indexOf(sameOldestResults[k]);
@@ -397,11 +398,13 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                     sortedByEvictionCost = sortedByEvictionCost.splice(indexInSortedByEviction, 1);
                 }
             }
+            console.log("SAME OLDEST TO DELETE:");
+            console.log(sameOldestResults);
             let i = 0;
             const copy_array = sortedByEvictionCost.reverse();
             let crnSize = parseInt(copy_array[0].size);
             while ((totalSize + crnSize) < (config.maxCacheSizeInKB * 1024 - gbSize)) {
-                console.log((totalSize+crnSize)+' < '+(config.maxCacheSizeInKB*1024-gbSize));
+                console.log((totalSize+crnSize) + ' < '+((config.maxCacheSizeInKB*1024) - gbSize));
                 if (copy_array[i]) {
                     crnSize = parseInt(copy_array[i].size);
                 } else {
@@ -412,9 +415,9 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             }
 
 
-            for (let k = i; k < copy_array.length; k++) {
-                sortedByEvictionCostFiltered.push(copy_array[k]);
-                console.log('Evicted view '+copy_array[k].columns+' with size: ' +(parseInt(copy_array[k].size)/1024)+' and cost: '+copy_array[k].cacheEvictionCost)
+            for (let k = (i-1); k < copy_array.length; k++) {
+                sortedByEvictionCostFiltered.push(copy_array[k]);  //possible error because this element already in sortedByEvictionCostFiltered
+                console.log('Evicted view ' + copy_array[k].columns+' with size: ' +(parseInt(copy_array[k].size)/1024)+' and cost: '+copy_array[k].cacheEvictionCost)
             }
 
             console.log('TOTAL SIZE = ' + totalSize);
@@ -449,14 +452,13 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             fs.appendFile('cache_sizeCFV2823.txt', res, function (err) {
                 if (err) {
                     /* istanbul ignore next */
-                    return console.error(err);
+                    console.error(err);
                 }
             });
             times.totalEnd = helper.time();
             if (times) {
                 groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
             }
-            resolve(groupBySqlResult);
 
             if (sameOldestResults.length > 0) {
                 contractController.deleteCachedResults(sameOldestResults).then(deleteReceipt => {
@@ -467,6 +469,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                     console.log('DELETED CACHED RESULTS');
                     resolve(groupBySqlResult);
                 }).catch(err => {
+                    /* istanbul ignore next */
                     reject(err);
                 });
             } else {
@@ -563,7 +566,7 @@ async function materializeView (view, contract, totalStart, createTable) {
                         const getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
                             const sortedByCalculationCost =  helper.sortByCalculationCost(filteredGBs, latestId);
-                            const sortedByEvictionCost =  helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            const sortedByEvictionCost =  await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             const mostEfficient = sortedByCalculationCost[0];
                             const getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
