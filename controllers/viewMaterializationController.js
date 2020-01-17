@@ -25,7 +25,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                 deltas = helper.removeTimestamps(deltas);
                 helper.log('CALCULATING GROUP-BY FOR DELTAS:');
                 const sqlTimeStart = helper.time();
-                await computationsController.calculateNewGroupBy(deltas, view.operation, view.gbFields, view.aggregationField).then(async groupBySqlResult => {
+                await computationsController.calculateNewGroupBy(deltas, view.operation, view.fields, view.aggregationField).then(async groupBySqlResult => {
                     const sqlTimeEnd = helper.time();
                     const allHashes = helper.reconstructSlicedCachedResult(mostEfficient);
                     matSteps.push({ type: 'sqlCalculationDeltas' });
@@ -37,7 +37,7 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
 
                         if (cachedGroupBy.field === view.aggregationField &&
                             view.operation === cachedGroupBy.operation) {
-                            if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
+                            if (cachedGroupBy.groupByFields.length !== view.fields.length) {
                                 const reductionTimeStart = helper.time();
                                 computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
                                     const reductionTimeEnd = helper.time();
@@ -175,7 +175,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
             const reductionTimeEnd = helper.time();
             const viewMeta = helper.extractViewMeta(view);
             if (view.operation === 'AVERAGE') {
-                reducedResult = transformations.transformAverage(reducedResult, view.gbFields, view.aggregationField);
+                reducedResult = transformations.transformAverage(reducedResult, view.fields, view.aggregationField);
             } else {
                 reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
             }
@@ -314,7 +314,7 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                 const facts = helper.removeTimestamps(retval);
                 helper.log('CALCULATING NEW GROUP-BY FROM BEGINING');
                 const sqlTimeStart = helper.time();
-                computationsController.calculateNewGroupBy(facts, view.operation, view.gbFields, view.aggregationField).then(groupBySqlResult => {
+                computationsController.calculateNewGroupBy(facts, view.operation, view.fields, view.aggregationField).then(groupBySqlResult => {
                     matSteps.push({ type: 'sqlCalculationInitial' });
                     const sqlTimeEnd = helper.time();
                     groupBySqlResult.gbCreateTable = view.SQLTable;
@@ -485,7 +485,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
 
 function calculateFromCache (cachedGroupBy, sortedByEvictionCost, view, gbFields, latestId, times, matSteps) {
     return new Promise(async (resolve, reject) => {
-        if (cachedGroupBy.groupByFields.length !== view.gbFields.length) {
+        if (cachedGroupBy.groupByFields.length !== view.fields.length) {
             // this means we want to calculate a different group by than the stored one
             // but however it can be calculated just from redis cache
             if (cachedGroupBy.field === view.aggregationField &&
@@ -547,7 +547,7 @@ async function materializeView (view, contract, totalStart, createTable) {
         let materializationDone = false;
         const factTbl = require('../templates/' + contract);
         const gbFields = helper.extractFields(view);
-        view.gbFields = gbFields;
+        view.fields = gbFields;
         let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
         if (config.cacheEnabled) {
             helper.log('cache enabled = TRUE');

@@ -35,12 +35,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 1812,
-      "columns": "[\"A\",\"B\"]",
-      "gbFields": [
-        "A",
-        "B"
-      ],
+      "frequency": 1836,
       "id": "0"
     },
     {
@@ -53,7 +48,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(C int, D int, COUNTpk int)",
       "frequency": 431,
-      "columns": "[\"C\",\"D\"]",
       "id": "1"
     },
     {
@@ -67,7 +61,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, COUNTpk int)",
       "frequency": 411,
-      "columns": "[\"A\",\"B\",\"C\"]",
       "id": "2"
     },
     {
@@ -82,7 +75,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, C int, D int, COUNTpk int)",
       "frequency": 675,
-      "columns": "[\"A\",\"B\",\"C\",\"D\"]",
       "id": "3"
     },
     {
@@ -94,12 +86,7 @@
       "operation": "SUM",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, SUMD int)",
-      "frequency": 463,
-      "columns": "[\"A\",\"B\"]",
-      "gbFields": [
-        "A",
-        "B"
-      ],
+      "frequency": 475,
       "id": "4"
     },
     {
@@ -111,12 +98,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTD int, SUMD int)",
-      "frequency": 197,
-      "columns": "[\"A\",\"B\"]",
-      "gbFields": [
-        "A",
-        "B"
-      ],
+      "frequency": 203,
       "id": "5"
     },
     {
@@ -127,11 +109,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTD int, SUMD int)",
-      "frequency": 200,
-      "columns": "[\"A\"]",
-      "gbFields": [
-        "A"
-      ],
+      "frequency": 206,
       "id": "6"
     },
     {
@@ -143,12 +121,7 @@
       "operation": "MAX",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MAXD int)",
-      "frequency": 268,
-      "columns": "[\"A\",\"B\"]",
-      "gbFields": [
-        "A",
-        "B"
-      ],
+      "frequency": 274,
       "id": "7"
     },
     {
@@ -160,12 +133,7 @@
       "operation": "MIN",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MIND int)",
-      "frequency": 218,
-      "columns": "[\"A\",\"B\"]",
-      "gbFields": [
-        "A",
-        "B"
-      ],
+      "frequency": 224,
       "id": "8"
     },
     {
@@ -176,11 +144,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
-      "frequency": 979,
-      "columns": "[\"A\"]",
-      "gbFields": [
-        "A"
-      ]
+      "frequency": 1003
     },
     {
       "name": "B(COUNT)",
@@ -224,7 +188,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(E int, COUNTpk int)",
       "frequency": 592,
-      "columns": "[\"E\"]",
       "id": "13"
     },
     {
@@ -249,7 +212,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(B int,C int, COUNTpk int)",
       "frequency": 390,
-      "columns": "[\"B\",\"C\"]",
       "id": "15"
     },
     {
@@ -274,7 +236,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,E int, COUNTpk int)",
       "frequency": 452,
-      "columns": "[\"A\",\"E\"]",
       "id": "17"
     },
     {
@@ -299,7 +260,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(C int,E int, COUNTpk int)",
       "frequency": 616,
-      "columns": "[\"C\",\"E\"]",
       "id": "19"
     },
     {
@@ -312,7 +272,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(D int,E int, COUNTpk int)",
       "frequency": 659,
-      "columns": "[\"D\",\"E\"]",
       "id": "20"
     },
     {
@@ -326,7 +285,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,B int,D int, COUNTpk int)",
       "frequency": 448,
-      "columns": "[\"A\",\"B\",\"D\"]",
       "id": "21"
     },
     {
@@ -340,7 +298,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,B int,E int, COUNTpk int)",
       "frequency": 559,
-      "columns": "[\"A\",\"B\",\"E\"]",
       "id": "22"
     },
     {
@@ -354,7 +311,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(B int,C int,E int, COUNTpk int)",
       "frequency": 517,
-      "columns": "[\"B\",\"C\",\"E\"]",
       "id": "23"
     },
     {
@@ -368,7 +324,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(C int,D int,E int, COUNTpk int)",
       "frequency": 398,
-      "columns": "[\"C\",\"D\",\"E\"]",
       "id": "24"
     },
     {
@@ -382,7 +337,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,C int,E int, COUNTpk int)",
       "frequency": 650,
-      "columns": "[\"A\",\"C\",\"E\"]",
       "id": "25"
     },
     {
@@ -423,7 +377,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,B int,D int,E int, COUNTpk int)",
       "frequency": 538,
-      "columns": "[\"A\",\"B\",\"D\",\"E\"]",
       "id": "28"
     },
     {
@@ -438,7 +391,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,B int,C int,E int, COUNTpk int)",
       "frequency": 940,
-      "columns": "[\"A\",\"B\",\"C\",\"E\"]",
       "id": "29"
     },
     {
@@ -453,7 +405,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,C int,D int,E int, COUNTpk int)",
       "frequency": 367,
-      "columns": "[\"A\",\"C\",\"D\",\"E\"]",
       "id": "30"
     },
     {
@@ -468,7 +419,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(B int,C int,D int,E int, COUNTpk int)",
       "frequency": 525,
-      "columns": "[\"B\",\"C\",\"D\",\"E\"]",
       "id": "31"
     },
     {
@@ -483,7 +433,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(B int,C int,D int,E int, COUNTpk int)",
       "frequency": 367,
-      "columns": "[\"A\",\"C\",\"D\",\"E\"]",
       "id": "32"
     },
     {
@@ -499,7 +448,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,B int,C int,D int,E int, COUNTpk int)",
       "frequency": 1327,
-      "columns": "[\"A\",\"B\",\"C\",\"D\",\"E\"]",
       "id": "33"
     },
     {
@@ -513,7 +461,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(B int,C int,D int, COUNTpk int)",
       "frequency": 372,
-      "columns": "[\"B\",\"C\",\"D\"]",
       "id": "34"
     },
     {
@@ -539,7 +486,6 @@
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int,C int, COUNTpk int)",
       "frequency": 351,
-      "columns": "[\"A\",\"C\"]",
       "id": "36"
     }
   ]

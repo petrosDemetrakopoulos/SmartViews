@@ -258,8 +258,8 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
                     let gbQuery = jsonSql.build({
                         type: 'select',
                         table: tableName,
-                        group: view.gbFields,
-                        fields: [view.gbFields,
+                        group: view.fields,
+                        fields: [view.fields,
                             {
                                 func: {
                                     name: op,
@@ -271,8 +271,8 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
                         gbQuery = jsonSql.build({
                             type: 'select',
                             table: tableName,
-                            group: view.gbFields,
-                            fields: [view.gbFields,
+                            group: view.fields,
+                            fields: [view.fields,
                                 {
                                     func: {
                                         name: 'SUM',
@@ -292,9 +292,9 @@ function mergeGroupBys (groupByA, groupByB, view, viewMeta) {
                     queryAndDropTable(editedGBQuery, tableName).then(results => {
                         let groupBySqlResult;
                         if (view.operation === 'AVERAGE') {
-                            groupBySqlResult = transformations.transformAverage(results, view.gbFields, view.aggregationField);
+                            groupBySqlResult = transformations.transformAverage(results, view.fields, view.aggregationField);
                         } else {
-                            groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.gbFields);
+                            groupBySqlResult = transformations.transformGBFromSQL(results, op, lastCol, view.fields);
                         }
                         resolve(groupBySqlResult);
                     }).catch(err => {

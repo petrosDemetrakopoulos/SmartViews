@@ -135,7 +135,7 @@ function calculationCostOfficial (groupBys, latestFact) { // the function we wri
 
 async function word2vec (groupBys, view) {
     let victims = [];
-    const viewForW2V = view.gbFields.toString().replace(/,/g, '');
+    const viewForW2V = view.fields.toString().replace(/,/g, '');
     for (let i = 0; i < groupBys.length; i++) {
         let currentFields = JSON.parse(groupBys[i].columns);
         let newVictim = currentFields.fields.toString()
@@ -171,7 +171,7 @@ async function word2vec (groupBys, view) {
 
 function dataCubeDistance (view1, view2) {
     let view1fields = JSON.parse(view1.columns);
-    let view2fields = JSON.parse(view2.columns);
+    let view2fields =view2.fields;
     view1fields = view1fields.fields;
     const union = _.union(view1fields, view2fields).sort();
     const intersection = _.intersection(view1fields, view2fields).sort();
@@ -179,7 +179,6 @@ function dataCubeDistance (view1, view2) {
 }
 
 function dataCubeDistanceBatch (cachedViews, view) {
-    view.columns = JSON.stringify(view.fields);
     for (let i = 0; i < cachedViews.length; i++) {
         cachedViews[i].dataCubeDistance = dataCubeDistance(cachedViews[i], view);
     }

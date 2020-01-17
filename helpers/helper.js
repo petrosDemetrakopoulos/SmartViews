@@ -87,8 +87,8 @@ function containsAllFields (transformedArray, view) {
         for (let index in cachedGBFields.fields) {
             cachedGBFields.fields[index] = cachedGBFields.fields[index].trim();
         }
-        for (let j = 0; j < view.gbFields.length; j++) {
-            if (!cachedGBFields.fields.includes(view.gbFields[j])) {
+        for (let j = 0; j < view.fields.length; j++) {
+            if (!cachedGBFields.fields.includes(view.fields[j])) {
                 containsAllFields = false
             }
         }
@@ -387,7 +387,7 @@ function findSameOldestResults (sortedByEvictionCost, view) {
     for (let i = 0; i < sortedByEvictionCost.length; i++) {
         const crnRes = sortedByEvictionCost[i];
         const meta = JSON.parse(crnRes.columns);
-        if (JSON.stringify(meta.fields) === JSON.stringify(view.gbFields) && meta.aggrFunc === view.operation) {
+        if (JSON.stringify(meta.fields) === JSON.stringify(view.fields) && meta.aggrFunc === view.operation) {
             sameOldestResults.push(crnRes);
         }
     }
