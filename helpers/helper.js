@@ -283,6 +283,7 @@ function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let transformedArray = transformGBMetadataFromBlockchain(resultGB);
     transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
     let sortedByEvictionCost = JSON.parse(JSON.stringify(transformedArray));
+    sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
     return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(sortedByEvictionCost => {
         sortedByEvictionCost.sort(function (a, b) {
             let sortFunctionMap = new Map();
