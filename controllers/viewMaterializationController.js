@@ -632,8 +632,8 @@ async function materializeView (view, contract, totalStart, createTable) {
                     } else {
                         // No filtered group-bys found, proceed to group-by from the beginning
                         helper.log('NO FILTERED GROUP BYS FOUND');
-                        await contractController.getLatestId(latestId => {
-                            const sortedByEvictionCost =  helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                        await contractController.getLatestId(async latestId =>  {
+                            const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             calculateNewGroupByFromBeginning(view, totalStart,
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 materializationDone = true;

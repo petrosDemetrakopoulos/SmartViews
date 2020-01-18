@@ -1,6 +1,6 @@
 const fs = require('fs');
 let path = require('path');
-const filename = './EXPViewSequence.txt';
+const filename = './queriesEXPS1.txt';
 const generator = require('./testDataGenerator');
 const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
