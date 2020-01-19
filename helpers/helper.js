@@ -283,14 +283,22 @@ function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let transformedArray = transformGBMetadataFromBlockchain(resultGB);
     transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
     let sortedByEvictionCost = JSON.parse(JSON.stringify(transformedArray));
-    sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
+    if(config.cacheEvictionPolicy === 'dataCubeDistance') {
+        sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
+    } else if(config.cacheEvictionPolicy === 'word2vec') {
+        sortedByEvictionCost = costFunctions.word2vec(resultGB, view);
+    }
     return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(sortedByEvictionCost => {
         sortedByEvictionCost.sort(function (a, b) {
             let sortFunctionMap = new Map();
             sortFunctionMap.set('FIFO', parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp));
             sortFunctionMap.set('costFunction', parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost));
-            sortFunctionMap.set('word2vec', parseInt(a.word2vecScore) - parseInt(b.word2vecScore));
-            sortFunctionMap.set('dataCubeDistance', parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance));
+            if(config.cacheEvictionPolicy === 'word2vec') {
+                sortFunctionMap.set('word2vec', parseInt(a.word2vecScore) - parseInt(b.word2vecScore));
+            }
+            if(config.cacheEvictionPolicy === 'dataCubeDistance') {
+                sortFunctionMap.set('dataCubeDistance', parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance));
+            }
             return sortFunctionMap.get(config.cacheEvictionPolicy);
         });
         return sortedByEvictionCost;
