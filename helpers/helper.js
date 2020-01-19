@@ -216,19 +216,6 @@ function updateViewFrequency (factTbl, contract, crnView) {
     });
 }
 
-function extractFields (view) {
-    let fields = [];
-    if (Array.isArray(view.fields)) {
-        fields = view.fields;
-    } else {
-        fields.push(view.fields);
-    }
-    for (let index in fields) {
-        fields[index] = fields[index].trim();
-    }
-    return fields;
-}
-
 function extractOperation (op) {
     let operation = '';
     if (op === 'SUM' || op === 'COUNT') {
@@ -279,7 +266,7 @@ function filterGBs (resultGB, view) {
     return filteredGBs;
 }
 
-function sortByEvictionCost (resultGB, latestId, view, factTbl) {
+async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let transformedArray = transformGBMetadataFromBlockchain(resultGB);
     transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
     let sortedByEvictionCost = JSON.parse(JSON.stringify(transformedArray));
@@ -287,22 +274,24 @@ function sortByEvictionCost (resultGB, latestId, view, factTbl) {
         sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
     } else if(config.cacheEvictionPolicy === 'word2vec') {
         sortedByEvictionCost = costFunctions.word2vec(resultGB, view);
+    } else if(config.cacheEvictionPolicy === 'costFunction'){
+        sortedByEvictionCost = await costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl);
     }
-    return costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl).then(sortedByEvictionCost => {
         sortedByEvictionCost.sort(function (a, b) {
-            let sortFunctionMap = new Map();
-            sortFunctionMap.set('FIFO', parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp));
-            sortFunctionMap.set('costFunction', parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost));
+            if(config.cacheEvictionPolicy === 'FIFO'){
+                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+            }
+            if(config.cacheEvictionPolicy === 'costFunction') {
+               return parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
+            }
             if(config.cacheEvictionPolicy === 'word2vec') {
-                sortFunctionMap.set('word2vec', parseInt(a.word2vecScore) - parseInt(b.word2vecScore));
+                return parseInt(a.word2vecScore) - parseInt(b.word2vecScore);
             }
             if(config.cacheEvictionPolicy === 'dataCubeDistance') {
-                sortFunctionMap.set('dataCubeDistance', parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance));
+                return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
             }
-            return sortFunctionMap.get(config.cacheEvictionPolicy);
         });
         return sortedByEvictionCost;
-    });
 }
 
 function sortByCalculationCost (resultGBs, latestId) {
@@ -432,7 +421,6 @@ module.exports = {
     extractGBValues: extractGBValues,
     getJSONFiles: getJSONFiles,
     updateViewFrequency: updateViewFrequency,
-    extractFields: extractFields,
     extractViewMeta: extractViewMeta,
     checkViewExists: checkViewExists,
     sanitizeSQLQuery: sanitizeSQLQuery,

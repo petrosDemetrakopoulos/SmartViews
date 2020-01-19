@@ -26,7 +26,7 @@ async function costMat (V, Vc, latestFact) {
     await costs.sort(function (a, b) {
         return parseFloat(a.calculationCost) - parseFloat(b.calculationCost);
     });
-    console.log('costMat result: '+costs[0].calculationCost)
+    console.log('costMat result: ' + costs[0].calculationCost);
     return costs[0].calculationCost;
 }
 
@@ -171,7 +171,7 @@ async function word2vec (groupBys, view) {
 
 function dataCubeDistance (view1, view2) {
     let view1fields = JSON.parse(view1.columns);
-    let view2fields =view2.fields;
+    let view2fields = view2.fields;
     view1fields = view1fields.fields;
     const union = _.union(view1fields, view2fields).sort();
     const intersection = _.intersection(view1fields, view2fields).sort();

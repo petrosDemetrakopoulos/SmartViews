@@ -79,12 +79,12 @@ function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTa
                                                 times.totalTime = times.bcTime + times.sqlTime + times.cacheRetrieveTime + times.cacheSaveTime;
                                                 const sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
                                                 helper.log('receipt:' + JSON.stringify(receipt));
-                                                clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, times).then(results => {
-                                                    helper.printTimes(results);
-                                                    results.matSteps = matSteps;
-                                                    // prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
-                                                    resolve(results);
-                                                }).catch(err => {
+                                                times.totalEnd = helper.time();
+                                                mergeResult = helper.assignTimes(mergeResult, times);
+                                                mergeResult.matSteps = matSteps;
+                                                helper.printTimes(mergeResult);
+                                                resolve(mergeResult);
+                                                return clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, times).catch(err => {
                                                     reject(err);
                                                 });
                                             });
@@ -201,12 +201,12 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                         cacheRetrieveTimeStart: times.cacheRetrieveTimeStart,
                         cacheRetrieveTimeEnd: times.cacheRetrieveTimeEnd
                     };
+                    times2.totalEnd = helper.time();
+                    reducedResult = helper.assignTimes(reducedResult, times2);
+                    helper.printTimes(reducedResult);
+                    resolve(reducedResult);
                     const sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
-                    clearCacheIfNeeded(sortedByEvictionCost, reducedResult, sameOldestResults, times2).then(results => {
-                        helper.printTimes(results);
-                        //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
-                        resolve(results);
-                    }).catch(err => {
+                    return clearCacheIfNeeded(sortedByEvictionCost, reducedResult, sameOldestResults, times2).catch(err => {
                         /* istanbul ignore next */
                         console.log(err);
                         /* istanbul ignore next */
@@ -267,14 +267,14 @@ function mergeCachedWithDeltasResultsSameFields (view, cachedGroupBy, groupBySql
                     timesReady.cacheRetrieveTime = times.cacheRetrieveTimeEnd - times.cacheRetrieveTimeStart;
                     timesReady.totalTime = timesReady.bcTime + timesReady.sqlTime + timesReady.cacheSaveTime + timesReady.cacheRetrieveTime;
                     timesReady.totalStart = times.totalStart;
+                    timesReady.totalEnd = helper.time();
+                    mergeResult = helper.assignTimes(mergeResult, timesReady);
+                    helper.printTimes(mergeResult);
+                    resolve(mergeResult);
                     //find from sortedByEvictionCost any cached result that is exactly the same with the one requested
                     //then add it to a separate array and delete it anyway independently to if they are already in sortedByEvictionCost
                     const sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
-                    clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, timesReady).then(results => {
-                        helper.printTimes(mergeResult);
-                        //  prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
-                        resolve(results);
-                    }).catch(err => {
+                    return clearCacheIfNeeded(sortedByEvictionCost, mergeResult, sameOldestResults, timesReady).catch(err => {
                         /* istanbul ignore next */
                         reject(err);
                     });
@@ -336,13 +336,13 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
                                 cacheSaveTime: cacheSaveTimeEnd - cacheSaveTimeStart,
                                 totalStart: totalStart };
                             times.totalTime = times.bcTime + times.sqlTime + times.cacheSaveTime;
+                            times.totalEnd = helper.time();
+                            groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
+                            helper.printTimes(groupBySqlResult);
+                            groupBySqlResult.matSteps = matSteps;
+                            resolve(groupBySqlResult);
                             let sameOldestResults = helper.findSameOldestResults(sortedByEvictionCost, view);
-                            clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, sameOldestResults, times).then(results => {
-                                helper.printTimes(results);
-                                results.matSteps = matSteps;
-                                //   prefetchedViews = prefetchNearset(10, sortedByEvictionCost, view);
-                                resolve(results);
-                            }).catch(err => {
+                            return clearCacheIfNeeded(sortedByEvictionCost, groupBySqlResult, sameOldestResults, times).catch(err => {
                                 /* istanbul ignore next */
                                 reject(err);
                             })
@@ -415,7 +415,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             }
 
 
-            for (let k = (i-1); k < copy_array.length; k++) {
+            for (let k = i; k < copy_array.length; k++) {
                 sortedByEvictionCostFiltered.push(copy_array[k]);  //possible error because this element already in sortedByEvictionCostFiltered
                 console.log('Evicted view ' + copy_array[k].columns+' with size: ' +(parseInt(copy_array[k].size)/1024)+' and cost: '+copy_array[k].cacheEvictionCost)
             }
@@ -546,7 +546,7 @@ async function materializeView (view, contract, totalStart, createTable) {
     return new Promise(async (resolve, reject) => {
         let materializationDone = false;
         const factTbl = require('../templates/' + contract);
-        const gbFields = helper.extractFields(view);
+        const gbFields = view.fields;
         view.fields = gbFields;
         let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
         if (config.cacheEnabled) {
@@ -567,6 +567,8 @@ async function materializeView (view, contract, totalStart, createTable) {
                         await contractController.getLatestId().then(async latestId => {
                             const sortedByCalculationCost =  helper.sortByCalculationCost(filteredGBs, latestId);
                             const sortedByEvictionCost =  await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            console.log("#######");
+                            console.log(sortedByEvictionCost);
                             const mostEfficient = sortedByCalculationCost[0];
                             const getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
@@ -634,6 +636,8 @@ async function materializeView (view, contract, totalStart, createTable) {
                         helper.log('NO FILTERED GROUP BYS FOUND');
                         await contractController.getLatestId(async latestId =>  {
                             const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
+                            console.log("#######");
+                            console.log(sortedByEvictionCost);
                             calculateNewGroupByFromBeginning(view, totalStart,
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 materializationDone = true;

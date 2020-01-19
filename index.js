@@ -20,6 +20,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 const http = require('http').Server(app);
+http.tim
 const io = require('socket.io')(http);
 const contractGenerator = require('./helpers/contractGenerator');
 const contractDeployer = require('./helpers/contractDeployer');
@@ -83,10 +84,11 @@ app.get('/form/:contract', function (req, res) {
     readyViews = readyViews.map(x => x.name);
     res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'readyViews': readyViews });
 });
-
+http.timeout = 0;
 http.listen(3000, () => {
     console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
     console.log(`Visit http://localhost:3000/ to view Blockchain, mySQL and Redis cache status`);
+    console.log("timeout = " + http.timeout);
     let validations = helper.configFileValidations();
     if (process.env.ENVIRONMENT === 'LAB') {
         config = configLab;

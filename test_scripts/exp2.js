@@ -1,10 +1,10 @@
 const fs = require('fs');
 let path = require('path');
-const filename = './queriesEXPS1.txt';
+const filename = './EXPViewSequence.txt';
 const generator = require('./testDataGenerator');
 const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
-const ResultsFile = 'result_final_DefaultCostFunction_10_new.json';
+const ResultsFile = 'result_final_DefaultCostFunction_500_new_delete_after.json';
 const rp = require('request-promise');
 
 const load = (file) => {
@@ -141,4 +141,4 @@ main().then(() => {
     process.exit();
 });
 
-module.exports = { main: main }
+module.exports = { main: main };
