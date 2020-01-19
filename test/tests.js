@@ -7,10 +7,14 @@ const it = require('mocha').it;
 const request = require('supertest');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const microtime = require('microtime');
 const fs = require('fs');
+let start = 0;
+let stop = 0;
 chai.use(chaiHttp);
 let responseBodyContractgeneration = {};
 let responseBodyContractDeployment = {};
+
 function freeze (time) {
     const stop = new Date().getTime() + time;
     while (new Date().getTime() < stop);
@@ -20,6 +24,7 @@ before(function (done) {
     setTimeout(done, 3000);
 });
 describe('testing default route', function () {
+    start = microtime.nowDouble();
     it('should return OK status', async () => {
         return request(app)
             .get('/')
@@ -650,6 +655,7 @@ describe('testing /getcount route', function () {
             .then(function (response) {
                 resp = response.text;
                 expect(response.status).to.equal(200);
+                stop = microtime.nowDouble();
             });
     });
 
@@ -666,6 +672,8 @@ describe('testing /getcount route', function () {
         config.autoCacheSlice = 'auto';
         fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
             if (err) throw err;
+            let time = stop - start;
+            console.log("TEST RAN IN: " + time.toFixed(2) + ' s');
             done();
         });
     });

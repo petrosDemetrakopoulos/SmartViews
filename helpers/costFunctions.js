@@ -10,22 +10,21 @@ function cost (Vi, V, latestFact) {
     return V;
 }
 
-async function costMat (V, Vc, latestFact) {
+function costMat (V, Vc, latestFact) {
     // The cost of materializing view V using the set of cached views Vc
     //console.log('costMat Function')
     //console.log('cost of materializing view V'+V.columns+' using VC, size: '+Vc.length)
     let costs = [];
     for (let i = 0; i < Vc.length; i++) {
         let Vi = Vc[i];
-        if(isMaterializableFrom(V,Vi)){
-            let crnCost = await cost(Vi, V, latestFact);
-            //console.log('Using Vi: '+Vi.columns+' materialization cost: '+crnCost.calculationCost)
-            costs.push(crnCost);
+        if (isMaterializableFrom(V,Vi)) {
+            const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
+            const sizeCached = Number.parseInt(Vi.size);
+            V.calculationCost = 500 * sizeDeltas + sizeCached;
+            costs.push(V);
         }
     }
-    await costs.sort(function (a, b) {
-        return parseFloat(a.calculationCost) - parseFloat(b.calculationCost);
-    });
+    costs.sort((a, b) => parseFloat(a.calculationCost) - parseFloat(b.calculationCost));
     console.log('costMat result: ' + costs[0].calculationCost);
     return costs[0].calculationCost;
 }
@@ -70,8 +69,8 @@ async function dispCost (Vc, latestFact, factTbl) {
                     let dispCostVi = 0;
                     for (let j = 0; j < viewsMaterialisableFromVi.length; j++) {
                         let V = viewsMaterialisableFromVi[j];
-                        let costMatVVC = await costMat(V, Vc, latestFact);
-                        let costMatVVcMinusVi = await costMat(V, VcMinusVi, latestFact);
+                        let costMatVVC = costMat(V, Vc, latestFact);
+                        let costMatVVcMinusVi = costMat(V, VcMinusVi, latestFact);
                         dispCostVi += (costMatVVC - costMatVVcMinusVi);
                         console.log('current Vi: '+Vi.columns+'costMatWC: '+costMatVVC+' CostMatWcMinusVi: '+costMatVVcMinusVi+' result: '+dispCostVi+' frequency: '+freq)
 //prepei na tsekarw an ta views sta 2 costs mporoun na kanoun materialize to Vi
