@@ -277,21 +277,21 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     } else if(config.cacheEvictionPolicy === 'costFunction'){
         sortedByEvictionCost = await costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl);
     }
-        sortedByEvictionCost.sort(function (a, b) {
-            if(config.cacheEvictionPolicy === 'FIFO'){
-                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
-            }
-            if(config.cacheEvictionPolicy === 'costFunction') {
-               return parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
-            }
-            if(config.cacheEvictionPolicy === 'word2vec') {
-                return parseInt(a.word2vecScore) - parseInt(b.word2vecScore);
-            }
-            if(config.cacheEvictionPolicy === 'dataCubeDistance') {
-                return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
-            }
-        });
-        return sortedByEvictionCost;
+    sortedByEvictionCost.sort(function (a, b) {
+        if(config.cacheEvictionPolicy === 'FIFO'){
+            return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+        }
+        if(config.cacheEvictionPolicy === 'costFunction') {
+            return parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
+        }
+        if(config.cacheEvictionPolicy === 'word2vec') {
+            return parseInt(a.word2vecScore) - parseInt(b.word2vecScore);
+        }
+        if(config.cacheEvictionPolicy === 'dataCubeDistance') {
+            return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
+        }
+    });
+    return sortedByEvictionCost;
 }
 
 function sortByCalculationCost (resultGBs, latestId) {

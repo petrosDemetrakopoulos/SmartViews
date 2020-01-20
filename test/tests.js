@@ -227,7 +227,7 @@ describe('testing /allfacts', function () {
     // wait so that latest fact should not have the same timestamp with the group by that will be cached
     let resp = {};
     it('should return OK status', async () =>  {
-        return await request(app)
+        return request(app)
             .get('/allfacts')
             .then(function (response) {
                 resp = JSON.parse(response.text);
@@ -673,7 +673,7 @@ describe('testing /getcount route', function () {
         fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
             if (err) throw err;
             let time = stop - start;
-            console.log("TEST RAN IN: " + time.toFixed(2) + ' s');
+            console.log('TEST RAN IN: ' + time.toFixed(2) + ' s');
             done();
         });
     });

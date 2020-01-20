@@ -17,7 +17,7 @@ function costMat (V, Vc, latestFact) {
     let costs = [];
     for (let i = 0; i < Vc.length; i++) {
         let Vi = Vc[i];
-        if (isMaterializableFrom(V,Vi)) {
+        if (isMaterializableFrom(V, Vi)) {
             const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
             const sizeCached = Number.parseInt(Vi.size);
             V.calculationCost = 500 * sizeDeltas + sizeCached;
@@ -72,7 +72,7 @@ async function dispCost (Vc, latestFact, factTbl) {
                         let costMatVVC = costMat(V, Vc, latestFact);
                         let costMatVVcMinusVi = costMat(V, VcMinusVi, latestFact);
                         dispCostVi += (costMatVVC - costMatVVcMinusVi);
-                        console.log('current Vi: '+Vi.columns+'costMatWC: '+costMatVVC+' CostMatWcMinusVi: '+costMatVVcMinusVi+' result: '+dispCostVi+' frequency: '+freq)
+                        console.log('current Vi: '+ Vi.columns + 'costMatWC: ' + costMatVVC + ' CostMatWcMinusVi: ' + costMatVVcMinusVi + ' result: ' + dispCostVi + ' frequency: ' + freq)
 //prepei na tsekarw an ta views sta 2 costs mporoun na kanoun materialize to Vi
                     }
                     dispCostVi = dispCostVi * freq;

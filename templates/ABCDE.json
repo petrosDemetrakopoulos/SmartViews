@@ -98,7 +98,8 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTD int, SUMD int)",
-      "frequency": 216
+      "frequency": 216,
+      "id": "5"
     },
     {
       "name": "A(AVERAGE-D)",
@@ -108,8 +109,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTD int, SUMD int)",
-      "frequency": 218,
-      "id": "6"
+      "frequency": 219
     },
     {
       "name": "AB(MAX-D)",
