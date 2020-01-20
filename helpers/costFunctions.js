@@ -6,7 +6,7 @@ function cost (Vi, V, latestFact) {
     // The cost of materializing view V using the cached view Vi
     const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
     const sizeCached = Number.parseInt(Vi.size);
-    V.calculationCost = 500 * sizeDeltas + sizeCached;
+    V.calculationCost = 10 * sizeDeltas + sizeCached;
     return V;
 }
 
@@ -20,7 +20,7 @@ function costMat (V, Vc, latestFact) {
         if (isMaterializableFrom(V,Vi)) {
             const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
             const sizeCached = Number.parseInt(Vi.size);
-            V.calculationCost = 500 * sizeDeltas + sizeCached;
+            V.calculationCost = 10 * sizeDeltas + sizeCached;
             costs.push(V);
         }
     }
@@ -119,7 +119,7 @@ function getViewsMaterialisableFromVi (Vc, Vi) {
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
-    const a = 500; // factor of deltas
+    const a = 10; // factor of deltas
     let sizeDeltas = 0;
     let sizeCached = 0;
     for (let i = 0; i < groupBys.length; i++) {

@@ -299,28 +299,28 @@ The results are the mean values of all iterations we performed for each value of
 </tr>
 <tr>
 <td>Total Time (s)</td>
-<td>50.07</td>
-<td>3.13</td>
-<td>3.14</td>
-<td>3.31</td>
+<td>15.05</td>
+<td>2.93</td>
+<td>2.90</td>
+<td>2.90</td>
 </tr>
 <tr>
 <td>Blockchain Time (s)</td>
-<td>49.85</td>
-<td>3.02</td>
-<td>3.04</td>
-<td>3.20</td>
+<td>14.94</td>
+<td>2.83</td>
+<td>2.81</td>
+<td>2.81</td>
 </tr>
 <tr>
 <td>SQL Processing Time (s)</td>
-<td>0.11</td>
 <td>0.04</td>
+<td>0.03</td>
 <td>0.04</td>
 <td>0.04</td>
 </tr>
 <tr>
 <td>Application server processing Time (s)</td>
-<td>0.04</td>
+<td>0.01</td>
 <td>0.01</td>
 <td>0.01</td>
 <td>0.01</td>
