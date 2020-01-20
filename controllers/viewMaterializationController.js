@@ -13,8 +13,8 @@ function setContract (contractObject, account) {
 }
 
 function calculateForDeltasAndMergeWithCached (mostEfficient, latestId, createTable,
-    view, gbFields, sortedByEvictionCost,
-    globalAllGroupBysTime, getLatestFactIdTime, totalStart) {
+                                               view, gbFields, sortedByEvictionCost,
+                                               globalAllGroupBysTime, getLatestFactIdTime, totalStart) {
     return new Promise((resolve, reject) => {
         let matSteps = [];
         const bcTimeStart = helper.time();
