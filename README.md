@@ -293,33 +293,68 @@ The results are the mean values of all iterations we performed for each value of
 <tr>
 <th> <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> </th>
 <th>10</th>
+<th>50</th>
 <th>100</th>
+<th>150</th>
+<th>200</th>
 <th>250</th>
+<th>300</th>
+<th>350</th>
+<th>400</th>
+<th>450</th>
 <th>500</th>
 </tr>
 <tr>
 <td>Total Time (s)</td>
 <td>15.05</td>
+<td>3.29</td>
 <td>2.93</td>
+<td>3.01</td>
+<td>3.02</td>
 <td>2.90</td>
+<td>2.94</td>
+<td>2.96</td>
+<td>2.92</td>
+<td>3.02</td>
 <td>2.90</td>
 </tr>
 <tr>
 <td>Blockchain Time (s)</td>
 <td>14.94</td>
-<td>2.83</td>
-<td>2.81</td>
-<td>2.81</td>
+<td> 3.18</td>
+<td> 2.83</td>
+<td> 2.91</td>
+<td> 2.92</td>
+<td> 2.80</td>
+<td> 2.83</td>
+<td> 2.85</td>
+<td> 2.82</td>
+<td> 2.92</td>
+<td> 2.80</td>
 </tr>
 <tr>
 <td>SQL Processing Time (s)</td>
 <td>0.04</td>
+<td>0.04</td>
 <td>0.03</td>
+<td>0.04</td>
+<td>0.04</td>
+<td>0.04</td>
+<td>0.04</td>
+<td>0.04</td>
+<td>0.04</td>
 <td>0.04</td>
 <td>0.04</td>
 </tr>
 <tr>
 <td>Application server processing Time (s)</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.01</td>
+<td>0.01</td>
 <td>0.01</td>
 <td>0.01</td>
 <td>0.01</td>
@@ -340,7 +375,7 @@ However, values larger than 100 do not seem to offer any better result in terms 
 
 Total time vs <img width="15px" src="https://render.githubusercontent.com/render/math?math=a"> presents the following asymptotic behavior:
 <div align="center">
-<img src="schematics/aFactor.png" width="450" align="center">
+<img src="schematics/aFactor.png" width="1000" align="center">
 </div>
 
 # Prefetching with Query2Vec model
