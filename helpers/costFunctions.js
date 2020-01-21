@@ -98,11 +98,6 @@ function getViewsMaterialisableFromVi (Vc, Vi) {
             viewsMaterialisableFromVi.push(crnView);
         }
     }
-    //ViF = JSON.parse(Vi.columns);
-    //console.log('Views materializable from Vi :'+ViF.fields)
-    //for(i=0;i<viewsMaterialisableFromVi.length;i++){
-    //  console.log(viewsMaterialisableFromVi[i].columns)
-    //}
     return viewsMaterialisableFromVi;
 }
 

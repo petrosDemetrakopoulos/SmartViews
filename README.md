@@ -285,6 +285,7 @@ You can see the records used in [test_data/benchamarks](test_data/benchmarks) an
 
 We performed the experiment for &nbsp; <img width="380px" src="https://render.githubusercontent.com/render/math?math=a=[10, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]"> &nbsp; and we got the following results concerning the materialization time.
 The results are the mean values of all iterations we performed for each value of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
+All values are measured in seconds.
 
 
 <div ALIGN="center">

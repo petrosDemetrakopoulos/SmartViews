@@ -11,6 +11,27 @@ const microtime = require('microtime');
 const fs = require('fs');
 let start = 0;
 let stop = 0;
+let initialConfig = {
+    "recordsSlice": 1000,
+        "cacheEvictionPolicy": "FIFO",
+        "calculationCostFunction": "costFunction",
+        "maxCacheSize": 1000000000000,
+        "maxCacheSizeInKB": 1000000000,
+        "cacheSlice": 2,
+        "autoCacheSlice": "auto",
+        "maxGbSize": 100000,
+        "redisPort": 6379,
+        "redisIP": "127.0.0.1",
+        "blockchainIP": "http://localhost:8545",
+        "sql": {
+        "host": "localhost",
+            "user": "root",
+            "password": "Xonelgataandrou1!",
+            "database": "Ptychiaki"
+    },
+    "cacheEnabled": true,
+        "logging": false
+};
 chai.use(chaiHttp);
 let responseBodyContractgeneration = {};
 let responseBodyContractDeployment = {};
@@ -24,6 +45,11 @@ before(function (done) {
     setTimeout(done, 3000);
 });
 describe('testing default route', function () {
+    before(function () {
+        fs.writeFile('./config_private.json', JSON.stringify(initialConfig, null, 4), function (err) {
+            if (err) throw err;
+        });
+    });
     start = microtime.nowDouble();
     it('should return OK status', async () => {
         return request(app)
@@ -674,15 +700,6 @@ describe('testing /getViewByName/:viewName/:contract -- calculationCostFunction 
         expect(resp).to.be.a('string');
     });
 
-    after(function (done) {
-        config.cacheEnabled = true;
-        config.autoCacheSlice = 'auto';
-        config.cacheEvictionPolicy = 'FIFO';
-        fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
-            if (err) throw err;
-            done();
-        });
-    });
 });
 
 describe('testing /getViewByName/:viewName/:contract -- cacheEvictionPolicy = FIFO', function () {
@@ -742,6 +759,7 @@ describe('testing /getcount route', function () {
         config.cacheEnabled = true;
         config.autoCacheSlice = 'auto';
         config.calculationCostFunction = 'costFunction';
+        config.cacheEvictionPolicy = 'costFunction';
         fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
             if (err) throw err;
             let time = stop - start;
