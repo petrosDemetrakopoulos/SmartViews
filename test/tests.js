@@ -645,6 +645,77 @@ describe('testing /getViewByName/:viewName/:contract -- cache disabled', functio
     });
 });
 
+describe('testing /getViewByName/:viewName/:contract -- calculationCostFunction = dataCubeDistanceFunction', function () {
+    let resp = {};
+    let config = require('../config_private');
+    before(function () {
+        config.cacheEnabled = true;
+        config.calculationCostFunction = 'dataCubeDistance';
+        fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
+            if (err) throw err;
+        });
+    });
+
+    it('should return OK status', async function () {
+        return request(app)
+            .get('/load_dataset/10fourcol_i.json') // adding deltas
+            .then(function (response) {
+                freeze(1000);
+                return request(app)
+                    .get('/getViewByName/A(COUNT)/ABCDE')
+                    .then(function (response) {
+                        resp = response.text;
+                        expect(response.status).to.equal(200);
+                    });
+            });
+    });
+
+    it('should be a string', function () {
+        expect(resp).to.be.a('string');
+    });
+
+    after(function (done) {
+        config.cacheEnabled = true;
+        config.autoCacheSlice = 'auto';
+        config.cacheEvictionPolicy = 'FIFO';
+        fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
+            if (err) throw err;
+            done();
+        });
+    });
+});
+
+describe('testing /getViewByName/:viewName/:contract -- cacheEvictionPolicy = FIFO', function () {
+    let resp = {};
+    let config = require('../config_private');
+    before(function () {
+        config.cacheEnabled = true;
+        config.calculationCostFunction = 'calculationCost';
+        config.cacheEvictionPolicy = 'FIFO';
+        fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
+            if (err) throw err;
+        });
+    });
+
+    it('should return OK status', async function () {
+        return request(app)
+            .get('/load_dataset/10fourcol_j.json') // adding deltas
+            .then(function (response) {
+                freeze(1000);
+                return request(app)
+                    .get('/getViewByName/A(COUNT)/ABCDE')
+                    .then(function (response) {
+                        resp = response.text;
+                        expect(response.status).to.equal(200);
+                    });
+            });
+    });
+
+    it('should be a string', function () {
+        expect(resp).to.be.a('string');
+    });
+});
+
 describe('testing /getcount route', function () {
     let resp = {};
     let config = require('../config_private');
@@ -663,13 +734,14 @@ describe('testing /getcount route', function () {
         expect(resp).to.be.a('string');
     });
 
-    it('should equal "89" ', function () {
-        expect(resp).to.equal('89');
+    it('should equal "111" ', function () {
+        expect(resp).to.equal('111');
     });
 
     after(function (done) {
         config.cacheEnabled = true;
         config.autoCacheSlice = 'auto';
+        config.calculationCostFunction = 'costFunction';
         fs.writeFile('./config_private.json', JSON.stringify(config, null, 4), function (err) {
             if (err) throw err;
             let time = stop - start;

@@ -4,8 +4,8 @@ const _ = require('underscore');
 
 function costMat (V, Vc, latestFact) {
     // The cost of materializing view V using the set of cached views Vc
-    //console.log('costMat Function')
-    //console.log('cost of materializing view V'+V.columns+' using VC, size: '+Vc.length)
+   // console.log('costMat Function');
+  //  console.log('cost of materializing view V'+V.columns+' using VC, size: '+Vc.length);
     let costs = [];
     for (let i = 0; i < Vc.length; i++) {
         let Vi = Vc[i];
@@ -17,7 +17,7 @@ function costMat (V, Vc, latestFact) {
         }
     }
     costs.sort((a, b) => parseFloat(a.calculationCost) - parseFloat(b.calculationCost));
-    console.log('costMat result: ' + costs[0].calculationCost);
+   // console.log('costMat result: ' + costs[0].calculationCost);
     return costs[0].calculationCost;
 }
 
@@ -63,7 +63,7 @@ async function dispCost (Vc, latestFact, factTbl) {
                         let costMatVVC = costMat(V, Vc, latestFact);
                         let costMatVVcMinusVi = costMat(V, VcMinusVi, latestFact);
                         dispCostVi += (costMatVVC - costMatVVcMinusVi);
-                        console.log('current Vi: '+ Vi.columns + 'costMatWC: ' + costMatVVC + ' CostMatWcMinusVi: ' + costMatVVcMinusVi + ' result: ' + dispCostVi + ' frequency: ' + freq)
+                      //  console.log('current Vi: '+ Vi.columns + 'costMatWC: ' + costMatVVC + ' CostMatWcMinusVi: ' + costMatVVcMinusVi + ' result: ' + dispCostVi + ' frequency: ' + freq)
                     }
                     dispCostVi = dispCostVi * freq;
                     Vi.cacheEvictionCost = dispCostVi / Number.parseInt(Vi.size);

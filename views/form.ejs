@@ -338,7 +338,6 @@
         };
 
         xhttpDep.ontimeout = function (e) {
-            console.log("TIMEOUT");
             xhttpDep.abort();
         };
         xhttpDep.open("GET", "/load_dataset/" + fl.name, true);
@@ -547,7 +546,6 @@ function getFactById(id) {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-            console.log(this.responseText);
             $('#outputGet').val(this.responseText);
         }
     };

@@ -1,6 +1,6 @@
 {
     "recordsSlice": 1000,
-    "cacheEvictionPolicy": "costFunction",
+    "cacheEvictionPolicy": "FIFO",
     "calculationCostFunction": "costFunction",
     "maxCacheSize": 1000000000000,
     "maxCacheSizeInKB": 100000000000,
@@ -17,5 +17,5 @@
         "database": "Ptychiaki"
     },
     "cacheEnabled": true,
-    "logging": true
+    "logging": false
 }

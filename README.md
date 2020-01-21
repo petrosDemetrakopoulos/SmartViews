@@ -283,7 +283,7 @@ The experiment was performed using the [ABCDE template](templates/ABCDE.json) wc
 
 You can see the records used in [test_data/benchamarks](test_data/benchmarks) and the sequence of the views requested in [test_scripts/EXPViewSequence.txt](test_scripts/EXPViewSequence.txt) file.
 
-We performed the experiment for &nbsp; <img width="180px" src="https://render.githubusercontent.com/render/math?math=a=[10, 100, 250, 500]"> &nbsp; and we got the following results concerning the materialization time.
+We performed the experiment for &nbsp; <img width="180px" src="https://render.githubusercontent.com/render/math?math=a=[10, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]"> &nbsp; and we got the following results concerning the materialization time.
 The results are the mean values of all iterations we performed for each value of <img width="15px" src="https://render.githubusercontent.com/render/math?math=a">.
 
 

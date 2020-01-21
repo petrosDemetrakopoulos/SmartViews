@@ -377,17 +377,17 @@ function calculateNewGroupByFromBeginning (view, totalStart, getGroupIdTime, sor
 function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestResults, times) {
     return new Promise((resolve, reject) => {
         let totalCurrentCacheLoad = 0; // in Bytes
-        console.log('current view ' + stringify(groupBySqlResult.viewName));
-        console.log('***CACHED OBJECTS***');
-        console.log(sortedByEvictionCost);
+        helper.log('current view ' + stringify(groupBySqlResult.viewName));
+        helper.log('***CACHED OBJECTS***');
+        helper.log(sortedByEvictionCost);
         for (let i = 0; i < sortedByEvictionCost.length; i++) {
             totalCurrentCacheLoad += parseInt(sortedByEvictionCost[i].size);
         }
-        console.log('CURRENT CACHE LOAD = ' + totalCurrentCacheLoad + ' Bytes OR ' + (totalCurrentCacheLoad / 1024) + ' KB');
+        helper.log('CURRENT CACHE LOAD = ' + totalCurrentCacheLoad + ' Bytes OR ' + (totalCurrentCacheLoad / 1024) + ' KB');
         if (totalCurrentCacheLoad > 0 && (totalCurrentCacheLoad / 1024) >= config.maxCacheSizeInKB) {
             // delete as many cached results as to free up cache size equal to the size of the latest result we computed
             // we can easily multiply it by a factor to see how it performs
-            console.log('-->CLEARING CACHE');
+            helper.log('-->CLEARING CACHE');
             let sortedByEvictionCostFiltered = [];
             const gbSize = stringify(groupBySqlResult).length;
             let totalSize = 0;
@@ -398,13 +398,13 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                     sortedByEvictionCost = sortedByEvictionCost.splice(indexInSortedByEviction, 1);
                 }
             }
-            console.log("SAME OLDEST TO DELETE:");
-            console.log(sameOldestResults);
+            helper.log("SAME OLDEST TO DELETE:");
+            helper.log(sameOldestResults);
             let i = 0;
             const copy_array = sortedByEvictionCost.reverse();
             let crnSize = parseInt(copy_array[0].size);
             while ((totalSize + crnSize) < (config.maxCacheSizeInKB * 1024 - gbSize)) {
-                console.log((totalSize+crnSize) + ' < '+((config.maxCacheSizeInKB*1024) - gbSize));
+                helper.log((totalSize+crnSize) + ' < '+((config.maxCacheSizeInKB*1024) - gbSize));
                 if (copy_array[i]) {
                     crnSize = parseInt(copy_array[i].size);
                 } else {
@@ -417,14 +417,14 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
 
             for (let k = i; k < copy_array.length; k++) {
                 sortedByEvictionCostFiltered.push(copy_array[k]);  //possible error because this element already in sortedByEvictionCostFiltered
-                console.log('Evicted view ' + copy_array[k].columns+' with size: ' +(parseInt(copy_array[k].size)/1024)+' and cost: '+copy_array[k].cacheEvictionCost)
+                helper.log('Evicted view ' + copy_array[k].columns+' with size: ' +(parseInt(copy_array[k].size)/1024)+' and cost: '+copy_array[k].cacheEvictionCost)
             }
 
-            console.log('TOTAL SIZE = ' + totalSize);
-            console.log('GB SIZE = ' + gbSize);
+            helper.log('TOTAL SIZE = ' + totalSize);
+            helper.log('GB SIZE = ' + gbSize);
             const tot = (totalSize + gbSize);
             let res = tot.toString() + '\n';
-            console.log('result to txt: ' + res);
+            helper.log('result to txt: ' + res);
             fs.appendFile('cache_sizeCFV2412.txt', res, function (err) {
                 if (err) {
                     /* istanbul ignore next */
@@ -443,12 +443,12 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 reject(err);
             });
         } else {
-            console.log('-->NOT CLEARING CACHE');
+            helper.log('-->NOT CLEARING CACHE');
             let gbSize = stringify(groupBySqlResult).length;
-            console.log('GB SIZE = ' + gbSize);
+            helper.log('GB SIZE = ' + gbSize);
             let tot = (totalCurrentCacheLoad + gbSize);
             let res = tot.toString() + '\n';
-            console.log('result to txt: ' + res);
+            helper.log('result to txt: ' + res);
             fs.appendFile('cache_sizeCFV2823.txt', res, function (err) {
                 if (err) {
                     /* istanbul ignore next */
@@ -466,7 +466,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                     if (times) {
                         groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                     }
-                    console.log('DELETED CACHED RESULTS');
+                    helper.log('DELETED CACHED RESULTS');
                     resolve(groupBySqlResult);
                 }).catch(err => {
                     /* istanbul ignore next */
@@ -567,8 +567,7 @@ async function materializeView (view, contract, totalStart, createTable) {
                         await contractController.getLatestId().then(async latestId => {
                             const sortedByCalculationCost =  helper.sortByCalculationCost(filteredGBs, latestId);
                             const sortedByEvictionCost =  await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            console.log("#######");
-                            console.log(sortedByEvictionCost);
+                            helper.log(sortedByEvictionCost);
                             const mostEfficient = sortedByCalculationCost[0];
                             const getLatestFactIdTime = helper.time() - getLatestFactIdTimeStart;
 
@@ -636,8 +635,8 @@ async function materializeView (view, contract, totalStart, createTable) {
                         helper.log('NO FILTERED GROUP BYS FOUND');
                         await contractController.getLatestId(async latestId =>  {
                             const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            console.log("#######");
-                            console.log(sortedByEvictionCost);
+                            helper.log("#######");
+                            helper.log(sortedByEvictionCost);
                             calculateNewGroupByFromBeginning(view, totalStart,
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 materializationDone = true;

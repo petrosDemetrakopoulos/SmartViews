@@ -138,12 +138,10 @@
     function deployContract(contract) {
         let xhttp = new XMLHttpRequest();
         let contractStatusSelector = '#'+ contract+'_status';
-        console.log(contractStatusSelector);
         xhttp.onreadystatechange = function () {
             if (this.readyState <= 3) {
                 $(contractStatusSelector).html('Creating contract...');
             }
-            console.log($(contractStatusSelector).exists());
             if (this.readyState === 4 && this.status === 200) {
                 let respObj = JSON.parse(this.responseText);
                 let xhttpDep =  new XMLHttpRequest();

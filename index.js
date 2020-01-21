@@ -20,7 +20,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 const http = require('http').Server(app);
-http.timeout = 0;
 const io = require('socket.io')(http);
 const contractGenerator = require('./helpers/contractGenerator');
 const contractDeployer = require('./helpers/contractDeployer');
@@ -78,8 +77,7 @@ app.get('/form/:contract', function (req, res) {
     } else {
         templ = factTbl;
     }
-    let address = '0';
-    address = contractsDeployed.get(factTbl.name).address;
+    let address = contractsDeployed.get(factTbl.name).address;
     let readyViews = factTbl.views;
     readyViews = readyViews.map(x => x.name);
     res.render('form', { 'template': templ, 'name': factTbl.name, 'address': address, 'readyViews': readyViews });
