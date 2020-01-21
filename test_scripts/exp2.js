@@ -98,12 +98,6 @@ const writeToFile = async (data, filepath) => {
     });
 };
 
-const saveFile = (dataToWrite, outComeFilePath) => {
-    writeToFile(dataToWrite, outComeFilePath).then(() => {
-        console.log ('file' + outComeFilePath + 'saved successfully')
-    }).catch((err) => console.log(err));
-};
-
 const main = async () => {
     return new Promise((resolve, reject) => {
         load(filename)

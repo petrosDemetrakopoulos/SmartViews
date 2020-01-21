@@ -226,7 +226,7 @@ app.get('/groupbyId/:id', contractController.contractChecker, function (req, res
 });
 
 app.get('/getViewByName/:viewName/:contract', contractController.contractChecker, async function (req, res) {
-    if(process.env.TESTS) {
+    if (process.env.TESTS) {
         config = reload('./config_private');
     }
     const totalStart = helper.time();
@@ -241,7 +241,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
     // returns an empty object if view not exist, otherwise it returns the view object
     if (Object.keys(view).length === 0 && view.constructor === Object) {
         res.status(200);
-        return res.send({ status:'ERROR', message: 'view not found' });
+        return res.send({ status: 'ERROR', message: 'view not found' });
     }
     await helper.updateViewFrequency(factTbl, req.params.contract, view.id);
     if (!gbRunning && !running) {
@@ -256,7 +256,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
             }).catch(err => {
                 /* istanbul ignore next */
                 gbRunning = false;
-            /* istanbul ignore next */
+                /* istanbul ignore next */
                 return res.send(stringify(err))
             });
     }

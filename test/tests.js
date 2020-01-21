@@ -12,25 +12,25 @@ const fs = require('fs');
 let start = 0;
 let stop = 0;
 let initialConfig = {
-    "recordsSlice": 1000,
-        "cacheEvictionPolicy": "FIFO",
-        "calculationCostFunction": "costFunction",
-        "maxCacheSize": 1000000000000,
-        "maxCacheSizeInKB": 1000000000,
-        "cacheSlice": 2,
-        "autoCacheSlice": "auto",
-        "maxGbSize": 100000,
-        "redisPort": 6379,
-        "redisIP": "127.0.0.1",
-        "blockchainIP": "http://localhost:8545",
-        "sql": {
-        "host": "localhost",
-            "user": "root",
-            "password": "Xonelgataandrou1!",
-            "database": "Ptychiaki"
+    'recordsSlice': 1000,
+    'cacheEvictionPolicy': 'FIFO',
+    'calculationCostFunction': 'costFunction',
+    'maxCacheSize': 1000000000000,
+    'maxCacheSizeInKB': 1000000000,
+    'cacheSlice': 2,
+    'autoCacheSlice': 'auto',
+    'maxGbSize': 100000,
+    'redisPort': 6379,
+    'redisIP': '127.0.0.1',
+    'blockchainIP': 'http://localhost:8545',
+    'sql': {
+        'host': 'localhost',
+        'user': 'root',
+        'password': 'Xonelgataandrou1!',
+        'database': 'Ptychiaki'
     },
-    "cacheEnabled": true,
-        "logging": false
+    'cacheEnabled': true,
+    'logging': false
 };
 chai.use(chaiHttp);
 let responseBodyContractgeneration = {};
@@ -68,7 +68,7 @@ describe('testing default route', function () {
 });
 
 describe('testing /dashboard route', function () {
-    it('should return OK status', async () =>  {
+    it('should return OK status', async () => {
         return request(app)
             .get('/dashboard')
             .then(function (response) {
@@ -87,7 +87,7 @@ describe('testing /dashboard route', function () {
 describe('testing /addFact route with NOT DEPLOYED contract', function () {
     let payload = { pk: 250, A: 1, B: 2, C: 3, D: 12.3 };
     let resp = {};
-    it('should return error code 400', async () =>  {
+    it('should return error code 400', async () => {
         return request(app)
             .post('/addFact')
             .send(payload)
@@ -252,7 +252,7 @@ describe('testing /allfacts', function () {
     setTimeout(function () { console.log('waiting...'); }, 1000);
     // wait so that latest fact should not have the same timestamp with the group by that will be cached
     let resp = {};
-    it('should return OK status', async () =>  {
+    it('should return OK status', async () => {
         return request(app)
             .get('/allfacts')
             .then(function (response) {
@@ -699,7 +699,6 @@ describe('testing /getViewByName/:viewName/:contract -- calculationCostFunction 
     it('should be a string', function () {
         expect(resp).to.be.a('string');
     });
-
 });
 
 describe('testing /getViewByName/:viewName/:contract -- cacheEvictionPolicy = FIFO', function () {

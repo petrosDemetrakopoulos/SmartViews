@@ -270,25 +270,23 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     let transformedArray = transformGBMetadataFromBlockchain(resultGB);
     transformedArray = containsAllFields(transformedArray, view); // assigns the containsAllFields value
     let sortedByEvictionCost = JSON.parse(JSON.stringify(transformedArray));
-    if(config.cacheEvictionPolicy === 'dataCubeDistance') {
+    if (config.cacheEvictionPolicy === 'dataCubeDistance') {
         sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
-    } else if(config.cacheEvictionPolicy === 'word2vec') {
+    } else if (config.cacheEvictionPolicy === 'word2vec') {
         sortedByEvictionCost = costFunctions.word2vec(resultGB, view);
-    } else if(config.cacheEvictionPolicy === 'costFunction'){
+    } else if (config.cacheEvictionPolicy === 'costFunction'){
         sortedByEvictionCost = await costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl);
     }
     sortedByEvictionCost.sort(function (a, b) {
-        if(config.cacheEvictionPolicy === 'FIFO'){
-            return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
-        }
-        if(config.cacheEvictionPolicy === 'costFunction') {
-            return parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
-        }
-        if(config.cacheEvictionPolicy === 'word2vec') {
-            return parseInt(a.word2vecScore) - parseInt(b.word2vecScore);
-        }
-        if(config.cacheEvictionPolicy === 'dataCubeDistance') {
-            return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
+        switch (config.cacheEvictionPolicy) {
+            case 'FIFO':
+                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+            case 'costFunction:':
+                return parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
+            case 'word2vec':
+                return parseInt(a.word2vecScore) - parseInt(b.word2vecScore);
+            case 'dataCubeDistance':
+                return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
         }
     });
     return sortedByEvictionCost;
