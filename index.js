@@ -20,7 +20,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 const http = require('http').Server(app);
-http.tim
+http.timeout = 0;
 const io = require('socket.io')(http);
 const contractGenerator = require('./helpers/contractGenerator');
 const contractDeployer = require('./helpers/contractDeployer');

@@ -19,6 +19,7 @@
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "fast-stringify": "^2.0.0",
+    "ganache-core": "^2.9.2",
     "handlebars": "^4.7.0",
     "json-sql": "^0.4.11",
     "lodash": "^4.17.15",

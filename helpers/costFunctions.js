@@ -2,14 +2,6 @@ const cacheController = require('../controllers/cacheController');
 const exec = require('child_process').execSync;
 const _ = require('underscore');
 
-function cost (Vi, V, latestFact) {
-    // The cost of materializing view V using the cached view Vi
-    const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
-    const sizeCached = Number.parseInt(Vi.size);
-    V.calculationCost = 500 * sizeDeltas + sizeCached;
-    return V;
-}
-
 function costMat (V, Vc, latestFact) {
     // The cost of materializing view V using the set of cached views Vc
     //console.log('costMat Function')
@@ -20,7 +12,7 @@ function costMat (V, Vc, latestFact) {
         if (isMaterializableFrom(V, Vi)) {
             const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
             const sizeCached = Number.parseInt(Vi.size);
-            V.calculationCost = 500 * sizeDeltas + sizeCached;
+            V.calculationCost = 450 * sizeDeltas + sizeCached;
             costs.push(V);
         }
     }
@@ -41,7 +33,6 @@ async function dispCost (Vc, latestFact, factTbl) {
             const crnGroupBy = Vc[i];
             allHashes.push(crnGroupBy.hash);
         }
-        //console.log('inside DispCost')
         cacheController.getManyCachedResults(allHashes).then(async allCached => {
             let freq = 0;
             allCached = allCached.filter(function (el) { // remove null objects in case they have been deleted
@@ -73,7 +64,6 @@ async function dispCost (Vc, latestFact, factTbl) {
                         let costMatVVcMinusVi = costMat(V, VcMinusVi, latestFact);
                         dispCostVi += (costMatVVC - costMatVVcMinusVi);
                         console.log('current Vi: '+ Vi.columns + 'costMatWC: ' + costMatVVC + ' CostMatWcMinusVi: ' + costMatVVcMinusVi + ' result: ' + dispCostVi + ' frequency: ' + freq)
-//prepei na tsekarw an ta views sta 2 costs mporoun na kanoun materialize to Vi
                     }
                     dispCostVi = dispCostVi * freq;
                     Vi.cacheEvictionCost = dispCostVi / Number.parseInt(Vi.size);
@@ -119,7 +109,7 @@ function getViewsMaterialisableFromVi (Vc, Vi) {
 function calculationCostOfficial (groupBys, latestFact) { // the function we write on paper
     // where cost(Vi, V) = a * sizeDeltas(i) + sizeCached(i)
     // which is the cost to materialize view V from view Vi (where V < Vi)
-    const a = 500; // factor of deltas
+    const a = 450; // factor of deltas
     let sizeDeltas = 0;
     let sizeCached = 0;
     for (let i = 0; i < groupBys.length; i++) {
