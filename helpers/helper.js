@@ -293,11 +293,9 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
 }
 
 function sortByCalculationCost (resultGBs, latestId) {
-    if (config.calculationCostFunction.toLowerCase() === 'costfunction') {
+    if (config.calculationCostFunction === 'costFunction') {
         resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
-        resultGBs.sort(function (a, b) {
-            return parseFloat(a.calculationCost) - parseFloat(b.calculationCost)
-        }); // order ascending
+        resultGBs.sort((a, b) => parseFloat(a.calculationCost) - parseFloat(b.calculationCost)); // order ascending
     }
     return resultGBs;
 }
