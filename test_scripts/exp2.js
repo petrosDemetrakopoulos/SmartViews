@@ -4,7 +4,7 @@ const filename = './EXPViewSequence.txt';
 const generator = require('./testDataGenerator');
 const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
-const ResultsFile = 'result_final_DefaultCostFunction_450.json';
+const ResultsFile = 'result_final_DataCubeDistance_1.json';
 const rp = require('request-promise');
 
 const load = (file) => {

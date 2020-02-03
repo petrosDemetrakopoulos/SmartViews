@@ -292,10 +292,13 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
     return sortedByEvictionCost;
 }
 
-function sortByCalculationCost (resultGBs, latestId) {
+function sortByCalculationCost (resultGBs, latestId, view) {
     if (config.calculationCostFunction === 'costFunction') {
         resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
         resultGBs.sort((a, b) => parseFloat(a.calculationCost) - parseFloat(b.calculationCost)); // order ascending
+    } else if (config.calculationCostFunction === 'dataCubeDistance'){
+        resultGBs = costFunctions.dataCubeDistanceBatch(resultGBs, view);
+        resultGBs.sort((a, b) => parseFloat(a.dataCubeDistance) - parseFloat(b.dataCubeDistance)); // order ascending
     }
     return resultGBs;
 }

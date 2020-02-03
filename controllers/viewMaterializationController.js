@@ -565,7 +565,7 @@ async function materializeView (view, contract, totalStart, createTable) {
                     if (filteredGBs.length > 0) {
                         const getLatestFactIdTimeStart = helper.time();
                         await contractController.getLatestId().then(async latestId => {
-                            const sortedByCalculationCost =  helper.sortByCalculationCost(filteredGBs, latestId);
+                            const sortedByCalculationCost =  helper.sortByCalculationCost(filteredGBs, latestId, view);
                             const sortedByEvictionCost =  await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
                             helper.log(sortedByEvictionCost);
                             const mostEfficient = sortedByCalculationCost[0];

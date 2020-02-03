@@ -86,7 +86,7 @@ Now you can type ```node index.js``` in the project root directory and if everyt
 If everything is set up correctly you should see the following lines in the terminal:
 ```
 Smart-Views listening on http://localhost:3000/dashboard
-Redis  connected
+Redis connected
 mySQL connected
 ```
 **Alternatively you can simply run the ```run.sh``` script which starts Redis server, the Ethereum blockchain simulator (ganache-cli) and the application server at one.**
