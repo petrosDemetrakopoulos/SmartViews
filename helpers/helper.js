@@ -242,7 +242,7 @@ function extractViewMeta (view) {
 
 function checkViewExists (viewsDefined, viewName) {
     let view = {};
-    if(viewsDefined.has(viewName)){
+    if (viewsDefined.has(viewName)) {
         view = viewsDefined.get(viewName);
     }
     return view;
@@ -274,19 +274,19 @@ async function sortByEvictionCost (resultGB, latestId, view, factTbl) {
         sortedByEvictionCost = costFunctions.dataCubeDistanceBatch(sortedByEvictionCost, view);
     } else if (config.cacheEvictionPolicy === 'word2vec') {
         sortedByEvictionCost = costFunctions.word2vec(resultGB, view);
-    } else if (config.cacheEvictionPolicy === 'costFunction'){
+    } else if (config.cacheEvictionPolicy === 'costFunction') {
         sortedByEvictionCost = await costFunctions.dispCost(sortedByEvictionCost, latestId, factTbl);
     }
     sortedByEvictionCost.sort(function (a, b) {
         switch (config.cacheEvictionPolicy) {
-            case 'FIFO':
-                return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
-            case 'costFunction:':
-                return parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
-            case 'word2vec':
-                return parseInt(a.word2vecScore) - parseInt(b.word2vecScore);
-            case 'dataCubeDistance':
-                return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
+        case 'FIFO':
+            return parseInt(a.gbTimestamp) - parseInt(b.gbTimestamp);
+        case 'costFunction:':
+            return parseInt(a.cacheEvictionCost) - parseInt(b.cacheEvictionCost);
+        case 'word2vec':
+            return parseInt(a.word2vecScore) - parseInt(b.word2vecScore);
+        case 'dataCubeDistance':
+            return parseFloat(b.dataCubeDistance) - parseFloat(a.dataCubeDistance);
         }
     });
     return sortedByEvictionCost;
@@ -296,7 +296,7 @@ function sortByCalculationCost (resultGBs, latestId, view) {
     if (config.calculationCostFunction === 'costFunction') {
         resultGBs = costFunctions.calculationCostOfficial(resultGBs, latestId); // the cost to materialize the view from each view cached
         resultGBs.sort((a, b) => parseFloat(a.calculationCost) - parseFloat(b.calculationCost)); // order ascending
-    } else if (config.calculationCostFunction === 'dataCubeDistance'){
+    } else if (config.calculationCostFunction === 'dataCubeDistance') {
         resultGBs = costFunctions.dataCubeDistanceBatch(resultGBs, view);
         resultGBs.sort((a, b) => parseFloat(a.dataCubeDistance) - parseFloat(b.dataCubeDistance)); // order ascending
     }
@@ -401,7 +401,7 @@ function welcomeMessage () {
 }
 
 function errorToJson (error) {
-    return {status: 'ERROR', message: error.message};
+    return { status: 'ERROR', message: error.message };
 }
 
 module.exports = {

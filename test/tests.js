@@ -412,7 +412,7 @@ describe('testing /getViewByName/:viewName/:contract -- AVERAGE (Reduction from 
 describe('testing /getViewByName/:viewName/:contract -- Same with previous cached + Deltas -- SUM', async function () {
     let resp = {};
     before(async function () {
-        let as = await request(app).get('/load_dataset/10fourcol_b.json');
+        await request(app).get('/load_dataset/10fourcol_b.json');
     });
 
     it('should return OK status', async function () {

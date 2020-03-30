@@ -86,7 +86,6 @@ http.timeout = 0;
 http.listen(3000, () => {
     console.log(`Smart-Views listening on http://localhost:3000/dashboard`);
     console.log(`Visit http://localhost:3000/ to view Blockchain, mySQL and Redis cache status`);
-    console.log("timeout = " + http.timeout);
     let validations = helper.configFileValidations();
     if (process.env.ENVIRONMENT === 'LAB') {
         config = configLab;

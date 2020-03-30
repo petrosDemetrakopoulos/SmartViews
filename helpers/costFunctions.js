@@ -4,8 +4,8 @@ const _ = require('underscore');
 
 function costMat (V, Vc, latestFact) {
     // The cost of materializing view V using the set of cached views Vc
-   // console.log('costMat Function');
-  //  console.log('cost of materializing view V'+V.columns+' using VC, size: '+Vc.length);
+    // console.log('costMat Function');
+    // console.log('cost of materializing view V'+V.columns+' using VC, size: '+Vc.length);
     let costs = [];
     for (let i = 0; i < Vc.length; i++) {
         let Vi = Vc[i];
@@ -17,7 +17,7 @@ function costMat (V, Vc, latestFact) {
         }
     }
     costs.sort((a, b) => parseFloat(a.calculationCost) - parseFloat(b.calculationCost));
-   // console.log('costMat result: ' + costs[0].calculationCost);
+    // console.log('costMat result: ' + costs[0].calculationCost);
     return costs[0].calculationCost;
 }
 
@@ -52,9 +52,9 @@ async function dispCost (Vc, latestFact, factTbl) {
                 }
 
                 for (let i = 0; i < Vc.length; i++) {
-                    let Vi = Vc[i]; //Vi in paper
-                    let VcMinusVi = remove(Vc, Vi); //set of cached views without Vi
-                    //console.log('current Vi: '+Vi.fields)
+                    let Vi = Vc[i]; // Vi in paper
+                    let VcMinusVi = remove(Vc, Vi); // set of cached views without Vi
+                    // console.log('current Vi: '+Vi.fields)
                     let viewsMaterialisableFromVi = getViewsMaterialisableFromVi(Vc, Vi, i);
                     viewsMaterialisableFromVi = remove(viewsMaterialisableFromVi, Vi);
                     let dispCostVi = 0;
@@ -63,7 +63,7 @@ async function dispCost (Vc, latestFact, factTbl) {
                         let costMatVVC = costMat(V, Vc, latestFact);
                         let costMatVVcMinusVi = costMat(V, VcMinusVi, latestFact);
                         dispCostVi += (costMatVVC - costMatVVcMinusVi);
-                      //  console.log('current Vi: '+ Vi.columns + 'costMatWC: ' + costMatVVC + ' CostMatWcMinusVi: ' + costMatVVcMinusVi + ' result: ' + dispCostVi + ' frequency: ' + freq)
+                        // console.log('current Vi: '+ Vi.columns + 'costMatWC: ' + costMatVVC + ' CostMatWcMinusVi: ' + costMatVVcMinusVi + ' result: ' + dispCostVi + ' frequency: ' + freq)
                     }
                     dispCostVi = dispCostVi * freq;
                     Vi.cacheEvictionCost = dispCostVi / Number.parseInt(Vi.size);
@@ -83,10 +83,10 @@ function getViewsMaterialisableFromVi (Vc, Vi) {
         let crnView = Vc[j];
         let crnViewFields = JSON.parse(crnView.columns);
         let ViFields = JSON.parse(Vi.columns);
-        //console.log('Vi fields: '+ViFields)
+        // console.log('Vi fields: '+ViFields)
         for (let index in crnViewFields.fields) {
             crnViewFields.fields[index] = crnViewFields.fields[index].trim();
-            //console.log('Diff fields: '+crnViewFields.fields[index])
+            // console.log('Diff fields: '+crnViewFields.fields[index])
         }
         let containsAllFields = true;
         for (let k = 0; k < crnViewFields.fields.length; k++) {
@@ -142,16 +142,16 @@ async function word2vec (groupBys, view) {
     return groupBys;
 }
 
-//definition of cube distance
-//For two views V1,V2 we can define their distance in data cube lattice
-//as the number of roll-ups, drill-downs needed to go from V1 to V2.
+// definition of cube distance
+// For two views V1,V2 we can define their distance in data cube lattice
+// as the number of roll-ups, drill-downs needed to go from V1 to V2.
 
-//DataCubeDistance('ABC','AB'))=1 { ΑBC --rollup--> AB }
-//DataCubeDistance('ABC','ACD')=2   {ABC ->AC->ACD }
-//DataCubeDistance('ABC','DE) = 5 {ABC->AB->A->()->D->DE}
+// DataCubeDistance('ABC','AB'))=1 { ΑBC --rollup--> AB }
+// DataCubeDistance('ABC','ACD')=2   {ABC ->AC->ACD }
+// DataCubeDistance('ABC','DE) = 5 {ABC->AB->A->()->D->DE}
 
-//dim(V)= set of dimensions in view V
-//DataCubeDistance(x,y) = |dim(x) UNION dim(y) - dim(x) INTERSECTION dim(y)|
+// dim(V)= set of dimensions in view V
+// DataCubeDistance(x,y) = |dim(x) UNION dim(y) - dim(x) INTERSECTION dim(y)|
 
 function dataCubeDistance (view1, view2) {
     let view1fields = JSON.parse(view1.columns);
@@ -170,11 +170,11 @@ function dataCubeDistanceBatch (cachedViews, view) {
 }
 
 function isMaterializableFrom (view1, view2) {
-    //check if view2 can materialize view1 ex. isMaterializableFrom('AB','ABC')=true
+    // check if view2 can materialize view1 ex. isMaterializableFrom('AB','ABC')=true
     let view1Fields = JSON.parse(view1.columns);
     let view2Fields = JSON.parse(view2.columns);
-    //console.log('IsMaterializableFrom function')
-    //console.log('Vi fields: '+ViFields)
+    // console.log('IsMaterializableFrom function')
+    // console.log('Vi fields: '+ViFields)
     for (let index in view1Fields.fields) {
         view1Fields.fields[index] = view1Fields.fields[index].trim();
     }

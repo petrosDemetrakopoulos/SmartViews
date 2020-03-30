@@ -125,7 +125,6 @@ async function addManyFacts (facts, sliceSize, io) {
     return Promise.resolve(true);
 }
 
-
 async function getAllFactsHeavy (factsLength) {
     let allFacts = [];
     await contract.methods.getAllFacts(factsLength).call(function (err, result) {

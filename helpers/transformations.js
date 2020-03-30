@@ -2,7 +2,7 @@ const stringify = require('fast-stringify');
 const helper = require('../helpers/helper');
 function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) {
     let transformed = {};
-    if (operation !== 'AVERAGE') { //AVERAGE has exclusive treatment as it can be incrementally calculated iff we keep both sum and count
+    if (operation !== 'AVERAGE') { // AVERAGE has exclusive treatment as it can be incrementally calculated iff we keep both sum and count
         helper.log('OPERATION = ' + operation);
         for (let i = 0; i < groupByResult.length; i++) {
             let crnCount = groupByResult[i][operation + '(' + aggregateField + ')'];
