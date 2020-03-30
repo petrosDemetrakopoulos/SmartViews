@@ -66,8 +66,6 @@ function autoSlicing (gbResult) {
             crnSlice.push({ [key]: gbResult[key] });
             rowsAddedInslice++;
             crnSliceLengthInBytes = rowsAddedInslice * maxGbSize;
-            helper.log('Rows added in slice:');
-            helper.log(rowsAddedInslice);
             if (crnSliceLengthInBytes === (mb512InBytes - 40)) { // for hidden character like backslashes etc
                 slicedGbResult.push(crnSlice);
                 crnSlice = [];

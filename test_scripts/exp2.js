@@ -1,10 +1,10 @@
 const fs = require('fs');
 let path = require('path');
-const filename = './EXPViewSequence.txt';
+const filename = './queriesEXPS1.txt';
 const generator = require('./testDataGenerator');
 const dir = '../test_data/benchmarks/';
 const Promise = require('promise');
-const ResultsFile = 'result_final_DataCubeDistance_1.json';
+const ResultsFile = 'vari_bm_res_1563.json';
 const rp = require('request-promise');
 
 const load = (file) => {
