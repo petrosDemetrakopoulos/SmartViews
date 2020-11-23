@@ -12,12 +12,11 @@ function costMat (V, Vc, latestFact) {
         if (isMaterializableFrom(V, Vi)) {
             const sizeDeltas = latestFact - Number.parseInt(Vi.latestFact); // latestFact is the latest fact written in bc
             const sizeCached = Number.parseInt(Vi.size);
-            V.calculationCost = 450 * sizeDeltas + sizeCached;
+            V.calculationCost = 10 * sizeDeltas + sizeCached;
             costs.push(V);
         }
     }
     costs.sort((a, b) => parseFloat(a.calculationCost) - parseFloat(b.calculationCost));
-    // console.log('costMat result: ' + costs[0].calculationCost);
     return costs[0].calculationCost;
 }
 
@@ -63,7 +62,6 @@ async function dispCost (Vc, latestFact, factTbl) {
                         let costMatVVC = costMat(V, Vc, latestFact);
                         let costMatVVcMinusVi = costMat(V, VcMinusVi, latestFact);
                         dispCostVi += (costMatVVC - costMatVVcMinusVi);
-                        // console.log('current Vi: '+ Vi.columns + 'costMatWC: ' + costMatVVC + ' CostMatWcMinusVi: ' + costMatVVcMinusVi + ' result: ' + dispCostVi + ' frequency: ' + freq)
                     }
                     dispCostVi = dispCostVi * freq;
                     Vi.cacheEvictionCost = dispCostVi / Number.parseInt(Vi.size);
@@ -173,8 +171,6 @@ function isMaterializableFrom (view1, view2) {
     // check if view2 can materialize view1 ex. isMaterializableFrom('AB','ABC')=true
     let view1Fields = JSON.parse(view1.columns);
     let view2Fields = JSON.parse(view2.columns);
-    // console.log('IsMaterializableFrom function')
-    // console.log('Vi fields: '+ViFields)
     for (let index in view1Fields.fields) {
         view1Fields.fields[index] = view1Fields.fields[index].trim();
     }

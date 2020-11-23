@@ -537,7 +537,6 @@ async function prefetchNearset (n, cachedResults, view) {
     if (viewNames.length > n) {
         viewNames = viewNames.slice(0, n - 1)
     }
-    // prefetch nearest viewnames there
     return viewNames;
 }
 

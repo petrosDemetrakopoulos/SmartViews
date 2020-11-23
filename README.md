@@ -47,7 +47,7 @@ The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using t
 
 ```
 ## Run instructions
-After you clone the repo type ```npm install``` in the directory project and wait until all dependencies are installed. Then update th ```config.json``` file with the correct values for the fields ```redisPort```, ```redisIP```, ```blockchainIP``` and ```sql``` which are the most important ones in order to start the server.
+After you clone the repo type ```npm install``` in the directory project and wait until all dependencies are installed. Then update the ```config.json``` file with the correct values for the fields ```redisPort```, ```redisIP```, ```blockchainIP``` and ```sql``` which are the most important ones in order to start the server.
 The config file should look like this:
 ```
 {
