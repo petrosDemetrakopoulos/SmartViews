@@ -22,7 +22,11 @@
     "ganache-core": "^2.13.1",
     "handlebars": "^4.7.6",
     "json-sql": "^0.4.11",
+<<<<<<< HEAD
     "lodash": "^4.17.20",
+=======
+    "lodash": "^4.17.19",
+>>>>>>> 176a14e7c341780b29c89f2f5545b05898270c28
     "microtime": "^3.0.0",
     "mysql": "^2.18.1",
     "promise": "latest",
