@@ -55,9 +55,6 @@ describe('testing default route', function () {
         return request(app)
             .get('/')
             .then(function (response) {
-                console.log("&&&&&&")
-                console.log(response)
-                console.log("&&&&&&")
                 expect(response.status).to.equal(200);
             });
     });
