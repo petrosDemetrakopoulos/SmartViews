@@ -379,28 +379,6 @@ Total time vs <img width="15px" src="https://render.githubusercontent.com/render
 <img src="schematics/aFactor.png" width="1000" align="center">
 </div>
 
-# Prefetching with Query2Vec model
-
-Inspired by the original **Word2Vec model** that is a very commonly used algorithm in Natural Language Processing, Query2Vec takes as an input the views that have been requested by users in the past.
-As Word2Vec model uses two-layer neural networks that try to "guess" the linguistic and semantic context of the words, Query2Vec model is trained to "guess" which views may be requested within similar context.
-
-**Assuming we have recorded the views and the order with which these have been requested by the users of our system, Query2Vec produces a vector space of the views that can be materialized by our system.
-Each view requested in the past is represented by a vector in this space.
-View vectors are positioned in the space in a way that views that have been requested at adjacent time and context are located close to one another.**
-In that way, we can **prefetch** the n most similar queries based on their Euclidean or cosine **similarity** with the lately requested view.
-When one of the n prefetched views are actually requested by some user, our system will immediately serve it to the user without fetching any facts from the blockchain.
-
-The following graph shows the position of 252 different views of the cars template.
-The vectors/embeddings have been generated after the training of the model in a corpus of 4.000 different view materializations requested previously.
-
-t-SNE to 2 dimensions has been performed for visualisation purposes.
-
-<div ALIGN="center"> <img src="schematics/cars_query_embeddings.png" width="800" align="center"> </div>
-
-
-Smart-Views use [gensim library](https://radimrehurek.com/gensim/) for the Word2Vec model implementation and training using skipgram algorithm.
-You can see [word2vec_train.py](word2vec_train.py) script for more information about the models and its parameters.
-
 
 # The Code
 The back-end code is separated in 4 main categories.

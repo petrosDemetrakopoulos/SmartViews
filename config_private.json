@@ -3,7 +3,7 @@
     "cacheEvictionPolicy": "costFunction",
     "calculationCostFunction": "costFunction",
     "maxCacheSize": 1000000000000,
-    "maxCacheSizeInKB": 1563,
+    "maxCacheSizeInKB": 1000000000,
     "cacheSlice": 2,
     "autoCacheSlice": "auto",
     "maxGbSize": 100000,
@@ -17,5 +17,5 @@
         "database": "Ptychiaki"
     },
     "cacheEnabled": true,
-    "logging": true
+    "logging": false
 }

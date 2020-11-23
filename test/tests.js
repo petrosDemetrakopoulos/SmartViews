@@ -42,7 +42,7 @@ function freeze (time) {
 }
 before(function (done) {
     console.log('Waiting for services to start...');
-    setTimeout(done, 3000);
+    setTimeout(done, 4000);
 });
 describe('testing default route', function () {
     before(function () {
@@ -55,6 +55,9 @@ describe('testing default route', function () {
         return request(app)
             .get('/')
             .then(function (response) {
+                console.log("&&&&&&")
+                console.log(response)
+                console.log("&&&&&&")
                 expect(response.status).to.equal(200);
             });
     });
