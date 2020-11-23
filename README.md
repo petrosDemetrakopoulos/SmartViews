@@ -9,8 +9,6 @@ The project is coded in **Node.JS** and uses the **Ethereum Blockchain** using t
 ```
 ├── README.md
 ├── config.json
-├── config_lab.json
-├── config_private.json
 ├── contracts
 │   ├── ABCD.sol
 │   └── Cars.sol
