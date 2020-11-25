@@ -546,7 +546,6 @@ async function materializeView (view, contract, totalStart, createTable) {
         let materializationDone = false;
         const factTbl = require('../templates/' + contract);
         const gbFields = view.fields;
-        view.fields = gbFields;
         let globalAllGroupBysTime = { getAllGBsTime: 0, getGroupIdTime: 0 };
         if (config.cacheEnabled) {
             helper.log('cache enabled = TRUE');
@@ -634,8 +633,6 @@ async function materializeView (view, contract, totalStart, createTable) {
                         helper.log('NO FILTERED GROUP BYS FOUND');
                         await contractController.getLatestId(async latestId => {
                             const sortedByEvictionCost = await helper.sortByEvictionCost(resultGB, latestId, view, factTbl);
-                            helper.log('#######');
-                            helper.log(sortedByEvictionCost);
                             calculateNewGroupByFromBeginning(view, totalStart,
                                 globalAllGroupBysTime.getGroupIdTime, sortedByEvictionCost).then(result => {
                                 materializationDone = true;
