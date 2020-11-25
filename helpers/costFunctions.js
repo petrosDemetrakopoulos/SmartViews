@@ -1,3 +1,4 @@
+'use strict';
 const cacheController = require('../controllers/cacheController');
 const exec = require('child_process').execSync;
 const _ = require('underscore');

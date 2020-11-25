@@ -1,3 +1,4 @@
+'use strict';
 let config = require('../config_private');
 let mysqlConfig = {};
 let connection = null;

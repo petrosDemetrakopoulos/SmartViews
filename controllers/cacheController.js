@@ -1,3 +1,4 @@
+'use strict';
 const crypto = require('crypto');
 let md5sum = crypto.createHash('md5');
 const stringify = require('fast-stringify');
@@ -52,7 +53,7 @@ function manualSlicing (gbResult) {
         slicedGbResult.push(crnSlice); // we have a modulo, the last slice contains less than all the previous ones
     }
     slicedGbResult.push(metaKeys);
-    return slicedGbResult
+    return slicedGbResult;
 }
 
 function autoSlicing (gbResult) {
@@ -76,7 +77,7 @@ function autoSlicing (gbResult) {
         slicedGbResult.push(crnSlice); // we have a modulo, the last slice contains less than all the previous ones
     }
     slicedGbResult.push(metaKeys);
-    return slicedGbResult
+    return slicedGbResult;
 }
 
 function saveOnCache (gbResult, operation, latestId) {

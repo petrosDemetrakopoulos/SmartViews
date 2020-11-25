@@ -1,3 +1,4 @@
+'use strict';
 const helper = require('../helpers/helper');
 const cacheController = require('./cacheController');
 const contractController = require('./contractController');

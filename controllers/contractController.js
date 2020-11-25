@@ -1,3 +1,4 @@
+'use strict';
 const stringify = require('fast-stringify');
 let contract = null;
 let mainTransactionObject = {};

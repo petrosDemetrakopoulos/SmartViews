@@ -1,3 +1,4 @@
+'use strict';
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -73,7 +74,7 @@ app.get('/form/:contract', function (req, res) {
     let factTbl = require('./templates/' + req.params.contract);
     let templ = {};
     if ('template' in factTbl) {
-        templ = factTbl['template'];
+        templ = factTbl.template;
     } else {
         templ = factTbl;
     }
@@ -129,7 +130,7 @@ app.get('/deployContract/:fn', function (req, res) {
                     res.status(400);
                     /* istanbul ignore next */
                     res.send({ status: 'ERROR', message: 'Deployment failed' });
-                })
+                });
         }
     });
 });
@@ -194,7 +195,7 @@ app.get('/getFactsFromTo/:from/:to', contractController.contractChecker, functio
 });
 
 app.get('/allfacts', contractController.contractChecker, function (req, res) {
-    contractController.getLatestId().then(async result => {
+    contractController.getLatestId().then(result => {
         // async loop waiting to get all the facts separately
         let timeStart = helper.time();
         contractController.getAllFactsHeavy(result).then(retval => {
@@ -256,7 +257,7 @@ app.get('/getViewByName/:viewName/:contract', contractController.contractChecker
                 /* istanbul ignore next */
                 gbRunning = false;
                 /* istanbul ignore next */
-                return res.send(stringify(err))
+                return res.send(stringify(err));
             });
     }
 });

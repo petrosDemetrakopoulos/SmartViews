@@ -1,3 +1,4 @@
+'use strict';
 const stringify = require('fast-stringify');
 const helper = require('../helpers/helper');
 function transformGBFromSQL (groupByResult, operation, aggregateField, gbField) {
