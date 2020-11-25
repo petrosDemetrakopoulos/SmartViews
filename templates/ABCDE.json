@@ -35,7 +35,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 2113
+      "frequency": 2114
     },
     {
       "name": "CD(COUNT)",
