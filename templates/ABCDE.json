@@ -35,8 +35,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTpk int)",
-      "frequency": 2107,
-      "id": "0"
+      "frequency": 2113
     },
     {
       "name": "CD(COUNT)",
@@ -47,7 +46,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(C int, D int, COUNTpk int)",
-      "frequency": 452,
+      "frequency": 453,
       "id": "1"
     },
     {
@@ -86,7 +85,7 @@
       "operation": "SUM",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, SUMD int)",
-      "frequency": 576,
+      "frequency": 578,
       "id": "4"
     },
     {
@@ -98,7 +97,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, COUNTD int, SUMD int)",
-      "frequency": 255,
+      "frequency": 256,
       "id": "5"
     },
     {
@@ -109,7 +108,7 @@
       "operation": "AVERAGE",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTD int, SUMD int)",
-      "frequency": 258,
+      "frequency": 259,
       "id": "6"
     },
     {
@@ -121,7 +120,7 @@
       "operation": "MAX",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MAXD int)",
-      "frequency": 325,
+      "frequency": 326,
       "id": "7"
     },
     {
@@ -133,7 +132,7 @@
       "operation": "MIN",
       "aggregationField": "D",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, B int, MIND int)",
-      "frequency": 275,
+      "frequency": 276,
       "id": "8"
     },
     {
@@ -144,7 +143,8 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(A int, COUNTpk int)",
-      "frequency": 1302
+      "frequency": 1308,
+      "id": "9"
     },
     {
       "name": "B(COUNT)",
@@ -154,7 +154,7 @@
       "operation": "COUNT",
       "aggregationField": "pk",
       "SQLTable": "CREATE TEMPORARY TABLE tempTbl(B int, COUNTpk int)",
-      "frequency": 521,
+      "frequency": 522,
       "id": "10"
     },
     {
