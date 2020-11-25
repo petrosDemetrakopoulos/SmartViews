@@ -90,7 +90,7 @@ function containsAllFields (transformedArray, view) {
         }
         for (let j = 0; j < view.fields.length; j++) {
             if (!cachedGBFields.fields.includes(view.fields[j])) {
-                containsAllFields = false
+                containsAllFields = false;
             }
         }
         transformedArray[i].containsAllFields = containsAllFields;
@@ -158,8 +158,8 @@ function extractGBValues (reducedResult, view) {
         if (key !== 'operation' && key !== 'groupByFields' && key !== 'field' && key !== 'gbCreateTable' && key !== 'viewName') {
             let crnRow = JSON.parse(key);
             if (view.operation === 'AVERAGE') {
-                crnRow[prelastCol] = gbValsReduced[i]['sum'];
-                crnRow[lastCol] = gbValsReduced[i]['count'];
+                crnRow[prelastCol] = gbValsReduced[i].sum;
+                crnRow[lastCol] = gbValsReduced[i].count;
             } else {
                 crnRow[lastCol] = gbValsReduced[i];
             }
