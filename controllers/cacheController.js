@@ -107,10 +107,9 @@ function saveOnCache (gbResult, operation, latestId) {
     let num = 0;
     let crnHash = '';
     if (slicedGbResult.length > 0) {
-        for (const slice in slicedGbResult) {
+        for (const slice of slicedGbResult) {
             crnHash = hash + '_' + num;
-            helper.log(crnHash);
-            client.set(crnHash, stringify(slicedGbResult[slice]));
+            client.set(crnHash, stringify(slice));
             num++;
         }
     } else {
