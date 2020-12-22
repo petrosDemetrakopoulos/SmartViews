@@ -124,11 +124,12 @@ function requireUncached (module) {
 
 function mergeSlicedCachedResult (allCached) {
     let mergedArray = [];
+    let reservedKeys = ['operation', 'groupByFields', 'field', 'viewName']
     for (const index in allCached) {
         let crnSub = allCached[index];
         let crnSubArray = JSON.parse(crnSub);
         for (const kv in crnSubArray) {
-            if (kv !== 'operation' && kv !== 'groupByFields' && kv !== 'field' && kv !== 'viewName') {
+            if (reservedKeys.indexOf(kv) === -1) {
                 mergedArray.push(crnSubArray[kv]);
             } else {
                 for (const meta in crnSubArray) {
