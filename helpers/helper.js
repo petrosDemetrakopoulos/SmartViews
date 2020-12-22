@@ -139,9 +139,9 @@ function mergeSlicedCachedResult (allCached) {
         }
     }
     let gbFinal = {};
-    for (const i in mergedArray) {
-        const crnKey = Object.keys(mergedArray[i])[0];
-        gbFinal[crnKey] = Object.values(mergedArray[i])[0];
+    for (const i of mergedArray) {
+        const crnKey = Object.keys(i)[0];
+        gbFinal[crnKey] = Object.values(i)[0];
     }
     return gbFinal;
 }

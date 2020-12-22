@@ -55,7 +55,7 @@ async function dispCost (Vc, latestFact, factTbl) {
                     let Vi = Vc[i]; // Vi in paper
                     let VcMinusVi = remove(Vc, Vi); // set of cached views without Vi
                     // console.log('current Vi: '+Vi.fields)
-                    let viewsMaterialisableFromVi = getViewsMaterialisableFromVi(Vc, Vi, i);
+                    let viewsMaterialisableFromVi = getViewsMaterialisableFromVi(Vc, Vi);
                     viewsMaterialisableFromVi = remove(viewsMaterialisableFromVi, Vi);
                     let dispCostVi = 0;
                     for (let j = 0; j < viewsMaterialisableFromVi.length; j++) {
