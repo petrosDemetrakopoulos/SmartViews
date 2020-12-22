@@ -175,11 +175,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
         computationsController.calculateReducedGroupBy(cachedGroupBy, view, gbFields).then(async reducedResult => {
             const reductionTimeEnd = helper.time();
             const viewMeta = helper.extractViewMeta(view);
-            if (view.operation === 'AVERAGE') {
-                reducedResult = transformations.transformAverage(reducedResult, view.fields, view.aggregationField);
-            } else {
-                reducedResult = transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
-            }
+            reducedResult = (view.operation === 'AVERAGE') ? transformations.transformAverage(reducedResult, view.fields, view.aggregationField) : transformations.transformGBFromSQL(reducedResult, viewMeta.op, viewMeta.lastCol, gbFields);
             reducedResult.field = view.aggregationField;
             reducedResult.viewName = view.name;
             reducedResult.operation = view.operation;
@@ -189,6 +185,7 @@ function reduceGroupByFromCache (cachedGroupBy, view, gbFields, sortedByEviction
                 cacheController.saveOnCache(reducedResult, view.operation, latestId - 1).on('error', (err) => {
                     /* istanbul ignore next */
                     helper.log('error:', err);
+                    /* istanbul ignore next */
                     reject(err);
                 }).on('receipt', (receipt) => {
                     helper.log('receipt:' + JSON.stringify(receipt));
@@ -434,9 +431,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
             sortedByEvictionCostFiltered = sortedByEvictionCostFiltered.concat(sameOldestResults);
             contractController.deleteCachedResults(sortedByEvictionCostFiltered).then(deleteReceipt => {
                 times.totalEnd = helper.time();
-                if (times) {
-                    groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
-                }
+                groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                 resolve(groupBySqlResult);
             }).catch(err => {
                 /* istanbul ignore next */
@@ -456,16 +451,12 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 }
             });
             times.totalEnd = helper.time();
-            if (times) {
-                groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
-            }
+            groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
 
             if (sameOldestResults.length > 0) {
                 contractController.deleteCachedResults(sameOldestResults).then(deleteReceipt => {
                     times.totalEnd = helper.time();
-                    if (times) {
-                        groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
-                    }
+                    groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                     helper.log('DELETED CACHED RESULTS');
                     resolve(groupBySqlResult);
                 }).catch(err => {
@@ -474,9 +465,7 @@ function clearCacheIfNeeded (sortedByEvictionCost, groupBySqlResult, sameOldestR
                 });
             } else {
                 times.totalEnd = helper.time();
-                if (times) {
-                    groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
-                }
+                groupBySqlResult = helper.assignTimes(groupBySqlResult, times);
                 resolve(groupBySqlResult);
             }
         }
