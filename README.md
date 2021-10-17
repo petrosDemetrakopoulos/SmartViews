@@ -2,7 +2,7 @@
 This repository hosts the application server of Smart-Views.
 It is the implementation / application part of my thesis as an undergraduate Computer Science student of Athens University of Economics and Business ([aueb.gr](https://aueb.gr/))
 under the supervision of Professor Yannis Kotidis. 
-The paper of this work is published In Proceedings of the 23rd International Conference on Big Data Analytics and Knowledge Discovery (DaWaK 2021)and it is available [here](http://pages.cs.aueb.gr/~kotidis/Publications/DaWakWeb.pdf).
+The paper of this work is published In Proceedings of the 23rd International Conference on Big Data Analytics and Knowledge Discovery (**DaWaK 2021**)and it is available [here](http://pages.cs.aueb.gr/~kotidis/Publications/DaWakWeb.pdf).
 
 The directory structure of the project is shown below.
 
